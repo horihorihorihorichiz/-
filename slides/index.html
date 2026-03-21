@@ -3,11 +3,20 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Slides-to-Web Demo</title>
+  <title>競馬で勝つためには</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;600;700;800;900&family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="themes/default.css">
+  <style>
+    :root {
+      --primary: #1a2a1a;
+      --primary-light: #1e3a1e;
+      --accent: #2ecc71;
+      --accent-secondary: #1a4a2e;
+      --bg-dark: #0d1a0d;
+    }
+  </style>
 </head>
 <body>
   <div class="slides-container">
@@ -15,47 +24,85 @@
     <!-- ========== Slide 1: Title ========== -->
     <div class="slide slide--title">
       <div class="slide-inner">
-        <span class="badge badge--accent animate-in delay-1">DEMO PRESENTATION</span>
-        <h1 class="animate-in delay-2">Slides-to-Web<br>コードでスライドを作る</h1>
-        <p class="subtitle animate-in delay-3">パワポを捨て、ブラウザで発表する新しい方法</p>
-        <p class="meta animate-in delay-4">2026.03.21 ― Claude Code で生成</p>
+        <span class="badge badge--accent animate-in delay-1">HORSE RACING STRATEGY</span>
+        <h1 class="animate-in delay-2" style="font-size: 4.5rem;">競馬で勝つためには</h1>
+        <p class="subtitle animate-in delay-3">データと戦略で回収率を上げる5つの鉄則</p>
+        <p class="meta animate-in delay-4">2026.03.21</p>
       </div>
     </div>
 
-    <!-- ========== Slide 2: Section ========== -->
-    <div class="slide slide--section">
-      <div class="slide-inner">
-        <span class="section-number animate-in delay-1">01</span>
-        <h2 class="animate-in delay-2">なぜパワポではなく<br>Webコードなのか？</h2>
-        <p class="section-desc animate-in delay-3">AIスライド生成が「絶妙にビミョー」になる構造的な理由を解き明かします</p>
-      </div>
-    </div>
-
-    <!-- ========== Slide 3: Problem ========== -->
+    <!-- ========== Slide 2: 大前提 ========== -->
     <div class="slide slide--content">
       <div class="slide-inner">
-        <h2 class="animate-in">既存ツールの限界</h2>
-        <div class="columns columns--2">
+        <h2 class="animate-in">まず知るべき大前提</h2>
+        <div class="columns columns--2" style="flex: 1; align-items: center;">
           <div class="animate-left delay-2">
-            <ul class="slide-list">
-              <li>python-pptx でのパワポ自動生成</li>
-              <li>Marp（Markdown → スライド）</li>
-              <li>Claude in PowerPoint / Copilot</li>
-              <li>Genspark / Manus のスライド生成</li>
-              <li>Gamma 等のスライド生成AIサービス</li>
-            </ul>
+            <div class="diagram" style="min-height: 280px;">
+              <div style="text-align: center;">
+                <div style="font-size: 1rem; color: var(--text-muted); margin-bottom: 12px;">JRA控除率</div>
+                <div style="display: flex; gap: 20px; justify-content: center; flex-wrap: wrap;">
+                  <div class="card" style="padding: 20px; text-align: center; min-width: 120px;">
+                    <div style="font-size: 2.2rem; font-weight: 900; color: var(--accent);">20%</div>
+                    <div style="font-size: 0.9rem; color: var(--text-muted); margin-top: 4px;">単勝・複勝</div>
+                  </div>
+                  <div class="card" style="padding: 20px; text-align: center; min-width: 120px;">
+                    <div style="font-size: 2.2rem; font-weight: 900; color: #f39c12;">25%</div>
+                    <div style="font-size: 0.9rem; color: var(--text-muted); margin-top: 4px;">馬連・馬単</div>
+                  </div>
+                  <div class="card" style="padding: 20px; text-align: center; min-width: 120px;">
+                    <div style="font-size: 2.2rem; font-weight: 900; color: var(--accent);">30%</div>
+                    <div style="font-size: 0.9rem; color: var(--text-muted); margin-top: 4px;">三連単</div>
+                  </div>
+                </div>
+                <div style="margin-top: 20px; font-size: 1rem; color: var(--text-muted);">
+                  売上の20〜30%はJRAの取り分
+                </div>
+              </div>
+            </div>
           </div>
           <div class="animate-right delay-3">
             <div class="highlight-box">
-              <p>どれも「社内用」なら使える。<br>しかし登壇・社外提案レベルの<br>クオリティは作れない。</p>
+              <p style="font-size: 1.5rem;">何も考えずに買い続けると<br>回収率は<span style="color: var(--accent); font-weight: 900;">約75%</span>に収束する</p>
             </div>
-            <div class="diagram" style="margin-top: 24px; min-height: 120px;">
-              <div class="diagram-flow">
-                <div class="flow-item">AIの能力</div>
-                <div class="flow-arrow">→</div>
-                <div class="flow-item" style="border-color: var(--accent); border-width: 2px;">パワポの壁</div>
-                <div class="flow-arrow">→</div>
-                <div class="flow-item" style="opacity: 0.5;">残念な出力</div>
+            <p style="margin-top: 24px; font-size: 1.2rem; color: var(--text-secondary); line-height: 1.8;">
+              つまり「勝つ」とは<br>この控除率の壁を超えて<br><strong style="color: var(--accent);">回収率100%以上</strong>を<br>維持し続けるということ。
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== Slide 3: 3つの柱 ========== -->
+    <div class="slide slide--content">
+      <div class="slide-inner">
+        <h2 class="animate-in">勝つための3つの柱</h2>
+        <div class="columns columns--3" style="flex: 1;">
+          <div class="card card--numbered animate-in delay-1" data-number="1" style="display: flex; flex-direction: column; gap: 16px;">
+            <h3 style="color: var(--accent);">期待値で考える</h3>
+            <p>オッズと実力の乖離を見つける。人気馬＝買い、ではない。</p>
+            <div style="background: rgba(46,204,113,0.1); border-radius: 8px; padding: 16px; margin-top: auto;">
+              <div style="font-size: 0.9rem; color: var(--text-muted);">考え方</div>
+              <div style="font-size: 1.1rem; font-weight: 700; margin-top: 4px;">
+                勝率30%の馬が<br>オッズ5倍なら<br>期待値 = <span style="color: var(--accent);">1.5</span>
+              </div>
+            </div>
+          </div>
+          <div class="card card--numbered animate-in delay-2" data-number="2" style="display: flex; flex-direction: column; gap: 16px;">
+            <h3 style="color: var(--accent);">データ分析</h3>
+            <p>過去走・血統・馬場状態・枠順・騎手の相性をデータで判断。</p>
+            <ul class="slide-list" style="margin-top: auto;">
+              <li style="font-size: 1rem; padding: 8px 0 8px 28px;">スピード指数</li>
+              <li style="font-size: 1rem; padding: 8px 0 8px 28px;">ラップ分析</li>
+              <li style="font-size: 1rem; padding: 8px 0 8px 28px;">コース適性</li>
+            </ul>
+          </div>
+          <div class="card card--numbered animate-in delay-3" data-number="3" style="display: flex; flex-direction: column; gap: 16px;">
+            <h3 style="color: var(--accent);">資金管理</h3>
+            <p>どんなに分析が正しくても、賭け方を間違えると破綻する。</p>
+            <div style="background: rgba(46,204,113,0.1); border-radius: 8px; padding: 16px; margin-top: auto;">
+              <div style="font-size: 0.9rem; color: var(--text-muted);">鉄則</div>
+              <div style="font-size: 1.1rem; font-weight: 700; margin-top: 4px;">
+                1レースの賭け金は<br>総資金の<span style="color: var(--accent);">3〜5%</span>以内
               </div>
             </div>
           </div>
@@ -63,157 +110,62 @@
       </div>
     </div>
 
-    <!-- ========== Slide 4: Insight ========== -->
-    <div class="slide slide--content">
-      <div class="slide-inner" style="justify-content: center;">
-        <div class="animate-scale delay-1" style="text-align: center; max-width: 100%;">
-          <p class="slide-quote" style="border-left: none; text-align: center; padding-left: 0; max-width: 100%;">
-            「そのアウトプット形式は、<br>AIを前提とした働き方において<br><span style="color: var(--accent); font-weight: 700;">最適なのか？</span>」
-          </p>
-        </div>
-        <div class="animate-in delay-3" style="text-align: center; margin-top: 60px;">
-          <p style="font-size: 1.3rem; color: var(--text-secondary);">
-            PowerPoint は人間が手作業で作っていた時代の最適解。<br>
-            AI時代に、その前提をそのまま引き継ぐ必要はない。
-          </p>
-        </div>
-      </div>
-    </div>
-
-    <!-- ========== Slide 5: Solution ========== -->
-    <div class="slide slide--section">
-      <div class="slide-inner">
-        <span class="section-number animate-in delay-1">02</span>
-        <h2 class="animate-in delay-2">発想の転換：<br>スライド = Webサイト</h2>
-        <p class="section-desc animate-in delay-3">AIが最も得意な「コーディング」× ブラウザの精巧なレンダリング</p>
-      </div>
-    </div>
-
-    <!-- ========== Slide 6: How it works ========== -->
+    <!-- ========== Slide 4: 実践フロー ========== -->
     <div class="slide slide--content">
       <div class="slide-inner">
-        <h2 class="animate-in">このスライドの正体</h2>
-        <div class="columns columns--2" style="flex: 1; align-items: center;">
-          <div class="animate-left delay-2">
-            <div class="card" style="margin-bottom: 24px;">
-              <h3>見えているもの</h3>
-              <p>16:9のスライドが<br>← → で切り替わるプレゼン資料</p>
-            </div>
-            <div class="card">
-              <h3>実態</h3>
-              <p>1枚のHTMLページの中にある<br>セクションをフェード切替で<br>表示しているだけ</p>
-            </div>
-          </div>
-          <div class="animate-right delay-3">
-            <div class="code-block">
-<span style="color: #7ec8e3;">&lt;div</span> class="<span style="color: #e94560;">slide slide--content</span>"<span style="color: #7ec8e3;">&gt;</span>
-  <span style="color: #7ec8e3;">&lt;div</span> class="<span style="color: #e94560;">slide-inner</span>"<span style="color: #7ec8e3;">&gt;</span>
-    <span style="color: #7ec8e3;">&lt;h2&gt;</span>タイトル<span style="color: #7ec8e3;">&lt;/h2&gt;</span>
-    <span style="color: #7ec8e3;">&lt;p&gt;</span>内容...<span style="color: #7ec8e3;">&lt;/p&gt;</span>
-  <span style="color: #7ec8e3;">&lt;/div&gt;</span>
-<span style="color: #7ec8e3;">&lt;/div&gt;</span>
-            </div>
-            <p style="margin-top: 16px; color: var(--text-muted); font-size: 1rem;">
-              HTML + CSS + JS = 完全な表現力
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ========== Slide 7: Comparison ========== -->
-    <div class="slide slide--content">
-      <div class="slide-inner">
-        <h2 class="animate-in">パワポ vs Webスライド</h2>
-        <div class="columns columns--3" style="flex: 1;">
-          <div class="card card--numbered animate-in delay-1" data-number="1">
-            <h3>デザインの自由度</h3>
-            <p>CSSで完全制御。グラデーション、アニメーション、レスポンシブ対応すべて自在</p>
-          </div>
-          <div class="card card--numbered animate-in delay-2" data-number="2">
-            <h3>AIとの相性</h3>
-            <p>HTML/CSSはAIが最も得意な領域。複雑なレイアウトも正確に生成</p>
-          </div>
-          <div class="card card--numbered animate-in delay-3" data-number="3">
-            <h3>再利用性</h3>
-            <p>テーマをCSS変数で管理。ブランドカラーの差し替えは1行で完了</p>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ========== Slide 8: Architecture ========== -->
-    <div class="slide slide--content">
-      <div class="slide-inner">
-        <h2 class="animate-in">システム構成</h2>
+        <h2 class="animate-in">レース当日の実践フロー</h2>
         <div class="diagram animate-scale delay-2" style="flex: 1; width: 100%;">
-          <div class="diagram-flow" style="gap: 32px;">
-            <div class="flow-item" style="background: var(--accent); min-width: 160px;">
-              <div style="font-size: 0.85rem; opacity: 0.8; margin-bottom: 4px;">Claude Code</div>
-              <div style="font-weight: 800;">構成 & 生成</div>
+          <div class="diagram-flow" style="gap: 16px; flex-wrap: wrap; justify-content: center;">
+            <div class="flow-item" style="background: var(--accent); color: #000; min-width: 150px; font-weight: 800;">
+              <div style="font-size: 0.8rem; opacity: 0.7; margin-bottom: 4px;">STEP 1</div>
+              出馬表チェック
             </div>
             <div class="flow-arrow">→</div>
-            <div class="flow-item" style="min-width: 140px;">
-              <div style="font-size: 0.85rem; opacity: 0.8; margin-bottom: 4px;">Output</div>
-              <div style="font-weight: 800;">HTML/CSS/JS</div>
+            <div class="flow-item" style="min-width: 150px;">
+              <div style="font-size: 0.8rem; opacity: 0.7; margin-bottom: 4px;">STEP 2</div>
+              馬場・天気確認
             </div>
             <div class="flow-arrow">→</div>
-            <div class="flow-item" style="min-width: 140px;">
-              <div style="font-size: 0.85rem; opacity: 0.8; margin-bottom: 4px;">Rendering</div>
-              <div style="font-weight: 800;">ブラウザ</div>
+            <div class="flow-item" style="min-width: 150px;">
+              <div style="font-size: 0.8rem; opacity: 0.7; margin-bottom: 4px;">STEP 3</div>
+              能力比較・予想
             </div>
             <div class="flow-arrow">→</div>
-            <div class="flow-item" style="background: linear-gradient(135deg, var(--accent), var(--accent-secondary)); min-width: 160px;">
-              <div style="font-size: 0.85rem; opacity: 0.8; margin-bottom: 4px;">Result</div>
-              <div style="font-weight: 800;">美しいスライド</div>
+            <div class="flow-item" style="min-width: 150px;">
+              <div style="font-size: 0.8rem; opacity: 0.7; margin-bottom: 4px;">STEP 4</div>
+              オッズと比較
+            </div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-item" style="background: var(--accent); color: #000; min-width: 150px; font-weight: 800;">
+              <div style="font-size: 0.8rem; opacity: 0.7; margin-bottom: 4px;">STEP 5</div>
+              期待値ある馬だけ購入
             </div>
           </div>
-          <div style="margin-top: 40px; display: flex; gap: 24px; flex-wrap: wrap; justify-content: center;">
-            <div class="badge badge--outline">engine.js</div>
-            <div class="badge badge--outline">themes/default.css</div>
-            <div class="badge badge--outline">index.html</div>
-            <div class="badge badge--outline">CLAUDE.md</div>
+          <div style="margin-top: 48px; display: flex; gap: 40px; justify-content: center; flex-wrap: wrap;">
+            <div class="highlight-box" style="flex: 1; max-width: 400px; text-align: center;">
+              <p style="font-size: 1.1rem;">「買わない」も立派な判断。<br>期待値がなければ<strong style="color: var(--accent);">見送る勇気</strong>。</p>
+            </div>
+            <div class="highlight-box" style="flex: 1; max-width: 400px; text-align: center;">
+              <p style="font-size: 1.1rem;">人気薄でもデータが示すなら<br><strong style="color: var(--accent);">自分の予想を信じる</strong>。</p>
+            </div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- ========== Slide 9: Results ========== -->
-    <div class="slide slide--content">
-      <div class="slide-inner">
-        <h2 class="animate-in">実績</h2>
-        <div class="columns columns--2" style="flex: 1; align-items: center;">
-          <div class="animate-left delay-2">
-            <div class="card" style="text-align: center; padding: 48px 32px; margin-bottom: 24px;">
-              <div style="font-size: 4rem; font-weight: 900; color: var(--accent);">2日</div>
-              <div style="font-size: 1.1rem; color: var(--text-muted); margin-top: 8px;">→</div>
-              <div style="font-size: 4rem; font-weight: 900; color: #4ade80;">3時間</div>
-              <p style="margin-top: 16px; color: var(--text-secondary);">資料作成時間の短縮</p>
-            </div>
-          </div>
-          <div class="animate-right delay-3">
-            <ul class="slide-list slide-list--check">
-              <li>Keynoteレベルのデザインクオリティ</li>
-              <li>図解が正確に入る</li>
-              <li>ブランドカラーの一括変更が可能</li>
-              <li>バージョン管理（Git）対応</li>
-              <li>チームでの共同編集が容易</li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ========== Slide 10: Ending ========== -->
+    <!-- ========== Slide 5: まとめ ========== -->
     <div class="slide slide--title">
-      <div class="slide-inner" style="background: linear-gradient(135deg, #0a0a1a 0%, var(--primary) 50%, var(--accent-secondary) 100%);">
-        <span class="badge badge--accent animate-in delay-1">THANK YOU</span>
-        <h1 class="animate-in delay-2" style="font-size: 3.2rem;">アウトプット形式を疑え。<br>それがAI時代の第一歩。</h1>
-        <p class="subtitle animate-in delay-3">スライドは「パワポ」ではなく「Web」で作る時代へ</p>
-        <div class="animate-in delay-4" style="margin-top: 40px; display: flex; gap: 16px; justify-content: center;">
-          <span class="badge badge--outline">F キーでフルスクリーン</span>
-          <span class="badge badge--outline">← → で操作</span>
+      <div class="slide-inner" style="background: linear-gradient(135deg, #0d1a0d 0%, var(--primary) 40%, var(--accent-secondary) 100%);">
+        <span class="badge badge--accent animate-in delay-1">SUMMARY</span>
+        <h1 class="animate-in delay-2" style="font-size: 3rem;">競馬は「運」ではなく<br>「期待値のゲーム」</h1>
+        <div class="animate-in delay-3" style="margin-top: 40px; display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;">
+          <span class="badge badge--outline" style="font-size: 1rem; padding: 10px 24px;">期待値 > 1 だけ買う</span>
+          <span class="badge badge--outline" style="font-size: 1rem; padding: 10px 24px;">データで裏付ける</span>
+          <span class="badge badge--outline" style="font-size: 1rem; padding: 10px 24px;">資金管理を徹底する</span>
         </div>
+        <p class="subtitle animate-in delay-4" style="margin-top: 40px; font-size: 1.2rem;">
+          感情で買わない。数字で買う。<br>それが長期的に「勝つ」唯一の方法。
+        </p>
       </div>
     </div>
 
