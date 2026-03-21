@@ -4,6 +4,15 @@
 パワーポイントの代わりに、HTML/CSS/JSでスライドを作成するシステム。
 ブラウザの16:9表示でプレゼンテーションを行う。
 
+## ワークフロー
+```
+1. Claude Code でスライドを生成（HTML/CSS/JS）
+2. ブラウザで確認・レビュー（npx serve slides）
+3. 修正があればClaude Codeに依頼
+4. OKなら npm run export でPowerPointに変換
+5. 最終パワポを納品・共有
+```
+
 ## ファイル構成
 ```
 slides/
@@ -11,7 +20,10 @@ slides/
 ├── engine.js           # ナビゲーションエンジン（←→/タッチ/クリック対応）
 ├── themes/
 │   └── default.css     # デフォルトテーマ（CSS変数でカスタマイズ可）
-└── assets/             # 画像等のアセット
+├── assets/             # 画像等のアセット
+└── exports/            # エクスポートされたPPTXファイル
+scripts/
+└── export-pptx.js      # PPTX変換スクリプト（Puppeteer + pptxgenjs）
 ```
 
 ## スライド作成ルール
@@ -100,6 +112,20 @@ slides/index.html の既存スライドを以下の観点で改善してくだ�
 - アニメーションの調整
 - カラーバランスの最適化
 ```
+
+## PowerPointエクスポート
+```bash
+# 依存インストール（初回のみ）
+npm install
+
+# スライドをPowerPointに変換
+npm run export
+
+# カスタム入出力
+node scripts/export-pptx.js --input slides/index.html --output output.pptx
+```
+各スライドを1920x1080でスクリーンショットし、16:9のPPTXに画像として配置する。
+Webで確認したままの見た目がそのままパワポになる。
 
 ## 操作方法
 - `→` `↓` `Space` `PageDown` : 次のスライド

@@ -1,0 +1,3 @@
+node_modules/
+.slide-screenshots/
+slides/exports/*.pptx

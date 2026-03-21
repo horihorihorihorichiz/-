@@ -1,0 +1,13 @@
+{
+  "name": "slides-to-web",
+  "version": "1.0.0",
+  "description": "HTML/CSS/JSでスライドを作成し、PowerPointにエクスポートするシステム",
+  "scripts": {
+    "export": "node scripts/export-pptx.js",
+    "preview": "npx serve slides"
+  },
+  "dependencies": {
+    "puppeteer": "^23.0.0",
+    "pptxgenjs": "^3.12.0"
+  }
+}
