@@ -2,3 +2,4 @@ node_modules/
 .slide-screenshots/
 slides/exports/*.pptx
 slides/exports/*.pdf
+slides/exports/*.png
