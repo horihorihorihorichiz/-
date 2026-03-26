@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>二級建築士 復習システム</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --primary: #1a1a2e;
+  --surface: #16213e;
+  --card: #0f3460;
+  --accent: #e94560;
+  --accent2: #533483;
+  --green: #00b894;
+  --yellow: #fdcb6e;
+  --orange: #e17055;
+  --text: #f0f0f0;
+  --text-dim: #a0a0b0;
+  --radius: 12px;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Hiragino Sans', 'Noto Sans JP', sans-serif;
+  background: var(--primary);
+  color: var(--text);
+  min-height: 100dvh;
+  overflow-x: hidden;
+}
+
+/* ===== NAV TABS ===== */
+.nav {
+  position: fixed; bottom: 0; left: 0; right: 0;
+  display: flex; background: var(--surface);
+  border-top: 1px solid rgba(255,255,255,0.08);
+  z-index: 100;
+  padding-bottom: env(safe-area-inset-bottom);
+}
+.nav button {
+  flex: 1; padding: 10px 4px 8px; border: none; background: none;
+  color: var(--text-dim); font-size: 11px; cursor: pointer;
+  display: flex; flex-direction: column; align-items: center; gap: 3px;
+  transition: color 0.2s;
+}
+.nav button.active { color: var(--accent); }
+.nav button svg { width: 22px; height: 22px; }
+
+/* ===== PAGES ===== */
+.page { display: none; padding: 16px 16px 80px; max-width: 600px; margin: 0 auto; }
+.page.active { display: block; }
+
+h1 { font-size: 20px; margin-bottom: 16px; }
+h2 { font-size: 16px; margin-bottom: 12px; color: var(--text-dim); }
+
+/* ===== DASHBOARD ===== */
+.stats-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px;
+}
+.stat-card {
+  background: var(--surface); border-radius: var(--radius); padding: 16px;
+  text-align: center;
+}
+.stat-card .num { font-size: 32px; font-weight: 700; }
+.stat-card .label { font-size: 12px; color: var(--text-dim); margin-top: 4px; }
+.stat-card.urgent .num { color: var(--accent); }
+.stat-card.due .num { color: var(--yellow); }
+.stat-card.total .num { color: var(--green); }
+.stat-card.mastered .num { color: var(--accent2); }
+
+.review-btn {
+  width: 100%; padding: 16px; border: none; border-radius: var(--radius);
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  color: white; font-size: 18px; font-weight: 700; cursor: pointer;
+  margin-bottom: 20px; transition: transform 0.15s;
+}
+.review-btn:active { transform: scale(0.97); }
+.review-btn:disabled { opacity: 0.4; cursor: default; }
+
+.schedule-list { list-style: none; }
+.schedule-item {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 12px 14px; background: var(--surface); border-radius: 8px;
+  margin-bottom: 8px; font-size: 14px;
+}
+.schedule-item .date { color: var(--text-dim); font-size: 12px; }
+.schedule-item .count {
+  background: var(--card); padding: 2px 10px; border-radius: 20px;
+  font-size: 13px; font-weight: 600;
+}
+
+/* ===== REVIEW MODE ===== */
+.review-header {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 16px;
+}
+.review-progress {
+  height: 4px; background: var(--surface); border-radius: 2px;
+  margin-bottom: 20px; overflow: hidden;
+}
+.review-progress-bar {
+  height: 100%; background: var(--accent); border-radius: 2px;
+  transition: width 0.3s;
+}
+.review-card {
+  background: var(--surface); border-radius: var(--radius); padding: 20px;
+  min-height: 200px; margin-bottom: 16px;
+}
+.review-card .category {
+  display: inline-block; padding: 3px 10px; border-radius: 20px;
+  font-size: 11px; background: var(--card); color: var(--text-dim);
+  margin-bottom: 12px;
+}
+.review-card .question { font-size: 16px; line-height: 1.6; margin-bottom: 16px; }
+.review-card .choices { list-style: none; }
+.review-card .choices li {
+  padding: 12px 14px; background: var(--card); border-radius: 8px;
+  margin-bottom: 8px; cursor: pointer; font-size: 14px; line-height: 1.5;
+  border: 2px solid transparent; transition: all 0.2s;
+}
+.review-card .choices li:active { transform: scale(0.98); }
+.review-card .choices li.selected { border-color: var(--accent); background: rgba(233,69,96,0.15); }
+.review-card .choices li.correct { border-color: var(--green); background: rgba(0,184,148,0.15); }
+.review-card .choices li.wrong { border-color: var(--accent); background: rgba(233,69,96,0.15); }
+
+.explanation {
+  background: rgba(0,184,148,0.08); border-left: 3px solid var(--green);
+  padding: 14px; border-radius: 0 8px 8px 0; margin-top: 16px;
+  font-size: 14px; line-height: 1.6; display: none;
+}
+.explanation.show { display: block; }
+
+.review-actions {
+  display: flex; gap: 10px;
+}
+.review-actions button {
+  flex: 1; padding: 14px; border: none; border-radius: var(--radius);
+  font-size: 15px; font-weight: 600; cursor: pointer; color: white;
+}
+.btn-hard { background: var(--accent); }
+.btn-ok { background: var(--yellow); color: #333; }
+.btn-easy { background: var(--green); }
+.btn-next { background: var(--card); width: 100%; }
+
+/* ===== ADD QUESTION ===== */
+.form-group { margin-bottom: 14px; }
+.form-group label { display: block; font-size: 13px; color: var(--text-dim); margin-bottom: 6px; }
+.form-group input, .form-group textarea, .form-group select {
+  width: 100%; padding: 12px; border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 8px; background: var(--surface); color: var(--text);
+  font-size: 15px; font-family: inherit;
+}
+.form-group textarea { min-height: 80px; resize: vertical; }
+.choice-row { display: flex; gap: 8px; align-items: center; margin-bottom: 6px; }
+.choice-row input[type="text"] { flex: 1; }
+.choice-row input[type="radio"] { accent-color: var(--green); width: 18px; height: 18px; }
+.add-choice-btn {
+  background: none; border: 1px dashed rgba(255,255,255,0.2);
+  border-radius: 8px; padding: 10px; width: 100%; color: var(--text-dim);
+  cursor: pointer; font-size: 14px; margin-bottom: 14px;
+}
+.submit-btn {
+  width: 100%; padding: 14px; border: none; border-radius: var(--radius);
+  background: var(--green); color: white; font-size: 16px; font-weight: 600;
+  cursor: pointer;
+}
+.submit-btn:active { transform: scale(0.97); }
+
+/* ===== QUESTION LIST ===== */
+.filter-bar {
+  display: flex; gap: 6px; margin-bottom: 14px; overflow-x: auto;
+  padding-bottom: 4px;
+}
+.filter-bar button {
+  padding: 6px 14px; border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 20px; background: none; color: var(--text-dim);
+  font-size: 13px; cursor: pointer; white-space: nowrap;
+}
+.filter-bar button.active { background: var(--accent); color: white; border-color: var(--accent); }
+
+.q-item {
+  background: var(--surface); border-radius: 8px; padding: 12px 14px;
+  margin-bottom: 8px; cursor: pointer;
+}
+.q-item .q-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
+.q-item .q-cat { font-size: 11px; color: var(--text-dim); }
+.q-item .q-level {
+  font-size: 11px; padding: 2px 8px; border-radius: 10px;
+}
+.q-item .q-level.lv0 { background: var(--accent); }
+.q-item .q-level.lv1 { background: var(--orange); }
+.q-item .q-level.lv2 { background: var(--yellow); color: #333; }
+.q-item .q-level.lv3 { background: var(--green); }
+.q-item .q-level.lv4 { background: var(--accent2); }
+.q-item .q-text { font-size: 14px; line-height: 1.5; }
+.q-item .q-meta { font-size: 11px; color: var(--text-dim); margin-top: 6px; }
+
+/* Delete button */
+.q-item .q-delete {
+  background: none; border: none; color: var(--accent); font-size: 12px;
+  cursor: pointer; padding: 4px 8px; margin-left: 8px;
+}
+
+/* ===== EMPTY STATE ===== */
+.empty {
+  text-align: center; padding: 40px 20px; color: var(--text-dim);
+}
+.empty svg { width: 60px; height: 60px; margin-bottom: 12px; opacity: 0.3; }
+.empty p { font-size: 14px; line-height: 1.6; }
+
+/* ===== MODAL ===== */
+.modal-bg {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.6);
+  z-index: 200; display: none; align-items: flex-end; justify-content: center;
+}
+.modal-bg.show { display: flex; }
+.modal {
+  background: var(--primary); border-radius: 16px 16px 0 0;
+  width: 100%; max-width: 600px; max-height: 80vh;
+  padding: 20px; overflow-y: auto;
+  padding-bottom: calc(20px + env(safe-area-inset-bottom));
+}
+.modal h3 { margin-bottom: 16px; }
+
+/* ===== REVIEW COMPLETE ===== */
+.complete-card {
+  text-align: center; padding: 40px 20px;
+  background: var(--surface); border-radius: var(--radius);
+}
+.complete-card .big { font-size: 48px; margin-bottom: 12px; }
+.complete-card h2 { font-size: 22px; margin-bottom: 8px; color: var(--text); }
+.complete-card p { color: var(--text-dim); font-size: 14px; margin-bottom: 20px; }
+.complete-card button {
+  padding: 12px 32px; border: none; border-radius: var(--radius);
+  background: var(--accent); color: white; font-size: 15px; cursor: pointer;
+}
+
+/* Bulk add */
+.bulk-area {
+  width: 100%; min-height: 150px; padding: 12px; border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 8px; background: var(--surface); color: var(--text);
+  font-size: 14px; font-family: inherit; resize: vertical; margin-bottom: 10px;
+}
+.tab-buttons { display: flex; gap: 0; margin-bottom: 16px; }
+.tab-buttons button {
+  flex: 1; padding: 10px; border: 1px solid rgba(255,255,255,0.15);
+  background: none; color: var(--text-dim); cursor: pointer; font-size: 14px;
+}
+.tab-buttons button:first-child { border-radius: 8px 0 0 8px; }
+.tab-buttons button:last-child { border-radius: 0 8px 8px 0; }
+.tab-buttons button.active { background: var(--accent); color: white; border-color: var(--accent); }
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+.hint { font-size: 12px; color: var(--text-dim); margin-bottom: 10px; line-height: 1.5; }
+</style>
+</head>
+<body>
+
+<!-- ===== PAGE: DASHBOARD ===== -->
+<div class="page active" id="page-home">
+  <h1>二級建築士 復習</h1>
+  <div class="stats-grid">
+    <div class="stat-card urgent">
+      <div class="num" id="stat-urgent">0</div>
+      <div class="label">今日の復習</div>
+    </div>
+    <div class="stat-card due">
+      <div class="num" id="stat-due">0</div>
+      <div class="label">期限切れ</div>
+    </div>
+    <div class="stat-card total">
+      <div class="num" id="stat-total">0</div>
+      <div class="label">登録問題数</div>
+    </div>
+    <div class="stat-card mastered">
+      <div class="num" id="stat-mastered">0</div>
+      <div class="label">習得済み</div>
+    </div>
+  </div>
+
+  <button class="review-btn" id="start-review" onclick="startReview()">
+    復習を開始する
+  </button>
+
+  <h2>今後のスケジュール</h2>
+  <ul class="schedule-list" id="schedule-list"></ul>
+</div>
+
+<!-- ===== PAGE: REVIEW ===== -->
+<div class="page" id="page-review">
+  <div class="review-header">
+    <span id="review-counter">1 / 10</span>
+    <button style="background:none;border:none;color:var(--text-dim);font-size:14px;cursor:pointer" onclick="endReview()">終了</button>
+  </div>
+  <div class="review-progress"><div class="review-progress-bar" id="review-bar"></div></div>
+
+  <div class="review-card" id="review-card">
+    <div class="category" id="review-cat"></div>
+    <div class="question" id="review-question"></div>
+    <ul class="choices" id="review-choices"></ul>
+    <div class="explanation" id="review-explanation"></div>
+  </div>
+
+  <div class="review-actions" id="review-actions" style="display:none">
+    <button class="btn-hard" onclick="rateQuestion(0)">難しい</button>
+    <button class="btn-ok" onclick="rateQuestion(1)">普通</button>
+    <button class="btn-easy" onclick="rateQuestion(2)">簡単</button>
+  </div>
+</div>
+
+<!-- ===== PAGE: REVIEW COMPLETE ===== -->
+<div class="page" id="page-complete">
+  <div class="complete-card">
+    <div class="big">&#127881;</div>
+    <h2>復習完了！</h2>
+    <p id="complete-summary"></p>
+    <button onclick="showPage('home')">ホームに戻る</button>
+  </div>
+</div>
+
+<!-- ===== PAGE: ADD ===== -->
+<div class="page" id="page-add">
+  <h1>問題を追加</h1>
+
+  <div class="tab-buttons">
+    <button class="active" onclick="switchAddTab('single', this)">1問ずつ</button>
+    <button onclick="switchAddTab('bulk', this)">まとめて追加</button>
+  </div>
+
+  <!-- Single add -->
+  <div class="tab-content active" id="tab-single">
+    <div class="form-group">
+      <label>科目</label>
+      <select id="add-category">
+        <option value="計画">計画</option>
+        <option value="法規">法規</option>
+        <option value="構造">構造</option>
+        <option value="施工">施工</option>
+        <option value="製図">製図</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>問題文</label>
+      <textarea id="add-question" placeholder="問題文を入力..."></textarea>
+    </div>
+    <div class="form-group">
+      <label>選択肢（正解にチェック）</label>
+      <div id="choices-container">
+        <div class="choice-row">
+          <input type="radio" name="correct" value="0" checked>
+          <input type="text" placeholder="選択肢 1">
+        </div>
+        <div class="choice-row">
+          <input type="radio" name="correct" value="1">
+          <input type="text" placeholder="選択肢 2">
+        </div>
+        <div class="choice-row">
+          <input type="radio" name="correct" value="2">
+          <input type="text" placeholder="選択肢 3">
+        </div>
+        <div class="choice-row">
+          <input type="radio" name="correct" value="3">
+          <input type="text" placeholder="選択肢 4">
+        </div>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>解説（任意）</label>
+      <textarea id="add-explanation" placeholder="解説を入力..."></textarea>
+    </div>
+    <button class="submit-btn" onclick="addSingleQuestion()">追加する</button>
+  </div>
+
+  <!-- Bulk add -->
+  <div class="tab-content" id="tab-bulk">
+    <div class="hint">
+      以下の形式で問題を貼り付けてください：<br>
+      ---<br>
+      科目: 法規<br>
+      問題: 問題文をここに<br>
+      A: 選択肢1<br>
+      B: 選択肢2<br>
+      C: 選択肢3<br>
+      D: 選択肢4<br>
+      正解: B<br>
+      解説: 解説文をここに<br>
+      ---<br>
+      （複数問を --- で区切る）
+    </div>
+    <textarea class="bulk-area" id="bulk-input" placeholder="ここに問題を貼り付け..."></textarea>
+    <button class="submit-btn" onclick="addBulkQuestions()">まとめて追加</button>
+  </div>
+</div>
+
+<!-- ===== PAGE: LIST ===== -->
+<div class="page" id="page-list">
+  <h1>問題一覧</h1>
+  <div class="filter-bar" id="filter-bar">
+    <button class="active" onclick="filterQuestions('all', this)">すべて</button>
+    <button onclick="filterQuestions('計画', this)">計画</button>
+    <button onclick="filterQuestions('法規', this)">法規</button>
+    <button onclick="filterQuestions('構造', this)">構造</button>
+    <button onclick="filterQuestions('施工', this)">施工</button>
+    <button onclick="filterQuestions('製図', this)">製図</button>
+  </div>
+  <div id="question-list"></div>
+</div>
+
+<!-- ===== NAV ===== -->
+<div class="nav">
+  <button class="active" onclick="showPage('home')" id="nav-home">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12l9-9 9 9"/><path d="M5 10v10a1 1 0 001 1h3m10-11v10a1 1 0 01-1 1h-3m-6 0a1 1 0 01-1-1v-4a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1"/></svg>
+    ホーム
+  </button>
+  <button onclick="showPage('add')" id="nav-add">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+    追加
+  </button>
+  <button onclick="showPage('list')" id="nav-list">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+    一覧
+  </button>
+</div>
+
+<!-- ===== DETAIL MODAL ===== -->
+<div class="modal-bg" id="detail-modal" onclick="if(event.target===this)this.classList.remove('show')">
+  <div class="modal" id="detail-content"></div>
+</div>
+
+<script>
+// ===== DATA STORE =====
+const STORAGE_KEY = 'kenchiku2_questions';
+const INTERVALS = [1, 3, 7, 14, 30, 60]; // 忘却曲線に基づく復習間隔（日）
+
+function loadQuestions() {
+  try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; }
+  catch { return []; }
+}
+function saveQuestions(qs) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(qs));
+}
+
+function today() {
+  return new Date().toISOString().slice(0, 10);
+}
+function addDays(dateStr, days) {
+  const d = new Date(dateStr);
+  d.setDate(d.getDate() + days);
+  return d.toISOString().slice(0, 10);
+}
+function daysDiff(a, b) {
+  return Math.round((new Date(a) - new Date(b)) / 86400000);
+}
+
+// ===== NAVIGATION =====
+function showPage(name) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav button').forEach(b => b.classList.remove('active'));
+  document.getElementById('page-' + name).classList.add('active');
+  const navBtn = document.getElementById('nav-' + name);
+  if (navBtn) navBtn.classList.add('active');
+
+  if (name === 'home') updateDashboard();
+  if (name === 'list') renderQuestionList();
+  window.scrollTo(0, 0);
+}
+
+// ===== DASHBOARD =====
+function updateDashboard() {
+  const qs = loadQuestions();
+  const t = today();
+  const due = qs.filter(q => q.nextReview <= t);
+  const mastered = qs.filter(q => q.level >= INTERVALS.length);
+
+  document.getElementById('stat-urgent').textContent = due.length;
+  document.getElementById('stat-due').textContent = due.filter(q => daysDiff(t, q.nextReview) > 0).length;
+  document.getElementById('stat-total').textContent = qs.length;
+  document.getElementById('stat-mastered').textContent = mastered.length;
+
+  const btn = document.getElementById('start-review');
+  if (due.length === 0) {
+    btn.textContent = '復習する問題はありません';
+    btn.disabled = true;
+  } else {
+    btn.textContent = `${due.length} 問を復習する`;
+    btn.disabled = false;
+  }
+
+  // Schedule
+  const schedule = {};
+  qs.forEach(q => {
+    if (q.nextReview > t) {
+      if (!schedule[q.nextReview]) schedule[q.nextReview] = 0;
+      schedule[q.nextReview]++;
+    }
+  });
+  const scheduleEl = document.getElementById('schedule-list');
+  const dates = Object.keys(schedule).sort().slice(0, 7);
+  if (dates.length === 0) {
+    scheduleEl.innerHTML = '<div class="empty"><p>スケジュールなし</p></div>';
+  } else {
+    scheduleEl.innerHTML = dates.map(d => {
+      const diff = daysDiff(d, t);
+      const label = diff === 1 ? '明日' : diff === 2 ? '明後日' : `${diff}日後`;
+      return `<li class="schedule-item"><span>${d} (${label})</span><span class="count">${schedule[d]}問</span></li>`;
+    }).join('');
+  }
+}
+
+// ===== REVIEW =====
+let reviewQueue = [];
+let reviewIndex = 0;
+let reviewResults = { hard: 0, ok: 0, easy: 0 };
+let answered = false;
+
+function startReview() {
+  const qs = loadQuestions();
+  const t = today();
+  reviewQueue = qs.filter(q => q.nextReview <= t).sort(() => Math.random() - 0.5);
+  if (reviewQueue.length === 0) return;
+  reviewIndex = 0;
+  reviewResults = { hard: 0, ok: 0, easy: 0 };
+  showPage('review');
+  showReviewQuestion();
+}
+
+function showReviewQuestion() {
+  if (reviewIndex >= reviewQueue.length) {
+    showReviewComplete();
+    return;
+  }
+  answered = false;
+  const q = reviewQueue[reviewIndex];
+  document.getElementById('review-counter').textContent = `${reviewIndex + 1} / ${reviewQueue.length}`;
+  document.getElementById('review-bar').style.width = `${(reviewIndex / reviewQueue.length) * 100}%`;
+  document.getElementById('review-cat').textContent = q.category;
+  document.getElementById('review-question').textContent = q.question;
+  document.getElementById('review-explanation').classList.remove('show');
+  document.getElementById('review-explanation').textContent = q.explanation || '';
+  document.getElementById('review-actions').style.display = 'none';
+
+  const choicesEl = document.getElementById('review-choices');
+  choicesEl.innerHTML = q.choices.map((c, i) =>
+    `<li onclick="selectChoice(${i}, ${q.correct})">${c}</li>`
+  ).join('');
+}
+
+function selectChoice(idx, correct) {
+  if (answered) return;
+  answered = true;
+  const items = document.querySelectorAll('#review-choices li');
+  items[correct].classList.add('correct');
+  if (idx !== correct) items[idx].classList.add('wrong');
+
+  if (document.getElementById('review-explanation').textContent) {
+    document.getElementById('review-explanation').classList.add('show');
+  }
+  document.getElementById('review-actions').style.display = 'flex';
+}
+
+function rateQuestion(rating) {
+  // 0=hard, 1=ok, 2=easy
+  const q = reviewQueue[reviewIndex];
+  const qs = loadQuestions();
+  const target = qs.find(x => x.id === q.id);
+
+  if (target) {
+    if (rating === 0) {
+      // 難しい → レベルを下げて翌日復習
+      target.level = Math.max(0, target.level - 1);
+      target.nextReview = addDays(today(), 1);
+      reviewResults.hard++;
+    } else if (rating === 1) {
+      // 普通 → 現レベルの間隔で復習
+      target.nextReview = addDays(today(), INTERVALS[Math.min(target.level, INTERVALS.length - 1)]);
+      target.level = Math.min(target.level + 1, INTERVALS.length);
+      reviewResults.ok++;
+    } else {
+      // 簡単 → 1段飛ばし
+      target.level = Math.min(target.level + 2, INTERVALS.length);
+      target.nextReview = addDays(today(), INTERVALS[Math.min(target.level, INTERVALS.length - 1)] || 90);
+      reviewResults.easy++;
+    }
+    target.lastReview = today();
+    target.reviewCount = (target.reviewCount || 0) + 1;
+    saveQuestions(qs);
+  }
+
+  reviewIndex++;
+  showReviewQuestion();
+}
+
+function showReviewComplete() {
+  const total = reviewResults.hard + reviewResults.ok + reviewResults.easy;
+  document.getElementById('complete-summary').textContent =
+    `${total}問完了 — 難しい: ${reviewResults.hard} / 普通: ${reviewResults.ok} / 簡単: ${reviewResults.easy}`;
+  showPage('complete');
+}
+
+function endReview() {
+  showPage('home');
+}
+
+// ===== ADD QUESTION =====
+function switchAddTab(tab, btn) {
+  document.querySelectorAll('.tab-buttons button').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('tab-' + tab).classList.add('active');
+}
+
+function addSingleQuestion() {
+  const category = document.getElementById('add-category').value;
+  const question = document.getElementById('add-question').value.trim();
+  if (!question) { alert('問題文を入力してください'); return; }
+
+  const choiceInputs = document.querySelectorAll('#choices-container .choice-row input[type="text"]');
+  const choices = Array.from(choiceInputs).map(i => i.value.trim()).filter(Boolean);
+  if (choices.length < 2) { alert('選択肢を2つ以上入力してください'); return; }
+
+  const correctRadio = document.querySelector('input[name="correct"]:checked');
+  const correct = parseInt(correctRadio.value);
+  const explanation = document.getElementById('add-explanation').value.trim();
+
+  const qs = loadQuestions();
+  qs.push({
+    id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
+    category, question, choices, correct, explanation,
+    level: 0,
+    nextReview: today(),
+    lastReview: null,
+    reviewCount: 0,
+    createdAt: today()
+  });
+  saveQuestions(qs);
+
+  // Reset form
+  document.getElementById('add-question').value = '';
+  document.getElementById('add-explanation').value = '';
+  choiceInputs.forEach(i => i.value = '');
+  document.querySelector('input[name="correct"][value="0"]').checked = true;
+
+  alert(`追加しました（合計 ${qs.length} 問）`);
+}
+
+function addBulkQuestions() {
+  const text = document.getElementById('bulk-input').value.trim();
+  if (!text) return;
+
+  const blocks = text.split('---').filter(b => b.trim());
+  const qs = loadQuestions();
+  let count = 0;
+
+  blocks.forEach(block => {
+    const lines = block.trim().split('\n');
+    const data = {};
+    lines.forEach(line => {
+      const m = line.match(/^(科目|問題|A|B|C|D|正解|解説)\s*[:：]\s*(.+)/);
+      if (m) data[m[1]] = m[2].trim();
+    });
+
+    if (data['問題']) {
+      const choices = [data['A'], data['B'], data['C'], data['D']].filter(Boolean);
+      const answerMap = { A: 0, B: 1, C: 2, D: 3 };
+      const correct = answerMap[data['正解']] ?? 0;
+
+      qs.push({
+        id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6) + count,
+        category: data['科目'] || '計画',
+        question: data['問題'],
+        choices: choices.length ? choices : ['（選択肢なし）'],
+        correct,
+        explanation: data['解説'] || '',
+        level: 0,
+        nextReview: today(),
+        lastReview: null,
+        reviewCount: 0,
+        createdAt: today()
+      });
+      count++;
+    }
+  });
+
+  saveQuestions(qs);
+  document.getElementById('bulk-input').value = '';
+  alert(`${count} 問追加しました（合計 ${qs.length} 問）`);
+}
+
+// ===== QUESTION LIST =====
+let currentFilter = 'all';
+
+function filterQuestions(cat, btn) {
+  currentFilter = cat;
+  document.querySelectorAll('.filter-bar button').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderQuestionList();
+}
+
+function renderQuestionList() {
+  const qs = loadQuestions();
+  const filtered = currentFilter === 'all' ? qs : qs.filter(q => q.category === currentFilter);
+  const container = document.getElementById('question-list');
+
+  if (filtered.length === 0) {
+    container.innerHTML = '<div class="empty"><p>問題がありません</p></div>';
+    return;
+  }
+
+  const levelLabels = ['新規', 'Lv.1', 'Lv.2', 'Lv.3', 'Lv.4', '習得'];
+  container.innerHTML = filtered.map(q => {
+    const lv = Math.min(q.level, 5);
+    const lvClass = 'lv' + Math.min(q.level, 4);
+    return `<div class="q-item" onclick="showDetail('${q.id}')">
+      <div class="q-top">
+        <span class="q-cat">${q.category}</span>
+        <span>
+          <span class="q-level ${lvClass}">${levelLabels[lv]}</span>
+          <button class="q-delete" onclick="event.stopPropagation();deleteQuestion('${q.id}')">削除</button>
+        </span>
+      </div>
+      <div class="q-text">${q.question.slice(0, 60)}${q.question.length > 60 ? '...' : ''}</div>
+      <div class="q-meta">次の復習: ${q.nextReview} / 復習回数: ${q.reviewCount || 0}</div>
+    </div>`;
+  }).join('');
+}
+
+function showDetail(id) {
+  const qs = loadQuestions();
+  const q = qs.find(x => x.id === id);
+  if (!q) return;
+
+  const modal = document.getElementById('detail-modal');
+  const content = document.getElementById('detail-content');
+  content.innerHTML = `
+    <h3>${q.category}</h3>
+    <p style="margin-bottom:16px;line-height:1.6">${q.question}</p>
+    <ul style="list-style:none;margin-bottom:16px">
+      ${q.choices.map((c, i) => `<li style="padding:8px 12px;margin-bottom:4px;border-radius:6px;${i === q.correct ? 'background:rgba(0,184,148,0.15);border-left:3px solid var(--green)' : 'background:var(--surface)'}">${c}${i === q.correct ? ' ✓' : ''}</li>`).join('')}
+    </ul>
+    ${q.explanation ? `<div style="background:rgba(0,184,148,0.08);padding:12px;border-radius:8px;font-size:14px;line-height:1.6"><strong>解説:</strong> ${q.explanation}</div>` : ''}
+    <div style="margin-top:16px;font-size:12px;color:var(--text-dim)">
+      レベル: ${q.level} / 復習回数: ${q.reviewCount || 0} / 次の復習: ${q.nextReview}
+    </div>
+  `;
+  modal.classList.add('show');
+}
+
+function deleteQuestion(id) {
+  if (!confirm('この問題を削除しますか？')) return;
+  const qs = loadQuestions().filter(q => q.id !== id);
+  saveQuestions(qs);
+  renderQuestionList();
+  updateDashboard();
+}
+
+// ===== INIT =====
+updateDashboard();
+</script>
+</body>
+</html>
