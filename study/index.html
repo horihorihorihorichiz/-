@@ -753,7 +753,90 @@ function deleteQuestion(id) {
   updateDashboard();
 }
 
+// ===== INITIAL DATA (間違えた問題) =====
+function loadInitialData() {
+  const qs = loadQuestions();
+  if (qs.some(q => q.id && q.id.startsWith('init_'))) return; // already loaded
+
+  const initial = [
+    {
+      id: 'init_001',
+      category: '構造',
+      question: 'せっこうボードの特性として、最も不適当なものはどれか。',
+      choices: [
+        '防火性・耐火性に優れている',
+        '遮音性に優れている',
+        '耐水性・耐衝撃性に優れている',
+        '内壁・天井の下地材として用いられる'
+      ],
+      correct: 2,
+      explanation: 'せっこうボードは防火性・耐火性・遮音性に優れるが、耐水性・耐衝撃性には劣る。火災時にせっこうに含まれる結晶水が分解されるまで温度上昇を防ぐ。（平成29年 問25）',
+      level: 0, nextReview: today(), lastReview: null, reviewCount: 0, createdAt: today()
+    },
+    {
+      id: 'init_002',
+      category: '構造',
+      question: 'ALC（軽量気泡コンクリート）パネルの特性として、正しいものはどれか。',
+      choices: [
+        '耐火性に優れるが断熱性に劣る',
+        '耐火性・断熱性ともに優れる',
+        '断熱性に優れるが耐火性に劣る',
+        '耐水性・耐衝撃性に優れる'
+      ],
+      correct: 1,
+      explanation: 'ALCは原料を発泡させて高温高圧蒸気養生した軽量気泡コンクリート。1mm程度の独立気泡を多く含むので、耐火性・断熱性ともに優れる。（平成29年 問25）',
+      level: 0, nextReview: today(), lastReview: null, reviewCount: 0, createdAt: today()
+    },
+    {
+      id: 'init_003',
+      category: '構造',
+      question: 'RC造の耐震診断について、正しいものはどれか。',
+      choices: [
+        '第1次診断法は柱・壁の強度と変形能力を考慮する',
+        '第2次診断法は壁量が多い建物を簡易的に評価する',
+        '第3次診断法は柱、壁に加え、梁の強さと変形能力なども考慮する詳細な診断である',
+        '次数が上がるほど精度は下がるが簡易になる'
+      ],
+      correct: 2,
+      explanation: '耐震診断には第1〜3次診断まであり、次数が上がるほど精度が上がる。第1次：壁量が多い建物を簡易的に評価。第2次：柱・壁の強度と変形能力を考慮。第3次：柱・壁に加え、梁の強さと変形能力なども考慮する詳細な診断。（平成28年 問19）',
+      level: 0, nextReview: today(), lastReview: null, reviewCount: 0, createdAt: today()
+    },
+    {
+      id: 'init_004',
+      category: '構造',
+      question: '珪藻土（けいそうど）を素材とした左官材料の特性として、最も不適当なものはどれか。',
+      choices: [
+        '軽量である',
+        '耐火性に優れている',
+        '断熱性に優れている',
+        '耐水性に優れている'
+      ],
+      correct: 3,
+      explanation: '珪藻土は藻類の一種である珪藻の殻の化石を主成分とする土。軽量で耐火性及び断熱性に優れているが、耐水性には特に優れない。（令和6年 問24）',
+      level: 0, nextReview: today(), lastReview: null, reviewCount: 0, createdAt: today()
+    },
+    {
+      id: 'init_005',
+      category: '構造',
+      question: '花こう岩の特性として、最も不適当なものはどれか。',
+      choices: [
+        '強度が大きく耐候性があるので外装材として用いられる',
+        '耐摩耗性が高い',
+        '高温でも火害を受けにくいので耐火被覆材として用いられる',
+        '耐火性に劣る'
+      ],
+      correct: 2,
+      explanation: '花こう岩は強度が大きく耐候性があるので外装材として用いられ、耐摩耗性も高い。ただし耐火性に劣るため、「高温でも火害を受けにくい」は誤り。耐火被覆材としては用いられない。（令和6年 問24）',
+      level: 0, nextReview: today(), lastReview: null, reviewCount: 0, createdAt: today()
+    }
+  ];
+
+  initial.forEach(q => qs.push(q));
+  saveQuestions(qs);
+}
+
 // ===== INIT =====
+loadInitialData();
 updateDashboard();
 </script>
 </body>
