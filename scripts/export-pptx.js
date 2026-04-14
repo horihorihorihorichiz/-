@@ -49,7 +49,26 @@ async function main() {
 
   const page = await browser.newPage();
   await page.setViewport({ width: SLIDE_WIDTH, height: SLIDE_HEIGHT });
-  await page.goto(`file://${inputFile}`, { waitUntil: 'networkidle0' });
+
+  // Intercept slow/blocking external font requests so navigation can settle
+  // quickly in sandboxed environments. The page still has local CSS + JS,
+  // and system fallback fonts render fine for the screenshot.
+  await page.setRequestInterception(true);
+  page.on('request', (req) => {
+    const url = req.url();
+    if (/fonts\.googleapis\.com|fonts\.gstatic\.com/.test(url)) {
+      req.abort();
+    } else {
+      req.continue();
+    }
+  });
+
+  await page.goto(`file://${inputFile}`, { waitUntil: 'load', timeout: 60000 });
+  try {
+    await page.waitForFunction(() => document.fonts && document.fonts.status === 'loaded', { timeout: 5000 });
+  } catch (_) {
+    // Fonts didn't report ready in time; proceed anyway.
+  }
 
   // Get total number of slides
   const totalSlides = await page.evaluate(() => {
