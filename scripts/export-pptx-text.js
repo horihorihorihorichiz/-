@@ -14,8 +14,8 @@ const fs        = require('fs');
 // ── Palette ───────────────────────────────────────────────
 const PAPER  = 'f1ede4';
 const INK    = '17140f';
-const MUTED  = '8b8578';
-const BODY   = '2b251e';
+const MUTED  = '6b6560';
+const BODY   = INK;  // 本文もインク色に統一（薄さ解消）
 
 // ── Slide dimensions: LAYOUT_WIDE = 13.33 × 7.5 inch ──────
 const W = 13.33;
@@ -201,29 +201,30 @@ function T(s, text, x, y, w, h, opts = {}) {
   const TLX = PX;
   const TLW = 5.8;
   const TLY = TOP + 1.1;
-  const TRH = 1.0;
+  const TRH = 1.15;
 
   T(s, '木造建築のマイルストーン',
     TLX, TLY - 0.28, TLW, 0.25, { fontSize: 11, color: MUTED, charSpacing: 0.4 });
   hLine(s, TLX, TLY, TLW);
 
   const tl = [
-    { y: '2019', b: 'CLT基準法改正',   t: '直交集成板が一般的な構造材料として\n基準法に位置づけ。',  f: false },
-    { y: '2022', b: '木材利用促進法',   t: '公共だけでなく民間建築物にも\n木材利用を拡大。',        f: false },
-    { y: '2025', b: '中高層木造の増加', t: '10階以上の木造ビルが国内で\n複数竣工。',                f: false },
-    { y: '2030', b: '木造比率目標',     t: '新築の木造比率\n40% → 55% へ。',                       f: true  },
+    { y: '2019', b: 'CLT基準法改正',   t: '直交集成板が一般的な構造材料として基準法に位置づけ。', f: false },
+    { y: '2022', b: '木材利用促進法',   t: '公共だけでなく民間建築物にも木材利用を拡大。',        f: false },
+    { y: '2025', b: '中高層木造の増加', t: '10階以上の木造ビルが国内で複数竣工。',                f: false },
+    { y: '2030', b: '木造比率目標',     t: '新築の木造比率 40% → 55% へ。',                      f: true  },
   ];
   tl.forEach((e, i) => {
     const ry = TLY + TRH * i;
     const c = e.f ? MUTED : INK;
-    T(s, e.y, TLX, ry + 0.08, 1.0, 0.6,
-      { fontSize: 24, italic: true, color: c });
-    T(s, [
-      { text: e.b, options: { bold: true, fontSize: 15, color: c } },
-      { text: '\n', options: {} },
-      { text: e.t, options: { fontSize: 14, color: e.f ? MUTED : BODY } },
-    ], TLX + 1.1, ry + 0.08, TLW - 1.2, TRH - 0.1,
-      { fontSize: 14, lineSpacingMultiple: 1.7 });
+    // Year
+    T(s, e.y, TLX, ry + 0.10, 1.0, 0.5,
+      { fontSize: 22, italic: true, color: c });
+    // Bold title (separate box)
+    T(s, e.b, TLX + 1.1, ry + 0.10, TLW - 1.2, 0.35,
+      { fontSize: 15, bold: true, color: c });
+    // Body text (separate box, below title)
+    T(s, e.t, TLX + 1.1, ry + 0.48, TLW - 1.2, 0.58,
+      { fontSize: 13, color: e.f ? MUTED : INK, lineSpacingMultiple: 1.5 });
     hLine(s, TLX, ry + TRH, TLW);
   });
 
@@ -253,22 +254,25 @@ function T(s, text, x, y, w, h, opts = {}) {
   const SW  = CW / 3;
   const SY  = TOP + 1.1;
   const stats = [
-    { n: '−40', u: '%', h3: '設計期間',      p: '法規チェック、構造計算、\nドキュメント生成。\n手仕事の大半が自動化される。' },
-    { n: '−25', u: '%', h3: '施工コスト',     p: 'BIMデータから自動積算、\n工程最適化。\n見積の透明度が一段上がる。' },
-    { n: '+60', u: '%', h3: '維持管理の精度', p: 'IoTセンサー × AI予測により、\n建物は「使われながら学習する」\n対象に。' },
+    { n: '−40', u: '%', h3: '設計期間',      p: '法規チェック、構造計算、ドキュメント生成。手仕事の大半が自動化される。' },
+    { n: '−25', u: '%', h3: '施工コスト',     p: 'BIMデータから自動積算、工程最適化。見積の透明度が一段上がる。' },
+    { n: '+60', u: '%', h3: '維持管理の精度', p: 'IoTセンサー × AI予測により、建物は「使われながら学習する」対象に。' },
   ];
   stats.forEach((st, i) => {
     const sx = PX + SW * i;
     const sw = SW - 0.15;
     hLine(s, sx, SY, sw, true);
+    // Big number (separate box)
     T(s, [
-      { text: st.n, options: { fontSize: 72, bold: true, color: INK } },
-      { text: st.u, options: { fontSize: 28, italic: true, color: MUTED } },
-    ], sx, SY + 0.06, sw, 1.5, { fontSize: 72 });
-    T(s, st.h3, sx, SY + 1.65, sw, 0.45,
-      { fontSize: 18, bold: true, color: INK });
-    T(s, st.p, sx, SY + 2.15, sw, 1.8,
-      { fontSize: 14, color: BODY, lineSpacingMultiple: 1.75 });
+      { text: st.n, options: { fontSize: 64, bold: true, color: INK } },
+      { text: st.u, options: { fontSize: 24, italic: true, color: MUTED } },
+    ], sx, SY + 0.06, sw, 1.3, { fontSize: 64 });
+    // Label (separate box)
+    T(s, st.h3, sx, SY + 1.45, sw, 0.4,
+      { fontSize: 17, bold: true, color: INK });
+    // Body (separate box, natural wrap)
+    T(s, st.p, sx, SY + 1.9, sw, 1.6,
+      { fontSize: 14, color: INK, lineSpacingMultiple: 1.7 });
   });
 
   // Footer
