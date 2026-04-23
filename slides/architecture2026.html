@@ -236,6 +236,10 @@
     .slide--title h1{color:var(--ink);}
     h1,h2,h3{color:var(--ink);}
     .highlight-box{background:transparent;border:none;padding:0;}
+
+    /* neutralize default.css rules that bleed accent color */
+    .slide--content h2{border-bottom:none;margin-bottom:0;padding-bottom:0;display:block;}
+    .slide-progress{background:var(--ink);opacity:0.15;height:2px;}
   </style>
 </head>
 <body>
