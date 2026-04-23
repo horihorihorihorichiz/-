@@ -15,6 +15,8 @@ const puppeteer = require('puppeteer');
 const PptxGenJS = require('pptxgenjs');
 const path = require('path');
 const fs = require('fs');
+const http = require('http');
+const url = require('url');
 
 const SLIDE_WIDTH = 1920;
 const SLIDE_HEIGHT = 1080;
@@ -41,6 +43,25 @@ async function main() {
   console.log(`   Input:  ${inputFile}`);
   console.log(`   Output: ${outputFile}`);
 
+  // Start a local HTTP server so Google Fonts (and other external resources)
+  // can load. file:// URLs block cross-origin requests.
+  const serveRoot = path.dirname(inputFile);
+  const server = http.createServer((req, res) => {
+    const filePath = path.join(serveRoot, url.parse(req.url).pathname);
+    fs.readFile(filePath, (err, data) => {
+      if (err) { res.writeHead(404); res.end(); return; }
+      const ext = path.extname(filePath).toLowerCase();
+      const types = { '.html':'text/html', '.css':'text/css', '.js':'application/javascript',
+                      '.png':'image/png', '.jpg':'image/jpeg', '.svg':'image/svg+xml' };
+      res.writeHead(200, { 'Content-Type': types[ext] || 'application/octet-stream' });
+      res.end(data);
+    });
+  });
+  await new Promise(r => server.listen(0, '127.0.0.1', r));
+  const port = server.address().port;
+  const htmlFile = path.basename(inputFile);
+  const pageUrl = `http://127.0.0.1:${port}/${htmlFile}`;
+
   // Launch browser
   const browser = await puppeteer.launch({
     headless: 'new',
@@ -50,32 +71,17 @@ async function main() {
   const page = await browser.newPage();
   await page.setViewport({ width: SLIDE_WIDTH, height: SLIDE_HEIGHT });
 
-  // In sandboxed / remote Claude Code environments external font requests
-  // (Google Fonts) sometimes never settle and make networkidle hang.
-  // Abort those requests only in that case so navigation completes quickly.
-  if (process.env.CLAUDE_CODE_REMOTE === 'true') {
-    await page.setRequestInterception(true);
-    page.on('request', (req) => {
-      const url = req.url();
-      if (/fonts\.googleapis\.com|fonts\.gstatic\.com/.test(url)) {
-        req.abort();
-      } else {
-        req.continue();
-      }
-    });
-  }
-
-  await page.goto(`file://${inputFile}`, { waitUntil: 'load', timeout: 60000 });
+  await page.goto(pageUrl, { waitUntil: 'networkidle0', timeout: 60000 });
+  // Wait for web fonts to finish loading
   try {
     await page.waitForFunction(
       () => document.fonts && document.fonts.status === 'loaded',
-      { timeout: 10000 }
+      { timeout: 15000 }
     );
   } catch (_) {
-    // Fonts didn't report ready in time; proceed anyway.
+    // proceed if fonts timeout
   }
-  // Small settle buffer for final layout.
-  await new Promise(r => setTimeout(r, 300));
+  await new Promise(r => setTimeout(r, 500));
 
   // Get total number of slides
   const totalSlides = await page.evaluate(() => {
@@ -107,6 +113,7 @@ async function main() {
   }
 
   await browser.close();
+  server.close();
 
   // Build PowerPoint
   console.log('\n📦 Building PowerPoint...');
