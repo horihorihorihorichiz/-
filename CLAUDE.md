@@ -135,3 +135,64 @@ Webで確認したままの見た目がそのままパワポになる。
 - 画面右半分クリック : 次 / 左半分クリック : 前
 - スワイプ対応（タッチデバイス）
 - `#slide-N` のURLハッシュで直接アクセス可能
+
+---
+
+## 編集可能PPTXの作成（export-pptx-text.js）
+
+### ワークフロー
+```
+HTML/CSSで見た目を完成・承認 → scripts/export-pptx-text.js でテキスト版PPTXに変換
+```
+画像PPTXと異なり、PowerPoint上でテキスト編集が可能になる。
+
+### pptxgenjs 注意ポイント
+
+#### 1. 游明朝のフォントウェイト
+- デフォルト（bold なし）= Light体（極細、用紙背景では読めない）
+- `bold: true` = Demibold（通常の読みやすさ）
+- **見出しだけでなく本文・注釈・数字すべてに `bold: true` を付ける**
+
+#### 2. 縦中央揃え（テーブル状レイアウト）
+- テキストボックスの高さを行高まるごと取る（`y=ry`, `h=TRH`）
+- `valign: 'middle'` を指定する
+- ❌ 小さなボックスに offset を足すのはNG（PowerPoint内部パディングとズレる）
+
+#### 3. タイトル＋本文は1つのボックスにまとめる
+```javascript
+T(s, [
+  { text: title, options: { bold: true, fontSize: 15, breakLine: true } },
+  { text: body,  options: { bold: true, fontSize: 13 } },
+], x, ry, w, TRH, { valign: 'middle', lineSpacingMultiple: 1.5 });
+```
+- 別ボックスに分けると overflow しやすく位置合わせも難しい
+- `breakLine: true` で改行、`lineSpacingMultiple` で行間調整
+
+#### 4. 寸法はインチ直接指定、ピクセル変換は使わない
+- `px * W / 1920` の変換は日本語フォントの実測幅と合わない
+- PowerPoint向けは `W=13.33`, `H=7.50`（LAYOUT_WIDE）を基準に実寸インチ値を直接決める
+
+#### 5. テキストボックス幅は余裕を持たせる
+- 日本語文字は欧文より幅広。内部パディング分も加味して広めに取る
+- 特に数字2桁（「01」等）: 見た目0.4"でも `w=1.1"` 必要
+
+#### 6. default.css の汚染に注意
+カスタムスライドHTMLで必ず打ち消すべきスタイル:
+```css
+/* default.css の h2 border-bottom を無効化 */
+.slide--content h2 { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+/* engine.js が作る .slide-progress のアクセントカラーを上書き */
+.slide-progress { background: var(--ink); opacity: 0.15; height: 2px; }
+```
+
+#### 7. エクスポートはHTTPサーバー経由
+- `file://` だとGoogle Fontsが読み込めず文字化け
+- `export-pptx.js` は `http.createServer` で一時サーバーを立てて `page.goto('http://127.0.0.1:PORT/...')` を使う（実装済み）
+
+#### 8. PPTXのGit共有
+`.gitignore` に `*.pptx` が含まれる場合は強制追加:
+```bash
+git add -f slides/exports/presentation.pptx
+git commit -m "Add PPTX export"
+git push
+```
