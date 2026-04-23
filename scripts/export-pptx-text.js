@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 /**
- * 建築トレンド 2026 — テキスト編集可能 PPTX エクスポーター
- * 画像貼り付けではなく pptxgenjs でテキスト・図形を直接配置する。
+ * 建築トレンド 2026 — テキスト編集可能 PPTX
+ * pptxgenjsでテキスト・図形を直接配置する（画像なし）。
+ * フォント: 游明朝 統一
  *
  * Usage: node scripts/export-pptx-text.js [--output path/to/out.pptx]
  */
@@ -11,423 +12,322 @@ const path      = require('path');
 const fs        = require('fs');
 
 // ── Palette ───────────────────────────────────────────────
-const PAPER = 'f1ede4';
-const INK   = '17140f';
-const MUTED = '8b8578';
-const BODY  = '2b251e';
+const PAPER  = 'f1ede4';
+const INK    = '17140f';
+const MUTED  = '8b8578';
+const BODY   = '2b251e';
 
-// ── Slide dimensions (LAYOUT_WIDE = 13.33 × 7.5 inch) ─────
+// ── Slide dimensions: LAYOUT_WIDE = 13.33 × 7.5 inch ──────
 const W = 13.33;
 const H = 7.50;
-const ix  = (n) => +(n * W / 1920).toFixed(4);   // px → x-inch
-const iy  = (n) => +(n * H / 1080).toFixed(4);   // px → y-inch
-const fpt = (n) => +(n * H / 1080 * 72).toFixed(1); // px → pt
 
-// ── Layout constants ──────────────────────────────────────
-const PADX  = ix(120);
-const PADY  = iy(96);
-const BTOP  = iy(120);   // body top
-const CW    = +(W - 2 * PADX).toFixed(4); // 11.664"
+// ── Layout ─────────────────────────────────────────────────
+const PX  = 1.0;    // padding x
+const PY  = 0.65;   // padding y
+const CW  = W - 2 * PX;  // 11.33"
+const TOP = 1.0;    // body top
 
-// ── Fonts ────────────────────────────────────────────────
-const SERIF = '游明朝';
-const SANS  = '游明朝'; // 全スライド游明朝に統一
+// ── Font ───────────────────────────────────────────────────
+const F = '游明朝';
 
-// ── pptxgenjs ────────────────────────────────────────────
+// ── pptxgenjs ──────────────────────────────────────────────
 const pptx = new PptxGenJS();
 pptx.layout = 'LAYOUT_WIDE';
 
-// ── Helpers ───────────────────────────────────────────────
+// ── Helpers ────────────────────────────────────────────────
 
-function bg(slide) {
-  slide.background = { fill: PAPER };
-}
+function bg(s) { s.background = { fill: PAPER }; }
 
-// Horizontal rule (thin/thick)
-function hRule(slide, x, y, w = CW, thick = false) {
-  slide.addShape('rect', {
-    x, y, w, h: thick ? 0.040 : 0.015,
-    fill: { color: INK },
-    line: { type: 'none' },
+// Horizontal rule (thin line using rect)
+function hLine(s, x, y, w = CW, thick = false) {
+  s.addShape('rect', {
+    x, y, w, h: thick ? 0.038 : 0.012,
+    fill: { color: INK }, line: { type: 'none' },
   });
 }
 
-// Unfilled circle ring
-function ring(slide, cx, cy, r) {
-  slide.addShape('ellipse', {
+// Unfilled circle
+function ring(s, cx, cy, r) {
+  s.addShape('ellipse', {
     x: cx - r, y: cy - r, w: r * 2, h: r * 2,
     fill: { type: 'none' },
-    line: { color: INK, width: 1.5 },
+    line: { color: INK, width: 1.2 },
   });
 }
 
-// ── SLIDE 1: Cover ────────────────────────────────────────
+// Shorthand addText
+function T(s, text, x, y, w, h, opts = {}) {
+  s.addText(text, {
+    x, y, w, h,
+    fontFace: F,
+    valign: 'top',
+    align: 'left',
+    ...opts,
+  });
+}
+
+// ── SLIDE 1: Cover ──────────────────────────────────────────
 {
   const s = pptx.addSlide();
   bg(s);
 
-  ring(s, W - ix(0),   iy(-140), ix(260));
-  ring(s, W - ix(120), iy(170),  ix(110));
+  ring(s, W,         -0.5,  1.8);
+  ring(s, W - 1.1,    0.4,  0.75);
 
   // Eyebrow
-  s.addText('— これからの建築を、5つの視座で。', {
-    x: PADX, y: iy(260), w: ix(900), h: iy(48),
-    fontFace: SERIF, fontSize: fpt(28), italic: true, color: INK,
-    valign: 'top',
+  T(s, '— これからの建築を、5つの視座で。',
+    PX, 1.5, 7.0, 0.45,
+    { fontSize: 14, italic: true, color: INK });
+
+  // Title: 建築 / トレンド 2026.
+  T(s, [
+    { text: '建築',      options: { fontSize: 72, bold: true } },
+    { text: '\n',        options: {} },
+    { text: 'トレンド ', options: { fontSize: 72, bold: true } },
+    { text: '2026.',     options: { fontSize: 42, italic: true } },
+  ], PX, 1.95, 9.0, 3.5, {
+    fontSize: 72, bold: true, color: INK,
+    lineSpacingMultiple: 0.95,
   });
 
-  // H1: 建築\nトレンド 2026.
-  s.addText([
-    { text: '建築', options: {} },
-    { text: '\n', options: {} },
-    { text: 'トレンド ', options: { fontSize: fpt(196) } },
-    { text: '2026.', options: { fontSize: fpt(108), italic: true } },
-  ], {
-    x: PADX, y: iy(310), w: ix(1400), h: iy(560),
-    fontFace: SERIF, fontSize: fpt(196), bold: true, color: INK,
-    valign: 'top', lineSpacingMultiple: 0.92,
-  });
-
-  // Subblock — rule + text
-  const sbY = iy(840);
-  hRule(s, PADX, sbY, ix(720));
-  s.addText(
-    '気候、素材、知能、そして人。\n5つのキーワードで、\n次の建築の輪郭をたどる。',
-    {
-      x: PADX + ix(24), y: sbY + iy(18), w: ix(700), h: iy(200),
-      fontFace: SERIF, fontSize: fpt(24), color: BODY,
-      valign: 'top', lineSpacingMultiple: 1.85,
-    }
-  );
+  // Bottom subblock
+  hLine(s, PX, 5.7, 5.0);
+  T(s, '気候、素材、知能、そして人。\n5つのキーワードで、\n次の建築の輪郭をたどる。',
+    PX + 0.2, 5.75, 5.0, 1.4,
+    { fontSize: 16, color: BODY, lineSpacingMultiple: 1.85 });
 }
 
-// ── SLIDE 2: 目次 ─────────────────────────────────────────
+// ── SLIDE 2: 目次 ───────────────────────────────────────────
 {
   const s = pptx.addSlide();
   bg(s);
 
-  ring(s, ix(56) + ix(70), H - ix(70), ix(70));
+  ring(s, 0.5, H - 0.5, 0.48);
 
   // Left column
-  s.addText('目次', {
-    x: PADX, y: BTOP, w: ix(280), h: iy(100),
-    fontFace: SERIF, fontSize: fpt(72), bold: true, color: INK, valign: 'top',
-  });
-  hRule(s, PADX, BTOP + iy(92), ix(280), true);
-  s.addText(
-    'この号で追いかける5つの主題。\nどれも独立した流れでありながら、\n静かに互いを引き寄せている。',
-    {
-      x: PADX, y: BTOP + iy(130), w: ix(260), h: iy(360),
-      fontFace: SERIF, fontSize: fpt(22), color: BODY,
-      valign: 'top', lineSpacingMultiple: 1.9,
-    }
-  );
+  T(s, '目次', PX, TOP, 1.8, 0.9, { fontSize: 40, bold: true, color: INK });
+  hLine(s, PX, TOP + 0.88, 1.8, true);
+  T(s, 'この号で追いかける5つの主題。\nどれも独立した流れでありながら、\n静かに互いを引き寄せている。',
+    PX, TOP + 1.05, 1.8, 2.0,
+    { fontSize: 13, color: BODY, lineSpacingMultiple: 1.9 });
 
-  // TOC
-  const tocX = PADX + ix(352);
-  const tocW = W - PADX - tocX;
-  const rowH = iy(112);
-  hRule(s, tocX, BTOP, tocW, true);
+  // TOC area
+  const TX = PX + 2.2;   // TOC start x
+  const TW = W - PX - TX; // 10.13"
+  const RH = 1.05;        // row height
+
+  hLine(s, TX, TOP, TW, true); // thick top rule
 
   const rows = [
     { n: '01', ja: 'カーボンニュートラル建築', pg: 'p. 003' },
     { n: '02', ja: '木造建築の進化',           pg: 'p. 004' },
     { n: '03', ja: 'AI × BIM',                 pg: 'p. 005' },
-    { n: '04', ja: 'リノベーション',             pg: 'p. 006' },
-    { n: '05', ja: 'ウェルビーイング',           pg: 'p. 006' },
+    { n: '04', ja: 'リノベーション',            pg: 'p. 006' },
+    { n: '05', ja: 'ウェルビーイング',          pg: 'p. 006' },
   ];
-
-  rows.forEach((row, i) => {
-    const y = BTOP + rowH * i + iy(12);
-    s.addText(row.n, {
-      x: tocX, y, w: ix(96), h: iy(80),
-      fontFace: SERIF, fontSize: fpt(64), italic: true, color: INK, valign: 'middle',
-    });
-    s.addText(row.ja, {
-      x: tocX + ix(130), y: y + iy(18), w: ix(920), h: iy(56),
-      fontFace: SERIF, fontSize: fpt(36), bold: true, color: INK, valign: 'top',
-    });
-    s.addText(row.pg, {
-      x: W - PADX - ix(120), y, w: ix(120), h: iy(80),
-      fontFace: SERIF, fontSize: fpt(24), italic: true, color: INK,
-      valign: 'middle', align: 'right',
-    });
-    hRule(s, tocX, BTOP + rowH * (i + 1), tocW);
+  rows.forEach((r, i) => {
+    const ry = TOP + RH * i;
+    // Number
+    T(s, r.n,  TX, ry + 0.12, 1.1, 0.85,
+      { fontSize: 26, italic: true, color: INK, valign: 'middle' });
+    // Title
+    T(s, r.ja, TX + 1.2, ry + 0.22, 7.5, 0.65,
+      { fontSize: 20, bold: true, color: INK });
+    // Page (right-aligned)
+    T(s, r.pg, W - PX - 1.2, ry + 0.28, 1.2, 0.5,
+      { fontSize: 14, italic: true, color: INK, align: 'right' });
+    // Bottom rule
+    hLine(s, TX, ry + RH, TW);
   });
 }
 
-// ── SLIDE 3: 01 Carbon ────────────────────────────────────
+// ── SLIDE 3: 01 Carbon ─────────────────────────────────────
 {
   const s = pptx.addSlide();
   bg(s);
 
-  // H2
-  s.addText('建築は、\n地球にとって最大の炭素産業である。', {
-    x: PADX, y: BTOP, w: CW, h: iy(330),
-    fontFace: SERIF, fontSize: fpt(84), bold: true, color: INK,
-    valign: 'top', lineSpacingMultiple: 1.1,
-  });
+  // Section heading
+  T(s, '建築は、\n地球にとって最大の炭素産業である。',
+    PX, TOP, CW, 2.4,
+    { fontSize: 42, bold: true, color: INK, lineSpacingMultiple: 1.1 });
 
-  // Lede — 句読点で改行
-  s.addText(
-    '世界のCO₂排出の約37%は建築に由来する。\n' +
-    '2050年に向けて、設計の前提そのものが\n' +
-    '書き換えられようとしている。',
-    {
-      x: PADX, y: BTOP + iy(350), w: ix(880), h: iy(150),
-      fontFace: SERIF, fontSize: fpt(24), color: BODY,
-      valign: 'top', lineSpacingMultiple: 1.8,
-    }
-  );
+  // Lede
+  T(s, '世界のCO₂排出の約37%は建築に由来する。\n2050年に向けて、設計の前提そのものが\n書き換えられようとしている。',
+    PX, TOP + 2.55, 7.5, 1.2,
+    { fontSize: 16, color: BODY, lineSpacingMultiple: 1.8 });
 
   // Infobox
-  const ibY = H - PADY - iy(240);
-  hRule(s, PADX, ibY, CW, true);
-  s.addText('建築部門のCO₂排出構造', {
-    x: PADX, y: ibY + iy(14), w: ix(600), h: iy(22),
-    fontFace: SANS, fontSize: fpt(13), color: MUTED, charSpacing: 0.5,
-  });
+  const IBY = 5.5;
+  hLine(s, PX, IBY, CW, true);
+  T(s, '建築部門のCO₂排出構造',
+    PX, IBY + 0.1, 5.0, 0.3,
+    { fontSize: 11, color: MUTED, charSpacing: 0.4 });
 
-  const colW2 = CW / 2 - ix(40);
+  const colW = CW / 2 - 0.5;
   const bars = [
-    { label: '運用エネルギー', pct: 70, col: 0 },
-    { label: '材料製造',       pct: 22, col: 0 },
-    { label: '解体・廃棄',     pct: 8,  col: 1 },
+    { label: '運用エネルギー', pct: 70, col: 0, row: 0 },
+    { label: '材料製造',       pct: 22, col: 0, row: 1 },
+    { label: '解体・廃棄',     pct: 8,  col: 1, row: 0 },
   ];
-  bars.forEach((bar) => {
-    const bx  = PADX + bar.col * (colW2 + ix(80));
-    const idx = bar.col === 0 ? bars.indexOf(bar) : 0;
-    const by  = ibY + iy(46) + idx * iy(88);
-    s.addText(bar.label, {
-      x: bx, y: by, w: ix(400), h: iy(30),
-      fontFace: SERIF, fontSize: fpt(22), bold: true, color: INK, valign: 'top',
-    });
-    s.addText(`${bar.pct}%`, {
-      x: bx + ix(420), y: by, w: ix(80), h: iy(30),
-      fontFace: SERIF, fontSize: fpt(36), italic: true, color: INK,
-      valign: 'top', align: 'right',
-    });
-    // Bar bg
-    s.addShape('rect', {
-      x: bx, y: by + iy(33), w: colW2 * 0.88, h: 0.06,
-      fill: { color: 'e6dfce' }, line: { type: 'none' },
-    });
-    // Bar fill
-    s.addShape('rect', {
-      x: bx, y: by + iy(33), w: colW2 * 0.88 * bar.pct / 100, h: 0.06,
-      fill: { color: INK }, line: { type: 'none' },
-    });
+  bars.forEach((b) => {
+    const bx = PX + b.col * (colW + 1.0);
+    const by = IBY + 0.5 + b.row * 0.72;
+    T(s, b.label, bx, by, 3.5, 0.32, { fontSize: 14, bold: true, color: INK });
+    T(s, `${b.pct}%`, bx + 3.6, by, 0.8, 0.32,
+      { fontSize: 24, italic: true, color: INK, align: 'right' });
+    s.addShape('rect', { x: bx, y: by + 0.35, w: colW * 0.9, h: 0.055,
+      fill: { color: 'e6dfce' }, line: { type: 'none' } });
+    s.addShape('rect', { x: bx, y: by + 0.35, w: colW * 0.9 * b.pct / 100, h: 0.055,
+      fill: { color: INK }, line: { type: 'none' } });
   });
-  s.addText('Source · IEA / UNEP, 2024', {
-    x: PADX + colW2 + ix(80), y: ibY + iy(150), w: colW2, h: iy(24),
-    fontFace: SANS, fontSize: fpt(13), color: MUTED, charSpacing: 0.4,
-  });
+  T(s, 'Source · IEA / UNEP, 2024',
+    PX + colW + 1.0, IBY + 1.2, colW, 0.25,
+    { fontSize: 11, color: MUTED, charSpacing: 0.3 });
 }
 
-// ── SLIDE 4: 02 Wood ─────────────────────────────────────
+// ── SLIDE 4: 02 Wood ───────────────────────────────────────
 {
   const s = pptx.addSlide();
   bg(s);
 
-  ring(s, ix(650), H - iy(90), ix(90));
+  ring(s, 4.5, H - 0.6, 0.6);
 
-  // H2
-  s.addText('街が、木で立ち上がる。', {
-    x: PADX, y: BTOP, w: CW, h: iy(105),
-    fontFace: SERIF, fontSize: fpt(84), bold: true, color: INK, valign: 'top',
-  });
-  hRule(s, PADX, BTOP + iy(102), CW * 0.60);
+  // Heading
+  T(s, '街が、木で立ち上がる。',
+    PX, TOP, CW, 0.9, { fontSize: 42, bold: true, color: INK });
+  hLine(s, PX, TOP + 0.88, CW * 0.55);
 
-  // Timeline (left)
-  const tlX = PADX;
-  const tlW = ix(1040);
-  const tlY = BTOP + iy(130);
-  const rowH = iy(118);
+  // Timeline (left col: 5.8" wide)
+  const TLX = PX;
+  const TLW = 5.8;
+  const TLY = TOP + 1.1;
+  const TRH = 1.0;
 
-  s.addText('木造建築のマイルストーン', {
-    x: tlX, y: tlY - iy(26), w: tlW, h: iy(24),
-    fontFace: SANS, fontSize: fpt(13), color: MUTED, charSpacing: 0.4,
-  });
-  hRule(s, tlX, tlY, tlW);
+  T(s, '木造建築のマイルストーン',
+    TLX, TLY - 0.28, TLW, 0.25, { fontSize: 11, color: MUTED, charSpacing: 0.4 });
+  hLine(s, TLX, TLY, TLW);
 
   const tl = [
     { y: '2019', b: 'CLT基準法改正',   t: '直交集成板が一般的な構造材料として\n基準法に位置づけ。',  f: false },
-    { y: '2022', b: '木材利用促進法',   t: '公共だけでなく民間建築物にも\n木材利用を拡大。',          f: false },
-    { y: '2025', b: '中高層木造の増加', t: '10階以上の木造ビルが国内で\n複数竣工。',                  f: false },
-    { y: '2030', b: '木造比率目標',     t: '新築の木造比率\n40% → 55% へ。',                         f: true  },
+    { y: '2022', b: '木材利用促進法',   t: '公共だけでなく民間建築物にも\n木材利用を拡大。',        f: false },
+    { y: '2025', b: '中高層木造の増加', t: '10階以上の木造ビルが国内で\n複数竣工。',                f: false },
+    { y: '2030', b: '木造比率目標',     t: '新築の木造比率\n40% → 55% へ。',                       f: true  },
   ];
   tl.forEach((e, i) => {
-    const ry = tlY + rowH * i;
+    const ry = TLY + TRH * i;
     const c = e.f ? MUTED : INK;
-    s.addText(e.y, {
-      x: tlX, y: ry + iy(8), w: ix(136), h: iy(50),
-      fontFace: SERIF, fontSize: fpt(40), italic: true, color: c, valign: 'top',
-    });
-    s.addText([
-      { text: e.b, options: { bold: true, fontSize: fpt(24), color: c } },
+    T(s, e.y, TLX, ry + 0.08, 1.0, 0.6,
+      { fontSize: 24, italic: true, color: c });
+    T(s, [
+      { text: e.b, options: { bold: true, fontSize: 15, color: c } },
       { text: '\n', options: {} },
-      { text: e.t, options: { fontSize: fpt(22), color: e.f ? MUTED : BODY } },
-    ], {
-      x: tlX + ix(156), y: ry + iy(8), w: ix(860), h: rowH - iy(16),
-      fontFace: SERIF, valign: 'top', lineSpacingMultiple: 1.7,
-    });
-    hRule(s, tlX, ry + rowH, tlW);
+      { text: e.t, options: { fontSize: 14, color: e.f ? MUTED : BODY } },
+    ], TLX + 1.1, ry + 0.08, TLW - 1.2, TRH - 0.1,
+      { fontSize: 14, lineSpacingMultiple: 1.7 });
+    hLine(s, TLX, ry + TRH, TLW);
   });
 
-  // Hero (right)
-  const hx = PADX + ix(1100);
-  const hw = W - PADX - hx;
-  s.addText('2030年へ向かう、その到達点', {
-    x: hx, y: tlY - iy(26), w: hw, h: iy(24),
-    fontFace: SANS, fontSize: fpt(13), color: MUTED, charSpacing: 0.4,
-  });
-  s.addText([
-    { text: '18', options: { fontSize: fpt(224), bold: true } },
-    { text: '階', options: { fontSize: fpt(64), italic: true } },
-  ], {
-    x: hx, y: tlY, w: hw, h: iy(270),
-    fontFace: SERIF, color: INK, valign: 'top',
-  });
-  hRule(s, hx, tlY + iy(278), hw);
-  s.addText(
-    '2025年、国内最高の木造ビル。\nCLTとRC造のハイブリッドで、\n木は「風合い」から「骨格」へ還った。',
-    {
-      x: hx, y: tlY + iy(294), w: hw, h: iy(200),
-      fontFace: SERIF, fontSize: fpt(22), color: BODY,
-      valign: 'top', lineSpacingMultiple: 1.8,
-    }
-  );
+  // Hero right col
+  const HX = TLX + TLW + 0.6;
+  const HW = W - PX - HX;
+  T(s, '2030年へ向かう、その到達点',
+    HX, TLY - 0.28, HW, 0.25, { fontSize: 11, color: MUTED, charSpacing: 0.4 });
+  T(s, [
+    { text: '18',  options: { fontSize: 96, bold: true } },
+    { text: '階',  options: { fontSize: 36, italic: true } },
+  ], HX, TLY, HW, 1.9, { fontSize: 96, color: INK });
+  hLine(s, HX, TLY + 1.95, HW);
+  T(s, '2025年、国内最高の木造ビル。\nCLTとRC造のハイブリッドで、\n木は「風合い」から「骨格」へ還った。',
+    HX, TLY + 2.1, HW, 1.5,
+    { fontSize: 14, color: BODY, lineSpacingMultiple: 1.8 });
 }
 
-// ── SLIDE 5: 03 AI × BIM ─────────────────────────────────
+// ── SLIDE 5: 03 AI × BIM ───────────────────────────────────
 {
   const s = pptx.addSlide();
   bg(s);
 
-  // H2
-  s.addText('設計図を、もう一度考え直す。', {
-    x: PADX, y: BTOP, w: CW, h: iy(105),
-    fontFace: SERIF, fontSize: fpt(84), bold: true, color: INK, valign: 'top',
-  });
+  T(s, '設計図を、もう一度考え直す。',
+    PX, TOP, CW, 0.9, { fontSize: 42, bold: true, color: INK });
 
-  // 3 stats
-  const sw  = CW / 3;
-  const sy  = BTOP + iy(150);
-
+  const SW  = CW / 3;
+  const SY  = TOP + 1.1;
   const stats = [
     { n: '−40', u: '%', h3: '設計期間',      p: '法規チェック、構造計算、\nドキュメント生成。\n手仕事の大半が自動化される。' },
-    { n: '−25', u: '%', h3: '施工コスト',    p: 'BIMデータから自動積算、\n工程最適化。\n見積の透明度が一段上がる。' },
+    { n: '−25', u: '%', h3: '施工コスト',     p: 'BIMデータから自動積算、\n工程最適化。\n見積の透明度が一段上がる。' },
     { n: '+60', u: '%', h3: '維持管理の精度', p: 'IoTセンサー × AI予測により、\n建物は「使われながら学習する」\n対象に。' },
   ];
-  stats.forEach((stat, i) => {
-    const sx = PADX + sw * i + (i > 0 ? ix(24) : 0);
-    const sw2 = sw - (i > 0 ? ix(24) : 0);
-    hRule(s, sx, sy, sw2, true);
-    s.addText([
-      { text: stat.n, options: { fontSize: fpt(148), bold: true, color: INK } },
-      { text: stat.u, options: { fontSize: fpt(52),  italic: true, color: MUTED } },
-    ], {
-      x: sx, y: sy + iy(10), w: sw2, h: iy(195),
-      fontFace: SERIF, valign: 'top',
-    });
-    s.addText(stat.h3, {
-      x: sx, y: sy + iy(215), w: sw2, h: iy(48),
-      fontFace: SERIF, fontSize: fpt(30), bold: true, color: INK, valign: 'top',
-    });
-    s.addText(stat.p, {
-      x: sx, y: sy + iy(272), w: sw2, h: iy(200),
-      fontFace: SERIF, fontSize: fpt(22), color: BODY,
-      valign: 'top', lineSpacingMultiple: 1.75,
-    });
+  stats.forEach((st, i) => {
+    const sx = PX + SW * i;
+    const sw = SW - 0.15;
+    hLine(s, sx, SY, sw, true);
+    T(s, [
+      { text: st.n, options: { fontSize: 72, bold: true, color: INK } },
+      { text: st.u, options: { fontSize: 28, italic: true, color: MUTED } },
+    ], sx, SY + 0.06, sw, 1.5, { fontSize: 72 });
+    T(s, st.h3, sx, SY + 1.65, sw, 0.45,
+      { fontSize: 18, bold: true, color: INK });
+    T(s, st.p, sx, SY + 2.15, sw, 1.8,
+      { fontSize: 14, color: BODY, lineSpacingMultiple: 1.75 });
   });
 
-  // Footer — left border + italic quote
-  const fy = H - PADY - iy(64);
-  s.addShape('rect', {
-    x: PADX, y: fy - iy(4), w: ix(4), h: iy(52),
-    fill: { color: INK }, line: { type: 'none' },
-  });
-  s.addText(
-    '— 創造性の輪郭は変わらない。\nただ、そこに至る道のりが短くなる。',
-    {
-      x: PADX + ix(22), y: fy - iy(8), w: CW, h: iy(72),
-      fontFace: SERIF, fontSize: fpt(24), italic: true, color: BODY,
-      valign: 'middle', lineSpacingMultiple: 1.6,
-    }
-  );
+  // Footer
+  s.addShape('rect', { x: PX, y: H - PY - 0.55, w: 0.03, h: 0.5,
+    fill: { color: INK }, line: { type: 'none' } });
+  T(s, '— 創造性の輪郭は変わらない。\nただ、そこに至る道のりが短くなる。',
+    PX + 0.18, H - PY - 0.6, CW, 0.65,
+    { fontSize: 15, italic: true, color: BODY, lineSpacingMultiple: 1.6 });
 }
 
-// ── SLIDE 6: 04 + 05 Spread ───────────────────────────────
+// ── SLIDE 6: 04 + 05 Spread ────────────────────────────────
 {
   const s = pptx.addSlide();
   bg(s);
 
-  ring(s, W + ix(60) - ix(110), iy(-60) + ix(110), ix(110));
+  ring(s, W + 0.5, -0.5, 1.4);
 
-  const c1W  = (CW - ix(2)) / 2;
-  const c1X  = PADX;
-  const divX = PADX + c1W;
-  const c2X  = divX + ix(72);
-  const c2W  = W - PADX - c2X;
+  const C1W = (CW - 0.02) / 2;
+  const C1X = PX;
+  const DVX = PX + C1W;
+  const C2X = DVX + 0.5;
+  const C2W = W - PX - C2X;
 
-  // Vertical divider
-  s.addShape('rect', {
-    x: divX, y: BTOP, w: ix(2), h: H - BTOP - PADY,
-    fill: { color: INK }, line: { type: 'none' },
-  });
+  s.addShape('rect', { x: DVX, y: TOP, w: 0.015, h: H - TOP - PY,
+    fill: { color: INK }, line: { type: 'none' } });
 
-  const addCol = (num, h3, body, bignum, label, x, w) => {
-    s.addText(num, {
-      x, y: BTOP, w, h: iy(88),
-      fontFace: SERIF, fontSize: fpt(80), italic: true, color: INK, valign: 'top',
-    });
-    s.addText(h3, {
-      x, y: BTOP + iy(88), w, h: iy(195),
-      fontFace: SERIF, fontSize: fpt(80), bold: true, color: INK,
-      valign: 'top', lineSpacingMultiple: 1.05,
-    });
-    s.addText(body, {
-      x, y: BTOP + iy(295), w, h: iy(240),
-      fontFace: SERIF, fontSize: fpt(22), color: BODY,
-      valign: 'top', lineSpacingMultiple: 1.85,
-    });
-    s.addText(bignum, {
-      x, y: BTOP + iy(540), w, h: iy(155),
-      fontFace: SERIF, fontSize: fpt(128), bold: true, color: INK,
-      valign: 'top',
-    });
-    s.addText(label, {
-      x, y: BTOP + iy(700), w, h: iy(50),
-      fontFace: SERIF, fontSize: fpt(22), color: MUTED, valign: 'top',
-    });
+  const col = (num, h3, body, bignum, label, x, w) => {
+    T(s, num, x, TOP, w, 0.8, { fontSize: 40, italic: true, color: INK });
+    T(s, h3, x, TOP + 0.8, w, 1.8,
+      { fontSize: 44, bold: true, color: INK, lineSpacingMultiple: 1.05 });
+    T(s, body, x, TOP + 2.65, w, 1.9,
+      { fontSize: 14, color: BODY, lineSpacingMultiple: 1.85 });
+    T(s, bignum, x, TOP + 4.55, w, 1.1,
+      { fontSize: 60, bold: true, color: INK });
+    T(s, label, x, TOP + 5.65, w, 0.45,
+      { fontSize: 13, color: MUTED });
   };
 
-  addCol(
-    '04',
+  col('04',
     '既存を\n読み直す。',
     '新築の時代から、\nストック更新の時代へ。\n既存躯体の価値を読み解き、\n手を入れることで街が変わる。',
-    '64%',
-    '2030年 リノベ市場比率の予測',
-    c1X, c1W - ix(36),
-  );
-  addCol(
-    '05',
+    '64%', '2030年 リノベ市場比率の予測',
+    C1X, C1W - 0.25);
+
+  col('05',
     '建築は、\nケアになる。',
     'WELL認証、CASBEE-ウェルネス、\n環境IoTによる快適性の数値化。\n空間は「健康を手当てする装置」\nとして設計される。',
-    '×3.2',
-    '健康志向オフィスの生産性指標',
-    c2X, c2W,
-  );
+    '×3.2', '健康志向オフィスの生産性指標',
+    C2X, C2W);
 }
 
-// ── SLIDE 7: Closing ─────────────────────────────────────
+// ── SLIDE 7: Closing ───────────────────────────────────────
 {
   const s = pptx.addSlide();
   bg(s);
 
-  ring(s, W + ix(120), H + iy(120), ix(210));
+  ring(s, W + 1.2, H + 1.2, 2.2);
 
-  s.addText([
+  T(s, [
     { text: '建築の未来は、', options: {} },
     { text: '\n', options: {} },
     { text: '環境', options: { bold: true, italic: false } },
@@ -438,21 +338,17 @@ function ring(slide, cx, cy, r) {
     { text: 'の', options: {} },
     { text: '\n', options: {} },
     { text: '交差点にある。', options: {} },
-  ], {
-    x: PADX, y: iy(260), w: W - 2 * PADX, h: iy(580),
-    fontFace: SERIF, fontSize: fpt(112), italic: true, color: INK,
-    valign: 'top', lineSpacingMultiple: 1.18,
+  ], PX, 1.6, CW, 4.5, {
+    fontSize: 58, italic: true, color: INK, lineSpacingMultiple: 1.2,
   });
 
-  hRule(s, PADX, H - PADY - iy(76));
-  s.addText('— 建築トレンド 2026 / 2026.03.30', {
-    x: PADX, y: H - PADY - iy(62), w: CW, h: iy(50),
-    fontFace: SERIF, fontSize: fpt(24), italic: true, color: INK,
-    valign: 'top', align: 'center',
-  });
+  hLine(s, PX, H - PY - 0.75);
+  T(s, '— 建築トレンド 2026 / 2026.03.30',
+    PX, H - PY - 0.62, CW, 0.5,
+    { fontSize: 15, italic: true, color: INK, align: 'center' });
 }
 
-// ── Write ────────────────────────────────────────────────
+// ── Write ───────────────────────────────────────────────────
 const args = process.argv.slice(2);
 let out = path.resolve(__dirname, '..', 'slides', 'exports', 'architecture2026_text.pptx');
 for (let i = 0; i < args.length; i++) {
