@@ -127,15 +127,15 @@ function T(s, text, x, y, w, h, opts = {}) {
   ];
   rows.forEach((r, i) => {
     const ry = TOP + RH * i;
-    // Number
-    T(s, r.n,  TX, ry + 0.12, 1.1, 0.85,
-      { fontSize: 26, italic: true, color: INK, valign: 'middle' });
-    // Title
-    T(s, r.ja, TX + 1.2, ry + 0.22, 7.5, 0.65,
-      { fontSize: 20, bold: true, color: INK });
-    // Page (right-aligned)
-    T(s, r.pg, W - PX - 1.2, ry + 0.28, 1.2, 0.5,
-      { fontSize: 14, italic: true, color: INK, align: 'right' });
+    // Number — full row height, vertically centered
+    T(s, r.n,  TX, ry, 1.1, RH,
+      { fontSize: 26, italic: true, bold: true, color: INK, valign: 'middle' });
+    // Title — full row height, vertically centered
+    T(s, r.ja, TX + 1.2, ry, 7.5, RH,
+      { fontSize: 20, bold: true, color: INK, valign: 'middle' });
+    // Page — full row height, vertically centered, right-aligned
+    T(s, r.pg, W - PX - 1.2, ry, 1.2, RH,
+      { fontSize: 14, italic: true, bold: true, color: INK, valign: 'middle', align: 'right' });
     // Bottom rule
     hLine(s, TX, ry + RH, TW);
   });
@@ -154,7 +154,7 @@ function T(s, text, x, y, w, h, opts = {}) {
   // Lede
   T(s, '世界のCO₂排出の約37%は建築に由来する。\n2050年に向けて、設計の前提そのものが\n書き換えられようとしている。',
     PX, TOP + 2.55, 7.5, 1.2,
-    { fontSize: 16, color: BODY, lineSpacingMultiple: 1.8 });
+    { fontSize: 16, bold: true, color: INK, lineSpacingMultiple: 1.8 });
 
   // Infobox
   const IBY = 5.5;
@@ -216,15 +216,15 @@ function T(s, text, x, y, w, h, opts = {}) {
   tl.forEach((e, i) => {
     const ry = TLY + TRH * i;
     const c = e.f ? MUTED : INK;
-    // Year
-    T(s, e.y, TLX, ry + 0.10, 1.0, 0.5,
-      { fontSize: 22, italic: true, color: c });
-    // Bold title (separate box)
-    T(s, e.b, TLX + 1.1, ry + 0.10, TLW - 1.2, 0.35,
-      { fontSize: 15, bold: true, color: c });
-    // Body text (separate box, below title)
-    T(s, e.t, TLX + 1.1, ry + 0.48, TLW - 1.2, 0.58,
-      { fontSize: 13, color: e.f ? MUTED : INK, lineSpacingMultiple: 1.5 });
+    // Year — full row height, vertically centered
+    T(s, e.y, TLX, ry, 1.0, TRH,
+      { fontSize: 22, italic: true, bold: true, color: c, valign: 'middle' });
+    // Title + Body — single box, full row height, vertically centered
+    T(s, [
+      { text: e.b, options: { bold: true, fontSize: 15, color: c, breakLine: true } },
+      { text: e.t, options: { bold: true, fontSize: 13, color: c } },
+    ], TLX + 1.1, ry, TLW - 1.2, TRH,
+      { valign: 'middle', lineSpacingMultiple: 1.5 });
     hLine(s, TLX, ry + TRH, TLW);
   });
 
@@ -240,7 +240,7 @@ function T(s, text, x, y, w, h, opts = {}) {
   hLine(s, HX, TLY + 1.95, HW);
   T(s, '2025年、国内最高の木造ビル。\nCLTとRC造のハイブリッドで、\n木は「風合い」から「骨格」へ還った。',
     HX, TLY + 2.1, HW, 1.5,
-    { fontSize: 14, color: BODY, lineSpacingMultiple: 1.8 });
+    { fontSize: 14, bold: true, color: INK, lineSpacingMultiple: 1.8 });
 }
 
 // ── SLIDE 5: 03 AI × BIM ───────────────────────────────────
@@ -268,11 +268,11 @@ function T(s, text, x, y, w, h, opts = {}) {
       { text: st.u, options: { fontSize: 24, italic: true, color: MUTED } },
     ], sx, SY + 0.06, sw, 1.3, { fontSize: 64 });
     // Label (separate box)
-    T(s, st.h3, sx, SY + 1.45, sw, 0.4,
+    T(s, st.h3, sx, SY + 1.42, sw, 0.4,
       { fontSize: 17, bold: true, color: INK });
     // Body (separate box, natural wrap)
-    T(s, st.p, sx, SY + 1.9, sw, 1.6,
-      { fontSize: 14, color: INK, lineSpacingMultiple: 1.7 });
+    T(s, st.p, sx, SY + 1.88, sw, 1.6,
+      { fontSize: 14, bold: true, color: INK, lineSpacingMultiple: 1.7 });
   });
 
   // Footer
@@ -304,7 +304,7 @@ function T(s, text, x, y, w, h, opts = {}) {
     T(s, h3, x, TOP + 0.8, w, 1.8,
       { fontSize: 44, bold: true, color: INK, lineSpacingMultiple: 1.05 });
     T(s, body, x, TOP + 2.65, w, 1.9,
-      { fontSize: 14, color: BODY, lineSpacingMultiple: 1.85 });
+      { fontSize: 14, bold: true, color: INK, lineSpacingMultiple: 1.85 });
     T(s, bignum, x, TOP + 4.55, w, 1.1,
       { fontSize: 60, bold: true, color: INK });
     T(s, label, x, TOP + 5.65, w, 0.45,
