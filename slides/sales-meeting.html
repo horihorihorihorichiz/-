@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>営業会議 - 2026年3月度</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;600;700;800;900&family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="themes/default.css">
+  <style>
+    :root {
+      --primary: #0f1b2d;
+      --primary-light: #162a4a;
+      --accent: #3b82f6;
+      --accent-secondary: #1e3a5f;
+      --bg-dark: #0a1220;
+    }
+  </style>
+</head>
+<body>
+  <div class="slides-container">
+
+    <!-- ========== Slide 1: タイトル ========== -->
+    <div class="slide slide--title">
+      <div class="slide-inner">
+        <span class="badge badge--accent animate-in delay-1">SALES MEETING</span>
+        <h1 class="animate-in delay-2" style="font-size: 4rem;">営業会議</h1>
+        <p class="subtitle animate-in delay-3">2026年3月度 実績報告・進捗確認</p>
+        <p class="meta animate-in delay-4">2026.04.24</p>
+      </div>
+    </div>
+
+    <!-- ========== Slide 2: 売上サマリー ========== -->
+    <div class="slide slide--content">
+      <div class="slide-inner">
+        <h2 class="animate-in">3月度 売上サマリー</h2>
+        <div class="columns columns--3" style="flex: 1; align-items: stretch;">
+          <div class="card animate-in delay-1" style="display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 12px;">
+            <div style="font-size: 1rem; color: var(--text-muted);">売上高</div>
+            <div style="font-size: 3.5rem; font-weight: 900; color: var(--accent);">¥48.5<span style="font-size: 1.5rem;">M</span></div>
+            <div style="font-size: 1rem; color: #22c55e; font-weight: 700;">▲ 12.3% 前月比</div>
+            <div style="font-size: 0.9rem; color: var(--text-muted);">目標 ¥45M（達成率 107.8%）</div>
+          </div>
+          <div class="card animate-in delay-2" style="display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 12px;">
+            <div style="font-size: 1rem; color: var(--text-muted);">新規受注件数</div>
+            <div style="font-size: 3.5rem; font-weight: 900; color: var(--accent);">23<span style="font-size: 1.5rem;">件</span></div>
+            <div style="font-size: 1rem; color: #22c55e; font-weight: 700;">▲ 5件 前月比</div>
+            <div style="font-size: 0.9rem; color: var(--text-muted);">目標 20件（達成率 115%）</div>
+          </div>
+          <div class="card animate-in delay-3" style="display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 12px;">
+            <div style="font-size: 1rem; color: var(--text-muted);">受注単価（平均）</div>
+            <div style="font-size: 3.5rem; font-weight: 900; color: var(--accent);">¥2.1<span style="font-size: 1.5rem;">M</span></div>
+            <div style="font-size: 1rem; color: #ef4444; font-weight: 700;">▼ 3.2% 前月比</div>
+            <div style="font-size: 0.9rem; color: var(--text-muted);">前月 ¥2.17M</div>
+          </div>
+        </div>
+        <div class="highlight-box animate-in delay-4" style="margin-top: 20px;">
+          <p style="font-size: 1.2rem; text-align: center;">売上・件数ともに月間目標を達成。単価は小型案件の増加により微減。</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== Slide 3: 売上内訳 ========== -->
+    <div class="slide slide--content">
+      <div class="slide-inner">
+        <h2 class="animate-in">売上内訳</h2>
+        <div class="columns columns--2" style="flex: 1; gap: 48px;">
+          <div class="animate-left delay-2">
+            <h3 style="font-size: 1.3rem; font-weight: 700; margin-bottom: 24px; color: var(--text-primary);">カテゴリ別</h3>
+            <div style="display: flex; flex-direction: column; gap: 16px;">
+              <div style="display: flex; align-items: center; gap: 16px;">
+                <div style="width: 100px; font-size: 1.1rem; color: var(--text-secondary);">SaaS</div>
+                <div style="flex: 1; background: rgba(255,255,255,0.1); border-radius: 8px; height: 36px; overflow: hidden;">
+                  <div style="width: 55%; height: 100%; background: var(--accent); border-radius: 8px; display: flex; align-items: center; padding-left: 12px; font-weight: 700; font-size: 0.9rem;">¥26.7M</div>
+                </div>
+              </div>
+              <div style="display: flex; align-items: center; gap: 16px;">
+                <div style="width: 100px; font-size: 1.1rem; color: var(--text-secondary);">受託開発</div>
+                <div style="flex: 1; background: rgba(255,255,255,0.1); border-radius: 8px; height: 36px; overflow: hidden;">
+                  <div style="width: 30%; height: 100%; background: #8b5cf6; border-radius: 8px; display: flex; align-items: center; padding-left: 12px; font-weight: 700; font-size: 0.9rem;">¥14.6M</div>
+                </div>
+              </div>
+              <div style="display: flex; align-items: center; gap: 16px;">
+                <div style="width: 100px; font-size: 1.1rem; color: var(--text-secondary);">コンサル</div>
+                <div style="flex: 1; background: rgba(255,255,255,0.1); border-radius: 8px; height: 36px; overflow: hidden;">
+                  <div style="width: 15%; height: 100%; background: #06b6d4; border-radius: 8px; display: flex; align-items: center; padding-left: 12px; font-weight: 700; font-size: 0.9rem;">¥7.2M</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="animate-right delay-3">
+            <h3 style="font-size: 1.3rem; font-weight: 700; margin-bottom: 24px; color: var(--text-primary);">チーム別実績</h3>
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+              <div class="card" style="padding: 16px 24px; display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                  <div style="font-weight: 700; font-size: 1.1rem;">第1営業部</div>
+                  <div style="font-size: 0.85rem; color: var(--text-muted);">田中チーム</div>
+                </div>
+                <div style="text-align: right;">
+                  <div style="font-weight: 900; font-size: 1.3rem; color: var(--accent);">¥22.1M</div>
+                  <div style="font-size: 0.85rem; color: #22c55e;">達成率 112%</div>
+                </div>
+              </div>
+              <div class="card" style="padding: 16px 24px; display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                  <div style="font-weight: 700; font-size: 1.1rem;">第2営業部</div>
+                  <div style="font-size: 0.85rem; color: var(--text-muted);">鈴木チーム</div>
+                </div>
+                <div style="text-align: right;">
+                  <div style="font-weight: 900; font-size: 1.3rem; color: var(--accent);">¥16.2M</div>
+                  <div style="font-size: 0.85rem; color: #22c55e;">達成率 105%</div>
+                </div>
+              </div>
+              <div class="card" style="padding: 16px 24px; display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                  <div style="font-weight: 700; font-size: 1.1rem;">第3営業部</div>
+                  <div style="font-size: 0.85rem; color: var(--text-muted);">佐藤チーム</div>
+                </div>
+                <div style="text-align: right;">
+                  <div style="font-weight: 900; font-size: 1.3rem; color: var(--accent);">¥10.2M</div>
+                  <div style="font-size: 0.85rem; color: #ef4444;">達成率 92%</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== Slide 4: 営業パイプライン ========== -->
+    <div class="slide slide--content">
+      <div class="slide-inner">
+        <h2 class="animate-in">営業進捗 - パイプライン</h2>
+        <div class="diagram animate-scale delay-2" style="flex: 1; width: 100%; padding: 32px 40px;">
+          <div style="width: 100%; display: flex; flex-direction: column; gap: 20px;">
+            <!-- ファネル -->
+            <div style="display: flex; align-items: center; gap: 16px;">
+              <div style="width: 120px; font-size: 1rem; color: var(--text-muted); text-align: right;">リード</div>
+              <div style="flex: 1; background: rgba(59,130,246,0.2); border-radius: 8px; height: 48px; display: flex; align-items: center; padding: 0 20px; justify-content: space-between;">
+                <span style="font-weight: 700;">142件</span>
+                <span style="font-size: 0.9rem; color: var(--text-muted);">前月 +18件</span>
+              </div>
+            </div>
+            <div style="display: flex; align-items: center; gap: 16px;">
+              <div style="width: 120px; font-size: 1rem; color: var(--text-muted); text-align: right;">商談中</div>
+              <div style="width: 75%; background: rgba(59,130,246,0.3); border-radius: 8px; height: 48px; display: flex; align-items: center; padding: 0 20px; justify-content: space-between;">
+                <span style="font-weight: 700;">68件</span>
+                <span style="font-size: 0.9rem; color: var(--text-muted);">見込額 ¥156M</span>
+              </div>
+            </div>
+            <div style="display: flex; align-items: center; gap: 16px;">
+              <div style="width: 120px; font-size: 1rem; color: var(--text-muted); text-align: right;">提案済</div>
+              <div style="width: 50%; background: rgba(59,130,246,0.5); border-radius: 8px; height: 48px; display: flex; align-items: center; padding: 0 20px; justify-content: space-between;">
+                <span style="font-weight: 700;">31件</span>
+                <span style="font-size: 0.9rem; color: var(--text-muted);">見込額 ¥82M</span>
+              </div>
+            </div>
+            <div style="display: flex; align-items: center; gap: 16px;">
+              <div style="width: 120px; font-size: 1rem; color: var(--text-muted); text-align: right;">最終交渉</div>
+              <div style="width: 30%; background: var(--accent); border-radius: 8px; height: 48px; display: flex; align-items: center; padding: 0 20px; justify-content: space-between;">
+                <span style="font-weight: 700; color: #fff;">12件</span>
+                <span style="font-size: 0.9rem; color: rgba(255,255,255,0.8);">¥38M</span>
+              </div>
+            </div>
+          </div>
+          <div style="margin-top: 32px; display: flex; gap: 32px; justify-content: center; flex-wrap: wrap;">
+            <div style="text-align: center;">
+              <div style="font-size: 2rem; font-weight: 900; color: var(--accent);">47.9%</div>
+              <div style="font-size: 0.9rem; color: var(--text-muted);">リード→商談 転換率</div>
+            </div>
+            <div style="text-align: center;">
+              <div style="font-size: 2rem; font-weight: 900; color: var(--accent);">33.8%</div>
+              <div style="font-size: 0.9rem; color: var(--text-muted);">商談→受注 成約率</div>
+            </div>
+            <div style="text-align: center;">
+              <div style="font-size: 2rem; font-weight: 900; color: var(--accent);">42<span style="font-size: 1rem;">日</span></div>
+              <div style="font-size: 0.9rem; color: var(--text-muted);">平均リードタイム</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== Slide 5: 今月のアクション ========== -->
+    <div class="slide slide--content">
+      <div class="slide-inner">
+        <h2 class="animate-in">4月度 アクションプラン</h2>
+        <div class="columns columns--2" style="flex: 1; gap: 48px;">
+          <div class="animate-left delay-2">
+            <h3 style="font-size: 1.2rem; font-weight: 700; margin-bottom: 20px; color: var(--accent);">重点施策</h3>
+            <ul class="slide-list--check slide-list">
+              <li style="font-size: 1.15rem; padding: 14px 0 14px 40px;">最終交渉中の12件を月内クロージング<br><span style="font-size: 0.9rem; color: var(--text-muted);">担当: 各チームリーダー / 期限: 4/25</span></li>
+              <li style="font-size: 1.15rem; padding: 14px 0 14px 40px;">新規リード獲得キャンペーン実施<br><span style="font-size: 0.9rem; color: var(--text-muted);">担当: マーケ連携 / 期限: 4/15開始</span></li>
+              <li style="font-size: 1.15rem; padding: 14px 0 14px 40px;">第3営業部の底上げ施策<br><span style="font-size: 0.9rem; color: var(--text-muted);">担当: 佐藤 / 週次1on1で進捗管理</span></li>
+            </ul>
+          </div>
+          <div class="animate-right delay-3">
+            <h3 style="font-size: 1.2rem; font-weight: 700; margin-bottom: 20px; color: var(--accent);">4月度 目標</h3>
+            <div style="display: flex; flex-direction: column; gap: 16px;">
+              <div class="card" style="padding: 20px 28px; display: flex; justify-content: space-between; align-items: center;">
+                <div style="font-size: 1.1rem; font-weight: 600;">売上目標</div>
+                <div style="font-size: 1.8rem; font-weight: 900; color: var(--accent);">¥52M</div>
+              </div>
+              <div class="card" style="padding: 20px 28px; display: flex; justify-content: space-between; align-items: center;">
+                <div style="font-size: 1.1rem; font-weight: 600;">新規受注</div>
+                <div style="font-size: 1.8rem; font-weight: 900; color: var(--accent);">25件</div>
+              </div>
+              <div class="card" style="padding: 20px 28px; display: flex; justify-content: space-between; align-items: center;">
+                <div style="font-size: 1.1rem; font-weight: 600;">成約率</div>
+                <div style="font-size: 1.8rem; font-weight: 900; color: var(--accent);">35%↑</div>
+              </div>
+            </div>
+            <div class="highlight-box" style="margin-top: 20px;">
+              <p style="font-size: 1.1rem; text-align: center;">Q1累計 <strong style="color: var(--accent);">¥138.2M</strong>（通期目標進捗 <strong style="color: var(--accent);">69.1%</strong>）</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="engine.js"></script>
+</body>
+</html>
