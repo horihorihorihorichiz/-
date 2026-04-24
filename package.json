@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "description": "HTML/CSS/JSでスライドを作成し、PowerPointにエクスポートするシステム",
   "scripts": {
-    "export": "node scripts/export-pptx.js",
+    "export": "node scripts/export-pptx-text-sales.js",
+    "export:image": "node scripts/export-pptx.js",
+    "export:arch": "node scripts/export-pptx-text.js",
     "preview": "npx serve slides"
   },
   "dependencies": {
