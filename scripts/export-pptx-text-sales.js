@@ -279,7 +279,7 @@ function heading(s, title) {
 {
   const s = pptx.addSlide();
   bg(s);
-  heading(s, '5月度 売上ランキング　（単位：円）');
+  heading(s, '4月度 売上ランキング　（単位：円）');
 
   const RH  = 0.365;
   const HY  = TOP;
@@ -301,21 +301,21 @@ function heading(s, title) {
   T(s, '前期比', xYoy,         HY, wYoy,  RH, { ...ho, align: 'right'  });
 
   const rows = [
-    { rank:  1, num: 225, name: '日本橋イベントセンター',     amt: '141,916,484', yoy: '8.4%',   yc: GREEN, mine: false },
-    { rank:  2, num: 305, name: '大阪北イベントセンター',     amt: '87,722,501',  yoy: '62.1%',  yc: GREEN, mine: false },
-    { rank:  3, num: 150, name: '仙台イベントセンター',       amt: '83,606,860',  yoy: '▲7.0%', yc: RED,   mine: false },
-    { rank:  4, num: 398, name: '大阪中央イベントセンター',   amt: '80,502,402',  yoy: '0.9%',   yc: GREEN, mine: false },
-    { rank:  5, num: 145, name: '札幌イベントセンター',       amt: '53,712,021',  yoy: '105.4%', yc: GREEN, mine: false },
-    { rank:  6, num: 330, name: '新宿新都心イベントセンター', amt: '40,101,320',  yoy: '125.0%', yc: GREEN, mine: false },
-    { rank:  7, num: 172, name: '神戸西イベントセンター',     amt: '36,361,979',  yoy: '5.1%',   yc: GREEN, mine: false },
-    { rank:  8, num: 204, name: '広島イベントセンター',       amt: '36,063,194',  yoy: '5.8%',   yc: GREEN, mine: false },
-    { rank:  9, num: 107, name: '岡山イベントセンター',       amt: '35,056,186',  yoy: '149.9%', yc: GREEN, mine: false },
-    { rank: 10, num:  24, name: '名古屋イベントセンター',     amt: '33,447,345',  yoy: '126.2%', yc: GREEN, mine: true  },
-    { rank: 11, num: 417, name: '銀座イベントセンター',       amt: '28,293,034',  yoy: '26.1%',  yc: GREEN, mine: false },
-    { rank: 12, num:  85, name: '姫路イベントセンター',       amt: '26,936,903',  yoy: '103.9%', yc: GREEN, mine: false },
-    { rank: 13, num: 186, name: '大阪南港イベントセンター',   amt: '26,245,836',  yoy: '88.4%',  yc: GREEN, mine: false },
-    { rank: 14, num:  78, name: '所沢イベントセンター',       amt: '24,939,640',  yoy: '▲9.2%', yc: RED,   mine: false },
-    { rank: 15, num: 179, name: '東京足立イベントセンター',   amt: '24,777,113',  yoy: '8.4%',   yc: GREEN, mine: false },
+    { rank:  1, num: 225, name: '日本橋イベントセンター',     amt: '158,811,604', yoy: '18.3%',   yc: GREEN, mine: false },
+    { rank:  2, num: 305, name: '大阪北イベントセンター',     amt: '54,676,382',  yoy: '▲25.9%', yc: RED,   mine: false },
+    { rank:  3, num:  24, name: '名古屋イベントセンター',     amt: '54,377,853',  yoy: '29.5%',   yc: GREEN, mine: true  },
+    { rank:  4, num: 398, name: '大阪中央イベントセンター',   amt: '48,768,831',  yoy: '▲45.3%', yc: RED,   mine: false },
+    { rank:  5, num: 330, name: '新宿新都心イベントセンター', amt: '42,173,962',  yoy: '89.1%',   yc: GREEN, mine: false },
+    { rank:  6, num:  78, name: '所沢イベントセンター',       amt: '36,427,140',  yoy: '30.6%',   yc: GREEN, mine: false },
+    { rank:  7, num: 417, name: '銀座イベントセンター',       amt: '35,492,992',  yoy: '79.1%',   yc: GREEN, mine: false },
+    { rank:  8, num: 150, name: '仙台イベントセンター',       amt: '34,904,540',  yoy: '13.3%',   yc: GREEN, mine: false },
+    { rank:  9, num: 176, name: '静岡三島イベントセンター',   amt: '31,379,720',  yoy: '26.4%',   yc: GREEN, mine: false },
+    { rank: 10, num: 107, name: '岡山イベントセンター',       amt: '28,224,605',  yoy: '▲6.4%',  yc: RED,   mine: false },
+    { rank: 11, num:  85, name: '姫路イベントセンター',       amt: '27,404,979',  yoy: '▲9.0%',  yc: RED,   mine: false },
+    { rank: 12, num: 145, name: '札幌イベントセンター',       amt: '24,245,240',  yoy: '▲20.2%', yc: RED,   mine: false },
+    { rank: 13, num: 186, name: '大阪南港イベントセンター',   amt: '18,428,718',  yoy: '▲36.3%', yc: RED,   mine: false },
+    { rank: 14, num: 204, name: '広島イベントセンター',       amt: '16,097,450',  yoy: '▲20.7%', yc: RED,   mine: false },
+    { rank: 15, num: 380, name: '南風原ステーション',         amt: '16,019,460',  yoy: '370.0%',  yc: GREEN, mine: false },
   ];
 
   rows.forEach((r, i) => {
