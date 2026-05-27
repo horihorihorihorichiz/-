@@ -196,3 +196,46 @@ git add -f slides/exports/presentation.pptx
 git commit -m "Add PPTX export"
 git push
 ```
+
+---
+
+## 営業会議スライド（名古屋イベントセンター）
+
+### ファイル構成
+```
+slides/sales-meeting.html              # 営業会議HTMLスライド（白ベース）
+scripts/export-pptx-text-sales.js      # 編集可能PPTX生成スクリプト
+slides/exports/sales-meeting.pptx      # 生成されたPPTX
+```
+
+### スライド構成（6枚）
+1. タイトル（営業会議 / 月度 実績報告・進捗確認）
+2. 売上サマリー（売上高・新規受注件数・受注単価の3カード）
+3. 売上内訳（カテゴリ別バー + チーム別実績カード）
+4. 営業進捗パイプライン（ファネル図 + 転換率・成約率・リードタイム）
+5. アクションプラン（重点施策チェックリスト + 月度目標 + Q1累計）
+6. 全店舗売上ランキング TOP15（自店＝名古屋イベントセンター を青ハイライト）
+
+### デザインルール
+- **白ベース**: 背景白、テキスト黒系（#1a1a2e）、アクセント青（#2563eb）
+- 増減表示: 増=緑(#16a34a/#22c55e)、減=赤(#dc2626/#ef4444)
+- 自店ハイライト: 青背景 + 左ボーダー + 「自店」バッジ
+
+### 制作フロー（毎回この順序で）
+```
+1. HTMLスライドを作成・編集（slides/sales-meeting.html）
+2. Puppeteerスクリーンショットで見た目確認
+3. OKなら scripts/export-pptx-text-sales.js も同じ内容・色で同期更新
+4. npm run export で編集可能PPTX生成
+5. git add -f で PPTX を push → GitHub からダウンロード
+```
+
+### 月次更新の手順
+- HTMLとJSの両方の数字を更新する（片方だけだとズレる）
+- ランキングデータはHTMLの`<!-- Rank N -->`行とJSの`rows`配列を差し替え
+- 自店の順位が変わったら `mine: true` フラグも移動する
+
+### 注意
+- **HTMLとPPTXスクリプトは必ず同期する**（色・レイアウト・データ）
+- PPTXは常にテキスト編集可能な版（export-pptx-text-sales.js）をデフォルトにする
+- スクリーンショット版が必要な場合は `npm run export:image`

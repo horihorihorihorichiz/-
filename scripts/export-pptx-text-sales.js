@@ -9,14 +9,14 @@ const path      = require('path');
 const fs        = require('fs');
 
 // ── Palette ───────────────────────────────────────────────
-const BG     = '0f1b2d';
-const CARD   = '162a4a';
-const BORDER = '1e3a5f';
-const TEXT   = 'e8f4ff';
-const ACCENT = '3b82f6';
-const GREEN  = '22c55e';
-const RED    = 'ef4444';
-const MUTED  = '8094b4';
+const BG     = 'ffffff';
+const CARD   = 'f5f7fa';
+const BORDER = 'e0e4ea';
+const TEXT   = '1a1a2e';
+const ACCENT = '2563eb';
+const GREEN  = '16a34a';
+const RED    = 'dc2626';
+const MUTED  = '6b7280';
 
 // ── Dimensions: LAYOUT_WIDE = 13.33 × 7.50 inch ──────────
 const W = 13.33;
@@ -105,7 +105,7 @@ function heading(s, title) {
   });
 
   const sumY = CY + CH + 0.2;
-  R(s, PX, sumY, CW, 0.62, '1a2d4a');
+  R(s, PX, sumY, CW, 0.62, 'eef2f7');
   hLine(s, PX, sumY, CW, ACCENT, 0.015);
   T(s, '売上・件数ともに月間目標を達成。単価は小型案件の増加により微減。',
     PX + 0.3, sumY, CW - 0.6, 0.62,
@@ -182,9 +182,9 @@ function heading(s, title) {
   const sy = TOP + 0.1;
 
   const stages = [
-    { label: 'リード',    cnt: '142件', note: '前月 +18件',    ratio: 1.0,  color: '1e3a5f' },
-    { label: '商談中',   cnt: '68件',  note: '見込額 ¥156M', ratio: 0.75, color: '254f87' },
-    { label: '提案済',   cnt: '31件',  note: '見込額 ¥82M',  ratio: 0.50, color: '2d63a8' },
+    { label: 'リード',    cnt: '142件', note: '前月 +18件',    ratio: 1.0,  color: 'dbeafe' },
+    { label: '商談中',   cnt: '68件',  note: '見込額 ¥156M', ratio: 0.75, color: 'bfdbfe' },
+    { label: '提案済',   cnt: '31件',  note: '見込額 ¥82M',  ratio: 0.50, color: '93c5fd' },
     { label: '最終交渉', cnt: '12件',  note: '¥38M',          ratio: 0.30, color: ACCENT   },
   ];
 
@@ -195,8 +195,8 @@ function heading(s, title) {
     R(s, lx, sy2, fw, rh, BORDER);
     R(s, lx, sy2, fw * st.ratio, rh, st.color);
     T(s, [
-        { text: st.cnt + '  ', options: { bold: true,  fontSize: 15, color: 'ffffff' } },
-        { text: st.note,       options: { bold: false, fontSize: 12, color: MUTED    } },
+        { text: st.cnt + '  ', options: { bold: true,  fontSize: 15, color: TEXT } },
+        { text: st.note,       options: { bold: false, fontSize: 12, color: MUTED } },
       ], lx + 0.2, sy2, fw * st.ratio - 0.2, rh,
       { valign: 'middle' });
   });
@@ -268,7 +268,7 @@ function heading(s, title) {
   });
 
   const q1y = TOP + 0.55 + (gh + 0.18) * 3 + 0.1;
-  R(s, rx, q1y, colW, 0.72, '1a2d4a');
+  R(s, rx, q1y, colW, 0.72, 'eef2f7');
   hLine(s, rx, q1y, colW, ACCENT, 0.015);
   T(s, 'Q1累計  ¥138.2M　（通期目標進捗 69.1%）',
     rx + 0.2, q1y, colW - 0.3, 0.72,
@@ -292,7 +292,7 @@ function heading(s, title) {
   const xYoy  = PX + 11.1;  const wYoy  = 1.03;
 
   // Header
-  R(s, PX, HY, CW, RH, '1e3a5f');
+  R(s, PX, HY, CW, RH, 'e8edf5');
   const ho = { fontSize: 11, bold: true, color: MUTED, valign: 'middle' };
   T(s, '順位',   xRank,        HY, wRank, RH, { ...ho, align: 'center' });
   T(s, '号数',   xNum,         HY, wNum,  RH, { ...ho, align: 'center' });
@@ -320,11 +320,11 @@ function heading(s, title) {
 
   rows.forEach((r, i) => {
     const ry = HY + RH + RH * i;
-    const rowBg = r.mine ? '1a3255' : (i % 2 === 0 ? BG : '111e2e');
+    const rowBg = r.mine ? 'dbeafe' : (i % 2 === 0 ? BG : 'f5f7fa');
     R(s, PX, ry, CW, RH, rowBg);
     if (r.mine) R(s, PX, ry, 0.045, RH, ACCENT);
 
-    const tc = r.mine ? TEXT : (i % 2 === 0 ? '6a80a0' : TEXT);
+    const tc = r.mine ? TEXT : TEXT;
 
     T(s, String(r.rank), xRank, ry, wRank, RH,
       { fontSize: 12, bold: r.mine, color: r.mine ? ACCENT : tc, align: 'center', valign: 'middle' });
