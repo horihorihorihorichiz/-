@@ -74,7 +74,38 @@ function heading(s, title) {
     { fontSize: 14, bold: false, color: MUTED, align: 'center', valign: 'middle' });
 }
 
-// ── SLIDE 6: ランキング TOP15 ─────────────────────────────
+// ── SLIDE 2: 目次 ─────────────────────────────────────────
+{
+  const s = pptx.addSlide();
+  bg(s);
+  heading(s, 'アジェンダ');
+
+  const items = [
+    { num: '①', label: '4月分 売上　／　営業活動進捗', accent: true },
+    { num: '②', label: '店長・副店長から',               accent: false },
+    { num: '③', label: '吉川さん（PJ関連）',             accent: false },
+    { num: '④', label: '関さん（防災関連）',             accent: false },
+    { num: '⑤', label: '業務アイデアコンテスト',         accent: false },
+  ];
+
+  const IH = 0.58;
+  const GAP = 0.12;
+  let iy = TOP + 0.15;
+
+  items.forEach(item => {
+    const bg2 = item.accent ? 'dbeafe' : 'f5f7fa';
+    const bc  = item.accent ? ACCENT   : BORDER;
+    R(s, PX, iy, CW, IH, bg2);
+    R(s, PX, iy, 0.045, IH, bc);
+    T(s, item.num, PX + 0.12, iy, 0.55, IH,
+      { fontSize: 18, bold: true, color: item.accent ? ACCENT : MUTED, align: 'center', valign: 'middle' });
+    T(s, item.label, PX + 0.72, iy, CW - 0.82, IH,
+      { fontSize: 16, bold: item.accent, color: TEXT, valign: 'middle' });
+    iy += IH + GAP;
+  });
+}
+
+// ── SLIDE 3: ランキング TOP15 ─────────────────────────────
 {
   const s = pptx.addSlide();
   bg(s);
@@ -137,6 +168,29 @@ function heading(s, title) {
       { fontSize: 13, bold: true, color: r.yc, align: 'right', valign: 'middle' });
   });
 }
+
+// ── Placeholder slides (4-8) ──────────────────────────────
+const placeholders = [
+  { badge: '① 売上',  title: '営業活動進捗'         },
+  { badge: '②',       title: '店長・副店長から'       },
+  { badge: '③',       title: '吉川さん（PJ関連）'     },
+  { badge: '④',       title: '関さん（防災関連）'     },
+  { badge: '⑤',       title: '業務アイデアコンテスト' },
+];
+
+placeholders.forEach(p => {
+  const s = pptx.addSlide();
+  bg(s);
+  const bw = p.badge.length > 2 ? 1.6 : 0.6;
+  const bx = (W - bw) / 2;
+  R(s, bx, 2.6, bw, 0.38, 'dbeafe');
+  T(s, p.badge, bx, 2.6, bw, 0.38,
+    { fontSize: 11, bold: true, color: ACCENT, align: 'center', valign: 'middle' });
+  T(s, p.title, PX, 3.15, CW, 0.9,
+    { fontSize: 30, bold: true, color: TEXT, align: 'center', valign: 'middle' });
+  T(s, '内容を準備中', PX, 4.15, CW, 0.4,
+    { fontSize: 14, bold: true, color: MUTED, align: 'center', valign: 'middle' });
+});
 
 // ── Write ─────────────────────────────────────────────────
 const args = process.argv.slice(2);
