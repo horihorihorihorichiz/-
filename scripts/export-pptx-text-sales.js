@@ -169,19 +169,67 @@ function heading(s, title) {
   });
 }
 
-// ── SLIDE 4: 営業活動進捗（プレースホルダー） ────────────
+// ── SLIDE 4: 区民祭り 受注管理 ───────────────────────────
 {
   const s = pptx.addSlide();
   bg(s);
-  const bw = 1.6;
-  const bx = (W - bw) / 2;
-  R(s, bx, 2.6, bw, 0.38, 'dbeafe');
-  T(s, '① 売上', bx, 2.6, bw, 0.38,
-    { fontSize: 11, bold: true, color: ACCENT, align: 'center', valign: 'middle' });
-  T(s, '営業活動進捗', PX, 3.15, CW, 0.9,
-    { fontSize: 30, bold: true, color: TEXT, align: 'center', valign: 'middle' });
-  T(s, '内容を準備中', PX, 4.15, CW, 0.4,
-    { fontSize: 14, bold: true, color: MUTED, align: 'center', valign: 'middle' });
+  heading(s, '区民祭り 受注管理（10区）');
+
+  const RH  = 0.40;
+  const HY  = TOP;
+
+  const xKu   = PX;          const wKu   = 1.2;
+  const xDate = PX + 1.2;    const wDate = 1.1;
+  const xBid  = PX + 2.3;    const wBid  = 1.4;
+  const xAmt  = PX + 3.7;    const wAmt  = 4.5;
+  const xSts  = PX + 8.2;    const wSts  = 1.0;
+
+  // Header
+  R(s, PX, HY, CW, RH, 'e8edf5');
+  const ho = { fontSize: 11, bold: true, color: MUTED, valign: 'middle' };
+  T(s, '区',             xKu,   HY, wKu,   RH, ho);
+  T(s, '本番日',         xDate, HY, wDate, RH, { ...ho, align: 'center' });
+  T(s, '入札・見積期限', xBid,  HY, wBid,  RH, { ...ho, align: 'center' });
+  T(s, '契約金額（税抜）', xAmt, HY, wAmt, RH, { ...ho, align: 'right' });
+  T(s, '状況',           xSts,  HY, wSts,  RH, { ...ho, align: 'center' });
+
+  const rows = [
+    { ku: '名東区', date: '5/10',  bid: '3月',  amt: '3,300,000', status: '確定', done: true },
+    { ku: '中村区', date: '10/31', bid: '5月',  amt: '5,500,000', status: '確定', done: true },
+    { ku: '瑞穂区', date: '11/7',  bid: '7月',  amt: '4,000,000', status: '未',   done: false },
+    { ku: '東区',   date: '11/8',  bid: '7月',  amt: '4,930,000', status: '未',   done: false },
+    { ku: '昭和区', date: '11/15', bid: '7月',  amt: '4,300,000', status: '未',   done: false },
+    { ku: '千種区', date: '12/5',  bid: '7月',  amt: '3,700,000', status: '未',   done: false },
+    { ku: '天白区', date: '12/5',  bid: '7月',  amt: '5,200,000', status: '未',   done: false },
+    { ku: '守山区', date: '12/6',  bid: '7月',  amt: '4,000,000', status: '未',   done: false },
+    { ku: '南区',   date: '2/21',  bid: '10月', amt: '2,200,000', status: '未',   done: false },
+    { ku: '中川区', date: '2/28',  bid: '8月頃', amt: '未定',     status: '未',   done: false },
+  ];
+
+  rows.forEach((r, i) => {
+    const ry = HY + RH + RH * i;
+    const rowBg = i % 2 === 0 ? BG : 'f5f7fa';
+    R(s, PX, ry, CW, RH, rowBg);
+
+    T(s, r.ku, xKu, ry, wKu, RH,
+      { fontSize: 13, bold: true, color: TEXT, valign: 'middle' });
+    T(s, r.date, xDate, ry, wDate, RH,
+      { fontSize: 12, bold: true, color: TEXT, align: 'center', valign: 'middle' });
+    T(s, r.bid, xBid, ry, wBid, RH,
+      { fontSize: 12, bold: true, color: TEXT, align: 'center', valign: 'middle' });
+    T(s, r.amt, xAmt, ry, wAmt, RH,
+      { fontSize: 13, bold: true, color: r.amt === '未定' ? MUTED : TEXT, align: 'right', valign: 'middle' });
+
+    const stsBg = r.done ? GREEN : 'e5e7eb';
+    const stsFg = r.done ? 'ffffff' : MUTED;
+    const stsW = 0.65;
+    const stsX = xSts + (wSts - stsW) / 2;
+    const stsH = 0.24;
+    const stsY = ry + (RH - stsH) / 2;
+    R(s, stsX, stsY, stsW, stsH, stsBg);
+    T(s, r.status, stsX, stsY, stsW, stsH,
+      { fontSize: 10, bold: true, color: stsFg, align: 'center', valign: 'middle' });
+  });
 }
 
 // ── Write ─────────────────────────────────────────────────
