@@ -169,7 +169,39 @@ function heading(s, title) {
   });
 }
 
-// ── SLIDE 4: 区民祭り 受注管理 ───────────────────────────
+// ── SLIDE 4: 売上トピック ─────────────────────────────────
+{
+  const s = pptx.addSlide();
+  bg(s);
+  heading(s, '売上トピック');
+
+  const items = [
+    { name: '東急エージェンシー', val: '19,148', top: true },
+    { name: 'サンデーフォーク',   val: '17,808', top: true },
+    { name: 'スターリーナイト',   val: '2,708',  top: false },
+    { name: 'ハマステージ',       val: '2,658',  top: false },
+    { name: 'アークス',           val: '1,988',  top: false },
+    { name: 'イーキューブ',       val: '1,608',  top: false },
+  ];
+
+  const IH = 0.52;
+  const GAP = 0.1;
+  let iy = TOP + 0.1;
+
+  items.forEach(item => {
+    const rowBg = item.top ? 'dbeafe' : 'f5f7fa';
+    const bc    = item.top ? ACCENT   : BORDER;
+    R(s, PX, iy, CW, IH, rowBg);
+    R(s, PX, iy, 0.045, IH, bc);
+    T(s, item.name, PX + 0.18, iy, CW * 0.6, IH,
+      { fontSize: 15, bold: item.top, color: TEXT, valign: 'middle' });
+    T(s, item.val, PX + CW * 0.6, iy, CW * 0.38, IH,
+      { fontSize: 17, bold: true, color: item.top ? ACCENT : TEXT, align: 'right', valign: 'middle' });
+    iy += IH + GAP;
+  });
+}
+
+// ── SLIDE 5: 区民祭り 受注管理 ───────────────────────────
 {
   const s = pptx.addSlide();
   bg(s);
