@@ -169,28 +169,20 @@ function heading(s, title) {
   });
 }
 
-// ── Placeholder slides (4-8) ──────────────────────────────
-const placeholders = [
-  { badge: '① 売上',  title: '営業活動進捗'         },
-  { badge: '②',       title: '店長・副店長から'       },
-  { badge: '③',       title: '吉川さん（PJ関連）'     },
-  { badge: '④',       title: '関さん（防災関連）'     },
-  { badge: '⑤',       title: '業務アイデアコンテスト' },
-];
-
-placeholders.forEach(p => {
+// ── SLIDE 4: 営業活動進捗（プレースホルダー） ────────────
+{
   const s = pptx.addSlide();
   bg(s);
-  const bw = p.badge.length > 2 ? 1.6 : 0.6;
+  const bw = 1.6;
   const bx = (W - bw) / 2;
   R(s, bx, 2.6, bw, 0.38, 'dbeafe');
-  T(s, p.badge, bx, 2.6, bw, 0.38,
+  T(s, '① 売上', bx, 2.6, bw, 0.38,
     { fontSize: 11, bold: true, color: ACCENT, align: 'center', valign: 'middle' });
-  T(s, p.title, PX, 3.15, CW, 0.9,
+  T(s, '営業活動進捗', PX, 3.15, CW, 0.9,
     { fontSize: 30, bold: true, color: TEXT, align: 'center', valign: 'middle' });
   T(s, '内容を準備中', PX, 4.15, CW, 0.4,
     { fontSize: 14, bold: true, color: MUTED, align: 'center', valign: 'middle' });
-});
+}
 
 // ── Write ─────────────────────────────────────────────────
 const args = process.argv.slice(2);
