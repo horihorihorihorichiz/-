@@ -265,6 +265,11 @@ D   |  40%     | それ未満・期間内実績なし
 ■ NSI_Score = Grade付与率 × 25（S+: 25 + 2 = 27点）
 ■ 複数走該当時は最高Gradeを採用
 
+■ Grade早見表（今回Tier別）
+  今回Tier1(G1): S=G1勝/A=G1-3着orG2G3勝/B=G2G3 2-3着orOP勝/C=OP3着以内/D=以下
+  今回Tier2(G2G3): S=G2G3勝orG1-2着/A=G2G3-3着orOP勝/B=OP2-3着or3勝C勝/C=3勝C3着以内/D=以下
+  今回Tier6(1勝C): S=1勝C勝orTier5-2着/A=1勝C-3着or未勝利勝/B=未勝利2-3着or地方S1勝/C=地方S1-3着以内/D=以下
+
 ■ ミス防止チェック（毎レース必須）
   □ 今回Tierを先に確定・明記してから全馬判定
   □ G1の場合: G2勝利はGrade Aまで（1つ下Tier勝利=A）
