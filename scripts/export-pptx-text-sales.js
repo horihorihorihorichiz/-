@@ -220,66 +220,46 @@ function heading(s, title) {
   });
 }
 
-// ── SLIDE 5: 区民祭り 受注管理 ───────────────────────────
+// ── SLIDE 5: 原価引き当てのお願い ─────────────────────────
 {
   const s = pptx.addSlide();
   bg(s);
-  heading(s, '区民祭り 受注管理（10区）');
+  heading(s, '原価引き当てのお願い');
 
-  const RH  = 0.40;
-  const HY  = TOP;
+  // intro box
+  R(s, PX, TOP + 0.1, CW, 0.65, 'dbeafe');
+  T(s, '案件ごとの原価引き当てに、以下の項目も必ず入力してください。', PX + 0.2, TOP + 0.1, CW - 0.4, 0.65,
+    { fontSize: 15, bold: true, color: TEXT, valign: 'middle' });
 
-  const xKu   = PX;          const wKu   = 1.2;
-  const xDate = PX + 1.2;    const wDate = 1.1;
-  const xBid  = PX + 2.3;    const wBid  = 1.4;
-  const xAmt  = PX + 3.7;    const wAmt  = 4.5;
-  const xSts  = PX + 8.2;    const wSts  = 1.0;
+  // card 1: 車両費
+  const cy = TOP + 1.0;
+  const cardW = (CW - 0.3) / 2;
+  R(s, PX, cy, cardW, 1.6, 'f5f7fa');
+  R(s, PX + 0.2, cy + 0.18, 0.45, 0.3, ACCENT);
+  T(s, '①', PX + 0.2, cy + 0.18, 0.45, 0.3,
+    { fontSize: 11, bold: true, color: 'ffffff', align: 'center', valign: 'middle' });
+  T(s, '搬入車両費', PX + 0.8, cy + 0.15, cardW - 1.0, 0.36,
+    { fontSize: 18, bold: true, color: TEXT, valign: 'middle' });
+  T(s, '商品項目「③入件費・車輌費・諸経費」で\n搬入車両費を登録する', PX + 0.2, cy + 0.65, cardW - 0.4, 0.8,
+    { fontSize: 13, bold: true, color: MUTED, valign: 'top', lineSpacingMultiple: 1.5 });
 
-  R(s, PX, HY, CW, RH, 'e8edf5');
-  const ho = { fontSize: 11, bold: true, color: MUTED, valign: 'middle' };
-  T(s, '区',             xKu,   HY, wKu,   RH, ho);
-  T(s, '本番日',         xDate, HY, wDate, RH, { ...ho, align: 'center' });
-  T(s, '入札・見積期限', xBid,  HY, wBid,  RH, { ...ho, align: 'center' });
-  T(s, '契約金額（税抜）', xAmt, HY, wAmt, RH, { ...ho, align: 'right' });
-  T(s, '状況',           xSts,  HY, wSts,  RH, { ...ho, align: 'center' });
+  // card 2: 人件費
+  const cx2 = PX + cardW + 0.3;
+  R(s, cx2, cy, cardW, 1.6, 'f5f7fa');
+  R(s, cx2 + 0.2, cy + 0.18, 0.45, 0.3, ACCENT);
+  T(s, '②', cx2 + 0.2, cy + 0.18, 0.45, 0.3,
+    { fontSize: 11, bold: true, color: 'ffffff', align: 'center', valign: 'middle' });
+  T(s, '人件費', cx2 + 0.8, cy + 0.15, cardW - 1.0, 0.36,
+    { fontSize: 18, bold: true, color: TEXT, valign: 'middle' });
+  T(s, '商品項目「③入件費・車輌費・諸経費」で\n人件費を登録する', cx2 + 0.2, cy + 0.65, cardW - 0.4, 0.8,
+    { fontSize: 13, bold: true, color: MUTED, valign: 'top', lineSpacingMultiple: 1.5 });
 
-  const rows = [
-    { ku: '名東区', date: '5/10',  bid: '3月',  amt: '3,300,000', status: '確定', done: true },
-    { ku: '中村区', date: '10/31', bid: '5月',  amt: '5,500,000', status: '確定', done: true },
-    { ku: '瑞穂区', date: '11/7',  bid: '7月',  amt: '4,000,000', status: '未',   done: false },
-    { ku: '東区',   date: '11/8',  bid: '7月',  amt: '4,930,000', status: '未',   done: false },
-    { ku: '昭和区', date: '11/15', bid: '7月',  amt: '4,300,000', status: '未',   done: false },
-    { ku: '千種区', date: '12/5',  bid: '7月',  amt: '3,700,000', status: '未',   done: false },
-    { ku: '天白区', date: '12/5',  bid: '7月',  amt: '5,200,000', status: '未',   done: false },
-    { ku: '守山区', date: '12/6',  bid: '7月',  amt: '4,000,000', status: '未',   done: false },
-    { ku: '南区',   date: '2/21',  bid: '10月', amt: '2,200,000', status: '未',   done: false },
-    { ku: '中川区', date: '2/28',  bid: '8月頃', amt: '未定',     status: '未',   done: false },
-  ];
-
-  rows.forEach((r, i) => {
-    const ry = HY + RH + RH * i;
-    const rowBg = i % 2 === 0 ? BG : 'f5f7fa';
-    R(s, PX, ry, CW, RH, rowBg);
-
-    T(s, r.ku, xKu, ry, wKu, RH,
-      { fontSize: 13, bold: true, color: TEXT, valign: 'middle' });
-    T(s, r.date, xDate, ry, wDate, RH,
-      { fontSize: 12, bold: true, color: TEXT, align: 'center', valign: 'middle' });
-    T(s, r.bid, xBid, ry, wBid, RH,
-      { fontSize: 12, bold: true, color: TEXT, align: 'center', valign: 'middle' });
-    T(s, r.amt, xAmt, ry, wAmt, RH,
-      { fontSize: 13, bold: true, color: r.amt === '未定' ? MUTED : TEXT, align: 'right', valign: 'middle' });
-
-    const stsBg = r.done ? GREEN : 'e5e7eb';
-    const stsFg = r.done ? 'ffffff' : MUTED;
-    const stsW = 0.65;
-    const stsX = xSts + (wSts - stsW) / 2;
-    const stsH = 0.24;
-    const stsY = ry + (RH - stsH) / 2;
-    R(s, stsX, stsY, stsW, stsH, stsBg);
-    T(s, r.status, stsX, stsY, stsW, stsH,
-      { fontSize: 10, bold: true, color: stsFg, align: 'center', valign: 'middle' });
-  });
+  // warning box
+  const wy = cy + 1.85;
+  R(s, PX, wy, CW, 0.6, 'fef3c7');
+  T(s, '売上だけでなく、車両費・人件費の引き当ても毎回必ず行ってください。正確な原価把握につながります。',
+    PX + 0.2, wy, CW - 0.4, 0.6,
+    { fontSize: 13, bold: true, color: '92400e', valign: 'middle' });
 }
 
 // ── Write ─────────────────────────────────────────────────
