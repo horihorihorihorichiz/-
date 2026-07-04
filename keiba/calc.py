@@ -345,7 +345,7 @@ def pace_stage(race):
     st = max(0, min(4, st))
     # 馬場補正(最終): 稍=ミドルハイ(set3) / 重・不良=ミドル上限(min2)
     baba = race["baba"]
-    if baba == "稍": st = 3; log.append("稍重→ミドルハイ(set3)")
+    if baba == "稍": st = min(st, 3); log.append("稍重→ミドルハイ上限(min3)")
     elif baba in ("重","不"): st = min(st, 2); log.append("重/不良→ミドル上限(min2)")
     st = max(0, min(4, st))
     log.append(f"確定展開={st}({STAGE_NAME[st]})")

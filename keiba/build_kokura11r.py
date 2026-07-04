@@ -104,6 +104,6 @@ H.append(Hh(14,"マトラコーニッシュ","差",2.5,[
  R(2000,1,10,1,7,36.0,2,7,351), R(2000,4,9,6,6,35.6,2,7,378),
  R(1800,5,14,7,9,34.4,2,7,463)],56,432,-2,[1,2]))
 race={"name":"博多S(JRA 3勝クラス) 小倉11R 芝1800","venue":"小倉","surface":"芝","distance":1800,
- "field":14,"baba":"重","today_vg":2,"dist_cat":"M","dsi_haiten":5,"today_tier":5,"nsi_haiten":18,"horses":H}
+ "field":14,"baba":"稍","today_vg":2,"dist_cat":"M","dsi_haiten":5,"today_tier":5,"nsi_haiten":18,"horses":H}
 json.dump(race,open('race_kokura11r.json','w',encoding='utf-8'),ensure_ascii=False,indent=2)
 calc.print_report(calc.run(race))
