@@ -5,3 +5,6 @@ slides/exports/*.pdf
 slides/exports/*.png
 __pycache__/
 *.pyc
+
+# i-PAT認証情報（本物だけ無視・.exampleは可）
+keiba/ipat_secret.local
