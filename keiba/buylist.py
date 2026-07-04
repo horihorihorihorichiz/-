@@ -91,3 +91,34 @@ def allocate(pwin, tan=None, b4=None, b5=None, trip=None,
         print(f"{kind:<5}{lbl:<10}{o:>8}{st:>7}{pay:>9.0f}{pay/budget*100:>5.0f}%{ev*100:>5.0f}%{flag}")
     print(f"\n合計{total}円 期待払戻{exp:.0f}円 期待回収{exp/total*100:.0f}% 点数{len(picks)}")
     return picks
+
+
+def screen(pwin, tan=None, b4=None, b5=None, trip=None,
+           budget=10000, floor=2.5, unit=100,
+           edge_top1=1.5, edge_top2=1.8, min_return=1.3, fav_cut=3.0):
+    """期待値の高いレースだけGOにする機械判定。
+    返り値: dict(go, reason, exp_return, picks, edges)
+    """
+    order = sorted(pwin, key=lambda h: -pwin[h])
+    top1, top2 = order[0], (order[1] if len(order) > 1 else order[0])
+    tan = tan or {}
+    ev1 = pwin[top1]*tan.get(top1, 0)
+    ev2 = pwin[top2]*tan.get(top2, 0)
+    # NO-GO: モデル1位=1番人気かつ短オッズ（妙味なし）
+    fav = min(tan, key=lambda h: tan[h]) if tan else None
+    if fav == top1 and tan.get(top1, 99) < fav_cut:
+        return dict(go=False, reason=f"モデル1位が1番人気({tan.get(top1)}倍)で妙味薄", exp_return=None, picks=[], edges=(ev1, ev2))
+    # ポートフォリオ試算（allocateを静かに回す）
+    import io, contextlib
+    buf = io.StringIO()
+    with contextlib.redirect_stdout(buf):
+        picks = allocate(pwin, tan=tan, b4=b4, b5=b5, trip=trip,
+                         budget=budget, floor=floor, unit=unit)
+    tot = sum(p[3] for p in picks) or 1
+    exp = sum(p[3]*p[4]*p[2] for p in picks)/tot  # Σ stake*prob*odds / total
+    edge_ok = (ev1 >= edge_top1) or (ev2 >= edge_top2)
+    go = bool(edge_ok and exp >= min_return and picks)
+    reason = (f"GO: 単勝EV top1={ev1*100:.0f}% top2={ev2*100:.0f}% / 期待回収{exp*100:.0f}%"
+              if go else
+              f"見送り: edge={'OK' if edge_ok else 'NG'} 期待回収{exp*100:.0f}%(<{min_return*100:.0f}%)")
+    return dict(go=go, reason=reason, exp_return=exp, picks=picks, edges=(ev1, ev2))
