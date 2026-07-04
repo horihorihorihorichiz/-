@@ -4,7 +4,7 @@
   "surface": "芝",
   "distance": 1800,
   "field": 14,
-  "baba": "良",
+  "baba": "重",
   "today_vg": 2,
   "dist_cat": "M",
   "dsi_haiten": 5,
@@ -572,7 +572,9 @@
       "boost": 0,
       "last_race_days": 42,
       "csi": 2.5,
-      "offtrack_finishes": [],
+      "offtrack_finishes": [
+        6
+      ],
       "races": [
         {
           "surface": "芝",
@@ -870,7 +872,10 @@
       "boost": 0,
       "last_race_days": 91,
       "csi": 5,
-      "offtrack_finishes": [],
+      "offtrack_finishes": [
+        9,
+        1
+      ],
       "races": [
         {
           "surface": "芝",
@@ -1019,7 +1024,9 @@
       "boost": 0,
       "last_race_days": 15,
       "csi": 2.5,
-      "offtrack_finishes": [],
+      "offtrack_finishes": [
+        12
+      ],
       "races": [
         {
           "surface": "芝",
@@ -1183,7 +1190,10 @@
       "boost": 0,
       "last_race_days": 91,
       "csi": 0,
-      "offtrack_finishes": [],
+      "offtrack_finishes": [
+        15,
+        11
+      ],
       "races": [
         {
           "surface": "芝",
@@ -1466,7 +1476,9 @@
       "boost": 0,
       "last_race_days": 35,
       "csi": 2.5,
-      "offtrack_finishes": [],
+      "offtrack_finishes": [
+        5
+      ],
       "races": [
         {
           "surface": "芝",
@@ -1779,7 +1791,10 @@
       "boost": 0,
       "last_race_days": 91,
       "csi": 2.5,
-      "offtrack_finishes": [],
+      "offtrack_finishes": [
+        1,
+        1
+      ],
       "races": [
         {
           "surface": "芝",
@@ -1928,7 +1943,10 @@
       "boost": 0,
       "last_race_days": 43,
       "csi": 2.5,
-      "offtrack_finishes": [],
+      "offtrack_finishes": [
+        1,
+        2
+      ],
       "races": [
         {
           "surface": "芝",
