@@ -38,15 +38,19 @@ const a = analyzeDiscards({ counts: parseHand('123456789m123p1s1z').counts, aka:
 // 1s か 1z を切ればテンパイ。best は shanten 0
 eq('打牌解析 best向聴', a[0].shanten, 0);
 
-// --- score ---
-const sc = score({ win: 'ron', riichi: true, dora: 2, players: 4 });
-eq('点数 リーチ+ドラ2 ロン', sc.points, 10); // 6+2+1+1
-const scT = score({ win: 'tsumo', riichi: false, dora: 1, players: 4 });
-eq('点数 ツモ ドラ1 (総取り)', scT.totalGain, 9); // (2+1)*3
+// --- score（粗品動画 #21-1 の数字に準拠）---
+const scRon = score({ win: 'ron', riichi: true, dora: 2, players: 4 });
+eq('点数 リーチ+ドラ2 ロン', scRon.total, 10); // 6 + ドラ2 + リーチ2
+const scTri = score({ win: 'tsumo', riichi: true, dora: 0, players: 4 });
+eq('点数 リーチツモ 計8', scTri.total, 8);      // 2×3 + リーチ2（フラット）
+const scTd = score({ win: 'tsumo', riichi: false, dora: 1, players: 4 });
+eq('点数 ツモ ドラ1', scTd.total, 9);           // (2+1)×3
 const scK = score({ win: 'ron', kokushi: true, players: 4 });
-eq('点数 国士', scK.points, 20);
-const scCap = score({ win: 'ron', riichi: true, dora: 30, players: 4 });
-eq('点数 上限20', scCap.points, 20);
+eq('点数 国士 ロン', scK.total, 20);
+const scKt = score({ win: 'tsumo', kokushi: true, players: 4 });
+eq('点数 国士 ツモ (計60)', scKt.total, 60);    // 20×3
+const scCap = score({ win: 'ron', riichi: false, dora: 30, players: 4 });
+eq('点数 1人あたり上限20', scCap.perPayer, 20);
 
 // --- dora count ---
 const dh = parseHand('55m'); // 5m2枚, ドラ表示4m → ドラ5m が2枚
