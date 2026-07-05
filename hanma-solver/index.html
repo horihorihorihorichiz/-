@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>韓麻ソルバー — 打牌解析</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <h1>韓麻ソルバー <span class="badge">Phase 1 · 打牌アドバイザー</span></h1>
+      <div class="sub">パラダイスシティ「韓麻」ルール準拠の牌効率・打点解析エンジン。14枚を入力すると、切る牌ごとの向聴・受け入れ・ドラを計算して最善手を提示します。</div>
+    </header>
+
+    <div class="panel">
+      <h2>手牌入力</h2>
+      <div class="row">
+        <div>
+          <label>手牌（13〜14枚）— 例: <code>123456789m123p1s1z</code></label>
+          <input id="hand" type="text" placeholder="123456789m123p1s1z" value="123456789m123p1s1z" autocomplete="off">
+        </div>
+      </div>
+      <div class="row" style="margin-top:12px">
+        <div>
+          <label>表ドラ表示牌（任意・複数可）— 例: <code>3m 5p</code></label>
+          <input id="dora" type="text" placeholder="3m 5p" autocomplete="off">
+        </div>
+        <div>
+          <label>鳴いた面子数（0〜4）</label>
+          <input id="melds" type="text" placeholder="0" value="0" autocomplete="off">
+        </div>
+      </div>
+      <div class="hint">赤5は <code>0m</code> / <code>0p</code> / <code>0s</code> で入力。字牌は <code>1z</code>=東 …<code>7z</code>=中。</div>
+      <div class="examples" id="examples"></div>
+      <button class="btn" id="go">解析する</button>
+      <div class="error" id="err"></div>
+    </div>
+
+    <div class="panel" id="resultPanel" style="display:none">
+      <h2>解析結果</h2>
+      <div class="summary">
+        <div><div class="big num" id="shantenVal">–</div><div class="lbl">向聴数</div></div>
+        <div id="handTiles" class="tiles"></div>
+      </div>
+      <div id="formTags" style="margin-bottom:14px"></div>
+
+      <div id="discardSection">
+        <table>
+          <thead>
+            <tr><th>切る</th><th>向聴</th><th class="num">受け入れ</th><th>有効牌</th><th class="num">ドラ</th><th></th></tr>
+          </thead>
+          <tbody id="discardBody"></tbody>
+        </table>
+        <div class="footer-note">並び順: 向聴が小さい → 受け入れ枚数が多い → ドラが多い → 赤を切らない。<span class="pill gold">最善</span> が推奨打牌。</div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h2>この先の予定（ロードマップ）</h2>
+      <div style="font-size:.85rem; color:var(--muted)">
+        <strong style="color:var(--text)">Phase 1（現在）</strong>: 打牌アドバイザー — 向聴・受け入れ・ドラ計算 ✅<br>
+        <strong style="color:var(--text)">Phase 2</strong>: 放銃リスク＋アガリ率でEV採点、相手の河・リーチを考慮<br>
+        <strong style="color:var(--text)">Phase 3</strong>: 実戦プレイできる卓（ヒューリスティックAI）<br>
+        <strong style="color:var(--text)">Phase 4</strong>: 自己対戦で鍛えたニューラルネットAI＋EVロス採点（＝韓麻版スノーウィー）
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="src/app.js"></script>
+</body>
+</html>
