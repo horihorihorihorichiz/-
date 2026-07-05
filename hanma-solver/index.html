@@ -9,8 +9,8 @@
 <body>
   <div class="wrap">
     <header>
-      <h1>韓麻ソルバー <span class="badge">Phase 1 · 打牌アドバイザー</span></h1>
-      <div class="sub">パラダイスシティ「韓麻」ルール準拠の牌効率・打点解析エンジン。14枚を入力すると、切る牌ごとの向聴・受け入れ・ドラを計算して最善手を提示します。</div>
+      <h1>韓麻ソルバー <span class="badge">Phase 2 · EV採点</span></h1>
+      <div class="sub">パラダイスシティ「韓麻」ルール準拠の牌効率・打点解析エンジン。14枚を入力すると、切る牌ごとの向聴・受け入れ・ドラを計算し、さらにモンテカルロで<strong>アガリ率・平均打点・EV</strong>を実測して最善手を提示します。</div>
     </header>
 
     <div class="panel">
@@ -30,11 +30,17 @@
           <label>鳴いた面子数（0〜4）</label>
           <input id="melds" type="text" placeholder="0" value="0" autocomplete="off">
         </div>
+        <div>
+          <label>残り自摸巡数（EV解析用）</label>
+          <input id="turns" type="text" placeholder="12" value="12" autocomplete="off">
+        </div>
       </div>
       <div class="hint">赤5は <code>0m</code> / <code>0p</code> / <code>0s</code> で入力。字牌は <code>1z</code>=東 …<code>7z</code>=中。</div>
       <div class="examples" id="examples"></div>
       <button class="btn" id="go">解析する</button>
+      <button class="btn btn-ev" id="goEV">EV解析（モンテカルロ）</button>
       <div class="error" id="err"></div>
+      <div id="progress" class="progress" style="display:none"><div id="progressBar"></div><span id="progressText"></span></div>
     </div>
 
     <div class="panel" id="resultPanel" style="display:none">
@@ -48,19 +54,20 @@
       <div id="discardSection">
         <table>
           <thead>
-            <tr><th>切る</th><th>向聴</th><th class="num">受け入れ</th><th>有効牌</th><th class="num">ドラ</th><th></th></tr>
+            <tr><th>切る</th><th>向聴</th><th class="num">受け入れ</th><th>有効牌</th><th class="num">ドラ</th><th class="num">アガリ率</th><th class="num">平均打点</th><th class="num">EV</th><th></th></tr>
           </thead>
           <tbody id="discardBody"></tbody>
         </table>
-        <div class="footer-note">並び順: 向聴が小さい → 受け入れ枚数が多い → ドラが多い → 赤を切らない。<span class="pill gold">最善</span> が推奨打牌。</div>
+        <div class="footer-note" id="footerNote">並び順: 向聴が小さい → 受け入れ枚数が多い → ドラが多い → 赤を切らない。<span class="pill gold">最善</span> が推奨打牌。<br><strong>EV解析</strong>を押すと、残り山からのモンテカルロ試行で各打牌の<strong>アガリ率・平均打点・EV</strong>を実測し、EV順に並べ替えます（EVが真の推奨打牌）。</div>
       </div>
     </div>
 
     <div class="panel">
       <h2>この先の予定（ロードマップ）</h2>
       <div style="font-size:.85rem; color:var(--muted)">
-        <strong style="color:var(--text)">Phase 1（現在）</strong>: 打牌アドバイザー — 向聴・受け入れ・ドラ計算 ✅<br>
-        <strong style="color:var(--text)">Phase 2</strong>: 放銃リスク＋アガリ率でEV採点、相手の河・リーチを考慮<br>
+        <strong style="color:var(--text)">Phase 1</strong>: 打牌アドバイザー — 向聴・受け入れ・ドラ計算 ✅<br>
+        <strong style="color:var(--text)">Phase 2a（現在）</strong>: モンテカルロで<strong>アガリ率・平均打点・アガリEV</strong>を実測 ✅<br>
+        <strong style="color:var(--text)">Phase 2b</strong>: 放銃リスクを引き、相手の河・リーチを考慮した<strong>正味EV</strong>へ（次）<br>
         <strong style="color:var(--text)">Phase 3</strong>: 実戦プレイできる卓（ヒューリスティックAI）<br>
         <strong style="color:var(--text)">Phase 4</strong>: 自己対戦で鍛えたニューラルネットAI＋EVロス採点（＝韓麻版スノーウィー）
       </div>

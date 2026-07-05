@@ -55,8 +55,17 @@ input[type=text]:focus { outline: none; border-color: var(--accent-2); }
   padding: 10px 20px; font-size: .95rem; font-weight: 700; cursor: pointer; margin-top: 14px;
 }
 .btn:hover { filter: brightness(1.08); }
+.btn-ev { background: var(--accent-2); color: #04283a; margin-left: 10px; }
+.btn:disabled { opacity: .5; cursor: default; }
 
 .error { color: var(--warn); font-size: .85rem; margin-top: 10px; min-height: 1.2em; }
+
+.progress { margin-top: 12px; height: 22px; background: var(--panel-2); border: 1px solid var(--border); border-radius: 999px; position: relative; overflow: hidden; }
+.progress #progressBar { position: absolute; left: 0; top: 0; bottom: 0; width: 0; background: linear-gradient(90deg, var(--accent-2), var(--accent)); transition: width .15s; }
+.progress span { position: absolute; width: 100%; text-align: center; font-size: .72rem; line-height: 22px; color: var(--text); z-index: 1; }
+.ev-strong { font-weight: 800; color: var(--accent); }
+td.ev-best { color: var(--accent); font-weight: 800; }
+.evloss { color: var(--warn); font-size: .74rem; }
 
 /* 牌表示 */
 .tiles { display: flex; gap: 4px; flex-wrap: wrap; align-items: center; }

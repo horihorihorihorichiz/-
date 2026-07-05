@@ -1,9 +1,10 @@
 // 簡易テスト: node hanma-solver/test/engine.test.mjs で実行
 import { parseHand, tileName } from '../src/tiles.js';
-import { shanten } from '../src/shanten.js';
+import { shanten, normalShanten } from '../src/shanten.js';
 import { ukeire } from '../src/ukeire.js';
 import { analyzeDiscards } from '../src/analyze.js';
 import { score, countDora } from '../src/score.js';
+import { monteCarloDiscard } from '../src/mc.js';
 
 let pass = 0, fail = 0;
 function eq(name, got, want) {
@@ -56,6 +57,41 @@ eq('点数 1人あたり上限20', scCap.perPayer, 20);
 const dh = parseHand('55m'); // 5m2枚, ドラ表示4m → ドラ5m が2枚
 eq('ドラ計算 表示4m→5m×2', countDora(parseHand('55m').counts, 0, [parseHand('4m').tiles[0]]), 2);
 eq('ドラ計算 赤2枚', countDora(parseHand('11m').counts, 2, []), 2);
+
+// --- 高速向聴 vs ブルートフォース参照（乱数ハンド） ---
+function refShanten(counts, called = 0) {
+  const c = counts.slice(); let best = 8;
+  (function rec(i, m, t, h) {
+    while (i < 34 && c[i] === 0) i++;
+    if (i >= 34) { const mm = Math.min(m, 4); const sh = 8 - 2 * mm - Math.min(t, 4 - mm) - (h ? 1 : 0); if (sh < best) best = sh; return; }
+    const inS = i < 27, r = i % 9;
+    if (c[i] >= 3) { c[i] -= 3; rec(i, m + 1, t, h); c[i] += 3; }
+    if (inS && r <= 6 && c[i + 1] > 0 && c[i + 2] > 0) { c[i]--; c[i + 1]--; c[i + 2]--; rec(i, m + 1, t, h); c[i]++; c[i + 1]++; c[i + 2]++; }
+    if (c[i] >= 2 && !h) { c[i] -= 2; rec(i, m, t, true); c[i] += 2; }
+    if (c[i] >= 2) { c[i] -= 2; rec(i, m, t + 1, h); c[i] += 2; }
+    if (inS && r <= 7 && c[i + 1] > 0) { c[i]--; c[i + 1]--; rec(i, m, t + 1, h); c[i]++; c[i + 1]++; }
+    if (inS && r <= 6 && c[i + 2] > 0) { c[i]--; c[i + 2]--; rec(i, m, t + 1, h); c[i]++; c[i + 2]++; }
+    c[i]--; rec(i, m, t, h); c[i]++;
+  })(0, called, 0, false);
+  return best;
+}
+let shMis = 0;
+for (let k = 0; k < 5000; k++) {
+  const called = k % 3, n = 13 - called * 3 + (k % 2);
+  const c = new Array(34).fill(0);
+  for (let placed = 0, g = 0; placed < n && g < 999; g++) { const i = Math.floor(Math.random() * 34); if (c[i] < 4) { c[i]++; placed++; } }
+  if (normalShanten(c, called) !== refShanten(c, called)) shMis++;
+}
+eq('高速向聴 = 参照実装（5000乱数）', shMis, 0);
+
+// --- モンテカルロ スモーク（統計的・緩い下限）---
+const tenpai = parseHand('123456789m1122p').counts; // 3p/待ち相当のテンパイ
+const unseen = new Array(34).fill(4);
+for (let i = 0; i < 34; i++) unseen[i] -= tenpai[i];
+const mc = monteCarloDiscard({ hand13: tenpai, akaCount: 0, calledMelds: 0, omoteIndicators: [], unseen, turnsLeft: 16, rollouts: 500, players: 4 });
+eq('MC winRate ∈ [0,1]', mc.winRate >= 0 && mc.winRate <= 1, true);
+eq('MC テンパイのアガリ率 > 0.4', mc.winRate > 0.4, true);
+eq('MC EV = winRate×打点', Math.abs(mc.ev - mc.winRate * mc.avgPoints) < 1e-9, true);
 
 console.log(`\n=== ${pass} passed, ${fail} failed ===`);
 process.exit(fail ? 1 : 0);
