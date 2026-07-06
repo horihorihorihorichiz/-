@@ -44,7 +44,7 @@ function build({ modules, css, html, out, docsName, title = '韓麻', standalone
 
 // 実戦
 build({
-  modules: ['src/tiles.js', 'src/tileview.js', 'src/shanten.js', 'src/ukeire.js', 'src/score.js', 'src/analyze.js', 'src/game.js', 'src/play.js'],
+  modules: ['src/tiles.js', 'src/tiles-data.js', 'src/tileview.js', 'src/shanten.js', 'src/ukeire.js', 'src/score.js', 'src/analyze.js', 'src/game.js', 'src/play.js'],
   css: ['styles.css', 'play.css'],
   html: 'play.html',
   out: 'play-standalone.html',
@@ -55,7 +55,7 @@ build({
 
 // 何切るクイズ
 build({
-  modules: ['src/tiles.js', 'src/tileview.js', 'src/shanten.js', 'src/ukeire.js', 'src/score.js', 'src/analyze.js', 'src/danger.js', 'src/game.js', 'src/quiz.js'],
+  modules: ['src/tiles.js', 'src/tiles-data.js', 'src/tileview.js', 'src/shanten.js', 'src/ukeire.js', 'src/score.js', 'src/analyze.js', 'src/danger.js', 'src/game.js', 'src/quiz.js'],
   css: ['styles.css', 'quiz.css'],
   html: 'quiz.html',
   out: 'quiz-standalone.html',

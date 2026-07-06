@@ -1,13 +1,10 @@
-// tileview.js — 本物風の牌フェイス描画（play/quiz 共通）
-import { suitOf, rankOf } from './tiles.js';
+// tileview.js — 牌フェイス描画（play/quiz 共通）
+// 牌の絵柄は CC BY 4.0 の素材（FluffyStuff/riichi-mahjong-tiles）を使用。
+import { rankOf } from './tiles.js';
+import { TILE_SVG } from './tiles-data.js';
 
-const HONOR_CH = ['東', '南', '西', '北', '白', '發', '中'];
-const SUIT_CH = { m: '萬', p: 'ピ', s: '索' };
-// 見やすさ優先: 数牌は「大きな数字＋スート表記（萬 / ピ / 索）」で描画。
 export function faceHTML(idx) {
-  const s = suitOf(idx), r = rankOf(idx);
-  if (s === 'z') { const h = idx - 27; return `<span class="fz z${h}">${HONOR_CH[h]}</span>`; }
-  return `<span class="fn suit-${s}"><b>${r}</b><i>${SUIT_CH[s]}</i></span>`;
+  return `<img class="tface" src="${TILE_SVG[idx]}" alt="" draggable="false">`;
 }
 
 export function tileEl(idx, opts = {}) {

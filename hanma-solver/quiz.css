@@ -73,11 +73,7 @@
 .tile.red { background: linear-gradient(158deg, #fff6f4, #f0d7d3); }
 .tile.back { background: linear-gradient(135deg, #2e8494, #114f5c); border-color: #0b3a44; }
 .tile.back::after { content: ''; position: absolute; inset: 4px; border-radius: 3px; border: 1.5px solid rgba(255,255,255,.16); background: repeating-linear-gradient(45deg, rgba(255,255,255,.06) 0 3px, transparent 3px 6px); }
-.fn { display: flex; flex-direction: column; align-items: center; justify-content: center; line-height: .82; font-family: -apple-system, "Hiragino Kaku Gothic ProN", sans-serif; }
-.fn b { font-size: 30px; font-weight: 800; }
-.fn i { font-size: 13px; font-weight: 700; font-style: normal; margin-top: 2px; }
-.t-sm .fn b { font-size: 18px; } .t-sm .fn i { font-size: 8px; }
-.fn.suit-m { color: #a81d1d; } .fn.suit-p { color: #1a5aa8; } .fn.suit-s { color: #12813c; }
+.tface { width: 100%; height: 100%; object-fit: contain; display: block; pointer-events: none; }
 .fz { font-family: "Hiragino Mincho ProN", "Yu Mincho", serif; font-weight: 800; font-size: 23px; color: #243349; }
 .t-sm .fz { font-size: 13px; }
 .fz.z4 { color: #2565a8; } .fz.z5 { color: #1e7a41; } .fz.z6 { color: #c0392b; }
