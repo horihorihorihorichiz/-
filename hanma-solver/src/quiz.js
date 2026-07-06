@@ -112,8 +112,7 @@ function grade(state) {
     const c = counts.slice(); c[r.discard]--;
     r.soba = sobaCount(c);
     // 評価値: 向聴を最優先、同向聴内で「手広さ＋打点(実ドラ＋ドラそばの伸び)」を放銃リスクで割り引く
-    // ドラそばはあくまで“ちょい足し”。受け入れ・実ドラを覆すほどには効かせない。
-    const value = (r.ukeireTotal + r.dora * 3 + r.soba * 0.25) * (1 - 0.85 * r.dealIn);
+    const value = (r.ukeireTotal + r.dora * 3 + r.soba * 0.7) * (1 - 0.85 * r.dealIn);
     r.score = -r.shanten * 100000 + value * 10;
   }
   results.sort((a, b) => b.score - a.score || a.dealIn - b.dealIn);
@@ -185,7 +184,6 @@ function explainWhy(best, pick, g) {
 
   P.push(`<b>${bt}切り</b>は向聴を落とさず <b>${fmtSh(best.shanten)}</b> を保ち、受け入れも <b>${best.ukeireTotal}枚</b> と広い。アガリまで最短で、狙う形は${formTxt}。`);
   if (best.dora > 0) P.push(`ドラを <b>${best.dora}枚</b> 確保できるため打点も見込める。韓麻は5がすべて赤ドラなので、5そのものと周辺の価値が大きい。`);
-  if (best.soba > 0) P.push(`ドラそば（引けばドラ入りの順子になる牌）も少し残せて、打点の伸びしろがわずかに広い。あくまで小さな加点で、受け入れやアガリやすさを覆すほどではない。`);
   const menzen = st.melds[0].length === 0;
   const pts = score({ win: 'ron', riichi: menzen, dora: best.dora, players: st.players }).total;
   P.push(`アガった場合の打点は約 <b>${pts}点</b>（役・飜は無く、ロン6＋ドラ${best.dora}${menzen ? '＋リーチ2' : ''}）。`);
