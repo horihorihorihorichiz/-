@@ -9,7 +9,7 @@
 <body>
   <div class="wrap">
     <header>
-      <h1>韓麻ソルバー <span class="badge">Phase 2 · EV採点</span></h1>
+      <h1>韓麻ソルバー <span class="badge">Phase 2 · EV採点＋放銃リスク</span></h1>
       <div class="sub">パラダイスシティ「韓麻」ルール準拠の牌効率・打点解析エンジン。14枚を入力すると、切る牌ごとの向聴・受け入れ・ドラを計算し、さらにモンテカルロで<strong>アガリ率・平均打点・EV</strong>を実測して最善手を提示します。</div>
     </header>
 
@@ -35,6 +35,17 @@
           <input id="turns" type="text" placeholder="12" value="12" autocomplete="off">
         </div>
       </div>
+      <div class="row" style="margin-top:12px">
+        <div>
+          <label>警戒相手（テンパイ濃厚）の人数（0〜3）— 放銃リスク用</label>
+          <input id="threats" type="text" placeholder="0" value="0" autocomplete="off">
+        </div>
+        <div>
+          <label>場に見えている牌（相手の河・副露など・任意）— 例: <code>1112z 9m</code></label>
+          <input id="seen" type="text" placeholder="1z 9m 5p" autocomplete="off">
+        </div>
+      </div>
+      <div class="hint">⚠ 韓麻は<strong>フリテン無し＝現物でも当たる</strong>ため、捨て牌による絶対安全牌はありません。危険度は相手の手を知らない前提のヒューリスティック（相対比較用）です。</div>
       <div class="hint">赤5は <code>0m</code> / <code>0p</code> / <code>0s</code> で入力。字牌は <code>1z</code>=東 …<code>7z</code>=中。</div>
       <div class="examples" id="examples"></div>
       <button class="btn" id="go">解析する</button>
@@ -54,11 +65,16 @@
       <div id="discardSection">
         <table>
           <thead>
-            <tr><th>切る</th><th>向聴</th><th class="num">受け入れ</th><th>有効牌</th><th class="num">ドラ</th><th class="num">アガリ率</th><th class="num">平均打点</th><th class="num">EV</th><th></th></tr>
+            <tr><th>切る</th><th>向聴</th><th class="num">受け入れ</th><th>有効牌</th><th class="num">ドラ</th><th class="num">放銃率</th><th class="num">アガリ率</th><th class="num">平均打点</th><th class="num">アガリEV</th><th class="num">正味EV</th><th></th></tr>
           </thead>
           <tbody id="discardBody"></tbody>
         </table>
-        <div class="footer-note" id="footerNote">並び順: 向聴が小さい → 受け入れ枚数が多い → ドラが多い → 赤を切らない。<span class="pill gold">最善</span> が推奨打牌。<br><strong>EV解析</strong>を押すと、残り山からのモンテカルロ試行で各打牌の<strong>アガリ率・平均打点・EV</strong>を実測し、EV順に並べ替えます（EVが真の推奨打牌）。</div>
+        <div class="footer-note" id="footerNote">
+          <strong>放銃率</strong>: 警戒相手の人数を入れると表示（フリテン無しのため現物でも当たる前提のヒューリスティック）。<br>
+          <strong>アガリEV</strong> = アガリ率 × 平均打点（自分がアガる側の期待値）。<br>
+          <strong>正味EV</strong> = アガリEV − 放銃率 × 平均失点（この牌を切る損得）。警戒人数が1人以上なら<span class="pill gold">最善</span>は正味EVで判定します。<br>
+          <span style="color:var(--muted)">※アガリEVはまだ相手のアガリで自分の手が流れる分を割り引いていません（Phase 2bの近似）。</span>
+        </div>
       </div>
     </div>
 
@@ -66,9 +82,9 @@
       <h2>この先の予定（ロードマップ）</h2>
       <div style="font-size:.85rem; color:var(--muted)">
         <strong style="color:var(--text)">Phase 1</strong>: 打牌アドバイザー — 向聴・受け入れ・ドラ計算 ✅<br>
-        <strong style="color:var(--text)">Phase 2a（現在）</strong>: モンテカルロで<strong>アガリ率・平均打点・アガリEV</strong>を実測 ✅<br>
-        <strong style="color:var(--text)">Phase 2b</strong>: 放銃リスクを引き、相手の河・リーチを考慮した<strong>正味EV</strong>へ（次）<br>
-        <strong style="color:var(--text)">Phase 3</strong>: 実戦プレイできる卓（ヒューリスティックAI）<br>
+        <strong style="color:var(--text)">Phase 2a</strong>: モンテカルロで<strong>アガリ率・平均打点・アガリEV</strong>を実測 ✅<br>
+        <strong style="color:var(--text)">Phase 2b（現在）</strong>: 放銃リスク（フリテン無し前提）を引いた<strong>正味EV</strong> ✅<br>
+        <strong style="color:var(--text)">Phase 3（次）</strong>: 実戦プレイできる卓（ヒューリスティックAI）<br>
         <strong style="color:var(--text)">Phase 4</strong>: 自己対戦で鍛えたニューラルネットAI＋EVロス採点（＝韓麻版スノーウィー）
       </div>
     </div>

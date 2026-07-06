@@ -5,6 +5,7 @@ import { ukeire } from '../src/ukeire.js';
 import { analyzeDiscards } from '../src/analyze.js';
 import { score, countDora } from '../src/score.js';
 import { monteCarloDiscard } from '../src/mc.js';
+import { dealInProb } from '../src/danger.js';
 
 let pass = 0, fail = 0;
 function eq(name, got, want) {
@@ -92,6 +93,16 @@ const mc = monteCarloDiscard({ hand13: tenpai, akaCount: 0, calledMelds: 0, omot
 eq('MC winRate ∈ [0,1]', mc.winRate >= 0 && mc.winRate <= 1, true);
 eq('MC テンパイのアガリ率 > 0.4', mc.winRate > 0.4, true);
 eq('MC EV = winRate×打点', Math.abs(mc.ev - mc.winRate * mc.avgPoints) < 1e-9, true);
+
+// --- 放銃リスク（フリテン無し前提）---
+const idxOf = (s) => parseHand(s).tiles[0];
+const noSeen = new Array(34).fill(0);
+eq('放銃 警戒0人は0%', dealInProb(idxOf('5m'), noSeen, 0), 0);
+eq('放銃 中張>端牌', dealInProb(idxOf('5m'), noSeen, 1) > dealInProb(idxOf('1m'), noSeen, 1), true);
+eq('放銃 中張>字牌', dealInProb(idxOf('5m'), noSeen, 1) > dealInProb(idxOf('5z'), noSeen, 1), true);
+eq('放銃 人数増で上昇', dealInProb(idxOf('5m'), noSeen, 2) > dealInProb(idxOf('5m'), noSeen, 1), true);
+const wall = noSeen.slice(); wall[idxOf('4m')] = 3; // 4mが3枚見え → 5mの両面待ち減
+eq('放銃 壁で低下', dealInProb(idxOf('5m'), wall, 1) < dealInProb(idxOf('5m'), noSeen, 1), true);
 
 console.log(`\n=== ${pass} passed, ${fail} failed ===`);
 process.exit(fail ? 1 : 0);

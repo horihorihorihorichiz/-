@@ -2,11 +2,30 @@
 import { parseHand, formatCounts, tileName, totalTiles, suitOf, rankOf, N_TILES } from './tiles.js';
 import { shanten } from './shanten.js';
 import { analyzeDiscards } from './analyze.js';
+import { dealInProb, DANGER_CONFIG } from './danger.js';
 
 const $ = (id) => document.getElementById(id);
 
 // 直近の14枚解析の状態（EV解析で参照）
-let lastAnalysis = null; // { counts, aka, calledMelds, omoteIndicators, results }
+let lastAnalysis = null; // { counts, aka, calledMelds, omoteIndicators, seen, threats, results }
+
+// 場の見え牌 counts（自分の手牌は含まない: 表ドラ表示 + 見え牌入力）。ウケイレ計算用。
+function buildBoardSeen(omoteIndicators, seenStr) {
+  const seen = new Array(N_TILES).fill(0);
+  for (const t of omoteIndicators) seen[t]++;
+  if (seenStr && seenStr.trim()) {
+    const { tiles } = parseHand(seenStr.trim());
+    for (const t of tiles) seen[t]++;
+  }
+  return seen;
+}
+
+// 危険度用の全見え牌（場の見え牌 + 自分の手牌）。相手が持てない枚数の推定に使う。
+function combineSeen(boardSeen, counts) {
+  const s = boardSeen.slice();
+  for (let i = 0; i < N_TILES; i++) s[i] = Math.min(4, s[i] + counts[i]);
+  return s;
+}
 
 const EXAMPLES = [
   { label: '2向聴の何切る', hand: '13m22456p13899s5z6z', dora: '4p' },
@@ -58,19 +77,26 @@ function run() {
       throw new Error(`牌数が合いません（${n}枚）。鳴き${calledMelds}なら手牌は${expected}枚(解析は${expected + 1}枚)想定です。`);
     }
     const omoteIndicators = parseIndicators($('dora').value);
+    const threats = Math.max(0, Math.min(3, parseInt($('threats').value || '0', 10) || 0));
+    const boardSeen = buildBoardSeen(omoteIndicators, $('seen').value);
+    const seenAll = combineSeen(boardSeen, counts); // 危険度用（手牌込み）
 
     $('resultPanel').style.display = '';
 
     if (n === expected + 1) {
-      // 14枚 → 打牌解析
-      const results = analyzeDiscards({ counts, aka, calledMelds, omoteIndicators });
+      // 14枚 → 打牌解析（ウケイレは場の見え牌のみ、手牌は ukeire 内で加算）
+      const results = analyzeDiscards({ counts, aka, calledMelds, omoteIndicators, seen: boardSeen });
+      for (const r of results) {
+        r.dealInProb = dealInProb(r.discard, seenAll, threats);
+      }
       const sh = shanten(counts, calledMelds);
       $('shantenVal').textContent = fmtShanten(results[0].shanten) + ' 目標';
       renderTiles($('handTiles'), counts, aka);
       renderForms(sh);
+      // renderDiscards は lastAnalysis.threats を参照するため先に確定させる
+      lastAnalysis = { counts, aka, calledMelds, omoteIndicators, boardSeen, threats, results };
       renderDiscards(results);
       $('discardSection').style.display = '';
-      lastAnalysis = { counts, aka, calledMelds, omoteIndicators, results };
       $('goEV').disabled = false;
       $('progress').style.display = 'none';
     } else {
@@ -113,11 +139,14 @@ function renderForms(sh) {
 function renderDiscards(results, evMode = false) {
   const body = $('discardBody');
   body.innerHTML = '';
-  const bestEv = evMode ? Math.max(...results.map(r => r.ev ?? -Infinity)) : null;
+  const threats = lastAnalysis?.threats || 0;
+  const useNet = evMode && threats > 0;
+  const metric = (r) => useNet ? (r.netEv ?? -Infinity) : (r.ev ?? -Infinity);
+  const bestVal = evMode ? Math.max(...results.map(metric)) : null;
   for (const r of results) {
     const tr = document.createElement('tr');
     tr.dataset.discard = r.discard;
-    const isBest = evMode ? (r.ev === bestEv) : r.isBest;
+    const isBest = evMode ? (metric(r) === bestVal) : r.isBest;
     if (isBest) tr.className = 'best';
 
     // 切る牌
@@ -156,25 +185,39 @@ function renderDiscards(results, evMode = false) {
     // ドラ
     const tdDora = document.createElement('td'); tdDora.className = 'num'; tdDora.textContent = r.dora; tr.appendChild(tdDora);
 
-    // アガリ率 / 平均打点 / EV（MC後のみ）
-    const tdWin = document.createElement('td'); tdWin.className = 'num win';
-    const tdPts = document.createElement('td'); tdPts.className = 'num pts';
-    const tdEv = document.createElement('td'); tdEv.className = 'num ev';
+    // 放銃率
+    const tdDanger = document.createElement('td'); tdDanger.className = 'num';
+    if (threats > 0 && r.dealInProb != null) {
+      const pct = r.dealInProb * 100;
+      const cls = pct >= 12 ? 'danger-hi' : pct >= 6 ? 'danger-mid' : 'danger-lo';
+      tdDanger.innerHTML = `<span class="${cls}">${pct.toFixed(1)}%</span>`;
+    } else tdDanger.textContent = '–';
+    tr.appendChild(tdDanger);
+
+    // アガリ率 / 平均打点 / アガリEV / 正味EV（MC後のみ）
+    const tdWin = document.createElement('td'); tdWin.className = 'num';
+    const tdPts = document.createElement('td'); tdPts.className = 'num';
+    const tdEv = document.createElement('td'); tdEv.className = 'num';
+    const tdNet = document.createElement('td'); tdNet.className = 'num';
     if (r.ev != null) {
       tdWin.textContent = (r.winRate * 100).toFixed(1) + '%';
       tdPts.textContent = r.avgPoints.toFixed(1);
-      const evLoss = bestEv != null && r.ev < bestEv ? ` <span class="evloss">(-${(bestEv - r.ev).toFixed(2)})</span>` : '';
-      tdEv.innerHTML = `<span class="${isBest ? 'ev-strong' : ''}">${r.ev.toFixed(2)}</span>${evLoss}`;
+      const evBest = useNet ? false : isBest;
+      tdEv.innerHTML = `<span class="${evBest ? 'ev-strong' : ''}">${r.ev.toFixed(2)}</span>`;
+      if (threats > 0 && r.netEv != null) {
+        const netLoss = bestVal != null && metric(r) < bestVal ? ` <span class="evloss">(-${(bestVal - r.netEv).toFixed(2)})</span>` : '';
+        tdNet.innerHTML = `<span class="${isBest ? 'ev-strong' : ''}">${r.netEv.toFixed(2)}</span>${netLoss}`;
+      } else tdNet.textContent = '–';
     } else {
-      tdWin.textContent = tdPts.textContent = tdEv.textContent = '–';
+      tdWin.textContent = tdPts.textContent = tdEv.textContent = tdNet.textContent = '–';
     }
-    tr.appendChild(tdWin); tr.appendChild(tdPts); tr.appendChild(tdEv);
+    tr.appendChild(tdWin); tr.appendChild(tdPts); tr.appendChild(tdEv); tr.appendChild(tdNet);
 
     // 最善マーク
     const tdBest = document.createElement('td');
     if (isBest) {
       const p = document.createElement('span'); p.className = 'pill gold';
-      p.textContent = evMode ? 'EV最善' : '最善'; tdBest.appendChild(p);
+      p.textContent = evMode ? (useNet ? '正味最善' : 'EV最善') : '最善'; tdBest.appendChild(p);
     }
     tr.appendChild(tdBest);
 
@@ -200,14 +243,13 @@ let evWorker = null;
 
 function runEV() {
   if (!lastAnalysis) return;
-  const { counts, aka, calledMelds, omoteIndicators, results } = lastAnalysis;
+  const { counts, aka, calledMelds, omoteIndicators, boardSeen, threats, results } = lastAnalysis;
   const turnsLeft = Math.max(1, Math.min(18, parseInt($('turns').value || '12', 10) || 12));
   const players = 4;
 
-  // 場に見えている牌: 自分の手牌14枚 + 表ドラ表示牌 を除いた残りを山とみなす（v1近似）
+  // 山とみなす残り: 4枚 − 手牌 − 場の見え牌（表ドラ表示・相手の河など）
   const unseen = new Array(N_TILES).fill(4);
-  for (let i = 0; i < N_TILES; i++) unseen[i] -= counts[i];
-  for (const t of omoteIndicators) unseen[t]--;
+  for (let i = 0; i < N_TILES; i++) unseen[i] -= counts[i] + boardSeen[i];
 
   const cands = results.slice(0, MAX_CANDIDATES);
   const jobs = cands.map(r => {
@@ -237,13 +279,19 @@ function runEV() {
       $('progressBar').style.width = pct + '%';
       $('progressText').textContent = `EV解析中… ${done} / ${jobs.length}`;
     } else if (m.type === 'done') {
-      // 解析した候補を EV 降順、未解析は末尾へ
-      const sorted = [...results].sort((a, b) => (b.ev ?? -Infinity) - (a.ev ?? -Infinity));
+      // 正味EV = アガリEV − 放銃率 × 平均失点
+      for (const r of results) {
+        if (r.ev != null) r.netEv = r.ev - (r.dealInProb || 0) * DANGER_CONFIG.avgLoss;
+      }
+      const key = threats > 0 ? (r => r.netEv ?? -Infinity) : (r => r.ev ?? -Infinity);
+      const sorted = [...results].sort((a, b) => key(b) - key(a));
       lastAnalysis.results = sorted;
       renderDiscards(sorted, true);
       const best = sorted[0];
-      $('shantenVal').textContent = 'EV ' + (best.ev != null ? best.ev.toFixed(2) : '–');
-      $('progressText').textContent = `完了（各${ROLLOUTS}試行 / 残り${turnsLeft}巡）`;
+      const label = threats > 0 ? '正味EV ' : 'EV ';
+      const val = threats > 0 ? best.netEv : best.ev;
+      $('shantenVal').textContent = label + (val != null ? val.toFixed(2) : '–');
+      $('progressText').textContent = `完了（各${ROLLOUTS}試行 / 残り${turnsLeft}巡 / 警戒${threats}人）`;
       $('progressBar').style.width = '100%';
       $('goEV').disabled = false; $('go').disabled = false;
       evWorker.terminate(); evWorker = null;
