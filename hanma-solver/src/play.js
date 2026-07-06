@@ -69,59 +69,65 @@ function meldEl(meld) {
   return el;
 }
 
-function pos(state, p) { // 相手の呼び名
-  const names = { 1: '下家', 2: '対面', 3: '上家' };
+const SEAT_MAP = {
+  4: { 1: 'Right', 2: 'Top', 3: 'Left' },
+  3: { 1: 'Right', 2: 'Left' },
+};
+function seatOf(state, p) {
   const rel = (p - state.humanIndex + state.players) % state.players;
-  return `AI ${p}（${names[rel] || ''}）`;
+  if (rel === 0) return 'Bottom';
+  return SEAT_MAP[state.players][rel];
+}
+function seatLabel(state, p) {
+  const rel = (p - state.humanIndex + state.players) % state.players;
+  const nm = { 1: '下家', 2: state.players === 4 ? '対面' : '上家', 3: '上家' };
+  return rel === 0 ? 'あなた' : `AI・${nm[rel]}`;
 }
 
 function render() {
-  // インフォバー
-  const dora = $('doraDisp'); dora.innerHTML = '';
-  for (const d of state.doraIndicators) dora.appendChild(tileEl(d, { small: true }));
-  $('wallCount').textContent = state.wall.length;
-  $('potDisp').textContent = state.pot;
+  // 中央（ドラ表示・残り・供託）
+  const pc = $('pondCenter');
+  pc.innerHTML = '<div class="dora-wall"></div>' +
+    `<div class="pc-info"><span>残 <b>${state.wall.length}</b></span>` +
+    (state.pot ? `<span class="pot">供託 <b>${state.pot}</b></span>` : '') + '</div>';
+  const dw = pc.querySelector('.dora-wall');
+  for (const d of state.doraIndicators) dw.appendChild(tileEl(d, { small: true }));
 
-  // 相手
-  const opp = $('opponents'); opp.innerHTML = '';
-  for (let k = 1; k < state.players; k++) {
-    const p = (state.humanIndex + k) % state.players;
-    const div = document.createElement('div');
-    div.className = 'opp' + (state.turn === p && state.phase !== 'over' ? ' turn-now' : '');
-    const head = document.createElement('div'); head.className = 'ophead';
-    const conceal = state.hands[p].reduce((a, b) => a + b, 0);
-    head.innerHTML = `<span class="name">${pos(state, p)}</span><span class="score">${fmtScore(state.scores[p])}</span>` +
-      (state.riichi[p] ? '<span class="riichi-tag">リーチ</span>' : '');
-    div.appendChild(head);
-    // 手牌（裏）＋副露
-    const handrow = document.createElement('div'); handrow.className = 'ophand tiles';
-    backsInto(handrow, conceal, true);
-    for (const meld of state.melds[p]) handrow.appendChild(meldEl(meld));
-    div.appendChild(handrow);
-    // 河
-    const river = document.createElement('div'); river.className = 'river tiles';
-    for (const t of state.discards[p]) river.appendChild(tileEl(t, { small: true }));
-    div.appendChild(river);
-    opp.appendChild(div);
+  for (const s of ['Top', 'Left', 'Right', 'Bottom']) { $('seat' + s).innerHTML = ''; $('river' + s).innerHTML = ''; }
+
+  for (let p = 0; p < state.players; p++) {
+    const seat = seatOf(state, p);
+    const seatEl = $('seat' + seat), riverEl = $('river' + seat);
+    const isTurn = state.turn === p && state.phase !== 'over';
+    seatEl.classList.toggle('turn-now', isTurn);
+
+    const info = document.createElement('div'); info.className = 'seat-info';
+    info.innerHTML = `<span class="seat-name">${seatLabel(state, p)}</span>` +
+      `<span class="seat-score">${fmtScore(state.scores[p])}</span>` +
+      (state.riichi[p] ? '<span class="riichi-tag">リーチ</span>' : '') +
+      (isTurn ? '<span class="turn-dot">●</span>' : '');
+    seatEl.appendChild(info);
+
+    if (p !== state.humanIndex) {
+      const bk = document.createElement('div'); bk.className = 'backs';
+      backsInto(bk, state.hands[p].reduce((a, b) => a + b, 0), true);
+      seatEl.appendChild(bk);
+    }
+    if (state.melds[p].length) {
+      const m = document.createElement('div'); m.className = 'seat-melds';
+      for (const md of state.melds[p]) m.appendChild(meldEl(md));
+      seatEl.appendChild(m);
+    }
+    for (const t of state.discards[p]) riverEl.appendChild(tileEl(t, { small: true }));
   }
 
-  // 自分
-  $('myScore').textContent = fmtScore(state.scores[state.humanIndex]);
-  const myState = $('myState');
-  myState.innerHTML = state.riichi[state.humanIndex] ? '<span class="riichi-tag">リーチ中</span>' : '';
-
-  // 副露
+  // 自分の副露・手牌
   const mm = $('myMelds'); mm.innerHTML = '';
   for (const meld of state.melds[state.humanIndex]) mm.appendChild(meldEl(meld));
 
   renderHand();
   renderActions();
   renderHint();
-
-  // 自分の河
-  const riv = $('myDiscards'); riv.innerHTML = '';
-  for (const t of state.discards[state.humanIndex]) riv.appendChild(tileEl(t, { small: true }));
-
   renderResult();
 }
 
@@ -219,7 +225,7 @@ function renderResult() {
   let html = '';
   if (r.type === 'win') {
     const meWin = r.winner === state.humanIndex;
-    const who = meWin ? 'あなた' : pos(state, r.winner);
+    const who = meWin ? 'あなた' : seatLabel(state, r.winner);
     html += `<div class="rhead ${meWin ? 'win' : 'lose'}">${who}の${r.kind === 'tsumo' ? 'ツモ' : 'ロン'}和了！ ${r.totalGain}点</div>`;
     html += `<div class="tiles" id="winHand"></div>`;
     const parts = r.breakdown.map(([k, v]) => `${k} ${v}`).join(' ／ ');
@@ -227,11 +233,11 @@ function renderResult() {
     html += `<div style="color:var(--muted);font-size:.85rem;margin-top:6px">内訳: ${parts}${extra}</div>`;
   } else {
     html += `<div class="rhead">流局</div>`;
-    html += `<div style="color:var(--muted);font-size:.85rem">テンパイ: ${r.tenpai.length ? r.tenpai.map(p => p === state.humanIndex ? 'あなた' : pos(state, p)).join('、') : 'なし'}</div>`;
+    html += `<div style="color:var(--muted);font-size:.85rem">テンパイ: ${r.tenpai.length ? r.tenpai.map(p => p === state.humanIndex ? 'あなた' : seatLabel(state, p)).join('、') : 'なし'}</div>`;
   }
   html += `<div class="deltas">` + state.scores.map((s, p) => {
     const d = r.deltas ? r.deltas[p] : 0;
-    const nm = p === state.humanIndex ? 'あなた' : pos(state, p);
+    const nm = p === state.humanIndex ? 'あなた' : seatLabel(state, p);
     const dc = d > 0 ? 'up' : d < 0 ? 'down' : '';
     return `<span>${nm}: <span class="${dc}">${d > 0 ? '+' : ''}${d}</span> → ${fmtScore(s)}</span>`;
   }).join('') + `</div>`;

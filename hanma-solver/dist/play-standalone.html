@@ -102,54 +102,82 @@ tr.best td:first-child { border-left: 3px solid var(--accent); }
 .footer-note { color: var(--muted); font-size: .74rem; margin-top: 8px; }
 code { background: var(--panel-2); padding: 1px 5px; border-radius: 4px; font-size: .82em; }
 
-/* ===== 韓麻 実戦: フェルト卓＋本物風の牌 ===== */
-:root { --felt: #15653f; --tile-edge: #cbc3a8; }
+/* ===== 韓麻 実戦: よくある麻雀アプリ風の四辺レイアウト ===== */
+:root { --tile-edge: #cbc3a8; --felt-a: #1a7a4e; --felt-b: #0e4a2d; }
 
-/* 情報バー */
-.infobar { display: flex; gap: 20px; align-items: center; flex-wrap: wrap; background: #14251c; border-color: #244634; }
-.infobar .lbl { color: #8fb6a2; font-size: .72rem; margin-right: 6px; }
-.infobar .val { font-weight: 800; font-size: 1.1rem; }
-.infobar #doraDisp { gap: 3px; }
-.hintToggle { color: var(--muted); font-size: .8rem; display: flex; align-items: center; gap: 6px; margin: 0; }
+.wrap-play { max-width: 1040px; margin: 0 auto; padding: 16px; }
+.topbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 10px; flex-wrap: wrap; }
+.topbar .ttl { font-size: 1.2rem; font-weight: 800; }
+.topbar .controls { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.topbar select { background: var(--panel-2); color: var(--text); border: 1px solid var(--border); border-radius: 6px; padding: 5px 8px; }
+.hintToggle { color: var(--muted); font-size: .82rem; display: flex; align-items: center; gap: 5px; }
 .hintToggle input { width: auto; }
+.solverlink { color: var(--accent-2); font-size: .8rem; text-decoration: none; }
+.rotate-hint { display: none; }
+@media (max-width: 680px) { .rotate-hint { display: block; text-align: center; color: var(--muted); font-size: .74rem; margin-bottom: 8px; } }
 
-/* 相手席 */
-#opponents { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
-.opp { background: linear-gradient(#123a29, #0e2c1f); border: 1px solid #1c4a34; border-radius: 12px; padding: 9px 14px; }
-.opp .ophead { display: flex; align-items: center; gap: 10px; margin-bottom: 4px; }
-.opp .name { font-weight: 700; color: #e9f5ee; }
-.opp .score { color: #7fe0aa; font-variant-numeric: tabular-nums; }
-.opp .riichi-tag { background: rgba(248,113,113,.18); color: #ff9d9d; font-size: .68rem; padding: 1px 8px; border-radius: 999px; }
-.opp .ophand { display: flex; flex-wrap: wrap; gap: 3px; align-items: center; margin: 4px 0; }
-.opp .river { display: flex; flex-wrap: wrap; gap: 3px; margin-top: 5px; opacity: .96; }
-.opp.turn-now { box-shadow: inset 0 0 0 2px #ffd24a, 0 0 14px rgba(255,210,74,.22); }
+/* 卓 */
+.table {
+  background: radial-gradient(ellipse at center, var(--felt-a), var(--felt-b) 80%);
+  border: 7px solid #3c2718; border-radius: 20px; padding: 10px;
+  box-shadow: inset 0 0 40px rgba(0,0,0,.35), 0 6px 18px rgba(0,0,0,.4);
+  display: grid;
+  grid-template-columns: minmax(104px, .85fr) 1.7fr minmax(104px, .85fr);
+  grid-template-rows: auto 1fr auto;
+  grid-template-areas: ". top ." "left pond right" ". bottom .";
+  gap: 6px; min-height: 440px;
+}
+.seat-top { grid-area: top; } .seat-left { grid-area: left; }
+.seat-right { grid-area: right; } .seat-bottom { grid-area: bottom; } .pond { grid-area: pond; }
 
-/* 自分の卓 */
-.myarea { background: radial-gradient(ellipse at 50% 130%, #176b43, #0d472b 72%); border: 1px solid #1c4a34; }
-.myarea .myhead { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
-.myarea .myhead .lbl { color: #cfe9db; font-size: .82rem; }
-.myarea .score { color: #7fe0aa; font-weight: 800; font-variant-numeric: tabular-nums; }
-.melds { display: flex; gap: 8px; flex-wrap: wrap; }
-.meld { display: inline-flex; gap: 2px; align-items: center; }
-.hand { display: flex; flex-wrap: wrap; gap: 6px; margin: 12px 0; min-height: 64px; padding: 8px; background: rgba(0,0,0,.16); border-radius: 10px; }
-.river { display: flex; flex-wrap: wrap; gap: 3px; margin-top: 10px; }
+.seat { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 3px; }
+.seat-left, .seat-right { justify-content: center; }
+.seat-bottom { flex-direction: column; }
+.seat-info { display: inline-flex; gap: 6px; align-items: center; font-size: .74rem; background: rgba(0,0,0,.3); padding: 2px 9px; border-radius: 999px; white-space: nowrap; }
+.seat-name { color: #eaf6ef; font-weight: 700; }
+.seat-score { color: #8fe6b3; font-variant-numeric: tabular-nums; }
+.seat.turn-now .seat-info { box-shadow: 0 0 0 2px #ffd24a; }
+.turn-dot { color: #ffd24a; font-size: .6rem; animation: pulse 1.1s infinite; }
+@keyframes pulse { 50% { opacity: .3; } }
+.riichi-tag { background: rgba(248,113,113,.2); color: #ff9d9d; font-size: .66rem; padding: 1px 7px; border-radius: 999px; }
+.backs { display: flex; flex-wrap: wrap; gap: 2px; justify-content: center; max-width: 100%; }
+.seat-left .backs, .seat-right .backs { max-width: 100px; }
+.seat-melds { display: flex; gap: 4px; flex-wrap: wrap; justify-content: center; }
 
-/* アクション */
-.actions { display: flex; gap: 10px; margin: 12px 0; flex-wrap: wrap; align-items: center; min-height: 20px; }
+/* 中央の河 */
+.pond {
+  display: grid; grid-template-columns: auto minmax(120px, 1fr) auto; grid-template-rows: auto 1fr auto;
+  grid-template-areas: ". rt ." "rl pc rr" ". rb ."; gap: 4px;
+  background: rgba(0,0,0,.16); border-radius: 12px; padding: 6px; min-height: 200px;
+}
+.river-top { grid-area: rt; } .river-bottom { grid-area: rb; }
+.river-left { grid-area: rl; } .river-right { grid-area: rr; } .pond-center { grid-area: pc; }
+.river { display: flex; flex-wrap: wrap; gap: 2px; align-content: center; justify-content: center; }
+.river-left, .river-right { max-width: 90px; }
+.pond-center { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; }
+.dora-wall { display: flex; gap: 2px; padding: 4px 6px; background: rgba(0,0,0,.34); border-radius: 7px; }
+.pc-info { display: flex; gap: 12px; font-size: .72rem; color: #cfe9db; }
+.pc-info b { color: #fff; font-size: .95rem; font-variant-numeric: tabular-nums; }
+.pc-info .pot b { color: #ffd24a; }
+
+/* 自分の手牌トレイ */
+.tray { margin-top: 12px; }
+.tray .melds { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; min-height: 0; margin-bottom: 6px; }
+.hand { display: flex; flex-wrap: wrap; gap: 5px; justify-content: center; padding: 12px 10px; min-height: 74px;
+  background: linear-gradient(#12432c, #0c3521); border: 1px solid #1c4a34; border-radius: 14px;
+  box-shadow: inset 0 2px 10px rgba(0,0,0,.3); }
+.actions { display: flex; gap: 10px; margin: 12px 0; flex-wrap: wrap; align-items: center; justify-content: center; min-height: 20px; }
 .actions .btn { margin: 0; }
-.act-ron { background: #e05353; color: #2a0606; }
-.act-tsumo { background: var(--gold); color: #2a1e02; }
-.act-pon { background: var(--accent-2); color: #04283a; }
-.act-skip { background: #223; color: var(--text); border: 1px solid var(--border); }
+.act-ron { background: #e05353; color: #2a0606; } .act-tsumo { background: var(--gold); color: #2a1e02; }
+.act-pon { background: var(--accent-2); color: #04283a; } .act-skip { background: #223; color: var(--text); border: 1px solid var(--border); }
 .riichi-arm { display: flex; align-items: center; gap: 6px; color: var(--gold); font-size: .85rem; }
 .btn:disabled { opacity: .5; cursor: default; }
-
-.hint-box { background: rgba(56,189,248,.1); border: 1px solid #23506b; border-radius: 8px; padding: 8px 12px; font-size: .82rem; margin: 8px 0; }
+.hint-box { background: rgba(56,189,248,.1); border: 1px solid #23506b; border-radius: 8px; padding: 8px 12px; font-size: .82rem; margin: 8px auto; max-width: 640px; text-align: center; }
 .hint-box .rec { color: var(--accent-2); font-weight: 700; }
 
+#resultPanel { margin-top: 14px; }
 #resultPanel .rhead { font-size: 1.2rem; font-weight: 800; margin-bottom: 8px; }
-#resultPanel .win { color: var(--accent); }
-#resultPanel .lose { color: var(--warn); }
+#resultPanel .win { color: var(--accent); } #resultPanel .lose { color: var(--warn); }
 #resultPanel .tiles { display: flex; flex-wrap: wrap; gap: 4px; }
 #resultPanel .deltas { display: flex; gap: 16px; flex-wrap: wrap; margin-top: 10px; font-variant-numeric: tabular-nums; }
 #resultPanel .deltas .up { color: var(--accent); } #resultPanel .deltas .down { color: var(--warn); }
@@ -164,76 +192,65 @@ code { background: var(--panel-2); padding: 1px 5px; border-radius: 4px; font-si
   box-shadow: inset 0 -4px 0 #d6cdb0, inset 0 2px 2px #fff, 0 3px 5px rgba(0,0,0,.45);
   cursor: default; overflow: hidden; user-select: none;
 }
-.tile.t-sm { width: 26px; height: 36px; border-radius: 5px; box-shadow: inset 0 -3px 0 #d6cdb0, 0 2px 3px rgba(0,0,0,.4); }
+.tile.t-sm { width: 24px; height: 33px; border-radius: 4px; box-shadow: inset 0 -3px 0 #d6cdb0, 0 1px 2px rgba(0,0,0,.4); }
 .tile.red { background: linear-gradient(158deg, #fff6f4, #f0d7d3); }
-.tile.back {
-  background: linear-gradient(135deg, #2e8494, #114f5c);
-  border-color: #0b3a44; box-shadow: inset 0 -4px 0 #0b3a44, 0 3px 5px rgba(0,0,0,.45);
-}
-.tile.back::after {
-  content: ''; position: absolute; inset: 5px; border-radius: 4px; border: 2px solid rgba(255,255,255,.16);
-  background: repeating-linear-gradient(45deg, rgba(255,255,255,.06) 0 4px, transparent 4px 8px);
-}
-.tile.t-sm.back::after { inset: 3px; }
+.tile.back { background: linear-gradient(135deg, #2e8494, #114f5c); border-color: #0b3a44; box-shadow: inset 0 -3px 0 #0b3a44, 0 2px 3px rgba(0,0,0,.4); }
+.tile.back::after { content: ''; position: absolute; inset: 4px; border-radius: 3px; border: 1.5px solid rgba(255,255,255,.16);
+  background: repeating-linear-gradient(45deg, rgba(255,255,255,.06) 0 3px, transparent 3px 6px); }
 
 .pips { width: 100%; height: 100%; display: block; }
 .pdot { fill: #215f9e; } .pdot.rd { fill: #c0392b; } .pdotc { fill: #faf7ec; }
 .sbar { fill: #1e7a41; } .sbar.rd { fill: #c0392b; }
-
 .fm { display: flex; flex-direction: column; align-items: center; line-height: .95; color: #8a1f1f; font-family: "Hiragino Mincho ProN", "Yu Mincho", serif; }
 .fm b { font-size: 21px; font-weight: 800; } .fm i { font-size: 10px; font-style: normal; margin-top: 1px; }
-.t-sm .fm b { font-size: 13px; } .t-sm .fm i { font-size: 6px; }
-
+.t-sm .fm b { font-size: 12px; } .t-sm .fm i { font-size: 6px; }
 .fz { font-family: "Hiragino Mincho ProN", "Yu Mincho", serif; font-weight: 800; font-size: 23px; color: #243349; }
-.t-sm .fz { font-size: 14px; }
+.t-sm .fz { font-size: 13px; }
 .fz.z4 { color: #2565a8; } .fz.z5 { color: #1e7a41; } .fz.z6 { color: #c0392b; }
 
-/* 手牌インタラクション */
 .hand .tile { cursor: pointer; transition: transform .08s; }
 .hand .tile:hover { transform: translateY(-8px); }
-.hand .tile.drawn { margin-left: 16px; box-shadow: inset 0 -4px 0 #d6cdb0, inset 0 2px 2px #fff, 0 3px 5px rgba(0,0,0,.45), 0 0 0 2px rgba(255,210,74,.5); }
-.hand .tile.disabled { opacity: .38; cursor: default; }
-.hand .tile.disabled:hover { transform: none; }
-
+.hand .tile.drawn { margin-left: 16px; box-shadow: inset 0 -4px 0 #d6cdb0, inset 0 2px 2px #fff, 0 3px 5px rgba(0,0,0,.45), 0 0 0 2px rgba(255,210,74,.6); }
+.hand .tile.disabled { opacity: .38; cursor: default; } .hand .tile.disabled:hover { transform: none; }
 @media (prefers-reduced-motion: reduce) { .hand .tile { transition: none; } }
 
 </style>
 
-  <div class="wrap">
-    <header>
-      <h1>韓麻 実戦 <span class="badge">Phase 3 · 対AI</span>
-        
-      </h1>
-      <div class="sub">パラダイスシティ「韓麻」ルールでAIと1局対戦。役なし・フリテンなし・チーなし（ポンあり）・5は全部赤。「お手本」を出すとソルバーの推奨打牌が見えます。</div>
-    </header>
-
-    <div class="panel infobar">
-      <div><span class="lbl">表ドラ</span><span id="doraDisp" class="tiles"></span></div>
-      <div><span class="lbl">残り</span><span id="wallCount" class="val">–</span>枚</div>
-      <div><span class="lbl">供託</span><span id="potDisp" class="val">0</span></div>
-      <div><span class="lbl">人数</span>
+  <div class="wrap-play">
+    <div class="topbar">
+      <div class="ttl">韓麻 実戦 <span class="badge">対AI</span></div>
+      <div class="controls">
         <select id="playerCount"><option value="4">4人</option><option value="3">3人</option></select>
+        <button class="btn" id="newGame">新しい局</button>
+        <label class="hintToggle"><input type="checkbox" id="showHint"> お手本</label>
+        
       </div>
-      <button class="btn" id="newGame">新しい局</button>
-      <label class="hintToggle"><input type="checkbox" id="showHint"> お手本を表示</label>
     </div>
 
-    <div id="opponents"></div>
+    <div class="rotate-hint">端末を横向きにするとより見やすくなります📱↻</div>
+
+    <div class="table" id="table">
+      <div class="seat seat-top" id="seatTop"></div>
+      <div class="seat seat-left" id="seatLeft"></div>
+      <div class="pond">
+        <div class="river river-top" id="riverTop"></div>
+        <div class="river river-left" id="riverLeft"></div>
+        <div class="pond-center" id="pondCenter"></div>
+        <div class="river river-right" id="riverRight"></div>
+        <div class="river river-bottom" id="riverBottom"></div>
+      </div>
+      <div class="seat seat-right" id="seatRight"></div>
+      <div class="seat seat-bottom" id="seatBottom"></div>
+    </div>
+
+    <div class="tray">
+      <div id="myMelds" class="melds"></div>
+      <div id="myHand" class="hand"></div>
+      <div id="actions" class="actions"></div>
+      <div id="hint" class="hint-box" style="display:none"></div>
+    </div>
 
     <div class="panel" id="resultPanel" style="display:none"></div>
-
-    <div class="panel myarea">
-      <div class="myhead">
-        <span class="lbl">あなた（東家起家）</span>
-        <span id="myScore" class="score">0</span>
-        <span id="myState"></span>
-      </div>
-      <div id="myMelds" class="melds"></div>
-      <div id="myHand" class="hand tiles"></div>
-      <div id="hint" class="hint-box" style="display:none"></div>
-      <div id="actions" class="actions"></div>
-      <div id="myDiscards" class="river tiles"></div>
-    </div>
   </div>
 
   
@@ -1193,59 +1210,65 @@ function meldEl(meld) {
   return el;
 }
 
-function pos(state, p) { // 相手の呼び名
-  const names = { 1: '下家', 2: '対面', 3: '上家' };
+const SEAT_MAP = {
+  4: { 1: 'Right', 2: 'Top', 3: 'Left' },
+  3: { 1: 'Right', 2: 'Left' },
+};
+function seatOf(state, p) {
   const rel = (p - state.humanIndex + state.players) % state.players;
-  return `AI ${p}（${names[rel] || ''}）`;
+  if (rel === 0) return 'Bottom';
+  return SEAT_MAP[state.players][rel];
+}
+function seatLabel(state, p) {
+  const rel = (p - state.humanIndex + state.players) % state.players;
+  const nm = { 1: '下家', 2: state.players === 4 ? '対面' : '上家', 3: '上家' };
+  return rel === 0 ? 'あなた' : `AI・${nm[rel]}`;
 }
 
 function render() {
-  // インフォバー
-  const dora = $('doraDisp'); dora.innerHTML = '';
-  for (const d of state.doraIndicators) dora.appendChild(tileEl(d, { small: true }));
-  $('wallCount').textContent = state.wall.length;
-  $('potDisp').textContent = state.pot;
+  // 中央（ドラ表示・残り・供託）
+  const pc = $('pondCenter');
+  pc.innerHTML = '<div class="dora-wall"></div>' +
+    `<div class="pc-info"><span>残 <b>${state.wall.length}</b></span>` +
+    (state.pot ? `<span class="pot">供託 <b>${state.pot}</b></span>` : '') + '</div>';
+  const dw = pc.querySelector('.dora-wall');
+  for (const d of state.doraIndicators) dw.appendChild(tileEl(d, { small: true }));
 
-  // 相手
-  const opp = $('opponents'); opp.innerHTML = '';
-  for (let k = 1; k < state.players; k++) {
-    const p = (state.humanIndex + k) % state.players;
-    const div = document.createElement('div');
-    div.className = 'opp' + (state.turn === p && state.phase !== 'over' ? ' turn-now' : '');
-    const head = document.createElement('div'); head.className = 'ophead';
-    const conceal = state.hands[p].reduce((a, b) => a + b, 0);
-    head.innerHTML = `<span class="name">${pos(state, p)}</span><span class="score">${fmtScore(state.scores[p])}</span>` +
-      (state.riichi[p] ? '<span class="riichi-tag">リーチ</span>' : '');
-    div.appendChild(head);
-    // 手牌（裏）＋副露
-    const handrow = document.createElement('div'); handrow.className = 'ophand tiles';
-    backsInto(handrow, conceal, true);
-    for (const meld of state.melds[p]) handrow.appendChild(meldEl(meld));
-    div.appendChild(handrow);
-    // 河
-    const river = document.createElement('div'); river.className = 'river tiles';
-    for (const t of state.discards[p]) river.appendChild(tileEl(t, { small: true }));
-    div.appendChild(river);
-    opp.appendChild(div);
+  for (const s of ['Top', 'Left', 'Right', 'Bottom']) { $('seat' + s).innerHTML = ''; $('river' + s).innerHTML = ''; }
+
+  for (let p = 0; p < state.players; p++) {
+    const seat = seatOf(state, p);
+    const seatEl = $('seat' + seat), riverEl = $('river' + seat);
+    const isTurn = state.turn === p && state.phase !== 'over';
+    seatEl.classList.toggle('turn-now', isTurn);
+
+    const info = document.createElement('div'); info.className = 'seat-info';
+    info.innerHTML = `<span class="seat-name">${seatLabel(state, p)}</span>` +
+      `<span class="seat-score">${fmtScore(state.scores[p])}</span>` +
+      (state.riichi[p] ? '<span class="riichi-tag">リーチ</span>' : '') +
+      (isTurn ? '<span class="turn-dot">●</span>' : '');
+    seatEl.appendChild(info);
+
+    if (p !== state.humanIndex) {
+      const bk = document.createElement('div'); bk.className = 'backs';
+      backsInto(bk, state.hands[p].reduce((a, b) => a + b, 0), true);
+      seatEl.appendChild(bk);
+    }
+    if (state.melds[p].length) {
+      const m = document.createElement('div'); m.className = 'seat-melds';
+      for (const md of state.melds[p]) m.appendChild(meldEl(md));
+      seatEl.appendChild(m);
+    }
+    for (const t of state.discards[p]) riverEl.appendChild(tileEl(t, { small: true }));
   }
 
-  // 自分
-  $('myScore').textContent = fmtScore(state.scores[state.humanIndex]);
-  const myState = $('myState');
-  myState.innerHTML = state.riichi[state.humanIndex] ? '<span class="riichi-tag">リーチ中</span>' : '';
-
-  // 副露
+  // 自分の副露・手牌
   const mm = $('myMelds'); mm.innerHTML = '';
   for (const meld of state.melds[state.humanIndex]) mm.appendChild(meldEl(meld));
 
   renderHand();
   renderActions();
   renderHint();
-
-  // 自分の河
-  const riv = $('myDiscards'); riv.innerHTML = '';
-  for (const t of state.discards[state.humanIndex]) riv.appendChild(tileEl(t, { small: true }));
-
   renderResult();
 }
 
@@ -1343,7 +1366,7 @@ function renderResult() {
   let html = '';
   if (r.type === 'win') {
     const meWin = r.winner === state.humanIndex;
-    const who = meWin ? 'あなた' : pos(state, r.winner);
+    const who = meWin ? 'あなた' : seatLabel(state, r.winner);
     html += `<div class="rhead ${meWin ? 'win' : 'lose'}">${who}の${r.kind === 'tsumo' ? 'ツモ' : 'ロン'}和了！ ${r.totalGain}点</div>`;
     html += `<div class="tiles" id="winHand"></div>`;
     const parts = r.breakdown.map(([k, v]) => `${k} ${v}`).join(' ／ ');
@@ -1351,11 +1374,11 @@ function renderResult() {
     html += `<div style="color:var(--muted);font-size:.85rem;margin-top:6px">内訳: ${parts}${extra}</div>`;
   } else {
     html += `<div class="rhead">流局</div>`;
-    html += `<div style="color:var(--muted);font-size:.85rem">テンパイ: ${r.tenpai.length ? r.tenpai.map(p => p === state.humanIndex ? 'あなた' : pos(state, p)).join('、') : 'なし'}</div>`;
+    html += `<div style="color:var(--muted);font-size:.85rem">テンパイ: ${r.tenpai.length ? r.tenpai.map(p => p === state.humanIndex ? 'あなた' : seatLabel(state, p)).join('、') : 'なし'}</div>`;
   }
   html += `<div class="deltas">` + state.scores.map((s, p) => {
     const d = r.deltas ? r.deltas[p] : 0;
-    const nm = p === state.humanIndex ? 'あなた' : pos(state, p);
+    const nm = p === state.humanIndex ? 'あなた' : seatLabel(state, p);
     const dc = d > 0 ? 'up' : d < 0 ? 'down' : '';
     return `<span>${nm}: <span class="${dc}">${d > 0 ? '+' : ''}${d}</span> → ${fmtScore(s)}</span>`;
   }).join('') + `</div>`;

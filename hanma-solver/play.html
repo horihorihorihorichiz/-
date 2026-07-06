@@ -8,41 +8,41 @@
   <link rel="stylesheet" href="play.css">
 </head>
 <body>
-  <div class="wrap">
-    <header>
-      <h1>韓麻 実戦 <span class="badge">Phase 3 · 対AI</span>
-        <a href="index.html" style="float:right;font-size:.8rem;color:var(--accent-2)">← ソルバーに戻る</a>
-      </h1>
-      <div class="sub">パラダイスシティ「韓麻」ルールでAIと1局対戦。役なし・フリテンなし・チーなし（ポンあり）・5は全部赤。「お手本」を出すとソルバーの推奨打牌が見えます。</div>
-    </header>
-
-    <div class="panel infobar">
-      <div><span class="lbl">表ドラ</span><span id="doraDisp" class="tiles"></span></div>
-      <div><span class="lbl">残り</span><span id="wallCount" class="val">–</span>枚</div>
-      <div><span class="lbl">供託</span><span id="potDisp" class="val">0</span></div>
-      <div><span class="lbl">人数</span>
+  <div class="wrap-play">
+    <div class="topbar">
+      <div class="ttl">韓麻 実戦 <span class="badge">対AI</span></div>
+      <div class="controls">
         <select id="playerCount"><option value="4">4人</option><option value="3">3人</option></select>
+        <button class="btn" id="newGame">新しい局</button>
+        <label class="hintToggle"><input type="checkbox" id="showHint"> お手本</label>
+        <a href="index.html" class="solverlink">解析ソルバー →</a>
       </div>
-      <button class="btn" id="newGame">新しい局</button>
-      <label class="hintToggle"><input type="checkbox" id="showHint"> お手本を表示</label>
     </div>
 
-    <div id="opponents"></div>
+    <div class="rotate-hint">端末を横向きにするとより見やすくなります📱↻</div>
+
+    <div class="table" id="table">
+      <div class="seat seat-top" id="seatTop"></div>
+      <div class="seat seat-left" id="seatLeft"></div>
+      <div class="pond">
+        <div class="river river-top" id="riverTop"></div>
+        <div class="river river-left" id="riverLeft"></div>
+        <div class="pond-center" id="pondCenter"></div>
+        <div class="river river-right" id="riverRight"></div>
+        <div class="river river-bottom" id="riverBottom"></div>
+      </div>
+      <div class="seat seat-right" id="seatRight"></div>
+      <div class="seat seat-bottom" id="seatBottom"></div>
+    </div>
+
+    <div class="tray">
+      <div id="myMelds" class="melds"></div>
+      <div id="myHand" class="hand"></div>
+      <div id="actions" class="actions"></div>
+      <div id="hint" class="hint-box" style="display:none"></div>
+    </div>
 
     <div class="panel" id="resultPanel" style="display:none"></div>
-
-    <div class="panel myarea">
-      <div class="myhead">
-        <span class="lbl">あなた（東家起家）</span>
-        <span id="myScore" class="score">0</span>
-        <span id="myState"></span>
-      </div>
-      <div id="myMelds" class="melds"></div>
-      <div id="myHand" class="hand tiles"></div>
-      <div id="hint" class="hint-box" style="display:none"></div>
-      <div id="actions" class="actions"></div>
-      <div id="myDiscards" class="river tiles"></div>
-    </div>
   </div>
 
   <script type="module" src="src/play.js"></script>
