@@ -1,0 +1,1320 @@
+<style>
+:root {
+  --bg: #0f1115;
+  --panel: #171a21;
+  --panel-2: #1e222b;
+  --border: #2a2f3a;
+  --text: #e6e9ef;
+  --muted: #9aa4b2;
+  --accent: #4ade80;
+  --accent-2: #38bdf8;
+  --warn: #f87171;
+  --gold: #fbbf24;
+  --man: #7dd3fc;
+  --pin: #86efac;
+  --sou: #fca5a5;
+  --hon: #d8b4fe;
+  --font: -apple-system, "Hiragino Kaku Gothic ProN", "Noto Sans JP", "Segoe UI", sans-serif;
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0; background: var(--bg); color: var(--text);
+  font-family: var(--font); line-height: 1.6;
+}
+.wrap { max-width: 960px; margin: 0 auto; padding: 24px 16px 80px; }
+
+header h1 { font-size: 1.5rem; margin: 0 0 4px; }
+header .sub { color: var(--muted); font-size: .85rem; margin-bottom: 24px; }
+header .badge {
+  display: inline-block; background: var(--panel-2); border: 1px solid var(--border);
+  color: var(--accent); font-size: .7rem; padding: 2px 8px; border-radius: 999px; margin-left: 8px;
+}
+
+.panel { background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 18px; margin-bottom: 18px; }
+.panel h2 { font-size: .95rem; margin: 0 0 12px; color: var(--muted); font-weight: 600; letter-spacing: .02em; }
+
+label { display: block; font-size: .8rem; color: var(--muted); margin-bottom: 6px; }
+input[type=text] {
+  width: 100%; background: var(--panel-2); border: 1px solid var(--border); color: var(--text);
+  border-radius: 8px; padding: 10px 12px; font-size: 1rem; font-family: ui-monospace, monospace;
+}
+input[type=text]:focus { outline: none; border-color: var(--accent-2); }
+.row { display: flex; gap: 12px; flex-wrap: wrap; }
+.row > div { flex: 1; min-width: 200px; }
+
+.hint { font-size: .72rem; color: var(--muted); margin-top: 6px; }
+.examples { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+.examples button {
+  background: var(--panel-2); border: 1px solid var(--border); color: var(--text);
+  border-radius: 6px; padding: 4px 10px; font-size: .75rem; cursor: pointer; font-family: ui-monospace, monospace;
+}
+.examples button:hover { border-color: var(--accent-2); }
+
+.btn {
+  background: var(--accent); color: #06210f; border: none; border-radius: 8px;
+  padding: 10px 20px; font-size: .95rem; font-weight: 700; cursor: pointer; margin-top: 14px;
+}
+.btn:hover { filter: brightness(1.08); }
+.btn-ev { background: var(--accent-2); color: #04283a; margin-left: 10px; }
+.btn:disabled { opacity: .5; cursor: default; }
+
+.error { color: var(--warn); font-size: .85rem; margin-top: 10px; min-height: 1.2em; }
+
+.progress { margin-top: 12px; height: 22px; background: var(--panel-2); border: 1px solid var(--border); border-radius: 999px; position: relative; overflow: hidden; }
+.progress #progressBar { position: absolute; left: 0; top: 0; bottom: 0; width: 0; background: linear-gradient(90deg, var(--accent-2), var(--accent)); transition: width .15s; }
+.progress span { position: absolute; width: 100%; text-align: center; font-size: .72rem; line-height: 22px; color: var(--text); z-index: 1; }
+.ev-strong { font-weight: 800; color: var(--accent); }
+td.ev-best { color: var(--accent); font-weight: 800; }
+.evloss { color: var(--warn); font-size: .74rem; }
+
+/* 牌表示 */
+.tiles { display: flex; gap: 4px; flex-wrap: wrap; align-items: center; }
+.tile {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-width: 30px; height: 40px; padding: 0 6px; border-radius: 6px;
+  background: #f5f5f0; color: #1a1a1a; font-weight: 700; font-size: 1rem;
+  border: 1px solid #cfcfc6; box-shadow: 0 1px 0 #b8b8ad;
+}
+.tile.m { color: #1e5fa8; } .tile.p { color: #1f7a3d; } .tile.s { color: #b02a2a; } .tile.z { color: #5b3ca0; }
+.tile.red { background: #ffe1e1; border-color: #e88; }
+.tile.small { min-width: 22px; height: 28px; font-size: .8rem; }
+
+.summary { display: flex; gap: 24px; flex-wrap: wrap; align-items: baseline; margin-bottom: 14px; }
+.summary .big { font-size: 2rem; font-weight: 800; }
+.summary .lbl { color: var(--muted); font-size: .78rem; }
+.form-tag { font-size: .72rem; color: var(--accent-2); background: var(--panel-2); padding: 2px 8px; border-radius: 999px; border: 1px solid var(--border); }
+
+#discardSection { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: .85rem; }
+.danger-hi { color: var(--warn); font-weight: 700; }
+.danger-mid { color: var(--gold); }
+.danger-lo { color: var(--muted); }
+th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+th { color: var(--muted); font-weight: 600; font-size: .74rem; }
+tr.best { background: rgba(74, 222, 128, .08); }
+tr.best td:first-child { border-left: 3px solid var(--accent); }
+.num { font-variant-numeric: tabular-nums; }
+.pill { display: inline-block; font-size: .7rem; padding: 1px 7px; border-radius: 999px; }
+.pill.gold { background: rgba(251,191,36,.15); color: var(--gold); }
+.pill.red { background: rgba(248,113,113,.15); color: var(--warn); }
+.loss { color: var(--warn); font-size: .78rem; }
+.footer-note { color: var(--muted); font-size: .74rem; margin-top: 8px; }
+code { background: var(--panel-2); padding: 1px 5px; border-radius: 4px; font-size: .82em; }
+
+.infobar { display: flex; gap: 20px; align-items: center; flex-wrap: wrap; }
+.infobar .lbl { color: var(--muted); font-size: .72rem; margin-right: 6px; }
+.infobar .val { font-weight: 800; font-size: 1.1rem; }
+.hintToggle { color: var(--muted); font-size: .8rem; display: flex; align-items: center; gap: 6px; margin: 0; }
+.hintToggle input { width: auto; }
+
+#opponents { display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px; }
+.opp { background: var(--panel); border: 1px solid var(--border); border-radius: 10px; padding: 10px 14px; }
+.opp .ophead { display: flex; align-items: center; gap: 12px; margin-bottom: 6px; }
+.opp .name { font-weight: 700; }
+.opp .score { color: var(--accent); font-variant-numeric: tabular-nums; }
+.opp .riichi-tag { background: rgba(248,113,113,.15); color: var(--warn); font-size: .68rem; padding: 1px 8px; border-radius: 999px; }
+.opp .turn-now { box-shadow: inset 0 0 0 2px var(--accent-2); }
+.opp .river { margin-top: 4px; }
+.opp .handback { color: var(--muted); font-size: .72rem; }
+
+.myarea .myhead { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+.myarea .score { color: var(--accent); font-weight: 800; font-variant-numeric: tabular-nums; }
+.hand { gap: 5px; margin: 8px 0; min-height: 52px; }
+.hand .tile { cursor: pointer; transition: transform .08s; }
+.hand .tile:hover { transform: translateY(-6px); }
+.hand .tile.drawn { margin-left: 14px; }
+.hand .tile.disabled { opacity: .35; cursor: default; }
+.hand .tile.disabled:hover { transform: none; }
+.melds { display: flex; gap: 10px; min-height: 0; }
+.melds .meld { display: inline-flex; gap: 2px; }
+.river { gap: 3px; margin-top: 10px; opacity: .9; }
+.river .tile { min-width: 24px; height: 30px; font-size: .8rem; cursor: default; }
+.river .tile:hover { transform: none; }
+
+.actions { display: flex; gap: 10px; margin: 12px 0; flex-wrap: wrap; align-items: center; min-height: 20px; }
+.actions .btn { margin: 0; }
+.act-ron { background: var(--warn); color: #2a0606; }
+.act-tsumo { background: var(--gold); color: #2a1e02; }
+.act-pon { background: var(--accent-2); color: #04283a; }
+.act-skip { background: var(--panel-2); color: var(--text); border: 1px solid var(--border); }
+.riichi-arm { display: flex; align-items: center; gap: 6px; color: var(--gold); font-size: .85rem; }
+
+.hint-box { background: rgba(56,189,248,.08); border: 1px solid var(--border); border-radius: 8px; padding: 8px 12px; font-size: .82rem; margin: 8px 0; }
+.hint-box .rec { color: var(--accent-2); font-weight: 700; }
+
+#resultPanel .rhead { font-size: 1.2rem; font-weight: 800; margin-bottom: 8px; }
+#resultPanel .win { color: var(--accent); }
+#resultPanel .lose { color: var(--warn); }
+#resultPanel .deltas { display: flex; gap: 16px; flex-wrap: wrap; margin-top: 8px; font-variant-numeric: tabular-nums; }
+#resultPanel .deltas .up { color: var(--accent); }
+#resultPanel .deltas .down { color: var(--warn); }
+
+</style>
+
+  <div class="wrap">
+    <header>
+      <h1>韓麻 実戦 <span class="badge">Phase 3 · 対AI</span>
+        
+      </h1>
+      <div class="sub">パラダイスシティ「韓麻」ルールでAIと1局対戦。役なし・フリテンなし・チーなし（ポンあり）・5は全部赤。「お手本」を出すとソルバーの推奨打牌が見えます。</div>
+    </header>
+
+    <div class="panel infobar">
+      <div><span class="lbl">表ドラ</span><span id="doraDisp" class="tiles"></span></div>
+      <div><span class="lbl">残り</span><span id="wallCount" class="val">–</span>枚</div>
+      <div><span class="lbl">供託</span><span id="potDisp" class="val">0</span></div>
+      <div><span class="lbl">人数</span>
+        <select id="playerCount"><option value="4">4人</option><option value="3">3人</option></select>
+      </div>
+      <button class="btn" id="newGame">新しい局</button>
+      <label class="hintToggle"><input type="checkbox" id="showHint"> お手本を表示</label>
+    </div>
+
+    <div id="opponents"></div>
+
+    <div class="panel" id="resultPanel" style="display:none"></div>
+
+    <div class="panel myarea">
+      <div class="myhead">
+        <span class="lbl">あなた（東家起家）</span>
+        <span id="myScore" class="score">0</span>
+        <span id="myState"></span>
+      </div>
+      <div id="myMelds" class="melds"></div>
+      <div id="myHand" class="hand tiles"></div>
+      <div id="hint" class="hint-box" style="display:none"></div>
+      <div id="actions" class="actions"></div>
+      <div id="myDiscards" class="river tiles"></div>
+    </div>
+  </div>
+
+  
+<script>
+// ===== src/tiles.js =====
+// tiles.js — 牌モデルと表記の相互変換
+//
+// 牌は 0-33 のインデックスで表す（count 配列 length 34 が基本表現）:
+//   0-8   : 1m-9m（萬子）
+//   9-17  : 1p-9p（筒子）
+//   18-26 : 1s-9s（索子）
+//   27-33 : 字牌 東(1z) 南(2z) 西(3z) 北(4z) 白(5z) 發(6z) 中(7z)
+//
+// 赤5は count 配列とは別に「赤の枚数」として保持する（0m/0p/0s 表記で入力）。
+const SUITS = ['m', 'p', 's', 'z'];
+const HONORS = ['東', '南', '西', '北', '白', '發', '中'];
+const N_TILES = 34;
+
+// 数牌スート開始インデックス
+const MAN = 0;
+const PIN = 9;
+const SOU = 18;
+const HONOR = 27;
+function isHonor(idx) { return idx >= HONOR; }
+function isNumber(idx) { return idx < HONOR; }
+function suitOf(idx) {
+  if (idx < PIN) return 'm';
+  if (idx < SOU) return 'p';
+  if (idx < HONOR) return 's';
+  return 'z';
+}
+// スート内の数（数牌なら 1-9、字牌なら 1-7）
+function rankOf(idx) {
+  if (idx < HONOR) return (idx % 9) + 1;
+  return idx - HONOR + 1;
+}
+// 端牌（1/9）または字牌か（国士・么九判定用）
+function isTerminalOrHonor(idx) {
+  if (isHonor(idx)) return true;
+  const r = rankOf(idx);
+  return r === 1 || r === 9;
+}
+const TERMINALS_AND_HONORS = (() => {
+  const arr = [];
+  for (const base of [MAN, PIN, SOU]) { arr.push(base + 0, base + 8); }
+  for (let i = HONOR; i < N_TILES; i++) arr.push(i);
+  return arr; // 13種
+})();
+
+// 1牌インデックス → 表記文字列（"3m" "東" など）
+function tileName(idx) {
+  const s = suitOf(idx);
+  if (s === 'z') return HONORS[idx - HONOR];
+  return rankOf(idx) + s;
+}
+
+// "123m0p789s11z" のような表記 → { counts:Int[34], aka:{m,p,s}, tiles:[idx...] }
+// 0m/0p/0s は赤5（rank5 として counts に加算し、aka も +1）
+function parseHand(str) {
+  const counts = new Array(N_TILES).fill(0);
+  const aka = { m: 0, p: 0, s: 0 };
+  const tiles = [];
+  const clean = (str || '').replace(/\s+/g, '');
+  let digits = [];
+  for (const ch of clean) {
+    if (ch >= '0' && ch <= '9') { digits.push(ch); continue; }
+    const suit = ch;
+    if (!SUITS.includes(suit)) throw new Error(`不明なスート: ${ch}`);
+    for (const d of digits) {
+      let n = parseInt(d, 10);
+      if (suit === 'z') {
+        if (n < 1 || n > 7) throw new Error(`字牌は1-7: ${d}z`);
+        const idx = HONOR + (n - 1);
+        counts[idx]++; tiles.push(idx);
+      } else {
+        const base = suit === 'm' ? MAN : suit === 'p' ? PIN : SOU;
+        if (n === 0) { // 赤5
+          const idx = base + 4;
+          counts[idx]++; tiles.push(idx); aka[suit]++;
+        } else {
+          if (n < 1 || n > 9) throw new Error(`数牌は1-9: ${d}${suit}`);
+          const idx = base + (n - 1);
+          counts[idx]++; tiles.push(idx);
+        }
+      }
+    }
+    digits = [];
+  }
+  if (digits.length) throw new Error('末尾にスート文字が必要です');
+  return { counts, aka, tiles };
+}
+
+// counts[34] → "123m..." 表記（赤は無視。表示用）
+function formatCounts(counts) {
+  let out = '';
+  for (const [suit, base] of [['m', MAN], ['p', PIN], ['s', SOU]]) {
+    let seg = '';
+    for (let r = 0; r < 9; r++) { for (let k = 0; k < counts[base + r]; k++) seg += (r + 1); }
+    if (seg) out += seg + suit;
+  }
+  let zseg = '';
+  for (let i = 0; i < 7; i++) { for (let k = 0; k < counts[HONOR + i]; k++) zseg += (i + 1); }
+  if (zseg) out += zseg + 'z';
+  return out;
+}
+function totalTiles(counts) { return counts.reduce((a, b) => a + b, 0); }
+
+// ドラ表示牌 → ドラ本体のインデックス（次の牌。数牌は9→1、風は北→東、三元は中→白で循環）
+function doraFromIndicator(indIdx) {
+  if (indIdx < HONOR) {
+    const base = Math.floor(indIdx / 9) * 9;
+    const r = indIdx % 9;
+    return base + ((r + 1) % 9);
+  }
+  const h = indIdx - HONOR;
+  if (h <= 3) return HONOR + ((h + 1) % 4);       // 東南西北 循環
+  return HONOR + 4 + ((h - 4 + 1) % 3);           // 白發中 循環
+}
+
+
+// ===== src/shanten.js =====
+// shanten.js — 向聴数（シャンテン）計算
+//
+// 韓麻のアガリ形: 4面子1雀頭 / 七対子 / 国士無双。
+// 向聴数 = アガリまであと何枚有効牌を引けばテンパイになるかの手前の指標。
+//   -1 = アガリ, 0 = テンパイ, 1 = 1向聴, ...
+//
+// counts[34] は「手の中の伏せ牌（暗牌）」の枚数。鳴いた面子は melds で枚数指定。
+//
+// 通常形の公式:
+//   value = 2*mentsu + min(taatsu, 4 - mentsu)  （面子スロットは4つ）
+//   head を1つ確保できれば -1 追加
+//   shanten = 8 - value - (hasHead ? 1 : 0)
+// mentsu には鳴いた面子（calledMelds）を含める。
+
+
+
+// ── 高速版: スート別に分解し、スート結果をメモ化して組み合わせる ──
+// 各スートを独立に (melds, taatsu) のパレート集合へ分解 → 4スートを合成。
+// 雀頭は「あるスートの対子を1つ抜いて head にする」パターンを別途試す。
+
+const _suitMemo = new Map();
+
+// スートの counts（長さ9 or 7）→ 到達可能な [melds, taatsu] のパレート集合
+function suitFrontier(cnt, isHonor) {
+  const key = (isHonor ? 'h' : 'n') + cnt.join(',');
+  const cached = _suitMemo.get(key);
+  if (cached) return cached;
+
+  const L = cnt.length;
+  const c = cnt.slice();
+  const bestT = new Map(); // melds -> max taatsu
+  function rec(i, m, t) {
+    while (i < L && c[i] === 0) i++;
+    if (i >= L) { const p = bestT.get(m); if (p === undefined || t > p) bestT.set(m, t); return; }
+    if (c[i] >= 3) { c[i] -= 3; rec(i, m + 1, t); c[i] += 3; }                       // 刻子
+    if (!isHonor && i <= L - 3 && c[i + 1] > 0 && c[i + 2] > 0) {                    // 順子
+      c[i]--; c[i + 1]--; c[i + 2]--; rec(i, m + 1, t); c[i]++; c[i + 1]++; c[i + 2]++;
+    }
+    if (c[i] >= 2) { c[i] -= 2; rec(i, m, t + 1); c[i] += 2; }                       // 対子
+    if (!isHonor && i <= L - 2 && c[i + 1] > 0) {                                    // 両面/辺張
+      c[i]--; c[i + 1]--; rec(i, m, t + 1); c[i]++; c[i + 1]++;
+    }
+    if (!isHonor && i <= L - 3 && c[i + 2] > 0) {                                    // 嵌張
+      c[i]--; c[i + 2]--; rec(i, m, t + 1); c[i]++; c[i + 2]++;
+    }
+    c[i]--; rec(i, m, t); c[i]++;                                                    // 浮き牌
+  }
+  rec(0, 0, 0);
+
+  // パレート集合化（melds も taatsu も大きいほど良い）
+  const pts = [...bestT.entries()].map(([m, t]) => [m, t]);
+  const frontier = pts.filter(([m, t]) =>
+    !pts.some(([m2, t2]) => (m2 > m && t2 >= t) || (m2 >= m && t2 > t)));
+  _suitMemo.set(key, frontier);
+  return frontier;
+}
+
+// 4スートのフロンティアを合成して最大 value を返す。baseM = 既定の面子数（鳴き）
+function combineValue(frontiers, baseM) {
+  let best = 0;
+  function go(k, M, T) {
+    if (k === frontiers.length) {
+      const m = Math.min(M, 4);
+      const v = 2 * m + Math.min(T, 4 - m);
+      if (v > best) best = v;
+      return;
+    }
+    for (const [m, t] of frontiers[k]) go(k + 1, M + m, T + t);
+  }
+  go(0, baseM, 0);
+  return best;
+}
+function normalShanten(counts, calledMelds = 0) {
+  const suits = [counts.slice(0, 9), counts.slice(9, 18), counts.slice(18, 27), counts.slice(27, 34)];
+  const isH = [false, false, false, true];
+  const fr = suits.map((s, i) => suitFrontier(s, isH[i]));
+
+  let best = 8 - combineValue(fr, calledMelds); // 雀頭なし
+  // 雀頭を各スートの対子から確保
+  for (let si = 0; si < 4; si++) {
+    const s = suits[si];
+    for (let r = 0; r < s.length; r++) {
+      if (s[r] >= 2) {
+        const s2 = s.slice(); s2[r] -= 2;
+        const fr2 = fr.slice(); fr2[si] = suitFrontier(s2, isH[si]);
+        const sh = 8 - (combineValue(fr2, calledMelds) + 1);
+        if (sh < best) best = sh;
+      }
+    }
+  }
+  return best;
+}
+
+// 七対子（鳴きがあると不可）
+function chiitoiShanten(counts, calledMelds = 0) {
+  if (calledMelds > 0) return Infinity;
+  let pairs = 0, kinds = 0;
+  for (let i = 0; i < N_TILES; i++) {
+    if (counts[i] >= 1) kinds++;
+    if (counts[i] >= 2) pairs++;
+  }
+  return 6 - pairs + Math.max(0, 7 - kinds);
+}
+
+// 国士無双（鳴きがあると不可）
+function kokushiShanten(counts, calledMelds = 0) {
+  if (calledMelds > 0) return Infinity;
+  let kinds = 0, hasPair = 0;
+  for (const idx of TERMINALS_AND_HONORS) {
+    if (counts[idx] >= 1) kinds++;
+    if (counts[idx] >= 2) hasPair = 1;
+  }
+  return 13 - kinds - hasPair;
+}
+
+// 総合向聴数（3種の最小）と、どの形が最小かを返す
+function shanten(counts, calledMelds = 0) {
+  const n = normalShanten(counts, calledMelds);
+  const c = chiitoiShanten(counts, calledMelds);
+  const k = kokushiShanten(counts, calledMelds);
+  const min = Math.min(n, c, k);
+  const forms = [];
+  if (n === min) forms.push('normal');
+  if (c === min) forms.push('chiitoi');
+  if (k === min) forms.push('kokushi');
+  return { value: min, normal: n, chiitoi: c, kokushi: k, forms };
+}
+
+
+// ===== src/ukeire.js =====
+// ukeire.js — 受け入れ（有効牌）計算
+//
+// 手牌（暗牌 counts、鳴き calledMelds）が 3k+1 枚（13枚など）の状態で、
+// 「引くと向聴数が下がる牌」の種類と枚数を求める。
+// 枚数は 4 - (手牌内の枚数) - (場に見えている枚数) で計算。
+
+
+
+
+// seen[34] = 場に見えている枚数（自分の手牌以外。ドラ表示・河・自分の副露牌など）。省略可。
+function ukeire(counts, calledMelds = 0, seen = null) {
+  const cur = shanten(counts, calledMelds).value;
+  const tiles = [];
+  let total = 0;
+  const c = counts.slice();
+  for (let i = 0; i < N_TILES; i++) {
+    const used = c[i] + (seen ? seen[i] : 0);
+    if (used >= 4) continue;         // もう引けない
+    if (c[i] >= 4) continue;
+    c[i]++;
+    const after = shanten(c, calledMelds).value;
+    c[i]--;
+    if (after < cur) {
+      const avail = 4 - used;
+      tiles.push({ idx: i, count: avail });
+      total += avail;
+    }
+  }
+  return { shanten: cur, tiles, total };
+}
+
+
+// ===== src/score.js =====
+// score.js — 韓麻の点数計算（差し替え可能なモジュール）
+//
+// 仕様は docs/rules.md 準拠。粗品「四兄弟韓国麻雀#21-1」(11:00-18:30) で実地確認済み。
+//
+// 基礎点:
+//   ロン … 放銃者が 6点 支払い（1人）
+//   ツモ … 全員が 2点ずつ 支払い（4人打ちなら計6点）
+// 加点:
+//   ドラ … 1枚 +1点（各支払いに加算 = ツモは各人に+1、ロンは放銃者に+1）
+//   リーチ … +2点。ただし「合計に1回だけ」乗る（フラット）。
+//            → ツモ計8点 / ロン計8点 になるのはこのため（2×3+2 = 8, 6+2 = 8）
+//   国士無双 … 20点（各支払い）
+// 上限:
+//   1人の最大支払い = 20点（基礎+ドラ部分。ロンは放銃者の総額、ツモは各人の額）
+
+
+
+// 韓麻は「5は全部赤」= 数牌の5はすべて赤ドラ（計12枚）。手牌中の5の枚数を数える。
+function countAka(counts) {
+  return counts[MAN + 4] + counts[PIN + 4] + counts[SOU + 4];
+}
+const CONFIG = {
+  ronBase: 6,      // ロン基礎点（放銃者が支払う）
+  tsumoBase: 2,    // ツモ基礎点（各人が支払う）
+  perDora: 1,      // ドラ1枚あたり（各支払いに加算）
+  riichi: 2,       // リーチ加点（合計に1回、フラット）
+  kokushi: 20,     // 国士無双（各支払い）
+  cap: 20,         // 1人あたり最大支払い（基礎+ドラ部分）
+  // ⚠️ 未確認: ツモ時のドラが「各人+1」か「合計+1」か（動画未言及）。既定は各人+1。
+  // ⚠️ 未確認: 3人打ちの精算、赤5と表ドラの重複計上。
+};
+
+// 手牌(counts) のドラ総数 = 表ドラ + （リーチ時）裏ドラ + 赤ドラ（＝5の枚数）
+// omoteIndicators / uraIndicators: ドラ表示牌インデックスの配列
+function countDora(counts, omoteIndicators = [], uraIndicators = [], useUra = false) {
+  let dora = 0;
+  const add = (indicators) => {
+    for (const ind of indicators) dora += counts[doraFromIndicator(ind)] || 0;
+  };
+  add(omoteIndicators);
+  if (useUra) add(uraIndicators);
+  dora += countAka(counts); // 全赤ドラ（5は全部赤）
+  return dora;
+}
+
+// アガリの点数を計算
+// opts: { win:'ron'|'tsumo', riichi:bool, dora:int, kokushi:bool, players:3|4 }
+// 返り値: { total, perPayer, numPayers, riichiAdd, breakdown, capped }
+function score(opts) {
+  const { win, riichi = false, dora = 0, kokushi = false, players = 4 } = opts;
+  const numPayers = win === 'ron' ? 1 : players - 1;
+  const breakdown = [];
+
+  // 1人あたりの基礎+ドラ（上限20）
+  let perRaw;
+  if (kokushi) {
+    perRaw = CONFIG.kokushi;
+    breakdown.push(['国士無双', CONFIG.kokushi]);
+  } else {
+    const base = win === 'ron' ? CONFIG.ronBase : CONFIG.tsumoBase;
+    perRaw = base + dora * CONFIG.perDora;
+    breakdown.push([win === 'ron' ? 'ロン' : 'ツモ', base]);
+    if (dora > 0) breakdown.push([`ドラ${dora}`, dora * CONFIG.perDora]);
+  }
+  const perPayer = Math.min(perRaw, CONFIG.cap);
+
+  let total = perPayer * numPayers;
+
+  // リーチはフラットで合計に1回だけ加算（国士には付かない想定）
+  let riichiAdd = 0;
+  if (riichi && !kokushi) {
+    riichiAdd = CONFIG.riichi;
+    total += riichiAdd;
+    breakdown.push(['リーチ', riichiAdd]);
+  }
+
+  return {
+    total,               // 獲得点数（合計）
+    points: total,       // 互換エイリアス
+    perPayer,            // 1人あたり支払い（基礎+ドラ、上限適用後）
+    numPayers,
+    riichiAdd,
+    breakdown,
+    capped: perRaw > CONFIG.cap,
+  };
+}
+
+
+// ===== src/analyze.js =====
+// analyze.js — 打牌解析（14枚から何を切るべきか）
+//
+// スノーウィー的な「打牌アドバイザー」の中核。
+// 14枚（暗牌 counts + 鳴き calledMelds）に対し、切れる各牌について
+// 「切った後の向聴・受け入れ・ドラ」を計算し、良い順に並べて返す。
+// 韓麻は5が全部赤ドラなので、5を切るとドラを1枚失う（discardsFive で警告）。
+
+
+
+
+
+
+function isFive(idx) { return idx < 27 && rankOf(idx) === 5; }
+
+// opts: { counts, calledMelds, omoteIndicators, uraIndicators, seen }
+function analyzeDiscards(opts) {
+  const {
+    counts, calledMelds = 0,
+    omoteIndicators = [], uraIndicators = [], seen = null,
+  } = opts;
+
+  const results = [];
+  for (let i = 0; i < N_TILES; i++) {
+    if (counts[i] <= 0) continue;
+    const c = counts.slice();
+    c[i]--;
+
+    const uk = ukeire(c, calledMelds, seen);
+    const dora = countDora(c, omoteIndicators, uraIndicators, false);
+
+    results.push({
+      discard: i,
+      discardName: tileName(i),
+      discardsRed: isFive(i), // 5切り=赤ドラを1枚失う
+      shanten: uk.shanten,
+      ukeireTotal: uk.total,
+      ukeireTiles: uk.tiles.map(t => ({ name: tileName(t.idx), count: t.count, idx: t.idx })),
+      dora,
+    });
+  }
+
+  // 並べ替え: 向聴↑ → 受け入れ↑ → ドラ↑ → 赤(5)を切らない
+  results.sort((a, b) =>
+    a.shanten - b.shanten ||
+    b.ukeireTotal - a.ukeireTotal ||
+    b.dora - a.dora ||
+    (a.discardsRed - b.discardsRed)
+  );
+
+  const best = results[0];
+  for (const r of results) {
+    r.isBest =
+      r.shanten === best.shanten &&
+      r.ukeireTotal === best.ukeireTotal &&
+      !r.discardsRed === !best.discardsRed;
+    r.ukeireLoss = best.shanten === r.shanten ? best.ukeireTotal - r.ukeireTotal : null;
+  }
+  return results;
+}
+
+
+// ===== src/game.js =====
+// game.js — 韓麻の対局エンジン（ヘッドレス）
+//
+// 実装範囲(v1): 配牌・自摸・打牌・ポン・ツモ・ロン・リーチ・表/裏ドラ・点数・流局。
+//   - チーなし（韓麻）、カンは v1 では未実装（次段）。
+//   - 役なしでアガれる。フリテンなし（現物でもロン可）。
+//   - 5は全部赤ドラ。ロンはダブロン時 頭ハネ（放銃者の下家側から近い者）。
+//
+// UI からは advance(state) を呼び、state.waiting に人間の入力要求が入ったら停止する。
+// 人間の操作: humanDiscard / humanCall。
+
+
+
+
+
+function shuffle(a) {
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function emptyCounts() { return new Array(N_TILES).fill(0); }
+
+// 全牌136枚（各4枚）
+function buildWall() {
+  const w = [];
+  for (let i = 0; i < N_TILES; i++) for (let k = 0; k < 4; k++) w.push(i);
+  return shuffle(w);
+}
+
+// concealed counts + melds から「全14枚相当」の counts を作る（ドラ計算用）
+function fullCounts(hand, melds) {
+  const c = hand.slice();
+  for (const m of melds) c[m.tile] += (m.type === 'pon' ? 3 : 4); // カンは4枚
+  return c;
+}
+
+// 面前を崩す（開いた）副露の数。暗槓は面前を保つ。
+function openMelds(melds) { return melds.filter(m => m.type !== 'ankan').length; }
+function newGame(opts = {}) {
+  const players = opts.players || 4;
+  const humanIndex = opts.humanIndex ?? 0;
+  const wall = buildWall();
+
+  const deadWall = wall.splice(wall.length - 14, 14); // 王牌14枚
+  const doraIndicators = [deadWall[0], deadWall[1]];  // 表ドラ2枚（カンドラは増やさない）
+  const uraIndicators = [deadWall[2], deadWall[3]];   // 裏ドラ2枚（リーチ時のみ開示）
+
+  const hands = [], melds = [], discards = [], riichi = [];
+  for (let p = 0; p < players; p++) {
+    hands.push(emptyCounts()); melds.push([]); discards.push([]); riichi.push(false);
+    for (let k = 0; k < 13; k++) hands[p][wall.shift()]++;
+  }
+
+  const state = {
+    players, humanIndex,
+    hands, melds, discards, riichi,
+    scores: new Array(players).fill(0),
+    pot: 0,                // リーチ供託
+    wall,
+    deadWall,
+    doraIndicators, uraIndicators,
+    rinshanPointer: 4,     // 王牌の嶺上牌ポインタ（0-3はドラ表示）
+    kansDone: 0,           // 全員のカン回数（最大4）
+    turn: 0,               // 東家=0 から
+    drawnTile: null,
+    lastDiscard: null,     // { tile, from }
+    phase: 'draw',
+    waiting: null,         // 人間の入力要求 { type:'discard' } | { type:'calls', options }
+    log: [],
+    result: null,          // { type:'win'|'draw', ... }
+    riichiJustDeclared: -1,
+  };
+  return state;
+}
+
+// 手番 p が牌 t を加えてアガリ形か（t=null なら現在の手牌のまま）
+function isWin(state, p, t = null) {
+  const c = state.hands[p];
+  if (t != null) c[t]++;
+  const w = shanten(c, state.melds[p].length).value === -1;
+  if (t != null) c[t]--;
+  return w;
+}
+
+// テンパイ（アガリ牌が存在）か
+function isTenpai(state, p) {
+  return shanten(state.hands[p], state.melds[p].length).value === 0;
+}
+
+// p がロンできる牌か（フリテン無しなので河は無関係）
+function canRon(state, p, tile) {
+  return isWin(state, p, tile);
+}
+
+// p が tile をポンできるか（手牌に2枚以上、かつリーチしていない）
+function canPon(state, p, tile) {
+  return !state.riichi[p] && state.hands[p][tile] >= 2;
+}
+
+function nextPlayer(state, p) { return (p + 1) % state.players; }
+
+// ── 内部: ドロー ──
+// 自摸後の共通処理（ツモ判定 → 人間なら待ち、AIなら自動）
+function afterDraw(state) {
+  state.phase = 'discard';
+  if (isWin(state, state.turn, null)) {
+    if (state.turn === state.humanIndex) {
+      state.waiting = { type: 'calls', options: [{ action: 'tsumo' }, { action: 'discardAny' }] };
+    } else {
+      resolveWin(state, state.turn, null, 'tsumo');
+    }
+    return;
+  }
+  state.waiting = state.turn === state.humanIndex ? { type: 'discard' } : null;
+}
+
+function doDraw(state) {
+  if (state.wall.length === 0) { endDraw(state); return; }
+  const t = state.wall.shift();
+  state.hands[state.turn][t]++;
+  state.drawnTile = t;
+  afterDraw(state);
+}
+
+// 嶺上牌を引く（カン後）。王牌から取り、山末尾を1枚 dead wall へ回して枚数調整。
+function drawRinshan(state, p) {
+  const t = state.deadWall[state.rinshanPointer++];
+  state.hands[p][t]++;
+  state.drawnTile = t;
+  if (state.wall.length > 0) state.wall.pop();
+  state.kansDone++;
+  state.turn = p;
+  afterDraw(state);
+}
+
+// ── 打牌 ──
+function doDiscard(state, p, tile) {
+  state.hands[p][tile]--;
+  state.discards[p].push(tile);
+  state.drawnTile = null;
+  state.lastDiscard = { tile, from: p };
+  if (state.riichiJustDeclared === p) {
+    state.riichi[p] = true;
+    state.scores[p] -= 2;   // リーチ棒を供託
+    state.pot += 2;
+    state.riichiJustDeclared = -1;
+  }
+  resolveCalls(state);
+}
+
+// 打牌後: 他家のロン/ポンを集計
+function resolveCalls(state) {
+  const { players } = state;
+  const from = state.lastDiscard.from;
+  const tile = state.lastDiscard.tile;
+
+  // ロン候補（頭ハネ: 放銃者の下家から順に最初の1人）
+  const ronners = [];
+  for (let k = 1; k < players; k++) {
+    const p = (from + k) % players;
+    if (canRon(state, p, tile)) ronners.push(p);
+  }
+  // ポン候補
+  const ponners = [];
+  for (let p = 0; p < players; p++) {
+    if (p !== from && canPon(state, p, tile)) ponners.push(p);
+  }
+
+  // 人間が関与する選択があるか（大明槓は人間のみ v1）
+  const h = state.humanIndex;
+  const humanRon = ronners.includes(h);
+  const humanPon = ponners.includes(h);
+  const humanKan = h >= 0 && from !== h && state.hands[h][tile] === 3 &&
+    !state.riichi[h] && state.kansDone < 4 && state.wall.length > 0;
+
+  if (humanRon || humanPon || humanKan) {
+    const options = [];
+    if (humanRon) options.push({ action: 'ron' });
+    if (humanKan) options.push({ action: 'kan' });
+    if (humanPon) options.push({ action: 'pon' });
+    options.push({ action: 'skip' });
+    state.waiting = { type: 'calls', options, tile, from };
+    state._pendingRonners = ronners;
+    state._pendingPonners = ponners;
+    return;
+  }
+
+  // 人間が絡まない → AI で解決
+  finishCalls(state, ronners, ponners, null);
+}
+
+// AI/人間の選択を反映して打牌後処理を確定
+function finishCalls(state, ronners, ponners, humanChoice) {
+  const tile = state.lastDiscard.tile;
+  const from = state.lastDiscard.from;
+
+  // ロン優先（頭ハネ = ronners の先頭）
+  const ron = ronners.filter(p => p !== state.humanIndex || humanChoice === 'ron');
+  // 人間がロンを見送った場合は除外済み（呼び出し側で調整）
+  if (ron.length > 0) { resolveWin(state, ron[0], tile, 'ron'); return; }
+
+  // 大明槓（人間が選んだ場合のみ）
+  if (humanChoice === 'kan') { doDaiminkan(state, state.humanIndex, tile, from); return; }
+
+  // ポン（人間が選んだ or AI がポン方針を満たす）
+  let ponner = -1;
+  if (humanChoice === 'pon') ponner = state.humanIndex;
+  else {
+    for (const p of ponners) {
+      if (p === state.humanIndex) continue;
+      if (aiWantsPon(state, p, tile)) { ponner = p; break; }
+    }
+  }
+  if (ponner >= 0) { doPon(state, ponner, tile, from); return; }
+
+  // 誰も鳴かない → 次の手番へ
+  state.turn = nextPlayer(state, from);
+  state.phase = 'draw';
+  state.waiting = null;
+}
+
+// ポン実行 → ponner の打牌へ
+function doPon(state, p, tile, from) {
+  state.hands[p][tile] -= 2;
+  state.melds[p].push({ type: 'pon', tile, from });
+  // 直前の河から鳴いた牌を取り除く（表示上）
+  const dfrom = state.discards[from];
+  if (dfrom[dfrom.length - 1] === tile) dfrom.pop();
+  state.turn = p;
+  state.phase = 'discard';
+  state.lastDiscard = null;
+  if (p === state.humanIndex) state.waiting = { type: 'discard' };
+  else state.waiting = null;
+}
+
+// 大明槓実行 → 嶺上ツモ → その者の打牌へ
+function doDaiminkan(state, p, tile, from) {
+  state.hands[p][tile] -= 3;
+  state.melds[p].push({ type: 'daiminkan', tile, from });
+  const dfrom = state.discards[from];
+  if (dfrom[dfrom.length - 1] === tile) dfrom.pop();
+  state.lastDiscard = null;
+  drawRinshan(state, p); // turn=p, 嶺上ツモ判定含む
+}
+
+// AI がポンするか（v1: ポンでテンパイになるなら鳴く）
+function aiWantsPon(state, p, tile) {
+  const c = state.hands[p].slice();
+  c[tile] -= 2;
+  const shAfter = shanten(c, state.melds[p].length + 1).value;
+  return shAfter <= 0; // テンパイ or アガリ相当
+}
+
+// ── アガリ処理 ──
+function resolveWin(state, winner, tile, kind) {
+  const hand = state.hands[winner].slice();
+  if (kind === 'tsumo' && state.drawnTile != null) {
+    // drawnTile は既に hand に入っている
+  } else if (kind === 'ron') {
+    hand[tile]++;
+  }
+  const full = fullCounts(hand, state.melds[winner]);
+  const useUra = state.riichi[winner];
+  const dora = countDora(full, state.doraIndicators, state.uraIndicators, useUra);
+  const shInfo = shanten(hand, state.melds[winner].length);
+  const kokushi = state.melds[winner].length === 0 && shInfo.kokushi === -1;
+  // 支払いは基礎+ドラのみ（リーチ分は供託の回収で表現し、ゼロサムを保つ）
+  const s = score({ win: kind, riichi: false, dora, kokushi, players: state.players });
+
+  // 精算（deltas は「このアガリ処理での増減」。リーチ供託は既に宣言時に各自から引かれている）
+  const deltas = new Array(state.players).fill(0);
+  if (kind === 'ron') {
+    deltas[winner] += s.total;
+    deltas[state.lastDiscard.from] -= s.total;
+  } else {
+    deltas[winner] += s.total;
+    for (let p = 0; p < state.players; p++) if (p !== winner) deltas[p] -= s.perPayer;
+  }
+  const potGain = state.pot;
+  deltas[winner] += potGain;         // 供託（リーチ棒）を総取り
+  state.pot = 0;
+  for (let p = 0; p < state.players; p++) state.scores[p] += deltas[p];
+
+  state.phase = 'over';
+  state.waiting = null;
+  state.result = {
+    type: 'win', winner, kind, tile,
+    points: s.total, perPayer: s.perPayer, breakdown: s.breakdown,
+    dora, riichi: state.riichi[winner], kokushi,
+    potGain, totalGain: s.total + potGain,
+    deltas, hand: full,
+    winTile: kind === 'ron' ? tile : state.drawnTile,
+  };
+}
+
+function endDraw(state) {
+  state.phase = 'over';
+  state.waiting = null;
+  const tenpai = [];
+  for (let p = 0; p < state.players; p++) if (isTenpai(state, p)) tenpai.push(p);
+  // 流局: 供託リーチ棒は各宣言者に返却（ゼロサム維持。次局持ち越しは扱わない）
+  for (let p = 0; p < state.players; p++) if (state.riichi[p]) state.scores[p] += 2;
+  state.pot = 0;
+  state.result = { type: 'draw', tenpai };
+}
+
+// ── AI 打牌方針（向聴最小→孤立牌）──
+function connectivity(counts, i) {
+  if (i >= HONOR) return counts[i] * 3;
+  let s = counts[i] * 3;
+  const r = i % 9, base = i - r;
+  for (const d of [-2, -1, 1, 2]) { const j = r + d; if (j >= 0 && j <= 8) s += counts[base + j] * (3 - Math.abs(d)); }
+  return s;
+}
+function aiChooseDiscard(state, p) {
+  const c = state.hands[p];
+  const called = state.melds[p].length;
+  // リーチ中は自摸切り
+  if (state.riichi[p]) return state.drawnTile;
+  let bestSh = Infinity, cand = [];
+  for (let i = 0; i < N_TILES; i++) {
+    if (c[i] === 0) continue;
+    c[i]--; const sh = shanten(c, called).value; c[i]++;
+    if (sh < bestSh) { bestSh = sh; cand = [i]; } else if (sh === bestSh) cand.push(i);
+  }
+  let pick = cand[0], pc = Infinity;
+  for (const i of cand) { const v = connectivity(c, i); if (v < pc) { pc = v; pick = i; } }
+  return pick;
+}
+
+// AI がリーチするか（面前・テンパイ・未リーチ・山に余裕）
+function aiWantsRiichi(state, p) {
+  return openMelds(state.melds[p]) === 0 && !state.riichi[p] && isTenpai(state, p) && state.wall.length >= 4;
+}
+
+// ── 進行: 人間の入力が要るところまで自動で進める ──
+function advance(state) {
+  let guard = 0;
+  while (state.phase !== 'over' && guard++ < 10000) {
+    if (state.phase === 'draw') {
+      doDraw(state);
+      if (state.waiting) return state; // 人間のツモ/打牌待ち
+      // ツモ/ドローで over になったら抜ける
+      if (state.phase === 'over') return state;
+      // AI の打牌
+      if (state.phase === 'discard' && state.turn !== state.humanIndex) {
+        aiTurn(state);
+        if (state.phase === 'over' || state.waiting) return state;
+      }
+    } else if (state.phase === 'discard') {
+      if (state.turn === state.humanIndex) { state.waiting = { type: 'discard' }; return state; }
+      aiTurn(state);
+      if (state.phase === 'over' || state.waiting) return state;
+    } else {
+      return state;
+    }
+  }
+  return state;
+}
+
+// AI の1手番（打牌 → 鳴き解決まで）
+function aiTurn(state) {
+  const p = state.turn;
+  if (aiWantsRiichi(state, p)) state.riichiJustDeclared = p;
+  const tile = aiChooseDiscard(state, p);
+  doDiscard(state, p, tile);
+}
+
+// ── UI 補助 ──
+function tenpaiAfterDiscard(state, p, tile) {
+  const c = state.hands[p];
+  if (c[tile] <= 0) return false;
+  c[tile]--;
+  const t = shanten(c, state.melds[p].length).value === 0;
+  c[tile]++;
+  return t;
+}
+function canDeclareRiichi(state) {
+  const p = state.humanIndex;
+  return state.phase === 'discard' && state.turn === p &&
+    openMelds(state.melds[p]) === 0 && !state.riichi[p] &&
+    state.wall.length >= 4 && shanten(state.hands[p], state.melds[p].length).value === 0;
+}
+
+// ── カン（人間）──
+// 暗槓できる牌（手牌に4枚）。リーチ中は不可（v1）。
+function ankanOptions(state) {
+  const p = state.humanIndex;
+  if (state.phase !== 'discard' || state.turn !== p || state.riichi[p] ||
+    state.kansDone >= 4 || state.wall.length === 0) return [];
+  const out = [];
+  for (let i = 0; i < N_TILES; i++) if (state.hands[p][i] === 4) out.push(i);
+  return out;
+}
+// 加槓できる牌（自分のポンに手牌の1枚を足す）
+function shouminkanOptions(state) {
+  const p = state.humanIndex;
+  if (state.phase !== 'discard' || state.turn !== p || state.riichi[p] ||
+    state.kansDone >= 4 || state.wall.length === 0) return [];
+  const out = [];
+  for (const m of state.melds[p]) if (m.type === 'pon' && state.hands[p][m.tile] >= 1) out.push(m.tile);
+  return out;
+}
+function humanAnkan(state, tile) {
+  const p = state.humanIndex;
+  if (state.hands[p][tile] !== 4) return state;
+  state.hands[p][tile] -= 4;
+  state.melds[p].push({ type: 'ankan', tile });
+  drawRinshan(state, p);
+  return state; // 人間の手番のまま（打牌 or 再カン / 嶺上ツモ待ち）
+}
+function humanShouminkan(state, tile) {
+  const p = state.humanIndex;
+  const meld = state.melds[p].find(m => m.type === 'pon' && m.tile === tile);
+  if (!meld || state.hands[p][tile] < 1) return state;
+  state.hands[p][tile] -= 1;
+  meld.type = 'shouminkan';
+  drawRinshan(state, p);
+  return state;
+}
+
+// ── 人間の操作 ──
+function humanDiscard(state, tile) {
+  if (state.phase !== 'discard' || state.turn !== state.humanIndex) return state;
+  if (state.hands[state.humanIndex][tile] <= 0) return state;
+  doDiscard(state, state.humanIndex, tile);
+  return advance(state);
+}
+function humanRiichiDiscard(state, tile) {
+  if (state.melds[state.humanIndex].length === 0 && isTenpai(state, state.humanIndex)) {
+    state.riichiJustDeclared = state.humanIndex;
+  }
+  return humanDiscard(state, tile);
+}
+function humanCall(state, choice) {
+  const w = state.waiting;
+  if (!w || w.type !== 'calls') return state;
+
+  // ツモ選択
+  if (choice === 'tsumo') { resolveWin(state, state.humanIndex, null, 'tsumo'); return state; }
+  if (choice === 'discardAny') { state.waiting = { type: 'discard' }; return state; }
+
+  // ロン/ポン/スキップ（打牌に対する反応）
+  const ronners = state._pendingRonners || [];
+  const ponners = state._pendingPonners || [];
+  let ronList = ronners.slice();
+  if (choice !== 'ron') ronList = ronList.filter(p => p !== state.humanIndex);
+  finishCalls(state, ronList, ponners, choice);
+  state._pendingRonners = state._pendingPonners = null;
+  if (state.phase === 'over' || state.waiting) return state;
+  return advance(state);
+}
+
+
+// ===== src/play.js =====
+// play.js — 韓麻 実戦UI（対AI）
+
+
+
+
+const $ = (id) => document.getElementById(id);
+let state = null;
+let riichiArmed = false;
+
+function tileEl(idx, opts = {}) {
+  const el = document.createElement('span');
+  const s = suitOf(idx);
+  const red = idx < 27 && rankOf(idx) === 5; // 5は全部赤
+  el.className = `tile ${s}` + (opts.small ? ' small' : '') + (red ? ' red' : '') +
+    (opts.drawn ? ' drawn' : '') + (opts.disabled ? ' disabled' : '');
+  el.textContent = tileName(idx);
+  return el;
+}
+
+function tilesInto(container, counts, opts = {}) {
+  container.innerHTML = '';
+  for (let i = 0; i < N_TILES; i++) for (let k = 0; k < counts[i]; k++) container.appendChild(tileEl(i, opts));
+}
+
+function meldEl(meld) {
+  const el = document.createElement('span'); el.className = 'meld';
+  const n = meld.type === 'pon' ? 3 : 4;
+  for (let x = 0; x < n; x++) el.appendChild(tileEl(meld.tile, { small: true }));
+  const tag = document.createElement('span'); tag.style.fontSize = '.6rem'; tag.style.color = 'var(--muted)'; tag.style.alignSelf = 'center';
+  tag.textContent = { pon: '', ankan: '暗槓', daiminkan: '大明槓', shouminkan: '加槓' }[meld.type] || '';
+  if (tag.textContent) el.appendChild(tag);
+  return el;
+}
+
+function pos(state, p) { // 相手の呼び名
+  const names = { 1: '下家', 2: '対面', 3: '上家' };
+  const rel = (p - state.humanIndex + state.players) % state.players;
+  return `AI ${p}（${names[rel] || ''}）`;
+}
+
+function render() {
+  // インフォバー
+  const dora = $('doraDisp'); dora.innerHTML = '';
+  for (const d of state.doraIndicators) dora.appendChild(tileEl(d, { small: true }));
+  $('wallCount').textContent = state.wall.length;
+  $('potDisp').textContent = state.pot;
+
+  // 相手
+  const opp = $('opponents'); opp.innerHTML = '';
+  for (let k = 1; k < state.players; k++) {
+    const p = (state.humanIndex + k) % state.players;
+    const div = document.createElement('div');
+    div.className = 'opp' + (state.turn === p && state.phase !== 'over' ? ' turn-now' : '');
+    const head = document.createElement('div'); head.className = 'ophead';
+    const conceal = state.hands[p].reduce((a, b) => a + b, 0);
+    head.innerHTML = `<span class="name">${pos(state, p)}</span><span class="score">${fmtScore(state.scores[p])}</span>` +
+      (state.riichi[p] ? '<span class="riichi-tag">リーチ</span>' : '') +
+      `<span class="handback">手牌 ${conceal}枚</span>`;
+    div.appendChild(head);
+    // 副露
+    if (state.melds[p].length) {
+      const m = document.createElement('div'); m.className = 'melds';
+      for (const meld of state.melds[p]) m.appendChild(meldEl(meld));
+      div.appendChild(m);
+    }
+    const river = document.createElement('div'); river.className = 'river tiles';
+    for (const t of state.discards[p]) river.appendChild(tileEl(t, { small: true }));
+    div.appendChild(river);
+    opp.appendChild(div);
+  }
+
+  // 自分
+  $('myScore').textContent = fmtScore(state.scores[state.humanIndex]);
+  const myState = $('myState');
+  myState.innerHTML = state.riichi[state.humanIndex] ? '<span class="riichi-tag">リーチ中</span>' : '';
+
+  // 副露
+  const mm = $('myMelds'); mm.innerHTML = '';
+  for (const meld of state.melds[state.humanIndex]) mm.appendChild(meldEl(meld));
+
+  renderHand();
+  renderActions();
+  renderHint();
+
+  // 自分の河
+  const riv = $('myDiscards'); riv.innerHTML = '';
+  for (const t of state.discards[state.humanIndex]) riv.appendChild(tileEl(t, { small: true }));
+
+  renderResult();
+}
+
+function renderHand() {
+  const hand = $('myHand'); hand.innerHTML = '';
+  const p = state.humanIndex;
+  const c = state.hands[p].slice();
+  const isMyDiscard = state.phase === 'discard' && state.turn === p && state.waiting?.type === 'discard';
+  let drawn = null;
+  if (state.drawnTile != null && c[state.drawnTile] > 0 && isMyDiscard) { c[state.drawnTile]--; drawn = state.drawnTile; }
+
+  const clickable = isMyDiscard;
+  const mk = (idx, isDrawn) => {
+    const disabled = clickable && riichiArmed && !tenpaiAfterDiscard(state, p, idx);
+    const el = tileEl(idx, { drawn: isDrawn, disabled });
+    if (clickable && !disabled) el.onclick = () => onDiscard(idx);
+    return el;
+  };
+  for (let i = 0; i < N_TILES; i++) for (let k = 0; k < c[i]; k++) hand.appendChild(mk(i, false));
+  if (drawn != null) hand.appendChild(mk(drawn, true));
+}
+
+function renderActions() {
+  const box = $('actions'); box.innerHTML = '';
+  if (state.phase === 'over') return;
+  const w = state.waiting;
+  if (!w) return;
+
+  if (w.type === 'calls') {
+    for (const opt of w.options) {
+      if (opt.action === 'discardAny') continue; // ツモ見送りは「スルー」で表現
+      const b = document.createElement('button');
+      b.className = 'btn ' + ({ ron: 'act-ron', tsumo: 'act-tsumo', pon: 'act-pon', kan: 'act-pon', skip: 'act-skip' }[opt.action] || 'act-skip');
+      b.textContent = { ron: 'ロン', tsumo: 'ツモ', pon: 'ポン', kan: 'カン', skip: 'スルー' }[opt.action] || opt.action;
+      b.onclick = () => onCall(opt.action);
+      box.appendChild(b);
+    }
+    // ツモ選択時に「ツモらず打牌」= discardAny
+    if (w.options.some(o => o.action === 'tsumo')) {
+      const b = document.createElement('button'); b.className = 'btn act-skip'; b.textContent = 'ツモらず打つ';
+      b.onclick = () => onCall('discardAny'); box.appendChild(b);
+    }
+    return;
+  }
+
+  if (w.type === 'discard') {
+    if (canDeclareRiichi(state)) {
+      const lab = document.createElement('label'); lab.className = 'riichi-arm';
+      const cb = document.createElement('input'); cb.type = 'checkbox'; cb.checked = riichiArmed;
+      cb.onchange = () => { riichiArmed = cb.checked; renderHand(); };
+      lab.appendChild(cb); lab.appendChild(document.createTextNode('リーチして打つ（テンパイ牌のみ選択可）'));
+      box.appendChild(lab);
+    }
+    // カン（暗槓・加槓）
+    if (!riichiArmed) {
+      for (const t of ankanOptions(state)) {
+        const b = document.createElement('button'); b.className = 'btn act-pon';
+        b.textContent = `暗槓 ${tileName(t)}`; b.onclick = () => onAnkan(t); box.appendChild(b);
+      }
+      for (const t of shouminkanOptions(state)) {
+        const b = document.createElement('button'); b.className = 'btn act-pon';
+        b.textContent = `加槓 ${tileName(t)}`; b.onclick = () => onShouminkan(t); box.appendChild(b);
+      }
+    }
+    const note = document.createElement('span');
+    note.style.color = 'var(--muted)'; note.style.fontSize = '.8rem';
+    note.textContent = riichiArmed ? '　切る牌を選択（リーチ宣言）' : '　切る牌をクリック';
+    box.appendChild(note);
+  }
+}
+
+function renderHint() {
+  const box = $('hint');
+  const on = $('showHint').checked;
+  const isMyDiscard = state.phase === 'discard' && state.turn === state.humanIndex && state.waiting?.type === 'discard';
+  if (!on || !isMyDiscard) { box.style.display = 'none'; return; }
+  const res = analyzeDiscards({
+    counts: state.hands[state.humanIndex],
+    calledMelds: state.melds[state.humanIndex].length,
+    omoteIndicators: state.doraIndicators,
+  });
+  const best = res[0];
+  const shTxt = best.shanten <= 0 ? (best.shanten === 0 ? 'テンパイ' : 'アガリ') : best.shanten + '向聴';
+  box.style.display = '';
+  box.innerHTML = `お手本: <span class="rec">${tileName(best.discard)}</span> 切り` +
+    ` → ${shTxt}・受け入れ<strong>${best.ukeireTotal}</strong>枚・ドラ${best.dora}` +
+    (best.discardsRed ? '（※5切りは赤ドラ損）' : '');
+}
+
+function renderResult() {
+  const panel = $('resultPanel');
+  if (state.phase !== 'over') { panel.style.display = 'none'; return; }
+  panel.style.display = '';
+  const r = state.result;
+  let html = '';
+  if (r.type === 'win') {
+    const meWin = r.winner === state.humanIndex;
+    const who = meWin ? 'あなた' : pos(state, r.winner);
+    html += `<div class="rhead ${meWin ? 'win' : 'lose'}">${who}の${r.kind === 'tsumo' ? 'ツモ' : 'ロン'}和了！ ${r.totalGain}点</div>`;
+    html += `<div class="tiles" id="winHand"></div>`;
+    const parts = r.breakdown.map(([k, v]) => `${k} ${v}`).join(' ／ ');
+    const extra = (r.riichi && r.potGain ? ` ／ リーチ供託 +${r.potGain}` : '') + (r.kokushi ? ' ／ 国士無双' : '');
+    html += `<div style="color:var(--muted);font-size:.85rem;margin-top:6px">内訳: ${parts}${extra}</div>`;
+  } else {
+    html += `<div class="rhead">流局</div>`;
+    html += `<div style="color:var(--muted);font-size:.85rem">テンパイ: ${r.tenpai.length ? r.tenpai.map(p => p === state.humanIndex ? 'あなた' : pos(state, p)).join('、') : 'なし'}</div>`;
+  }
+  html += `<div class="deltas">` + state.scores.map((s, p) => {
+    const d = r.deltas ? r.deltas[p] : 0;
+    const nm = p === state.humanIndex ? 'あなた' : pos(state, p);
+    const dc = d > 0 ? 'up' : d < 0 ? 'down' : '';
+    return `<span>${nm}: <span class="${dc}">${d > 0 ? '+' : ''}${d}</span> → ${fmtScore(s)}</span>`;
+  }).join('') + `</div>`;
+  html += `<button class="btn" id="nextGame" style="margin-top:12px">次の局へ</button>`;
+  panel.innerHTML = html;
+
+  if (r.type === 'win') tilesInto($('winHand'), r.hand, { small: true });
+  $('nextGame').onclick = startGame;
+
+  // 勝敗をハンド上部にも
+}
+
+function fmtScore(s) { return (s > 0 ? '+' : '') + s; }
+
+// ── 操作 ──
+function onDiscard(tile) {
+  if (riichiArmed) { state = humanRiichiDiscard(state, tile); }
+  else { state = humanDiscard(state, tile); }
+  riichiArmed = false;
+  render();
+}
+function onCall(choice) {
+  state = humanCall(state, choice);
+  render();
+}
+function onAnkan(tile) { state = humanAnkan(state, tile); render(); }
+function onShouminkan(tile) { state = humanShouminkan(state, tile); render(); }
+
+function startGame() {
+  const players = parseInt($('playerCount').value, 10) || 4;
+  state = newGame({ players, humanIndex: 0 });
+  advance(state);
+  riichiArmed = false;
+  render();
+}
+
+$('newGame').onclick = startGame;
+$('showHint').onchange = render;
+startGame();
+
+</script>
