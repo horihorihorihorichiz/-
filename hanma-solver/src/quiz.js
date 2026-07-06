@@ -231,8 +231,18 @@ function render() {
   // 状況
   const g = graded || grade(st);
   $('turnInfo').textContent = `${st.players}人打ち／残り ${st.wall.length}枚／あなたの捨て牌 ${st.discards[0].length}`;
+
+  // ドラ集合（表示牌から決まるドラ＋5は全部赤ドラ）
+  const doraSet = new Set([MAN + 4, PIN + 4, SOU + 4]);
+  for (const ind of st.doraIndicators) doraSet.add(doraFromIndicator(ind));
+
+  // ドラ表示: 「表示牌 → ドラ」を並べる
   const dora = $('doraDisp'); dora.innerHTML = '';
-  for (const d of st.doraIndicators) dora.appendChild(tileEl(d, { small: true }));
+  st.doraIndicators.forEach(ind => {
+    dora.appendChild(tileEl(ind, { small: true }));
+    const arrow = document.createElement('span'); arrow.className = 'dora-arrow'; arrow.textContent = '→'; dora.appendChild(arrow);
+    dora.appendChild(tileEl(doraFromIndicator(ind), { small: true, dora: true }));
+  });
 
   // 相手（河＋リーチ）
   const opp = $('opps'); opp.innerHTML = '';
@@ -269,7 +279,7 @@ function render() {
     for (let k = 0; k < c[i]; k++) {
       const isBest = answered && i === best.discard;
       const isPick = answered && st._pick === i;
-      const el = tileEl(i, { best: isBest, pick: isPick });
+      const el = tileEl(i, { best: isBest, pick: isPick, dora: doraSet.has(i) });
       if (!answered) el.onclick = () => onPick(i);
       else el.style.cursor = 'default';
       hand.appendChild(el);

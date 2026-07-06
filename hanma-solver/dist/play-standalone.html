@@ -419,8 +419,10 @@ function tileEl(idx, opts = {}) {
   if (opts.back) { el.className = 'tile back' + (opts.small ? ' t-sm' : ''); return el; }
   const red = idx < 27 && rankOf(idx) === 5;
   el.className = 'tile' + (opts.small ? ' t-sm' : '') + (red ? ' red' : '') +
-    (opts.drawn ? ' drawn' : '') + (opts.disabled ? ' disabled' : '') + (opts.pick ? ' pick' : '') + (opts.best ? ' best' : '');
+    (opts.drawn ? ' drawn' : '') + (opts.disabled ? ' disabled' : '') + (opts.pick ? ' pick' : '') +
+    (opts.best ? ' best' : '') + (opts.dora ? ' is-dora' : '');
   el.innerHTML = faceHTML(idx);
+  if (opts.dora) { const m = document.createElement('span'); m.className = 'dora-mark'; m.textContent = 'ドラ'; el.appendChild(m); }
   return el;
 }
 function backsInto(container, n, small = true) {
