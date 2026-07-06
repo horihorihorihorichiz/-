@@ -8,6 +8,7 @@ import { newGame, advance, humanDiscard, humanCall } from './game.js';
 import { analyzeDiscards } from './analyze.js';
 import { dealInProb, dangerReasons } from './danger.js';
 import { score } from './score.js';
+import { monteCarloDiscard } from './mc.js';
 import { tileEl, backsInto } from './tileview.js';
 
 const $ = (id) => document.getElementById(id);
@@ -93,7 +94,36 @@ function grade(state) {
     r.score = -r.shanten * 100000 + value * 10;
   }
   results.sort((a, b) => b.score - a.score || a.dealIn - b.dealIn);
-  return { results, threats, oppInfo, seenAll };
+  return { results, threats, oppInfo, seenAll, boardSeen };
+}
+
+// 表示する行（上位7＋自分の選択）
+function shownRows(g) {
+  const show = g.results.slice(0, 7);
+  const pick = g.results.find(r => r.discard === st._pick);
+  if (pick && !show.some(r => r.discard === st._pick)) show.push(pick);
+  return show;
+}
+
+// 得点期待値（アガリ率×打点）をモンテカルロで実測して各行に付与
+function computeEVs() {
+  const g = graded;
+  const unseen = new Array(N_TILES).fill(4);
+  for (let i = 0; i < N_TILES; i++) unseen[i] -= st.hands[0][i] + g.boardSeen[i];
+  const turnsLeft = Math.max(2, Math.floor(st.wall.length / st.players));
+  setTimeout(() => {
+    for (const r of shownRows(g)) {
+      if (r.ev != null) continue;
+      const c = st.hands[0].slice(); c[r.discard]--;
+      const mc = monteCarloDiscard({
+        hand13: c, calledMelds: st.melds[0].length, omoteIndicators: st.doraIndicators,
+        unseen, turnsLeft, rollouts: 250, players: st.players,
+      });
+      r.ev = mc.ev; r.winRate = mc.winRate; r.avgPoints = mc.avgPoints;
+    }
+    g._evDone = true;
+    if (answered) render();
+  }, 30);
 }
 
 function evalValue(r) { return (r.ukeireTotal + r.dora * 3) * (1 - 0.85 * r.dealIn); }
@@ -138,6 +168,7 @@ function explainWhy(best, pick, g) {
   const menzen = st.melds[0].length === 0;
   const pts = score({ win: 'ron', riichi: menzen, dora: best.dora, players: st.players }).total;
   lines.push(`<li>この手はアガれれば <b>約${pts}点</b>（韓麻に役・飜は無く、ロン6＋ドラ${best.dora}${menzen ? '＋リーチ2' : ''}）。</li>`);
+  if (best.ev != null) lines.push(`<li><b>得点期待値 約${best.ev.toFixed(2)}点</b>（アガリ率${(best.winRate * 100).toFixed(0)}% × 平均打点${best.avgPoints.toFixed(1)}点）。これが「実際どれだけ得か」の目安。</li>`);
 
   if (pick && pick.discard !== best.discard) {
     if (pick.shanten > best.shanten)
@@ -226,19 +257,25 @@ function renderResult(g) {
   // 中学生向けのやさしい解説
   html += explainWhy(best, pick, g);
 
+  const evReady = g._evDone;
   html += `<div class="rtable-wrap"><table class="rtable"><thead><tr>` +
-    `<th>切る</th><th>向聴（アガリまで）</th><th>受け入れ（手広さ）</th><th>ドラ（点）</th><th>放銃率（危険）</th></tr></thead><tbody>`;
-  const show = g.results.slice(0, 7);
-  if (!show.some(r => r.discard === st._pick)) show.push(pick); // 自分の選択は必ず表示
-  for (const r of show) {
+    `<th>切る</th><th>向聴</th><th>受け入れ</th><th>ドラ</th><th>放銃率</th>` +
+    `<th>得点期待値${evReady ? '' : ' ⏳'}</th></tr></thead><tbody>`;
+  const bestEv = evReady ? Math.max(...shownRows(g).map(r => r.ev ?? -1)) : null;
+  for (const r of shownRows(g)) {
     const tags = (r.discard === best.discard ? '<span class="pill gold">最善</span>' : '') +
       (r.discard === st._pick ? '<span class="pill blue">あなた</span>' : '');
+    const evCell = r.ev != null
+      ? `<span class="${r.ev === bestEv ? 'ev-top' : ''}">${r.ev.toFixed(2)}点</span>`
+      : '<span class="ev-wait">計算中…</span>';
     html += `<tr class="${r.discard === best.discard ? 'row-best' : ''}${r.discard === st._pick ? ' row-pick' : ''}">` +
       `<td>${tileName(r.discard)} ${tags}</td><td>${fmtSh(r.shanten)}${formTag(r)}</td>` +
       `<td>${r.ukeireTotal}枚</td><td>${r.dora}</td>` +
-      `<td>${g.threats > 0.05 ? (r.dealIn * 100).toFixed(1) + '%' : '—'}</td></tr>`;
+      `<td>${g.threats > 0.05 ? (r.dealIn * 100).toFixed(1) + '%' : '—'}</td>` +
+      `<td class="num">${evCell}</td></tr>`;
   }
   html += `</tbody></table></div>`;
+  html += `<div class="rnote" style="margin-top:6px">得点期待値 ＝ アガリ率 × 平均打点（残り山からモンテカルロで実測）。「もしアガれたら」ではなく「平均でどれだけ得するか」。</div>`;
 
   // 放銃率の理由説明（警戒相手がいるとき）
   if (g.threats > 0.1) {
@@ -277,6 +314,7 @@ function onPick(tile) {
   answered = true;
   st._verdict = verdict(graded.results.find(r => r.discard === tile), graded.results[0]);
   render(); // 自動で次へは行かない。ユーザーが「次の問題へ」を押すまで結果を表示。
+  computeEVs(); // 得点期待値をモンテカルロで実測 → 完了後に再描画
 }
 function newQuiz() {
   const players = parseInt($('playerCount').value, 10) || 4;

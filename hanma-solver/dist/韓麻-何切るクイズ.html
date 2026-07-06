@@ -147,6 +147,9 @@ code { background: var(--panel-2); padding: 1px 5px; border-radius: 4px; font-si
 .why li { margin: 5px 0; line-height: 1.6; }
 .why li.bad { color: #ffc9c9; }
 .ftag { font-size: .64rem; background: rgba(168,85,247,.18); color: #d8b4fe; padding: 1px 6px; border-radius: 999px; margin-left: 3px; }
+.rtable .num { font-variant-numeric: tabular-nums; }
+.ev-top { color: var(--accent); font-weight: 800; }
+.ev-wait { color: var(--muted); font-size: .8rem; }
 
 /* リーチ宣言牌: 横向き＋赤枠 */
 .tile.riichi-tile { transform: rotate(90deg); margin: 0 7px; box-shadow: inset 0 -3px 0 #d6cdb0, 0 0 0 2px #ff5252, 0 2px 4px rgba(0,0,0,.5); }
@@ -808,6 +811,133 @@ function dangerReasons(idx, seen, threats) {
 }
 
 
+// ===== src/mc.js =====
+// mc.js — モンテカルロによる打牌EV推定
+//
+// 韓麻は役が無いので、最適打はほぼ「アガリ率 × 打点」の期待値で決まる。
+// 残り山からランダムに自摸り、貪欲な打牌方針でアガリまで回す試行を多数走らせ、
+// アガリ率・平均打点・アガリEV を実測する。
+//
+// v1 の割り切り（docs参照）:
+//  - 相手の手は未モデル化（放銃リスクは含めない = 「アガリ側EV」）。
+//    相手の自摸切りに自分の当たり牌が出たらロン、という簡易ロンのみ考慮。
+//  - 赤5は「アガリ時も手に残っている」と近似（5は中張で切られにくい）。
+//  - 面前テンパイなら常にリーチ宣言したものとして加点（裏ドラは未計上）。
+
+
+
+
+
+function shuffle(a) {
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+}
+
+// 切り牌選択の安手ヒューリスティック: 近接牌が少ない（孤立している）ほど切りやすい
+function connectivity(counts, i) {
+  if (i >= HONOR) return counts[i] * 3;
+  let s = counts[i] * 3;
+  const r = i % 9, base = i - r;
+  for (const d of [-2, -1, 1, 2]) {
+    const j = r + d;
+    if (j >= 0 && j <= 8) s += counts[base + j] * (3 - Math.abs(d));
+  }
+  return s;
+}
+
+// 貪欲な打牌: 向聴が最小になる切り、同点なら最も孤立した牌
+function chooseDiscard(counts, calledMelds) {
+  let bestSh = Infinity, cand = [];
+  for (let i = 0; i < N_TILES; i++) {
+    if (counts[i] === 0) continue;
+    counts[i]--;
+    const sh = shanten(counts, calledMelds).value;
+    counts[i]++;
+    if (sh < bestSh) { bestSh = sh; cand = [i]; }
+    else if (sh === bestSh) cand.push(i);
+  }
+  let pick = cand[0], pc = Infinity;
+  for (const i of cand) { const c = connectivity(counts, i); if (c < pc) { pc = c; pick = i; } }
+  return pick;
+}
+
+// テンパイ手の当たり牌 bool[34]
+function winningTiles(counts, calledMelds, unseen) {
+  const w = new Array(N_TILES).fill(false);
+  for (let i = 0; i < N_TILES; i++) {
+    if (counts[i] >= 4 || (unseen && unseen[i] <= 0)) continue;
+    counts[i]++;
+    if (shanten(counts, calledMelds).value === -1) w[i] = true;
+    counts[i]--;
+  }
+  return w;
+}
+
+// 1つの打牌候補についてEVを推定
+// opts: { hand13:Int[34], calledMelds, omoteIndicators, unseen:Int[34],
+//         turnsLeft, rollouts, players }
+function monteCarloDiscard(opts) {
+  const {
+    hand13, calledMelds = 0, omoteIndicators = [],
+    unseen, turnsLeft = 16, rollouts = 400, players = 4,
+  } = opts;
+
+  let wins = 0, tsumo = 0, ptsSum = 0, turnsToWinSum = 0;
+
+  for (let n = 0; n < rollouts; n++) {
+    const wall = [];
+    for (let i = 0; i < N_TILES; i++) for (let k = 0; k < unseen[i]; k++) wall.push(i);
+    shuffle(wall);
+
+    const c = hand13.slice();
+    let won = false, byTsumo = false, winCounts = null, winTurn = 0;
+    let p = 0;
+
+    for (let turn = 0; turn < turnsLeft && p < wall.length; turn++) {
+      // 自摸
+      const t = wall[p++]; c[t]++;
+      if (shanten(c, calledMelds).value === -1) { won = true; byTsumo = true; winCounts = c.slice(); winTurn = turn; break; }
+      const d = chooseDiscard(c, calledMelds); c[d]--;
+
+      // テンパイならロン待ち
+      const sh = shanten(c, calledMelds).value;
+      if (sh === 0) {
+        const wt = winningTiles(c, calledMelds, null);
+        let ronned = false;
+        for (let o = 0; o < players - 1 && p < wall.length; o++) {
+          const od = wall[p++];
+          if (wt[od]) { c[od]++; won = true; byTsumo = false; winCounts = c.slice(); c[od]--; winTurn = turn; ronned = true; break; }
+        }
+        if (ronned) break;
+      } else {
+        p += (players - 1); // 相手の自摸切りぶん山を消費（テンパイでなければ無関係）
+      }
+    }
+
+    if (won) {
+      wins++; if (byTsumo) tsumo++; turnsToWinSum += winTurn;
+      const dora = countDora(winCounts, omoteIndicators, [], false);
+      const menzen = calledMelds === 0;
+      const s = score({ win: byTsumo ? 'tsumo' : 'ron', riichi: menzen, dora, players });
+      ptsSum += s.total;
+    }
+  }
+
+  const winRate = wins / rollouts;
+  const avgPoints = wins ? ptsSum / wins : 0;
+  return {
+    winRate,
+    tsumoRate: tsumo / rollouts,
+    avgPoints,
+    ev: winRate * avgPoints,
+    avgWinTurn: wins ? turnsToWinSum / wins : null,
+    rollouts,
+  };
+}
+
+
 // ===== src/game.js =====
 // game.js — 韓麻の対局エンジン（ヘッドレス）
 //
@@ -1281,6 +1411,7 @@ function humanCall(state, choice) {
 
 
 
+
 const $ = (id) => document.getElementById(id);
 const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
 
@@ -1364,7 +1495,36 @@ function grade(state) {
     r.score = -r.shanten * 100000 + value * 10;
   }
   results.sort((a, b) => b.score - a.score || a.dealIn - b.dealIn);
-  return { results, threats, oppInfo, seenAll };
+  return { results, threats, oppInfo, seenAll, boardSeen };
+}
+
+// 表示する行（上位7＋自分の選択）
+function shownRows(g) {
+  const show = g.results.slice(0, 7);
+  const pick = g.results.find(r => r.discard === st._pick);
+  if (pick && !show.some(r => r.discard === st._pick)) show.push(pick);
+  return show;
+}
+
+// 得点期待値（アガリ率×打点）をモンテカルロで実測して各行に付与
+function computeEVs() {
+  const g = graded;
+  const unseen = new Array(N_TILES).fill(4);
+  for (let i = 0; i < N_TILES; i++) unseen[i] -= st.hands[0][i] + g.boardSeen[i];
+  const turnsLeft = Math.max(2, Math.floor(st.wall.length / st.players));
+  setTimeout(() => {
+    for (const r of shownRows(g)) {
+      if (r.ev != null) continue;
+      const c = st.hands[0].slice(); c[r.discard]--;
+      const mc = monteCarloDiscard({
+        hand13: c, calledMelds: st.melds[0].length, omoteIndicators: st.doraIndicators,
+        unseen, turnsLeft, rollouts: 250, players: st.players,
+      });
+      r.ev = mc.ev; r.winRate = mc.winRate; r.avgPoints = mc.avgPoints;
+    }
+    g._evDone = true;
+    if (answered) render();
+  }, 30);
 }
 
 function evalValue(r) { return (r.ukeireTotal + r.dora * 3) * (1 - 0.85 * r.dealIn); }
@@ -1409,6 +1569,7 @@ function explainWhy(best, pick, g) {
   const menzen = st.melds[0].length === 0;
   const pts = score({ win: 'ron', riichi: menzen, dora: best.dora, players: st.players }).total;
   lines.push(`<li>この手はアガれれば <b>約${pts}点</b>（韓麻に役・飜は無く、ロン6＋ドラ${best.dora}${menzen ? '＋リーチ2' : ''}）。</li>`);
+  if (best.ev != null) lines.push(`<li><b>得点期待値 約${best.ev.toFixed(2)}点</b>（アガリ率${(best.winRate * 100).toFixed(0)}% × 平均打点${best.avgPoints.toFixed(1)}点）。これが「実際どれだけ得か」の目安。</li>`);
 
   if (pick && pick.discard !== best.discard) {
     if (pick.shanten > best.shanten)
@@ -1497,19 +1658,25 @@ function renderResult(g) {
   // 中学生向けのやさしい解説
   html += explainWhy(best, pick, g);
 
+  const evReady = g._evDone;
   html += `<div class="rtable-wrap"><table class="rtable"><thead><tr>` +
-    `<th>切る</th><th>向聴（アガリまで）</th><th>受け入れ（手広さ）</th><th>ドラ（点）</th><th>放銃率（危険）</th></tr></thead><tbody>`;
-  const show = g.results.slice(0, 7);
-  if (!show.some(r => r.discard === st._pick)) show.push(pick); // 自分の選択は必ず表示
-  for (const r of show) {
+    `<th>切る</th><th>向聴</th><th>受け入れ</th><th>ドラ</th><th>放銃率</th>` +
+    `<th>得点期待値${evReady ? '' : ' ⏳'}</th></tr></thead><tbody>`;
+  const bestEv = evReady ? Math.max(...shownRows(g).map(r => r.ev ?? -1)) : null;
+  for (const r of shownRows(g)) {
     const tags = (r.discard === best.discard ? '<span class="pill gold">最善</span>' : '') +
       (r.discard === st._pick ? '<span class="pill blue">あなた</span>' : '');
+    const evCell = r.ev != null
+      ? `<span class="${r.ev === bestEv ? 'ev-top' : ''}">${r.ev.toFixed(2)}点</span>`
+      : '<span class="ev-wait">計算中…</span>';
     html += `<tr class="${r.discard === best.discard ? 'row-best' : ''}${r.discard === st._pick ? ' row-pick' : ''}">` +
       `<td>${tileName(r.discard)} ${tags}</td><td>${fmtSh(r.shanten)}${formTag(r)}</td>` +
       `<td>${r.ukeireTotal}枚</td><td>${r.dora}</td>` +
-      `<td>${g.threats > 0.05 ? (r.dealIn * 100).toFixed(1) + '%' : '—'}</td></tr>`;
+      `<td>${g.threats > 0.05 ? (r.dealIn * 100).toFixed(1) + '%' : '—'}</td>` +
+      `<td class="num">${evCell}</td></tr>`;
   }
   html += `</tbody></table></div>`;
+  html += `<div class="rnote" style="margin-top:6px">得点期待値 ＝ アガリ率 × 平均打点（残り山からモンテカルロで実測）。「もしアガれたら」ではなく「平均でどれだけ得するか」。</div>`;
 
   // 放銃率の理由説明（警戒相手がいるとき）
   if (g.threats > 0.1) {
@@ -1548,6 +1715,7 @@ function onPick(tile) {
   answered = true;
   st._verdict = verdict(graded.results.find(r => r.discard === tile), graded.results[0]);
   render(); // 自動で次へは行かない。ユーザーが「次の問題へ」を押すまで結果を表示。
+  computeEVs(); // 得点期待値をモンテカルロで実測 → 完了後に再描画
 }
 function newQuiz() {
   const players = parseInt($('playerCount').value, 10) || 4;
