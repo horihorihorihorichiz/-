@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>韓麻 何切るクイズ</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="quiz.css">
+</head>
+<body>
+  <div class="wrap-quiz">
+    <div class="qtopbar">
+      <div class="ttl">韓麻 何切るクイズ <span class="badge">相手の河も加味</span></div>
+      <div class="controls">
+        <select id="playerCount"><option value="4">4人</option><option value="3">3人</option></select>
+        <button class="btn" id="newQuizTop">別の局面</button>
+        <a href="play.html" class="link">実戦 →</a>
+        <a href="index.html" class="link">ソルバー →</a>
+      </div>
+    </div>
+
+    <div class="situation panel">
+      <div class="sit-head">
+        <span class="lbl">表ドラ</span><span id="doraDisp" class="tiles"></span>
+        <span id="turnInfo" class="turninfo"></span>
+      </div>
+      <div id="opps" class="opps"></div>
+    </div>
+
+    <div class="panel qmy">
+      <div class="q-instr">この局面、<strong>何を切る？</strong>（牌をクリック）</div>
+      <div id="myMelds" class="melds"></div>
+      <div id="quizHand" class="qhand"></div>
+    </div>
+
+    <div class="panel" id="quizResult" style="display:none"></div>
+    <div class="nextrow"><button class="btn btn-next" id="nextBtn" style="display:none">次の問題へ →</button></div>
+  </div>
+
+  <script type="module" src="src/quiz.js"></script>
+</body>
+</html>

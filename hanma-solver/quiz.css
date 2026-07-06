@@ -1,0 +1,81 @@
+/* ===== 何切るクイズ ===== */
+:root { --tile-edge: #cbc3a8; }
+.wrap-quiz { max-width: 880px; margin: 0 auto; padding: 16px 14px 60px; }
+.qtopbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 12px; flex-wrap: wrap; }
+.qtopbar .ttl { font-size: 1.2rem; font-weight: 800; }
+.qtopbar .controls { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.qtopbar select { background: var(--panel-2); color: var(--text); border: 1px solid var(--border); border-radius: 6px; padding: 5px 8px; }
+.qtopbar .link { color: var(--accent-2); font-size: .8rem; text-decoration: none; }
+
+.situation .sit-head { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+.situation .lbl { color: var(--muted); font-size: .74rem; }
+.situation .turninfo { color: var(--muted); font-size: .78rem; margin-left: auto; }
+.opps { display: flex; flex-direction: column; gap: 6px; }
+.oppq { background: #10281d; border: 1px solid #1c4a34; border-radius: 8px; padding: 6px 10px; }
+.oppq-head { display: flex; align-items: center; gap: 8px; font-size: .78rem; color: #dcefe4; margin-bottom: 3px; }
+.oppq-cnt { color: var(--muted); font-size: .7rem; margin-left: auto; }
+.riichi-tag { background: rgba(248,113,113,.2); color: #ff9d9d; font-size: .66rem; padding: 1px 7px; border-radius: 999px; }
+.warn-tag { background: rgba(251,191,36,.18); color: var(--gold); font-size: .66rem; padding: 1px 7px; border-radius: 999px; }
+.oppq .river { display: flex; flex-wrap: wrap; gap: 2px; }
+.oppq-melds { display: inline-flex; gap: 2px; margin-left: 6px; padding-left: 6px; border-left: 1px solid #2a5a40; }
+
+.qmy { background: radial-gradient(ellipse at 50% 140%, #176b43, #0d472b 74%); border: 1px solid #1c4a34; }
+.q-instr { font-size: 1rem; margin-bottom: 10px; }
+.qmy .melds { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 6px; }
+.qmy .meld { display: inline-flex; gap: 2px; }
+.qhand { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; padding: 12px 8px; min-height: 74px; background: rgba(0,0,0,.18); border-radius: 12px; }
+
+/* 結果 */
+.stop-banner { background: linear-gradient(90deg, #b02a2a, #7a1010); color: #fff; font-weight: 800; text-align: center; padding: 10px; border-radius: 8px; margin-bottom: 10px; font-size: 1.05rem; letter-spacing: .03em; }
+.auto-note { background: rgba(74,222,128,.12); color: var(--accent); text-align: center; padding: 7px; border-radius: 8px; margin-bottom: 10px; font-size: .85rem; }
+.verdict { font-size: 1.05rem; font-weight: 700; margin-bottom: 12px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.verdict .vmark { font-size: 1.4rem; }
+.verdict.v-good { color: var(--accent); } .verdict.v-ok { color: #8fd3ff; }
+.verdict.v-mid { color: var(--gold); } .verdict.v-bad { color: #ff7b7b; }
+.lossnum { font-size: .78rem; font-weight: 600; background: var(--panel-2); border: 1px solid var(--border); padding: 2px 8px; border-radius: 999px; color: var(--muted); }
+.lossnum.warn { color: #ff9d9d; }
+
+.rtable-wrap { overflow-x: auto; }
+.rtable { width: 100%; border-collapse: collapse; font-size: .85rem; }
+.rtable th, .rtable td { text-align: left; padding: 6px 10px; border-bottom: 1px solid var(--border); white-space: nowrap; }
+.rtable th { color: var(--muted); font-size: .72rem; }
+.rtable .row-best { background: rgba(74,222,128,.08); }
+.rtable .row-pick { outline: 1px solid rgba(56,189,248,.4); }
+.pill { display: inline-block; font-size: .66rem; padding: 1px 6px; border-radius: 999px; margin-left: 4px; }
+.pill.gold { background: rgba(251,191,36,.16); color: var(--gold); }
+.pill.blue { background: rgba(56,189,248,.16); color: var(--accent-2); }
+.rnote { color: var(--muted); font-size: .74rem; margin-top: 8px; }
+
+.nextrow { text-align: center; margin-top: 14px; }
+.btn-next { font-size: 1rem; padding: 12px 28px; }
+
+/* ===== 牌 ===== */
+.tiles { display: flex; flex-wrap: wrap; align-items: center; }
+.tile {
+  position: relative; display: inline-flex; align-items: center; justify-content: center;
+  width: 42px; height: 58px; min-width: 0; padding: 0; box-sizing: border-box;
+  border-radius: 7px; border: 1px solid var(--tile-edge); color: #222;
+  background: linear-gradient(158deg, #fffef9, #ece4d0);
+  box-shadow: inset 0 -4px 0 #d6cdb0, inset 0 2px 2px #fff, 0 3px 5px rgba(0,0,0,.45);
+  cursor: default; overflow: hidden; user-select: none;
+}
+.tile.t-sm { width: 24px; height: 33px; border-radius: 4px; box-shadow: inset 0 -3px 0 #d6cdb0, 0 1px 2px rgba(0,0,0,.4); }
+.tile.red { background: linear-gradient(158deg, #fff6f4, #f0d7d3); }
+.tile.back { background: linear-gradient(135deg, #2e8494, #114f5c); border-color: #0b3a44; }
+.tile.back::after { content: ''; position: absolute; inset: 4px; border-radius: 3px; border: 1.5px solid rgba(255,255,255,.16); background: repeating-linear-gradient(45deg, rgba(255,255,255,.06) 0 3px, transparent 3px 6px); }
+.pips { width: 100%; height: 100%; display: block; }
+.pdot { fill: #215f9e; } .pdot.rd { fill: #c0392b; } .pdotc { fill: #faf7ec; }
+.sbar { fill: #1e7a41; } .sbar.rd { fill: #c0392b; }
+.fm { display: flex; flex-direction: column; align-items: center; line-height: .95; color: #8a1f1f; font-family: "Hiragino Mincho ProN", "Yu Mincho", serif; }
+.fm b { font-size: 21px; font-weight: 800; } .fm i { font-size: 10px; font-style: normal; }
+.t-sm .fm b { font-size: 12px; } .t-sm .fm i { font-size: 6px; }
+.fz { font-family: "Hiragino Mincho ProN", "Yu Mincho", serif; font-weight: 800; font-size: 23px; color: #243349; }
+.t-sm .fz { font-size: 13px; }
+.fz.z4 { color: #2565a8; } .fz.z5 { color: #1e7a41; } .fz.z6 { color: #c0392b; }
+
+.qhand .tile { cursor: pointer; transition: transform .08s; }
+.qhand .tile:hover { transform: translateY(-8px); }
+.qhand .tile.best { box-shadow: inset 0 -4px 0 #d6cdb0, 0 0 0 3px var(--accent), 0 3px 6px rgba(0,0,0,.5); }
+.qhand .tile.pick { box-shadow: inset 0 -4px 0 #d6cdb0, 0 0 0 3px var(--accent-2), 0 3px 6px rgba(0,0,0,.5); }
+.qhand .tile.pick.best { box-shadow: inset 0 -4px 0 #d6cdb0, 0 0 0 3px var(--accent), 0 3px 6px rgba(0,0,0,.5); }
+@media (prefers-reduced-motion: reduce) { .qhand .tile { transition: none; } }
