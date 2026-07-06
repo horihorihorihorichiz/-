@@ -50,6 +50,9 @@
 /* リーチ宣言牌: 横向き＋赤枠 */
 .tile.riichi-tile { transform: rotate(90deg); margin: 0 7px; box-shadow: inset 0 -3px 0 #d6cdb0, 0 0 0 2px #ff5252, 0 2px 4px rgba(0,0,0,.5); }
 
+.rank-caption { font-weight: 800; font-size: .92rem; margin: 4px 0 6px; color: #ffe08a; }
+.rank-cell { font-weight: 800; color: var(--muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.row-best .rank-cell { color: var(--gold); }
 .rtable-wrap { overflow-x: auto; }
 .rtable { width: 100%; border-collapse: collapse; font-size: .85rem; }
 .rtable th, .rtable td { text-align: left; padding: 6px 10px; border-bottom: 1px solid var(--border); white-space: nowrap; }

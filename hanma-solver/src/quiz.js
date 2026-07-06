@@ -273,24 +273,27 @@ function renderResult(g) {
     `<span class="best-badge">最善は <b>${tileName(best.discard)}</b></span></div>`;
 
   const evReady = g._evDone;
+  html += `<div class="rank-caption">🏆 切る牌ランキング（上ほど総合的に良い＝おすすめ順）</div>`;
   html += `<div class="rtable-wrap"><table class="rtable"><thead><tr>` +
-    `<th>切る</th><th>向聴</th><th>受け入れ</th><th>ドラ</th><th>放銃率</th>` +
+    `<th>順位</th><th>切る</th><th>向聴</th><th>受け入れ</th><th>ドラ</th><th>放銃率</th>` +
     `<th>得点期待値${evReady ? '' : ' ⏳'}</th></tr></thead><tbody>`;
   const bestEv = evReady ? Math.max(...shownRows(g).map(r => r.ev ?? -1)) : null;
   for (const r of shownRows(g)) {
+    const rank = g.results.findIndex(x => x.discard === r.discard) + 1;
     const tags = (r.discard === best.discard ? '<span class="pill gold">最善</span>' : '') +
       (r.discard === st._pick ? '<span class="pill blue">あなた</span>' : '');
     const evCell = r.ev != null
       ? `<span class="${r.ev === bestEv ? 'ev-top' : ''}">${r.ev.toFixed(2)}点</span>`
       : '<span class="ev-wait">計算中…</span>';
     html += `<tr class="${r.discard === best.discard ? 'row-best' : ''}${r.discard === st._pick ? ' row-pick' : ''}">` +
+      `<td class="rank-cell">${rank}位</td>` +
       `<td>${tileName(r.discard)} ${tags}</td><td>${fmtSh(r.shanten)}${formTag(r)}</td>` +
       `<td>${r.ukeireTotal}枚</td><td>${r.dora}</td>` +
       `<td>${g.threats > 0.05 ? (r.dealIn * 100).toFixed(1) + '%' : '—'}</td>` +
       `<td class="num">${evCell}</td></tr>`;
   }
   html += `</tbody></table></div>`;
-  html += `<div class="rnote" style="margin-top:6px">得点期待値 ＝ アガリ率 × 平均打点（残り山からモンテカルロで実測）。「もしアガれたら」ではなく「平均でどれだけ得するか」。</div>`;
+  html += `<div class="rnote" style="margin-top:6px">この順位は<strong>総合評価</strong>（向聴＝アガリまでの近さ・受け入れ＝手広さ・ドラ＝打点・放銃率＝危険度 を合わせた総合点）の高い順。<strong>得点期待値</strong>＝アガリ率×平均打点をモンテカルロで実測した「平均でどれだけ得するか」の目安。</div>`;
 
   // 放銃率の理由説明（警戒相手がいるとき）: どの相手の河がどうか まで踏み込む
   if (g.threats > 0.1) {
