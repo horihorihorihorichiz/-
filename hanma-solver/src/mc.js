@@ -62,11 +62,11 @@ function winningTiles(counts, calledMelds, unseen) {
 }
 
 // 1つの打牌候補についてEVを推定
-// opts: { hand13:Int[34], akaCount, calledMelds, omoteIndicators, unseen:Int[34],
+// opts: { hand13:Int[34], calledMelds, omoteIndicators, unseen:Int[34],
 //         turnsLeft, rollouts, players }
 export function monteCarloDiscard(opts) {
   const {
-    hand13, akaCount = 0, calledMelds = 0, omoteIndicators = [],
+    hand13, calledMelds = 0, omoteIndicators = [],
     unseen, turnsLeft = 16, rollouts = 400, players = 4,
   } = opts;
 
@@ -104,7 +104,7 @@ export function monteCarloDiscard(opts) {
 
     if (won) {
       wins++; if (byTsumo) tsumo++; turnsToWinSum += winTurn;
-      const dora = countDora(winCounts, akaCount, omoteIndicators, [], false);
+      const dora = countDora(winCounts, omoteIndicators, [], false);
       const menzen = calledMelds === 0;
       const s = score({ win: byTsumo ? 'tsumo' : 'ron', riichi: menzen, dora, players });
       ptsSum += s.total;

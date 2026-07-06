@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>韓麻 実戦（対AI）</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="play.css">
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <h1>韓麻 実戦 <span class="badge">Phase 3 · 対AI</span>
+        <a href="index.html" style="float:right;font-size:.8rem;color:var(--accent-2)">← ソルバーに戻る</a>
+      </h1>
+      <div class="sub">パラダイスシティ「韓麻」ルールでAIと1局対戦。役なし・フリテンなし・チーなし（ポンあり）・5は全部赤。「お手本」を出すとソルバーの推奨打牌が見えます。</div>
+    </header>
+
+    <div class="panel infobar">
+      <div><span class="lbl">表ドラ</span><span id="doraDisp" class="tiles"></span></div>
+      <div><span class="lbl">残り</span><span id="wallCount" class="val">–</span>枚</div>
+      <div><span class="lbl">供託</span><span id="potDisp" class="val">0</span></div>
+      <div><span class="lbl">人数</span>
+        <select id="playerCount"><option value="4">4人</option><option value="3">3人</option></select>
+      </div>
+      <button class="btn" id="newGame">新しい局</button>
+      <label class="hintToggle"><input type="checkbox" id="showHint"> お手本を表示</label>
+    </div>
+
+    <div id="opponents"></div>
+
+    <div class="panel" id="resultPanel" style="display:none"></div>
+
+    <div class="panel myarea">
+      <div class="myhead">
+        <span class="lbl">あなた（東家起家）</span>
+        <span id="myScore" class="score">0</span>
+        <span id="myState"></span>
+      </div>
+      <div id="myMelds" class="melds"></div>
+      <div id="myHand" class="hand tiles"></div>
+      <div id="hint" class="hint-box" style="display:none"></div>
+      <div id="actions" class="actions"></div>
+      <div id="myDiscards" class="river tiles"></div>
+    </div>
+  </div>
+
+  <script type="module" src="src/play.js"></script>
+</body>
+</html>

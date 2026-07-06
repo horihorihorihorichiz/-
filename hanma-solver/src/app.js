@@ -45,14 +45,11 @@ function tileEl(idx, opts = {}) {
   return el;
 }
 
-function renderTiles(container, counts, akaBySuit = { m: 0, p: 0, s: 0 }) {
+function renderTiles(container, counts) {
   container.innerHTML = '';
-  const aka = { ...akaBySuit };
   for (let i = 0; i < 34; i++) {
     for (let k = 0; k < counts[i]; k++) {
-      const s = suitOf(i);
-      const isRedFive = i < 27 && rankOf(i) === 5 && aka[s] > 0;
-      if (isRedFive) aka[s]--;
+      const isRedFive = i < 27 && rankOf(i) === 5; // 韓麻は5が全部赤
       container.appendChild(tileEl(i, { red: isRedFive }));
     }
   }
@@ -69,7 +66,7 @@ function run() {
   err.textContent = '';
   try {
     const handStr = $('hand').value.trim();
-    const { counts, aka } = parseHand(handStr);
+    const { counts } = parseHand(handStr);
     const n = totalTiles(counts);
     const calledMelds = Math.max(0, Math.min(4, parseInt($('melds').value || '0', 10) || 0));
     const expected = 13 - calledMelds * 3 + 0; // 13枚形（打牌前は14）
@@ -85,16 +82,16 @@ function run() {
 
     if (n === expected + 1) {
       // 14枚 → 打牌解析（ウケイレは場の見え牌のみ、手牌は ukeire 内で加算）
-      const results = analyzeDiscards({ counts, aka, calledMelds, omoteIndicators, seen: boardSeen });
+      const results = analyzeDiscards({ counts, calledMelds, omoteIndicators, seen: boardSeen });
       for (const r of results) {
         r.dealInProb = dealInProb(r.discard, seenAll, threats);
       }
       const sh = shanten(counts, calledMelds);
       $('shantenVal').textContent = fmtShanten(results[0].shanten) + ' 目標';
-      renderTiles($('handTiles'), counts, aka);
+      renderTiles($('handTiles'), counts);
       renderForms(sh);
       // renderDiscards は lastAnalysis.threats を参照するため先に確定させる
-      lastAnalysis = { counts, aka, calledMelds, omoteIndicators, boardSeen, threats, results };
+      lastAnalysis = { counts, calledMelds, omoteIndicators, boardSeen, threats, results };
       renderDiscards(results);
       $('discardSection').style.display = '';
       $('goEV').disabled = false;
@@ -103,7 +100,7 @@ function run() {
       // 13枚 → 向聴と受け入れのみ
       const sh = shanten(counts, calledMelds);
       $('shantenVal').textContent = fmtShanten(sh.value);
-      renderTiles($('handTiles'), counts, aka);
+      renderTiles($('handTiles'), counts);
       renderForms(sh);
       $('discardSection').style.display = 'none';
       lastAnalysis = null;
@@ -243,7 +240,7 @@ let evWorker = null;
 
 function runEV() {
   if (!lastAnalysis) return;
-  const { counts, aka, calledMelds, omoteIndicators, boardSeen, threats, results } = lastAnalysis;
+  const { counts, calledMelds, omoteIndicators, boardSeen, threats, results } = lastAnalysis;
   const turnsLeft = Math.max(1, Math.min(18, parseInt($('turns').value || '12', 10) || 12));
   const players = 4;
 
@@ -254,8 +251,7 @@ function runEV() {
   const cands = results.slice(0, MAX_CANDIDATES);
   const jobs = cands.map(r => {
     const c = counts.slice(); c[r.discard]--;
-    const akaCount = (aka.m + aka.p + aka.s) - (r.discardsRed ? 1 : 0);
-    return { discard: r.discard, hand13: c, akaCount };
+    return { discard: r.discard, hand13: c };
   });
 
   // UI: 進捗表示・ボタン無効化

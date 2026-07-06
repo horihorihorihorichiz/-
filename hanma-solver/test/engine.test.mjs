@@ -54,10 +54,11 @@ eq('点数 国士 ツモ (計60)', scKt.total, 60);    // 20×3
 const scCap = score({ win: 'ron', riichi: false, dora: 30, players: 4 });
 eq('点数 1人あたり上限20', scCap.perPayer, 20);
 
-// --- dora count ---
-const dh = parseHand('55m'); // 5m2枚, ドラ表示4m → ドラ5m が2枚
-eq('ドラ計算 表示4m→5m×2', countDora(parseHand('55m').counts, 0, [parseHand('4m').tiles[0]]), 2);
-eq('ドラ計算 赤2枚', countDora(parseHand('11m').counts, 2, []), 2);
+// --- dora count（韓麻: 5は全部赤）---
+// 5m×2 = 赤ドラ2、さらに表示4m→ドラ5m が2枚 → 計4
+eq('ドラ計算 5×2+表示4m', countDora(parseHand('55m').counts, [parseHand('4m').tiles[0]]), 4);
+eq('ドラ計算 5なし表示なし=0', countDora(parseHand('11m').counts, []), 0);
+eq('ドラ計算 赤(5)は自動でドラ', countDora(parseHand('55m5p').counts, []), 3); // 5が計3枚
 
 // --- 高速向聴 vs ブルートフォース参照（乱数ハンド） ---
 function refShanten(counts, called = 0) {

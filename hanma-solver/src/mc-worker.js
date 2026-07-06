@@ -11,7 +11,6 @@ self.onmessage = (e) => {
     const job = jobs[i];
     const result = monteCarloDiscard({
       hand13: job.hand13,
-      akaCount: job.akaCount,
       calledMelds: common.calledMelds,
       omoteIndicators: common.omoteIndicators,
       unseen: common.unseen,

@@ -13,7 +13,12 @@
 // 上限:
 //   1人の最大支払い = 20点（基礎+ドラ部分。ロンは放銃者の総額、ツモは各人の額）
 
-import { doraFromIndicator } from './tiles.js';
+import { doraFromIndicator, MAN, PIN, SOU } from './tiles.js';
+
+// 韓麻は「5は全部赤」= 数牌の5はすべて赤ドラ（計12枚）。手牌中の5の枚数を数える。
+export function countAka(counts) {
+  return counts[MAN + 4] + counts[PIN + 4] + counts[SOU + 4];
+}
 
 export const CONFIG = {
   ronBase: 6,      // ロン基礎点（放銃者が支払う）
@@ -26,17 +31,16 @@ export const CONFIG = {
   // ⚠️ 未確認: 3人打ちの精算、赤5と表ドラの重複計上。
 };
 
-// 手牌14枚(counts) から ドラ総数を数える
+// 手牌(counts) のドラ総数 = 表ドラ + （リーチ時）裏ドラ + 赤ドラ（＝5の枚数）
 // omoteIndicators / uraIndicators: ドラ表示牌インデックスの配列
-// akaCount: 手牌に含まれる赤5の枚数
-export function countDora(counts, akaCount, omoteIndicators = [], uraIndicators = [], useUra = false) {
+export function countDora(counts, omoteIndicators = [], uraIndicators = [], useUra = false) {
   let dora = 0;
   const add = (indicators) => {
     for (const ind of indicators) dora += counts[doraFromIndicator(ind)] || 0;
   };
   add(omoteIndicators);
   if (useUra) add(uraIndicators);
-  dora += akaCount; // 全赤ドラ
+  dora += countAka(counts); // 全赤ドラ（5は全部赤）
   return dora;
 }
 
