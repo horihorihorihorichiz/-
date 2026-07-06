@@ -102,53 +102,100 @@ tr.best td:first-child { border-left: 3px solid var(--accent); }
 .footer-note { color: var(--muted); font-size: .74rem; margin-top: 8px; }
 code { background: var(--panel-2); padding: 1px 5px; border-radius: 4px; font-size: .82em; }
 
-.infobar { display: flex; gap: 20px; align-items: center; flex-wrap: wrap; }
-.infobar .lbl { color: var(--muted); font-size: .72rem; margin-right: 6px; }
+/* ===== 韓麻 実戦: フェルト卓＋本物風の牌 ===== */
+:root { --felt: #15653f; --tile-edge: #cbc3a8; }
+
+/* 情報バー */
+.infobar { display: flex; gap: 20px; align-items: center; flex-wrap: wrap; background: #14251c; border-color: #244634; }
+.infobar .lbl { color: #8fb6a2; font-size: .72rem; margin-right: 6px; }
 .infobar .val { font-weight: 800; font-size: 1.1rem; }
+.infobar #doraDisp { gap: 3px; }
 .hintToggle { color: var(--muted); font-size: .8rem; display: flex; align-items: center; gap: 6px; margin: 0; }
 .hintToggle input { width: auto; }
 
-#opponents { display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px; }
-.opp { background: var(--panel); border: 1px solid var(--border); border-radius: 10px; padding: 10px 14px; }
-.opp .ophead { display: flex; align-items: center; gap: 12px; margin-bottom: 6px; }
-.opp .name { font-weight: 700; }
-.opp .score { color: var(--accent); font-variant-numeric: tabular-nums; }
-.opp .riichi-tag { background: rgba(248,113,113,.15); color: var(--warn); font-size: .68rem; padding: 1px 8px; border-radius: 999px; }
-.opp .turn-now { box-shadow: inset 0 0 0 2px var(--accent-2); }
-.opp .river { margin-top: 4px; }
-.opp .handback { color: var(--muted); font-size: .72rem; }
+/* 相手席 */
+#opponents { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
+.opp { background: linear-gradient(#123a29, #0e2c1f); border: 1px solid #1c4a34; border-radius: 12px; padding: 9px 14px; }
+.opp .ophead { display: flex; align-items: center; gap: 10px; margin-bottom: 4px; }
+.opp .name { font-weight: 700; color: #e9f5ee; }
+.opp .score { color: #7fe0aa; font-variant-numeric: tabular-nums; }
+.opp .riichi-tag { background: rgba(248,113,113,.18); color: #ff9d9d; font-size: .68rem; padding: 1px 8px; border-radius: 999px; }
+.opp .ophand { display: flex; flex-wrap: wrap; gap: 3px; align-items: center; margin: 4px 0; }
+.opp .river { display: flex; flex-wrap: wrap; gap: 3px; margin-top: 5px; opacity: .96; }
+.opp.turn-now { box-shadow: inset 0 0 0 2px #ffd24a, 0 0 14px rgba(255,210,74,.22); }
 
-.myarea .myhead { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
-.myarea .score { color: var(--accent); font-weight: 800; font-variant-numeric: tabular-nums; }
-.hand { gap: 5px; margin: 8px 0; min-height: 52px; }
-.hand .tile { cursor: pointer; transition: transform .08s; }
-.hand .tile:hover { transform: translateY(-6px); }
-.hand .tile.drawn { margin-left: 14px; }
-.hand .tile.disabled { opacity: .35; cursor: default; }
-.hand .tile.disabled:hover { transform: none; }
-.melds { display: flex; gap: 10px; min-height: 0; }
-.melds .meld { display: inline-flex; gap: 2px; }
-.river { gap: 3px; margin-top: 10px; opacity: .9; }
-.river .tile { min-width: 24px; height: 30px; font-size: .8rem; cursor: default; }
-.river .tile:hover { transform: none; }
+/* 自分の卓 */
+.myarea { background: radial-gradient(ellipse at 50% 130%, #176b43, #0d472b 72%); border: 1px solid #1c4a34; }
+.myarea .myhead { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
+.myarea .myhead .lbl { color: #cfe9db; font-size: .82rem; }
+.myarea .score { color: #7fe0aa; font-weight: 800; font-variant-numeric: tabular-nums; }
+.melds { display: flex; gap: 8px; flex-wrap: wrap; }
+.meld { display: inline-flex; gap: 2px; align-items: center; }
+.hand { display: flex; flex-wrap: wrap; gap: 6px; margin: 12px 0; min-height: 64px; padding: 8px; background: rgba(0,0,0,.16); border-radius: 10px; }
+.river { display: flex; flex-wrap: wrap; gap: 3px; margin-top: 10px; }
 
+/* アクション */
 .actions { display: flex; gap: 10px; margin: 12px 0; flex-wrap: wrap; align-items: center; min-height: 20px; }
 .actions .btn { margin: 0; }
-.act-ron { background: var(--warn); color: #2a0606; }
+.act-ron { background: #e05353; color: #2a0606; }
 .act-tsumo { background: var(--gold); color: #2a1e02; }
 .act-pon { background: var(--accent-2); color: #04283a; }
-.act-skip { background: var(--panel-2); color: var(--text); border: 1px solid var(--border); }
+.act-skip { background: #223; color: var(--text); border: 1px solid var(--border); }
 .riichi-arm { display: flex; align-items: center; gap: 6px; color: var(--gold); font-size: .85rem; }
+.btn:disabled { opacity: .5; cursor: default; }
 
-.hint-box { background: rgba(56,189,248,.08); border: 1px solid var(--border); border-radius: 8px; padding: 8px 12px; font-size: .82rem; margin: 8px 0; }
+.hint-box { background: rgba(56,189,248,.1); border: 1px solid #23506b; border-radius: 8px; padding: 8px 12px; font-size: .82rem; margin: 8px 0; }
 .hint-box .rec { color: var(--accent-2); font-weight: 700; }
 
 #resultPanel .rhead { font-size: 1.2rem; font-weight: 800; margin-bottom: 8px; }
 #resultPanel .win { color: var(--accent); }
 #resultPanel .lose { color: var(--warn); }
-#resultPanel .deltas { display: flex; gap: 16px; flex-wrap: wrap; margin-top: 8px; font-variant-numeric: tabular-nums; }
-#resultPanel .deltas .up { color: var(--accent); }
-#resultPanel .deltas .down { color: var(--warn); }
+#resultPanel .tiles { display: flex; flex-wrap: wrap; gap: 4px; }
+#resultPanel .deltas { display: flex; gap: 16px; flex-wrap: wrap; margin-top: 10px; font-variant-numeric: tabular-nums; }
+#resultPanel .deltas .up { color: var(--accent); } #resultPanel .deltas .down { color: var(--warn); }
+
+/* ===== 牌（本物風） ===== */
+.tiles { display: flex; flex-wrap: wrap; align-items: center; }
+.tile {
+  position: relative; display: inline-flex; align-items: center; justify-content: center;
+  width: 42px; height: 58px; min-width: 0; padding: 0; box-sizing: border-box;
+  border-radius: 7px; border: 1px solid var(--tile-edge); color: #222;
+  background: linear-gradient(158deg, #fffef9, #ece4d0);
+  box-shadow: inset 0 -4px 0 #d6cdb0, inset 0 2px 2px #fff, 0 3px 5px rgba(0,0,0,.45);
+  cursor: default; overflow: hidden; user-select: none;
+}
+.tile.t-sm { width: 26px; height: 36px; border-radius: 5px; box-shadow: inset 0 -3px 0 #d6cdb0, 0 2px 3px rgba(0,0,0,.4); }
+.tile.red { background: linear-gradient(158deg, #fff6f4, #f0d7d3); }
+.tile.back {
+  background: linear-gradient(135deg, #2e8494, #114f5c);
+  border-color: #0b3a44; box-shadow: inset 0 -4px 0 #0b3a44, 0 3px 5px rgba(0,0,0,.45);
+}
+.tile.back::after {
+  content: ''; position: absolute; inset: 5px; border-radius: 4px; border: 2px solid rgba(255,255,255,.16);
+  background: repeating-linear-gradient(45deg, rgba(255,255,255,.06) 0 4px, transparent 4px 8px);
+}
+.tile.t-sm.back::after { inset: 3px; }
+
+.pips { width: 100%; height: 100%; display: block; }
+.pdot { fill: #215f9e; } .pdot.rd { fill: #c0392b; } .pdotc { fill: #faf7ec; }
+.sbar { fill: #1e7a41; } .sbar.rd { fill: #c0392b; }
+
+.fm { display: flex; flex-direction: column; align-items: center; line-height: .95; color: #8a1f1f; font-family: "Hiragino Mincho ProN", "Yu Mincho", serif; }
+.fm b { font-size: 21px; font-weight: 800; } .fm i { font-size: 10px; font-style: normal; margin-top: 1px; }
+.t-sm .fm b { font-size: 13px; } .t-sm .fm i { font-size: 6px; }
+
+.fz { font-family: "Hiragino Mincho ProN", "Yu Mincho", serif; font-weight: 800; font-size: 23px; color: #243349; }
+.t-sm .fz { font-size: 14px; }
+.fz.z4 { color: #2565a8; } .fz.z5 { color: #1e7a41; } .fz.z6 { color: #c0392b; }
+
+/* 手牌インタラクション */
+.hand .tile { cursor: pointer; transition: transform .08s; }
+.hand .tile:hover { transform: translateY(-8px); }
+.hand .tile.drawn { margin-left: 16px; box-shadow: inset 0 -4px 0 #d6cdb0, inset 0 2px 2px #fff, 0 3px 5px rgba(0,0,0,.45), 0 0 0 2px rgba(255,210,74,.5); }
+.hand .tile.disabled { opacity: .38; cursor: default; }
+.hand .tile.disabled:hover { transform: none; }
+
+@media (prefers-reduced-motion: reduce) { .hand .tile { transition: none; } }
 
 </style>
 
@@ -1088,14 +1135,47 @@ const $ = (id) => document.getElementById(id);
 let state = null;
 let riichiArmed = false;
 
+// ── 本物風の牌フェイス ──
+const KAN_NUM = ['一', '二', '三', '四', '五', '六', '七', '八', '九'];
+const HONOR_CH = ['東', '南', '西', '北', '白', '發', '中'];
+// 筒子/索子のドット配置（viewBox 0 0 60 84）
+const PIP = {
+  1: [[30, 42]],
+  2: [[30, 26], [30, 58]],
+  3: [[18, 22], [30, 42], [42, 62]],
+  4: [[20, 24], [40, 24], [20, 60], [40, 60]],
+  5: [[20, 24], [40, 24], [30, 42], [20, 60], [40, 60]],
+  6: [[20, 22], [40, 22], [20, 42], [40, 42], [20, 62], [40, 62]],
+  7: [[30, 18], [20, 34], [40, 34], [20, 52], [40, 52], [20, 66], [40, 66]],
+  8: [[20, 18], [40, 18], [20, 37], [40, 37], [20, 55], [40, 55], [20, 71], [40, 71]],
+  9: [[17, 22], [30, 22], [43, 22], [17, 42], [30, 42], [43, 42], [17, 62], [30, 62], [43, 62]],
+};
+
+function faceHTML(idx) {
+  const s = suitOf(idx), r = rankOf(idx);
+  if (s === 'm') return `<span class="fm"><b>${KAN_NUM[r - 1]}</b><i>萬</i></span>`;
+  if (s === 'z') { const h = idx - 27; return `<span class="fz z${h}">${HONOR_CH[h]}</span>`; }
+  const red = r === 5;
+  const marks = PIP[r].map(([x, y], i) => {
+    const isC = (s === 'p') && red && (r === 5) && (i === 2); // 5筒の中央を赤く
+    if (s === 'p') return `<circle cx="${x}" cy="${y}" r="8.6" class="pdot${isC ? ' rd' : ''}"/><circle cx="${x}" cy="${y}" r="3.4" class="pdotc"/>`;
+    return `<rect x="${x - 3.4}" y="${y - 9}" width="6.8" height="18" rx="3.4" class="sbar${red && i === Math.floor(PIP[r].length / 2) ? ' rd' : ''}"/>`;
+  }).join('');
+  return `<svg viewBox="0 0 60 84" class="pips">${marks}</svg>`;
+}
+
 function tileEl(idx, opts = {}) {
   const el = document.createElement('span');
-  const s = suitOf(idx);
+  if (opts.back) { el.className = 'tile back' + (opts.small ? ' t-sm' : ''); return el; }
   const red = idx < 27 && rankOf(idx) === 5; // 5は全部赤
-  el.className = `tile ${s}` + (opts.small ? ' small' : '') + (red ? ' red' : '') +
+  el.className = 'tile' + (opts.small ? ' t-sm' : '') + (red ? ' red' : '') +
     (opts.drawn ? ' drawn' : '') + (opts.disabled ? ' disabled' : '');
-  el.textContent = tileName(idx);
+  el.innerHTML = faceHTML(idx);
   return el;
+}
+
+function backsInto(container, n, small = true) {
+  for (let k = 0; k < n; k++) container.appendChild(tileEl(0, { back: true, small }));
 }
 
 function tilesInto(container, counts, opts = {}) {
@@ -1135,15 +1215,14 @@ function render() {
     const head = document.createElement('div'); head.className = 'ophead';
     const conceal = state.hands[p].reduce((a, b) => a + b, 0);
     head.innerHTML = `<span class="name">${pos(state, p)}</span><span class="score">${fmtScore(state.scores[p])}</span>` +
-      (state.riichi[p] ? '<span class="riichi-tag">リーチ</span>' : '') +
-      `<span class="handback">手牌 ${conceal}枚</span>`;
+      (state.riichi[p] ? '<span class="riichi-tag">リーチ</span>' : '');
     div.appendChild(head);
-    // 副露
-    if (state.melds[p].length) {
-      const m = document.createElement('div'); m.className = 'melds';
-      for (const meld of state.melds[p]) m.appendChild(meldEl(meld));
-      div.appendChild(m);
-    }
+    // 手牌（裏）＋副露
+    const handrow = document.createElement('div'); handrow.className = 'ophand tiles';
+    backsInto(handrow, conceal, true);
+    for (const meld of state.melds[p]) handrow.appendChild(meldEl(meld));
+    div.appendChild(handrow);
+    // 河
     const river = document.createElement('div'); river.className = 'river tiles';
     for (const t of state.discards[p]) river.appendChild(tileEl(t, { small: true }));
     div.appendChild(river);
