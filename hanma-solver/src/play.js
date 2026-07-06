@@ -3,6 +3,7 @@ import { N_TILES, tileName, suitOf, rankOf } from './tiles.js';
 import {
   newGame, advance, humanDiscard, humanRiichiDiscard, humanCall,
   canDeclareRiichi, tenpaiAfterDiscard,
+  ankanOptions, shouminkanOptions, humanAnkan, humanShouminkan,
 } from './game.js';
 import { analyzeDiscards } from './analyze.js';
 
@@ -23,6 +24,16 @@ function tileEl(idx, opts = {}) {
 function tilesInto(container, counts, opts = {}) {
   container.innerHTML = '';
   for (let i = 0; i < N_TILES; i++) for (let k = 0; k < counts[i]; k++) container.appendChild(tileEl(i, opts));
+}
+
+function meldEl(meld) {
+  const el = document.createElement('span'); el.className = 'meld';
+  const n = meld.type === 'pon' ? 3 : 4;
+  for (let x = 0; x < n; x++) el.appendChild(tileEl(meld.tile, { small: true }));
+  const tag = document.createElement('span'); tag.style.fontSize = '.6rem'; tag.style.color = 'var(--muted)'; tag.style.alignSelf = 'center';
+  tag.textContent = { pon: '', ankan: '暗槓', daiminkan: '大明槓', shouminkan: '加槓' }[meld.type] || '';
+  if (tag.textContent) el.appendChild(tag);
+  return el;
 }
 
 function pos(state, p) { // 相手の呼び名
@@ -53,11 +64,7 @@ function render() {
     // 副露
     if (state.melds[p].length) {
       const m = document.createElement('div'); m.className = 'melds';
-      for (const meld of state.melds[p]) {
-        const mm = document.createElement('span'); mm.className = 'meld';
-        for (let x = 0; x < 3; x++) mm.appendChild(tileEl(meld.tile, { small: true }));
-        m.appendChild(mm);
-      }
+      for (const meld of state.melds[p]) m.appendChild(meldEl(meld));
       div.appendChild(m);
     }
     const river = document.createElement('div'); river.className = 'river tiles';
@@ -73,11 +80,7 @@ function render() {
 
   // 副露
   const mm = $('myMelds'); mm.innerHTML = '';
-  for (const meld of state.melds[state.humanIndex]) {
-    const el = document.createElement('span'); el.className = 'meld';
-    for (let x = 0; x < 3; x++) el.appendChild(tileEl(meld.tile, { small: true }));
-    mm.appendChild(el);
-  }
+  for (const meld of state.melds[state.humanIndex]) mm.appendChild(meldEl(meld));
 
   renderHand();
   renderActions();
@@ -119,8 +122,8 @@ function renderActions() {
     for (const opt of w.options) {
       if (opt.action === 'discardAny') continue; // ツモ見送りは「スルー」で表現
       const b = document.createElement('button');
-      b.className = 'btn ' + ({ ron: 'act-ron', tsumo: 'act-tsumo', pon: 'act-pon', skip: 'act-skip' }[opt.action] || 'act-skip');
-      b.textContent = { ron: 'ロン', tsumo: 'ツモ', pon: 'ポン', skip: 'スルー' }[opt.action] || opt.action;
+      b.className = 'btn ' + ({ ron: 'act-ron', tsumo: 'act-tsumo', pon: 'act-pon', kan: 'act-pon', skip: 'act-skip' }[opt.action] || 'act-skip');
+      b.textContent = { ron: 'ロン', tsumo: 'ツモ', pon: 'ポン', kan: 'カン', skip: 'スルー' }[opt.action] || opt.action;
       b.onclick = () => onCall(opt.action);
       box.appendChild(b);
     }
@@ -139,6 +142,17 @@ function renderActions() {
       cb.onchange = () => { riichiArmed = cb.checked; renderHand(); };
       lab.appendChild(cb); lab.appendChild(document.createTextNode('リーチして打つ（テンパイ牌のみ選択可）'));
       box.appendChild(lab);
+    }
+    // カン（暗槓・加槓）
+    if (!riichiArmed) {
+      for (const t of ankanOptions(state)) {
+        const b = document.createElement('button'); b.className = 'btn act-pon';
+        b.textContent = `暗槓 ${tileName(t)}`; b.onclick = () => onAnkan(t); box.appendChild(b);
+      }
+      for (const t of shouminkanOptions(state)) {
+        const b = document.createElement('button'); b.className = 'btn act-pon';
+        b.textContent = `加槓 ${tileName(t)}`; b.onclick = () => onShouminkan(t); box.appendChild(b);
+      }
     }
     const note = document.createElement('span');
     note.style.color = 'var(--muted)'; note.style.fontSize = '.8rem';
@@ -211,6 +225,8 @@ function onCall(choice) {
   state = humanCall(state, choice);
   render();
 }
+function onAnkan(tile) { state = humanAnkan(state, tile); render(); }
+function onShouminkan(tile) { state = humanShouminkan(state, tile); render(); }
 
 function startGame() {
   const players = parseInt($('playerCount').value, 10) || 4;

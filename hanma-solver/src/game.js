@@ -32,9 +32,12 @@ function buildWall() {
 // concealed counts + melds から「全14枚相当」の counts を作る（ドラ計算用）
 function fullCounts(hand, melds) {
   const c = hand.slice();
-  for (const m of melds) c[m.tile] += 3; // ポンは3枚
+  for (const m of melds) c[m.tile] += (m.type === 'pon' ? 3 : 4); // カンは4枚
   return c;
 }
+
+// 面前を崩す（開いた）副露の数。暗槓は面前を保つ。
+function openMelds(melds) { return melds.filter(m => m.type !== 'ankan').length; }
 
 export function newGame(opts = {}) {
   const players = opts.players || 4;
@@ -42,7 +45,7 @@ export function newGame(opts = {}) {
   const wall = buildWall();
 
   const deadWall = wall.splice(wall.length - 14, 14); // 王牌14枚
-  const doraIndicators = [deadWall[0], deadWall[1]];  // 表ドラ2枚
+  const doraIndicators = [deadWall[0], deadWall[1]];  // 表ドラ2枚（カンドラは増やさない）
   const uraIndicators = [deadWall[2], deadWall[3]];   // 裏ドラ2枚（リーチ時のみ開示）
 
   const hands = [], melds = [], discards = [], riichi = [];
@@ -57,7 +60,10 @@ export function newGame(opts = {}) {
     scores: new Array(players).fill(0),
     pot: 0,                // リーチ供託
     wall,
+    deadWall,
     doraIndicators, uraIndicators,
+    rinshanPointer: 4,     // 王牌の嶺上牌ポインタ（0-3はドラ表示）
+    kansDone: 0,           // 全員のカン回数（最大4）
     turn: 0,               // 東家=0 から
     drawnTile: null,
     lastDiscard: null,     // { tile, from }
@@ -97,26 +103,37 @@ function canPon(state, p, tile) {
 function nextPlayer(state, p) { return (p + 1) % state.players; }
 
 // ── 内部: ドロー ──
+// 自摸後の共通処理（ツモ判定 → 人間なら待ち、AIなら自動）
+function afterDraw(state) {
+  state.phase = 'discard';
+  if (isWin(state, state.turn, null)) {
+    if (state.turn === state.humanIndex) {
+      state.waiting = { type: 'calls', options: [{ action: 'tsumo' }, { action: 'discardAny' }] };
+    } else {
+      resolveWin(state, state.turn, null, 'tsumo');
+    }
+    return;
+  }
+  state.waiting = state.turn === state.humanIndex ? { type: 'discard' } : null;
+}
+
 function doDraw(state) {
   if (state.wall.length === 0) { endDraw(state); return; }
   const t = state.wall.shift();
   state.hands[state.turn][t]++;
   state.drawnTile = t;
-  state.phase = 'discard';
+  afterDraw(state);
+}
 
-  if (isWin(state, state.turn, null)) {
-    // ツモ可能
-    if (state.turn === state.humanIndex) {
-      state.waiting = { type: 'calls', options: [{ action: 'tsumo' }, { action: 'discardAny' }] };
-      return;
-    } else {
-      resolveWin(state, state.turn, null, 'tsumo');
-      return;
-    }
-  }
-  if (state.turn === state.humanIndex) {
-    state.waiting = { type: 'discard' };
-  }
+// 嶺上牌を引く（カン後）。王牌から取り、山末尾を1枚 dead wall へ回して枚数調整。
+function drawRinshan(state, p) {
+  const t = state.deadWall[state.rinshanPointer++];
+  state.hands[p][t]++;
+  state.drawnTile = t;
+  if (state.wall.length > 0) state.wall.pop();
+  state.kansDone++;
+  state.turn = p;
+  afterDraw(state);
 }
 
 // ── 打牌 ──
@@ -152,17 +169,20 @@ function resolveCalls(state) {
     if (p !== from && canPon(state, p, tile)) ponners.push(p);
   }
 
-  // 人間が関与する選択があるか
-  const humanRon = ronners.includes(state.humanIndex);
-  const humanPon = ponners.includes(state.humanIndex);
+  // 人間が関与する選択があるか（大明槓は人間のみ v1）
+  const h = state.humanIndex;
+  const humanRon = ronners.includes(h);
+  const humanPon = ponners.includes(h);
+  const humanKan = h >= 0 && from !== h && state.hands[h][tile] === 3 &&
+    !state.riichi[h] && state.kansDone < 4 && state.wall.length > 0;
 
-  if (humanRon || humanPon) {
+  if (humanRon || humanPon || humanKan) {
     const options = [];
     if (humanRon) options.push({ action: 'ron' });
+    if (humanKan) options.push({ action: 'kan' });
     if (humanPon) options.push({ action: 'pon' });
     options.push({ action: 'skip' });
     state.waiting = { type: 'calls', options, tile, from };
-    // AI のロンは人間より優先度が絡むため、人間の選択後に再評価する。
     state._pendingRonners = ronners;
     state._pendingPonners = ponners;
     return;
@@ -181,6 +201,9 @@ function finishCalls(state, ronners, ponners, humanChoice) {
   const ron = ronners.filter(p => p !== state.humanIndex || humanChoice === 'ron');
   // 人間がロンを見送った場合は除外済み（呼び出し側で調整）
   if (ron.length > 0) { resolveWin(state, ron[0], tile, 'ron'); return; }
+
+  // 大明槓（人間が選んだ場合のみ）
+  if (humanChoice === 'kan') { doDaiminkan(state, state.humanIndex, tile, from); return; }
 
   // ポン（人間が選んだ or AI がポン方針を満たす）
   let ponner = -1;
@@ -211,6 +234,16 @@ function doPon(state, p, tile, from) {
   state.lastDiscard = null;
   if (p === state.humanIndex) state.waiting = { type: 'discard' };
   else state.waiting = null;
+}
+
+// 大明槓実行 → 嶺上ツモ → その者の打牌へ
+function doDaiminkan(state, p, tile, from) {
+  state.hands[p][tile] -= 3;
+  state.melds[p].push({ type: 'daiminkan', tile, from });
+  const dfrom = state.discards[from];
+  if (dfrom[dfrom.length - 1] === tile) dfrom.pop();
+  state.lastDiscard = null;
+  drawRinshan(state, p); // turn=p, 嶺上ツモ判定含む
 }
 
 // AI がポンするか（v1: ポンでテンパイになるなら鳴く）
@@ -300,7 +333,7 @@ function aiChooseDiscard(state, p) {
 
 // AI がリーチするか（面前・テンパイ・未リーチ・山に余裕）
 function aiWantsRiichi(state, p) {
-  return state.melds[p].length === 0 && !state.riichi[p] && isTenpai(state, p) && state.wall.length >= 4;
+  return openMelds(state.melds[p]) === 0 && !state.riichi[p] && isTenpai(state, p) && state.wall.length >= 4;
 }
 
 // ── 進行: 人間の入力が要るところまで自動で進める ──
@@ -348,8 +381,45 @@ export function tenpaiAfterDiscard(state, p, tile) {
 export function canDeclareRiichi(state) {
   const p = state.humanIndex;
   return state.phase === 'discard' && state.turn === p &&
-    state.melds[p].length === 0 && !state.riichi[p] &&
-    state.wall.length >= 4 && shanten(state.hands[p], 0).value === 0;
+    openMelds(state.melds[p]) === 0 && !state.riichi[p] &&
+    state.wall.length >= 4 && shanten(state.hands[p], state.melds[p].length).value === 0;
+}
+
+// ── カン（人間）──
+// 暗槓できる牌（手牌に4枚）。リーチ中は不可（v1）。
+export function ankanOptions(state) {
+  const p = state.humanIndex;
+  if (state.phase !== 'discard' || state.turn !== p || state.riichi[p] ||
+    state.kansDone >= 4 || state.wall.length === 0) return [];
+  const out = [];
+  for (let i = 0; i < N_TILES; i++) if (state.hands[p][i] === 4) out.push(i);
+  return out;
+}
+// 加槓できる牌（自分のポンに手牌の1枚を足す）
+export function shouminkanOptions(state) {
+  const p = state.humanIndex;
+  if (state.phase !== 'discard' || state.turn !== p || state.riichi[p] ||
+    state.kansDone >= 4 || state.wall.length === 0) return [];
+  const out = [];
+  for (const m of state.melds[p]) if (m.type === 'pon' && state.hands[p][m.tile] >= 1) out.push(m.tile);
+  return out;
+}
+export function humanAnkan(state, tile) {
+  const p = state.humanIndex;
+  if (state.hands[p][tile] !== 4) return state;
+  state.hands[p][tile] -= 4;
+  state.melds[p].push({ type: 'ankan', tile });
+  drawRinshan(state, p);
+  return state; // 人間の手番のまま（打牌 or 再カン / 嶺上ツモ待ち）
+}
+export function humanShouminkan(state, tile) {
+  const p = state.humanIndex;
+  const meld = state.melds[p].find(m => m.type === 'pon' && m.tile === tile);
+  if (!meld || state.hands[p][tile] < 1) return state;
+  state.hands[p][tile] -= 1;
+  meld.type = 'shouminkan';
+  drawRinshan(state, p);
+  return state;
 }
 
 // ── 人間の操作 ──
