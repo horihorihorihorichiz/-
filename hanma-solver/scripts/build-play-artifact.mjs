@@ -15,23 +15,25 @@ function strip(js) {
     .replace(/^\s*export\s+/gm, '');
 }
 
-// pages: { modules:[...js in dep order], css:[...], html, out, docsName, keepLinks }
-function build({ modules, css, html, out, docsName }) {
+// pages: { modules:[...js in dep order], css:[...], html, out, docsName, title, standaloneName }
+function build({ modules, css, html, out, docsName, title = '韓麻', standaloneName }) {
   const js = modules.map(f => `// ===== ${f} =====\n` + strip(R(f))).join('\n\n');
   const styles = css.map(R).join('\n');
   const bodyInner = R(html).match(/<body>([\s\S]*?)<script/)[1]
     .replace(/<link[^>]*>/g, '');
-  // 単一HTML(Artifact)版: 内部リンクは削除
   const artifactBody = bodyInner.replace(/<a\s+href="(index|play|quiz)\.html"[\s\S]*?<\/a>/g, '');
   const wrap = (body) => `<!doctype html><html lang="ja"><head><meta charset="UTF-8">` +
     `<meta name="viewport" content="width=device-width, initial-scale=1.0">` +
-    `<title>韓麻</title><style>\n${styles}\n</style></head><body>\n${body}\n<script>\n${js}\n</script></body></html>`;
+    `<title>${title}</title><style>\n${styles}\n</style></head><body>\n${body}\n<script>\n${js}\n</script></body></html>`;
 
   mkdirSync(join(base, 'dist'), { recursive: true });
+  // Artifact 用（body+script のみ）
   writeFileSync(join(base, 'dist', out), `<style>\n${styles}\n</style>\n${artifactBody}\n<script>\n${js}\n</script>`);
   console.log(`built dist/${out}`);
+  // 配布用（タイトル付きの完全な単一HTML・内部リンクなし）
+  if (standaloneName) { writeFileSync(join(base, 'dist', standaloneName), wrap(artifactBody)); console.log(`built dist/${standaloneName}`); }
 
-  // GitHub Pages 用（リポジトリ直下 /docs。内部リンクは維持して完全な html を書き出す）
+  // GitHub Pages 用（リポジトリ直下 /docs・内部リンク維持）
   if (docsName) {
     const pagesDir = join(base, '..', 'docs');
     mkdirSync(pagesDir, { recursive: true });
@@ -47,6 +49,8 @@ build({
   html: 'play.html',
   out: 'play-standalone.html',
   docsName: 'play.html',
+  title: '韓麻 実戦（対AI）🀄',
+  standaloneName: '韓麻-実戦.html',
 });
 
 // 何切るクイズ
@@ -56,4 +60,6 @@ build({
   html: 'quiz.html',
   out: 'quiz-standalone.html',
   docsName: 'quiz.html',
+  title: '韓麻 何切るクイズ 🀄',
+  standaloneName: '韓麻-何切るクイズ.html',
 });
