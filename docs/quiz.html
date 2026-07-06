@@ -800,13 +800,13 @@ function dangerReasons(idx, seen, threats) {
   } else {
     const r = rankOf(idx);
     const base = idx - (idx % 9), r0 = idx % 9;
-    if (r === 1 || r === 9) out.push({ t: 'safe', s: `端牌(${tileName(idx)})は両面待ちが片側だけ（例：${tileName(idx)}なら一方向の順子にしか刺さらない）ので危険度は低め。` });
-    else if (r === 4 || r === 5 || r === 6) out.push({ t: 'risk', s: `中張牌(${tileName(idx)})は左右どちらの両面にも、嵌張・辺張にも刺さり得るので、待ちの当たり判定が最も広い。` });
-    else out.push({ t: 'risk', s: `${tileName(idx)}は両面待ちに当たりやすい牌（中張寄り）。` });
+    if (r === 1 || r === 9) out.push({ t: 'safe', s: `端の牌(${tileName(idx)})は、2つの牌で待つ形（リャンメン）が片側しか作れないので当たりにくく、危険度は低め。` });
+    else if (r === 4 || r === 5 || r === 6) out.push({ t: 'risk', s: `真ん中の牌(${tileName(idx)})は、両側で待つ形（リャンメン＝4でも7でも当たる等）に加えて、間の1枚待ち（例:3と5で4待ち）や端の待ちにも刺さる。当たる形がいちばん多いので最も危険。` });
+    else out.push({ t: 'risk', s: `${tileName(idx)}は2つの牌で待つ形（リャンメン）に当たりやすい、やや危険な牌。` });
     const lw = r0 - 1 >= 0 && seenAt(base + r0 - 1) >= 3;
     const rw = r0 + 1 <= 8 && seenAt(base + r0 + 1) >= 3;
-    if (lw) out.push({ t: 'safe', s: `${tileName(base + r0 - 1)}が場に${seenAt(base + r0 - 1)}枚見えていて“壁”になっている。この牌を使う両面待ちが物理的に作れないぶん、${tileName(idx)}の危険度が下がる。` });
-    if (rw) out.push({ t: 'safe', s: `${tileName(base + r0 + 1)}が場に${seenAt(base + r0 + 1)}枚見えていて“壁”。${tileName(idx)}に刺さる両面が減る。` });
+    if (lw) out.push({ t: 'safe', s: `${tileName(base + r0 - 1)}が場に${seenAt(base + r0 - 1)}枚見えていて“壁”になっている。この牌を使うリャンメン（2つの牌で待つ形）が作れないぶん、${tileName(idx)}の危険度が下がる。` });
+    if (rw) out.push({ t: 'safe', s: `${tileName(base + r0 + 1)}が場に${seenAt(base + r0 + 1)}枚見えていて“壁”。${tileName(idx)}に刺さるリャンメンが減る。` });
   }
   const seen4 = seenAt(idx);
   if (seen4 === 0) out.push({ t: 'risk', s: `${tileName(idx)}は場に1枚も切れていない生牌。誰の手にも残っていて、待ちに使われている可能性が高い。` });
