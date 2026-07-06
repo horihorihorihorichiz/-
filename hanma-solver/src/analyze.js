@@ -26,6 +26,7 @@ export function analyzeDiscards(opts) {
     c[i]--;
 
     const uk = ukeire(c, calledMelds, seen);
+    const shInfo = shanten(c, calledMelds); // 狙える形（通常/七対子/国士）
     const dora = countDora(c, omoteIndicators, uraIndicators, false);
 
     results.push({
@@ -33,6 +34,7 @@ export function analyzeDiscards(opts) {
       discardName: tileName(i),
       discardsRed: isFive(i), // 5切り=赤ドラを1枚失う
       shanten: uk.shanten,
+      forms: shInfo.forms,     // ['normal'|'chiitoi'|'kokushi', ...]
       ukeireTotal: uk.total,
       ukeireTiles: uk.tiles.map(t => ({ name: tileName(t.idx), count: t.count, idx: t.idx })),
       dora,

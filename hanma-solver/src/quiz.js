@@ -7,6 +7,7 @@ import { N_TILES, tileName } from './tiles.js';
 import { newGame, advance, humanDiscard, humanCall } from './game.js';
 import { analyzeDiscards } from './analyze.js';
 import { dealInProb, dangerReasons } from './danger.js';
+import { score } from './score.js';
 import { tileEl, backsInto } from './tileview.js';
 
 const $ = (id) => document.getElementById(id);
@@ -15,8 +16,8 @@ const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
 let st = null;
 let answered = false;
 let graded = null;
-let autoTimer = null;
-let autoAdvancing = false;
+
+const FORM_JP = { normal: '通常形', chiitoi: '七対子', kokushi: '国士無双' };
 
 // ── 局面生成: 数手進めた人間の打牌局面を返す ──
 function effDiscard(state) {
@@ -47,7 +48,8 @@ function genQuiz(players) {
         humanTurns++;
         // 出題: target 手目、かつ手が2〜4向聴くらいで「考えどころ」のとき優先
         const sh = analyzeDiscards({ counts: state.hands[0], calledMelds: state.melds[0].length, omoteIndicators: state.doraIndicators })[0].shanten;
-        if (humanTurns >= target && sh >= 0) return state;
+        // 分かりやすい「何切る」にするため 1〜2向聴（テンパイ〜2向聴）で出題
+        if (humanTurns >= target && sh >= 0 && sh <= 2) return state;
         humanDiscard(state, effDiscard(state));
       }
     }
@@ -96,19 +98,58 @@ function grade(state) {
 
 function evalValue(r) { return (r.ukeireTotal + r.dora * 3) * (1 - 0.85 * r.dealIn); }
 
-// tier: 'perfect' | 'small'（自動で次へ）| 'mid' | 'big'（STOPして確認）
+// tier: 'perfect' | 'small' | 'mid' | 'big'
 function verdict(pick, best) {
-  if (pick.discard === best.discard) return { tier: 'perfect', mark: '◎', text: '正解！最善手です', cls: 'v-good', loss: 0 };
+  if (pick.discard === best.discard) return { tier: 'perfect', mark: '◎', text: '大正解！ ベストな一打です', cls: 'v-good', loss: 0 };
   if (pick.shanten > best.shanten)
-    return { tier: 'big', mark: '🛑', text: `向聴が落ちる大きなミス（最善は ${tileName(best.discard)}）`, cls: 'v-bad', loss: 1 };
+    return { tier: 'big', mark: '🛑', text: 'これは大きなミス。アガリから遠ざかる牌でした', cls: 'v-bad', loss: 1 };
   const bv = evalValue(best), pv = evalValue(pick);
   const lossFrac = bv > 0 ? 1 - pv / bv : 0;
-  const dangerJump = pick.dealIn - best.dealIn; // 放銃率の増加
+  const dangerJump = pick.dealIn - best.dealIn;
   if (lossFrac > 0.25 || dangerJump > 0.08)
-    return { tier: 'big', mark: '🛑', text: `大きなロス（最善は ${tileName(best.discard)}）`, cls: 'v-bad', loss: lossFrac, dangerJump };
+    return { tier: 'big', mark: '🛑', text: 'これは大きなミス。もっと良い切り牌があります', cls: 'v-bad', loss: lossFrac, dangerJump };
   if (lossFrac > 0.08)
-    return { tier: 'mid', mark: '△', text: `もう少し（最善は ${tileName(best.discard)}）`, cls: 'v-mid', loss: lossFrac, dangerJump };
-  return { tier: 'small', mark: '○', text: `ほぼ最善（最善は ${tileName(best.discard)}）`, cls: 'v-ok', loss: lossFrac, dangerJump };
+    return { tier: 'mid', mark: '△', text: 'おしい！ あと一歩でした', cls: 'v-mid', loss: lossFrac, dangerJump };
+  return { tier: 'small', mark: '○', text: 'ほぼ正解。ベストとほぼ互角です', cls: 'v-ok', loss: lossFrac, dangerJump };
+}
+
+// 狙っている形のタグ（七対子・国士のとき表示）
+function formTag(r) {
+  if (r.forms.includes('kokushi')) return ' <span class="ftag">国士</span>';
+  if (r.forms.includes('chiitoi') && !r.forms.includes('normal')) return ' <span class="ftag">七対子</span>';
+  if (r.forms.includes('chiitoi')) return ' <span class="ftag">七対子も可</span>';
+  return '';
+}
+
+// 中学生でも分かる「なぜこれが最善か」の説明
+function explainWhy(best, pick, g) {
+  const bt = tileName(best.discard);
+  const lines = [];
+  // 形（通常/七対子/国士）
+  let formTxt = 'ふつうの形（4つのメンツ＋1つの対子）';
+  if (best.forms.includes('chiitoi') && !best.forms.includes('normal')) formTxt = '七対子（ペアを7つ集める形）';
+  else if (best.forms.includes('kokushi')) formTxt = '国士無双';
+  else if (best.forms.includes('chiitoi')) formTxt = 'ふつうの形／七対子どちらも狙える';
+
+  lines.push(`<li><b>${bt}</b> を切ると、アガリに一番近い <b>${fmtSh(best.shanten)}</b> をキープできる（目標は${formTxt}）。</li>`);
+  lines.push(`<li>切ったあと、手を進めてくれる牌が <b>${best.ukeireTotal}枚</b> 残っている（＝手が広い＝アガリやすい）。</li>`);
+  if (best.dora > 0) lines.push(`<li>ドラを <b>${best.dora}枚</b> 残せる（＝アガれたときの点が高い）。5は全部ドラなので大事。</li>`);
+  // 韓麻の打点（役・飜は無いので点数で表す）
+  const menzen = st.melds[0].length === 0;
+  const pts = score({ win: 'ron', riichi: menzen, dora: best.dora, players: st.players }).total;
+  lines.push(`<li>この手はアガれれば <b>約${pts}点</b>（韓麻に役・飜は無く、ロン6＋ドラ${best.dora}${menzen ? '＋リーチ2' : ''}）。</li>`);
+
+  if (pick && pick.discard !== best.discard) {
+    if (pick.shanten > best.shanten)
+      lines.push(`<li class="bad">あなたの <b>${tileName(pick.discard)}</b> を切ると <b>${fmtSh(pick.shanten)}</b> になり、アガリから1歩遠ざかってしまう。</li>`);
+    else if (g.threats > 0.1 && pick.dealIn > best.dealIn + 0.02)
+      lines.push(`<li class="bad">あなたの <b>${tileName(pick.discard)}</b> は相手に当たりやすい危険牌（放銃率 ${(pick.dealIn * 100).toFixed(0)}%）。${bt} なら安全。</li>`);
+    else if (pick.dora < best.dora)
+      lines.push(`<li class="bad">あなたの選択はドラが ${best.dora - pick.dora} 枚少なく、アガったときの点が下がる。</li>`);
+    else
+      lines.push(`<li class="bad">あなたの選択より <b>${bt}</b> のほうが手が広い（受け入れが多い）。</li>`);
+  }
+  return `<div class="why"><div class="why-head">📘 かんたん解説</div><ul>${lines.join('')}</ul></div>`;
 }
 
 // ── 描画 ──
@@ -129,7 +170,11 @@ function render() {
     const dangerBadge = g.oppInfo.find(o => o.p === p)?.threat >= 0.5 ? '<span class="warn-tag">警戒</span>' : '';
     div.innerHTML = `<div class="oppq-head">AI・${rel[(p - 0)]} ${st.riichi[p] ? '<span class="riichi-tag">リーチ</span>' : ''}${dangerBadge}<span class="oppq-cnt">河${st.discards[p].length}</span></div>`;
     const river = document.createElement('div'); river.className = 'river';
-    for (const t of st.discards[p]) river.appendChild(tileEl(t, { small: true }));
+    st.discards[p].forEach((t, i) => {
+      const el = tileEl(t, { small: true });
+      if (i === st.riichiAt[p]) el.classList.add('riichi-tile');
+      river.appendChild(el);
+    });
     if (st.melds[p].length) {
       const m = document.createElement('span'); m.className = 'oppq-melds';
       for (const md of st.melds[p]) for (let k = 0; k < (md.type === 'pon' ? 3 : 4); k++) m.appendChild(tileEl(md.tile, { small: true }));
@@ -173,23 +218,23 @@ function renderResult(g) {
 
   let html = '';
   if (v.tier === 'big') {
-    html += `<div class="stop-banner">🛑 STOP — 大きなロスです。最善手を確認してください。</div>`;
-  } else if (autoAdvancing) {
-    html += `<div class="auto-note">${v.mark} ${v.tier === 'perfect' ? 'ナイス！' : 'OK'} 自動で次の問題へ…（クリックで止めてレビュー）</div>`;
+    html += `<div class="stop-banner">🛑 STOP — 大きなミスです。下の解説で最善手を確認しよう。</div>`;
   }
   html += `<div class="verdict ${v.cls}"><span class="vmark">${v.mark}</span> ${v.text}` +
-    (v.loss > 0 && v.loss < 1 ? `<span class="lossnum">評価ロス ${(v.loss * 100).toFixed(0)}%</span>` : '') +
-    (v.dangerJump > 0.03 ? `<span class="lossnum warn">放銃率 +${(v.dangerJump * 100).toFixed(0)}%</span>` : '') +
-    `</div>`;
+    `<span class="best-badge">最善は <b>${tileName(best.discard)}</b></span></div>`;
+
+  // 中学生向けのやさしい解説
+  html += explainWhy(best, pick, g);
+
   html += `<div class="rtable-wrap"><table class="rtable"><thead><tr>` +
-    `<th>切る</th><th>向聴</th><th>受け入れ</th><th>ドラ</th><th>放銃率</th></tr></thead><tbody>`;
+    `<th>切る</th><th>向聴（アガリまで）</th><th>受け入れ（手広さ）</th><th>ドラ（点）</th><th>放銃率（危険）</th></tr></thead><tbody>`;
   const show = g.results.slice(0, 7);
   if (!show.some(r => r.discard === st._pick)) show.push(pick); // 自分の選択は必ず表示
   for (const r of show) {
     const tags = (r.discard === best.discard ? '<span class="pill gold">最善</span>' : '') +
       (r.discard === st._pick ? '<span class="pill blue">あなた</span>' : '');
     html += `<tr class="${r.discard === best.discard ? 'row-best' : ''}${r.discard === st._pick ? ' row-pick' : ''}">` +
-      `<td>${tileName(r.discard)} ${tags}</td><td>${fmtSh(r.shanten)}</td>` +
+      `<td>${tileName(r.discard)} ${tags}</td><td>${fmtSh(r.shanten)}${formTag(r)}</td>` +
       `<td>${r.ukeireTotal}枚</td><td>${r.dora}</td>` +
       `<td>${g.threats > 0.05 ? (r.dealIn * 100).toFixed(1) + '%' : '—'}</td></tr>`;
   }
@@ -225,28 +270,15 @@ function renderResult(g) {
 }
 
 // ── 操作 ──
-function cancelAuto() {
-  if (!autoAdvancing) return;
-  autoAdvancing = false; clearTimeout(autoTimer);
-  render(); // 自動ノートを消す
-}
 function onPick(tile) {
   if (answered) return;
   st._pick = tile;
   graded = grade(st);
   answered = true;
   st._verdict = verdict(graded.results.find(r => r.discard === tile), graded.results[0]);
-  clearTimeout(autoTimer);
-  // 小さいロスは自動で次へ、大きいロス（大ミス）はストップ
-  autoAdvancing = (st._verdict.tier === 'perfect' || st._verdict.tier === 'small');
-  render();
-  if (autoAdvancing) {
-    const delay = st._verdict.tier === 'perfect' ? 1300 : 2100;
-    autoTimer = setTimeout(() => { if (autoAdvancing) newQuiz(); }, delay);
-  }
+  render(); // 自動で次へは行かない。ユーザーが「次の問題へ」を押すまで結果を表示。
 }
 function newQuiz() {
-  clearTimeout(autoTimer); autoAdvancing = false;
   const players = parseInt($('playerCount').value, 10) || 4;
   const s = genQuiz(players);
   if (!s) { $('quizHand').textContent = '局面生成に失敗しました。もう一度お試しください。'; return; }
@@ -254,7 +286,6 @@ function newQuiz() {
   render();
 }
 
-$('quizResult').addEventListener('click', cancelAuto);
 $('nextBtn').onclick = newQuiz;
 $('newQuizTop').onclick = newQuiz;
 $('playerCount').onchange = newQuiz;

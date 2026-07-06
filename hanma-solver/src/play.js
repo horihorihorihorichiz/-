@@ -76,7 +76,11 @@ function render() {
       for (const md of state.melds[p]) m.appendChild(meldEl(md));
       seatEl.appendChild(m);
     }
-    for (const t of state.discards[p]) riverEl.appendChild(tileEl(t, { small: true }));
+    state.discards[p].forEach((t, i) => {
+      const el = tileEl(t, { small: true });
+      if (i === state.riichiAt[p]) el.classList.add('riichi-tile');
+      riverEl.appendChild(el);
+    });
   }
 
   // 自分の副露・手牌

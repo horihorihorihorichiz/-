@@ -51,6 +51,7 @@ export function newGame(opts = {}) {
   const hands = [], melds = [], discards = [], riichi = [];
   for (let p = 0; p < players; p++) {
     hands.push(emptyCounts()); melds.push([]); discards.push([]); riichi.push(false);
+    // riichiAt[p] は後段でまとめて初期化
     for (let k = 0; k < 13; k++) hands[p][wall.shift()]++;
   }
 
@@ -58,6 +59,7 @@ export function newGame(opts = {}) {
     players, humanIndex,
     hands, melds, discards, riichi,
     scores: new Array(players).fill(0),
+    riichiAt: new Array(players).fill(-1), // リーチ宣言した河のインデックス
     pot: 0,                // リーチ供託
     wall,
     deadWall,
@@ -144,6 +146,7 @@ function doDiscard(state, p, tile) {
   state.lastDiscard = { tile, from: p };
   if (state.riichiJustDeclared === p) {
     state.riichi[p] = true;
+    state.riichiAt[p] = state.discards[p].length - 1; // この河でリーチ宣言
     state.scores[p] -= 2;   // リーチ棒を供託
     state.pot += 2;
     state.riichiJustDeclared = -1;
