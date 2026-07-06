@@ -104,12 +104,7 @@
 .tile.back { background: linear-gradient(135deg, #2e8494, #114f5c); border-color: #0b3a44; }
 .tile.back::after { content: ''; position: absolute; inset: 4px; border-radius: 3px; border: 1.5px solid rgba(255,255,255,.16); background: repeating-linear-gradient(45deg, rgba(255,255,255,.06) 0 3px, transparent 3px 6px); }
 .tface { width: 100%; height: 100%; object-fit: contain; display: block; pointer-events: none; }
-/* ドラ強調: 金枠＋「ドラ」バッジ */
-.tile.is-dora { box-shadow: inset 0 -3px 0 #d6cdb0, 0 0 0 2.5px #f5b301, 0 0 8px rgba(245,179,1,.5), 0 2px 4px rgba(0,0,0,.5); }
-.dora-mark { position: absolute; left: 0; right: 0; bottom: 0; text-align: center; font-size: .5rem; font-weight: 800; color: #3a2a00; background: #f5b301; line-height: 1.35; letter-spacing: .04em; }
-.t-sm .dora-mark { font-size: .42rem; }
-.qhand .tile.is-dora.best { box-shadow: inset 0 -3px 0 #d6cdb0, 0 0 0 3px var(--accent), 0 0 8px rgba(245,179,1,.5); }
-.dora-arrow { color: var(--muted); font-size: .8rem; margin: 0 1px; }
+/* 赤ドラ(5)＝牌全体を赤くする / ドラ＝全体に金色をかける（画像の上にオーバーレイ） */
 .fz { font-family: "Hiragino Mincho ProN", "Yu Mincho", serif; font-weight: 800; font-size: 23px; color: #243349; }
 .t-sm .fz { font-size: 13px; }
 .fz.z4 { color: #2565a8; } .fz.z5 { color: #1e7a41; } .fz.z6 { color: #c0392b; }

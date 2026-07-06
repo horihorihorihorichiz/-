@@ -208,12 +208,7 @@ code { background: var(--panel-2); padding: 1px 5px; border-radius: 4px; font-si
 .tile.back { background: linear-gradient(135deg, #2e8494, #114f5c); border-color: #0b3a44; }
 .tile.back::after { content: ''; position: absolute; inset: 4px; border-radius: 3px; border: 1.5px solid rgba(255,255,255,.16); background: repeating-linear-gradient(45deg, rgba(255,255,255,.06) 0 3px, transparent 3px 6px); }
 .tface { width: 100%; height: 100%; object-fit: contain; display: block; pointer-events: none; }
-/* ドラ強調: 金枠＋「ドラ」バッジ */
-.tile.is-dora { box-shadow: inset 0 -3px 0 #d6cdb0, 0 0 0 2.5px #f5b301, 0 0 8px rgba(245,179,1,.5), 0 2px 4px rgba(0,0,0,.5); }
-.dora-mark { position: absolute; left: 0; right: 0; bottom: 0; text-align: center; font-size: .5rem; font-weight: 800; color: #3a2a00; background: #f5b301; line-height: 1.35; letter-spacing: .04em; }
-.t-sm .dora-mark { font-size: .42rem; }
-.qhand .tile.is-dora.best { box-shadow: inset 0 -3px 0 #d6cdb0, 0 0 0 3px var(--accent), 0 0 8px rgba(245,179,1,.5); }
-.dora-arrow { color: var(--muted); font-size: .8rem; margin: 0 1px; }
+/* 赤ドラ(5)＝牌全体を赤くする / ドラ＝全体に金色をかける（画像の上にオーバーレイ） */
 .fz { font-family: "Hiragino Mincho ProN", "Yu Mincho", serif; font-weight: 800; font-size: 23px; color: #243349; }
 .t-sm .fz { font-size: 13px; }
 .fz.z4 { color: #2565a8; } .fz.z5 { color: #1e7a41; } .fz.z6 { color: #c0392b; }
@@ -426,9 +421,8 @@ function tileEl(idx, opts = {}) {
   const red = idx < 27 && rankOf(idx) === 5;
   el.className = 'tile' + (opts.small ? ' t-sm' : '') + (red ? ' red' : '') +
     (opts.drawn ? ' drawn' : '') + (opts.disabled ? ' disabled' : '') + (opts.pick ? ' pick' : '') +
-    (opts.best ? ' best' : '') + (opts.dora ? ' is-dora' : '');
+    (opts.best ? ' best' : '');
   el.innerHTML = faceHTML(idx);
-  if (opts.dora) { const m = document.createElement('span'); m.className = 'dora-mark'; m.textContent = 'ドラ'; el.appendChild(m); }
   return el;
 }
 function backsInto(container, n, small = true) {
@@ -1657,17 +1651,8 @@ function render() {
   const g = graded || grade(st);
   $('turnInfo').textContent = `${st.players}人打ち／残り ${st.wall.length}枚／あなたの捨て牌 ${st.discards[0].length}`;
 
-  // ドラ集合（表示牌から決まるドラ＋5は全部赤ドラ）
-  const doraSet = new Set([MAN + 4, PIN + 4, SOU + 4]);
-  for (const ind of st.doraIndicators) doraSet.add(doraFromIndicator(ind));
-
-  // ドラ表示: 「表示牌 → ドラ」を並べる
   const dora = $('doraDisp'); dora.innerHTML = '';
-  st.doraIndicators.forEach(ind => {
-    dora.appendChild(tileEl(ind, { small: true }));
-    const arrow = document.createElement('span'); arrow.className = 'dora-arrow'; arrow.textContent = '→'; dora.appendChild(arrow);
-    dora.appendChild(tileEl(doraFromIndicator(ind), { small: true, dora: true }));
-  });
+  for (const d of st.doraIndicators) dora.appendChild(tileEl(d, { small: true }));
 
   // 相手（河＋リーチ）
   const opp = $('opps'); opp.innerHTML = '';
@@ -1704,7 +1689,7 @@ function render() {
     for (let k = 0; k < c[i]; k++) {
       const isBest = answered && i === best.discard;
       const isPick = answered && st._pick === i;
-      const el = tileEl(i, { best: isBest, pick: isPick, dora: doraSet.has(i) });
+      const el = tileEl(i, { best: isBest, pick: isPick });
       if (!answered) el.onclick = () => onPick(i);
       else el.style.cursor = 'default';
       hand.appendChild(el);
