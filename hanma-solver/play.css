@@ -96,7 +96,11 @@
 
 .pips { width: 100%; height: 100%; display: block; }
 .pdot { fill: #215f9e; } .pdot.rd { fill: #c0392b; } .pdotc { fill: #faf7ec; }
-.sbar { fill: #1e7a41; } .sbar.rd { fill: #c0392b; }
+.stalk rect { fill: #17843f; } .stalk .node { fill: rgba(255,255,255,.6); }
+.stalk.rd rect { fill: #c0392b; }
+.rnum { fill: rgba(35,35,35,.42); font: 800 15px -apple-system, sans-serif; }
+.pips.suit-p .rnum { fill: rgba(33,95,158,.5); }
+.pips.suit-s .rnum { fill: rgba(23,120,58,.62); }
 .fm { display: flex; flex-direction: column; align-items: center; line-height: .95; color: #8a1f1f; font-family: "Hiragino Mincho ProN", "Yu Mincho", serif; }
 .fm b { font-size: 21px; font-weight: 800; } .fm i { font-size: 10px; font-style: normal; margin-top: 1px; }
 .t-sm .fm b { font-size: 12px; } .t-sm .fm i { font-size: 6px; }

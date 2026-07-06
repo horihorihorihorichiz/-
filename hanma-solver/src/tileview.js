@@ -22,11 +22,19 @@ export function faceHTML(idx) {
   if (s === 'z') { const h = idx - 27; return `<span class="fz z${h}">${HONOR_CH[h]}</span>`; }
   const red = r === 5;
   const marks = PIP[r].map(([x, y], i) => {
-    const isC = (s === 'p') && red && (i === 2);
-    if (s === 'p') return `<circle cx="${x}" cy="${y}" r="8.6" class="pdot${isC ? ' rd' : ''}"/><circle cx="${x}" cy="${y}" r="3.4" class="pdotc"/>`;
-    return `<rect x="${x - 3.4}" y="${y - 9}" width="6.8" height="18" rx="3.4" class="sbar${red && i === Math.floor(PIP[r].length / 2) ? ' rd' : ''}"/>`;
+    if (s === 'p') {
+      const isC = red && i === 2;
+      return `<circle cx="${x}" cy="${y}" r="8.8" class="pdot${isC ? ' rd' : ''}"/><circle cx="${x}" cy="${y}" r="3.4" class="pdotc"/>`;
+    }
+    // 索子: 竹を1本ずつ間隔を空けて描く（節つき）
+    const rd = red && i === Math.floor(PIP[r].length / 2);
+    return `<g class="stalk${rd ? ' rd' : ''}">` +
+      `<rect x="${x - 4}" y="${y - 7.5}" width="8" height="15" rx="4"/>` +
+      `<rect x="${x - 4}" y="${y - 1.2}" width="8" height="2.4" class="node"/></g>`;
   }).join('');
-  return `<svg viewBox="0 0 60 84" class="pips">${marks}</svg>`;
+  // 隅に小さく数字（索子・筒子は数えやすく）
+  const num = `<text x="7" y="15" class="rnum">${r}</text>`;
+  return `<svg viewBox="0 0 60 84" class="pips suit-${s}">${num}${marks}</svg>`;
 }
 
 export function tileEl(idx, opts = {}) {
