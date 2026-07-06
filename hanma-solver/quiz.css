@@ -60,7 +60,10 @@
 .pill.gold { background: rgba(251,191,36,.16); color: var(--gold); }
 .pill.blue { background: rgba(56,189,248,.16); color: var(--accent-2); }
 .danger-explain { margin-top: 12px; background: rgba(0,0,0,.18); border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px; }
-.de-ctx { font-size: .86rem; margin-bottom: 8px; }
+.de-ctx { font-size: .86rem; margin-bottom: 6px; }
+.threat-list { margin: 0 0 8px; padding-left: 1.1em; font-size: .82rem; }
+.threat-list li { margin: 4px 0; line-height: 1.55; }
+.de-note { font-size: .78rem; color: #ffd9a8; background: rgba(251,191,36,.08); border: 1px solid rgba(251,191,36,.25); border-radius: 6px; padding: 6px 9px; margin-bottom: 8px; }
 .reason-card { border-radius: 8px; padding: 8px 10px; margin-top: 8px; font-size: .82rem; }
 .reason-card.risk { background: rgba(224,83,83,.1); border: 1px solid rgba(224,83,83,.35); }
 .reason-card.safe { background: rgba(74,222,128,.08); border: 1px solid rgba(74,222,128,.3); }

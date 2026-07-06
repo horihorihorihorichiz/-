@@ -3,7 +3,7 @@
 // 対局エンジンでリアルな局面を生成 → 「何を切る？」を出題 →
 // ソルバー（牌効率＋ドラ＋放銃リスク）で採点し、最善打と評価を表示 → 次の局面へ。
 
-import { N_TILES, tileName } from './tiles.js';
+import { N_TILES, tileName, doraFromIndicator, MAN, PIN, SOU } from './tiles.js';
 import { newGame, advance, humanDiscard, humanCall } from './game.js';
 import { analyzeDiscards } from './analyze.js';
 import { dealInProb, dangerReasons } from './danger.js';
@@ -86,11 +86,33 @@ function grade(state) {
     oppInfo.push({ p, riichi: state.riichi[p], discards: state.discards[p].length, threat: t });
   }
 
+  // ドラ牌の集合（表示牌から＋5は全部ドラ）
+  const doraTiles = new Set();
+  for (const ind of omote) doraTiles.add(doraFromIndicator(ind));
+  [MAN + 4, PIN + 4, SOU + 4].forEach(i => doraTiles.add(i));
+  // ドラそば（同じスートでドラと2つ以内＝ドラ入り順子を作れる牌）の枚数
+  const sobaCount = (c) => {
+    let s = 0;
+    for (let i = 0; i < 27; i++) {
+      if (!c[i]) continue;
+      const suit = Math.floor(i / 9), r = i % 9;
+      for (const D of doraTiles) {
+        if (D < 27 && Math.floor(D / 9) === suit) {
+          const d = Math.abs(r - (D % 9));
+          if (d >= 1 && d <= 2) { s += c[i]; break; }
+        }
+      }
+    }
+    return s;
+  };
+
   const results = analyzeDiscards({ counts, calledMelds, omoteIndicators: omote, seen: boardSeen });
   for (const r of results) {
     r.dealIn = dealInProb(r.discard, seenAll, threats);
-    // 評価値: 向聴を最優先、同向聴内で「手広さ＋打点」を放銃リスクで割り引く
-    const value = (r.ukeireTotal + r.dora * 3) * (1 - 0.85 * r.dealIn);
+    const c = counts.slice(); c[r.discard]--;
+    r.soba = sobaCount(c);
+    // 評価値: 向聴を最優先、同向聴内で「手広さ＋打点(実ドラ＋ドラそばの伸び)」を放銃リスクで割り引く
+    const value = (r.ukeireTotal + r.dora * 3 + r.soba * 0.7) * (1 - 0.85 * r.dealIn);
     r.score = -r.shanten * 100000 + value * 10;
   }
   results.sort((a, b) => b.score - a.score || a.dealIn - b.dealIn);
@@ -151,36 +173,33 @@ function formTag(r) {
   return '';
 }
 
-// 中学生でも分かる「なぜこれが最善か」の説明
+// 「なぜこれが最善か」の解説（高校生向けの文章）
 function explainWhy(best, pick, g) {
   const bt = tileName(best.discard);
-  const lines = [];
-  // 形（通常/七対子/国士）
-  let formTxt = 'ふつうの形（4つのメンツ＋1つの対子）';
-  if (best.forms.includes('chiitoi') && !best.forms.includes('normal')) formTxt = '七対子（ペアを7つ集める形）';
+  const P = [];
+  let formTxt = '4面子1雀頭のふつうの形';
+  if (best.forms.includes('chiitoi') && !best.forms.includes('normal')) formTxt = '七対子（対子を7組そろえる形）';
   else if (best.forms.includes('kokushi')) formTxt = '国士無双';
-  else if (best.forms.includes('chiitoi')) formTxt = 'ふつうの形／七対子どちらも狙える';
+  else if (best.forms.includes('chiitoi')) formTxt = '通常形と七対子の両にらみ';
 
-  lines.push(`<li><b>${bt}</b> を切ると、アガリに一番近い <b>${fmtSh(best.shanten)}</b> をキープできる（目標は${formTxt}）。</li>`);
-  lines.push(`<li>切ったあと、手を進めてくれる牌が <b>${best.ukeireTotal}枚</b> 残っている（＝手が広い＝アガリやすい）。</li>`);
-  if (best.dora > 0) lines.push(`<li>ドラを <b>${best.dora}枚</b> 残せる（＝アガれたときの点が高い）。5は全部ドラなので大事。</li>`);
-  // 韓麻の打点（役・飜は無いので点数で表す）
+  P.push(`<b>${bt}切り</b>は向聴を落とさず <b>${fmtSh(best.shanten)}</b> を保ち、受け入れも <b>${best.ukeireTotal}枚</b> と広い。アガリまで最短で、狙う形は${formTxt}。`);
+  if (best.dora > 0) P.push(`ドラを <b>${best.dora}枚</b> 確保できるため打点も見込める。韓麻は5がすべて赤ドラなので、5そのものと周辺の価値が大きい。`);
+  if (best.soba > 0) P.push(`さらに<b>ドラそば</b>（ドラと1〜2つ違いで、引けばドラ入りの順子になる牌）を <b>${best.soba}枚</b> 抱えている。今は面子になっていなくても、伸びれば打点が上がる“ドラの種”として持っておく価値がある。だから受け入れ枚数が同じでも、ドラそばを残す一打のほうが得点期待値は高くなりやすい。`);
   const menzen = st.melds[0].length === 0;
   const pts = score({ win: 'ron', riichi: menzen, dora: best.dora, players: st.players }).total;
-  lines.push(`<li>この手はアガれれば <b>約${pts}点</b>（韓麻に役・飜は無く、ロン6＋ドラ${best.dora}${menzen ? '＋リーチ2' : ''}）。</li>`);
-  if (best.ev != null) lines.push(`<li><b>得点期待値 約${best.ev.toFixed(2)}点</b>（アガリ率${(best.winRate * 100).toFixed(0)}% × 平均打点${best.avgPoints.toFixed(1)}点）。これが「実際どれだけ得か」の目安。</li>`);
+  P.push(`アガった場合の打点は約 <b>${pts}点</b>（役・飜は無く、ロン6＋ドラ${best.dora}${menzen ? '＋リーチ2' : ''}）。`);
+  if (best.ev != null) P.push(`これらを総合した<b>得点期待値は約 ${best.ev.toFixed(2)}点</b>（アガリ率 ${(best.winRate * 100).toFixed(0)}% × 平均打点 ${best.avgPoints.toFixed(1)}点）で、これが「実戦で平均どれだけ得か」の指標になる。`);
 
   if (pick && pick.discard !== best.discard) {
-    if (pick.shanten > best.shanten)
-      lines.push(`<li class="bad">あなたの <b>${tileName(pick.discard)}</b> を切ると <b>${fmtSh(pick.shanten)}</b> になり、アガリから1歩遠ざかってしまう。</li>`);
-    else if (g.threats > 0.1 && pick.dealIn > best.dealIn + 0.02)
-      lines.push(`<li class="bad">あなたの <b>${tileName(pick.discard)}</b> は相手に当たりやすい危険牌（放銃率 ${(pick.dealIn * 100).toFixed(0)}%）。${bt} なら安全。</li>`);
-    else if (pick.dora < best.dora)
-      lines.push(`<li class="bad">あなたの選択はドラが ${best.dora - pick.dora} 枚少なく、アガったときの点が下がる。</li>`);
-    else
-      lines.push(`<li class="bad">あなたの選択より <b>${bt}</b> のほうが手が広い（受け入れが多い）。</li>`);
+    let bad;
+    if (pick.shanten > best.shanten) bad = `${tileName(pick.discard)}切りは向聴が ${fmtSh(pick.shanten)} に後退し、アガリから遠ざかってしまう。`;
+    else if (g.threats > 0.1 && pick.dealIn > best.dealIn + 0.02) bad = `${tileName(pick.discard)} は放銃率 ${(pick.dealIn * 100).toFixed(0)}% と危険で、当たれば失点が大きい。${bt}なら相手に刺さりにくく、期待値の目減りを抑えられる。`;
+    else if (pick.soba < best.soba) bad = `${tileName(pick.discard)}を切るとドラそばを手放し、打点の伸びしろが減る。`;
+    else if (pick.dora < best.dora) bad = `${tileName(pick.discard)}切りはドラが ${best.dora - pick.dora}枚 少なく、打点が下がる。`;
+    else bad = `${bt}のほうが受け入れが広く、アガリやすい。`;
+    P.push(`<span class="bad">あなたの選択について：${bad}</span>`);
   }
-  return `<div class="why"><div class="why-head">📘 かんたん解説</div><ul>${lines.join('')}</ul></div>`;
+  return `<div class="why"><div class="why-head">📘 解説</div>` + P.map(t => `<p>${t}</p>`).join('') + `</div>`;
 }
 
 // ── 描画 ──
@@ -254,9 +273,6 @@ function renderResult(g) {
   html += `<div class="verdict ${v.cls}"><span class="vmark">${v.mark}</span> ${v.text}` +
     `<span class="best-badge">最善は <b>${tileName(best.discard)}</b></span></div>`;
 
-  // 中学生向けのやさしい解説
-  html += explainWhy(best, pick, g);
-
   const evReady = g._evDone;
   html += `<div class="rtable-wrap"><table class="rtable"><thead><tr>` +
     `<th>切る</th><th>向聴</th><th>受け入れ</th><th>ドラ</th><th>放銃率</th>` +
@@ -277,32 +293,44 @@ function renderResult(g) {
   html += `</tbody></table></div>`;
   html += `<div class="rnote" style="margin-top:6px">得点期待値 ＝ アガリ率 × 平均打点（残り山からモンテカルロで実測）。「もしアガれたら」ではなく「平均でどれだけ得するか」。</div>`;
 
-  // 放銃率の理由説明（警戒相手がいるとき）
+  // 放銃率の理由説明（警戒相手がいるとき）: どの相手の河がどうか まで踏み込む
   if (g.threats > 0.1) {
-    const riichiOpps = g.oppInfo.filter(o => o.riichi).length;
-    const ctx = riichiOpps > 0
-      ? `<strong>${riichiOpps}人がリーチ</strong>しており放銃の危険が高い局面です。`
-      : `相手の河が伸びていて<strong>テンパイ濃厚な相手が約${g.threats.toFixed(1)}人</strong>。放銃に注意。`;
+    const rel = { 1: '下家', 2: st.players === 4 ? '対面' : '上家', 3: '上家' };
+    // 警戒すべき相手の状況（河・リーチ）を列挙
+    const threatLines = [];
+    for (const o of g.oppInfo) {
+      if (o.riichi) {
+        const after = st.discards[o.p].length - 1 - (st.riichiAt[o.p] ?? 0);
+        threatLines.push(`<li><span class="riichi-tag">リーチ</span> <b>AI・${rel[o.p]}</b>：${st.riichiAt[o.p] + 1}巡目に横向きの牌でリーチ宣言。以降${after}巡ぶんは無スジでも押してきた＝手変わりせずテンパイ継続中。当然テンパイなので放銃に直結。`);
+      } else if (o.threat >= 0.4) {
+        threatLines.push(`<li><b>AI・${rel[o.p]}</b>：河が${o.discards}枚と伸びていて、テンパイしている可能性が高い（警戒）。`);
+      }
+    }
+    const ctxHead = threatLines.length
+      ? `<div class="de-ctx">🀫 いま警戒すべき相手：</div><ul class="threat-list">${threatLines.join('')}</ul>`
+      : `<div class="de-ctx">🀫 相手の河が伸びていて、テンパイ濃厚な相手が約${g.threats.toFixed(1)}人。放銃に注意。</div>`;
+    const furiten = `<div class="de-note">※韓麻は<strong>フリテンが無い</strong>ので、相手の河に切れている牌（＝いわゆる現物）でも当たります。安全牌は「4枚見え」など物理的に待ちに使えない牌だけ。</div>`;
+
     const reasonBlock = (r, label, cls) => {
       const rs = dangerReasons(r.discard, g.seenAll, g.threats);
       if (!rs.length) return '';
       const items = rs.map(x => `<li class="${x.t}">${x.t === 'risk' ? '⚠' : '✓'} ${x.s}</li>`).join('');
       return `<div class="reason-card ${cls}"><div class="rc-head">${label}：${tileName(r.discard)}（放銃率 ${(r.dealIn * 100).toFixed(1)}%）</div><ul>${items}</ul></div>`;
     };
-    html += `<div class="danger-explain"><div class="de-ctx">🀫 ${ctx}</div>`;
-    // 危険な選択をしたら、その理由を強調
+    html += `<div class="danger-explain">${ctxHead}${furiten}`;
     if (pick.discard !== best.discard && pick.dealIn > best.dealIn + 0.02) {
       html += reasonBlock(pick, 'あなたの選択が危険な理由', 'risk');
       html += reasonBlock(best, '最善が安全な理由', 'safe');
     } else {
-      // そうでなければ手牌中で最も危険な牌を教材として説明
       const mostRisk = g.results.slice().sort((a, b) => b.dealIn - a.dealIn)[0];
       if (mostRisk && mostRisk.dealIn > 0.05) html += reasonBlock(mostRisk, 'この手で一番危険な牌', 'risk');
     }
     html += `</div>`;
   }
 
-  html += `<div class="rnote">評価 = 手広さ(受け入れ)＋打点(ドラ) を放銃リスクで割り引いた値。${g.threats > 0 ? `相手のテンパイ濃厚度 約${g.threats.toFixed(1)}人ぶんを加味。` : '危険な相手がいないため純粋な牌効率で判定。'}</div>`;
+  // 解説は文末に置く（高校生向けの文章）
+  html += explainWhy(best, pick, g);
+
   box.innerHTML = html;
 }
 

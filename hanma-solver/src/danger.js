@@ -10,7 +10,7 @@
 // を「テンパイ濃厚な相手1人あたり」の当たり確率とし、警戒人数ぶん合成する。
 // 数値は絶対値ではなく、打牌間の相対的な危険度比較に使うこと。
 
-import { isHonor, rankOf, suitOf, MAN, PIN, SOU } from './tiles.js';
+import { isHonor, rankOf, suitOf, tileName, MAN, PIN, SOU } from './tiles.js';
 
 export const DANGER_CONFIG = {
   baseRate: 0.09,        // 中張牌の基準放銃率（相手1人・テンパイ想定）
@@ -64,19 +64,20 @@ export function dangerReasons(idx, seen, threats) {
   if (!threats || threats <= 0) return out;
   const seenAt = (i) => (seen ? seen[i] : 0);
   if (isHonor(idx)) {
-    out.push({ t: 'safe', s: '字牌：対子・単騎の待ちにしか当たらず比較的安全' });
+    out.push({ t: 'safe', s: `字牌（${tileName(idx)}）は対子・単騎の待ちにしか刺さらないので、数牌より当たりにくい。` });
   } else {
     const r = rankOf(idx);
     const base = idx - (idx % 9), r0 = idx % 9;
-    if (r === 1 || r === 9) out.push({ t: 'safe', s: '端牌(1・9)：両面が片側だけで危険度は低め' });
-    else if (r === 4 || r === 5 || r === 6) out.push({ t: 'risk', s: '中張(4〜6)：両面・嵌張・辺張どの待ちにも刺さりやすく最も危険' });
-    else out.push({ t: 'risk', s: '2・3・7・8：両面待ちに当たりやすい' });
-    const leftWall = r0 - 1 >= 0 && seenAt(base + r0 - 1) >= 3;
-    const rightWall = r0 + 1 <= 8 && seenAt(base + r0 + 1) >= 3;
-    if (leftWall || rightWall) out.push({ t: 'safe', s: '隣の牌が場に3枚以上（壁）→ 両面待ちが減り危険度ダウン' });
+    if (r === 1 || r === 9) out.push({ t: 'safe', s: `端牌(${tileName(idx)})は両面待ちが片側だけ（例：${tileName(idx)}なら一方向の順子にしか刺さらない）ので危険度は低め。` });
+    else if (r === 4 || r === 5 || r === 6) out.push({ t: 'risk', s: `中張牌(${tileName(idx)})は左右どちらの両面にも、嵌張・辺張にも刺さり得るので、待ちの当たり判定が最も広い。` });
+    else out.push({ t: 'risk', s: `${tileName(idx)}は両面待ちに当たりやすい牌（中張寄り）。` });
+    const lw = r0 - 1 >= 0 && seenAt(base + r0 - 1) >= 3;
+    const rw = r0 + 1 <= 8 && seenAt(base + r0 + 1) >= 3;
+    if (lw) out.push({ t: 'safe', s: `${tileName(base + r0 - 1)}が場に${seenAt(base + r0 - 1)}枚見えていて“壁”になっている。この牌を使う両面待ちが物理的に作れないぶん、${tileName(idx)}の危険度が下がる。` });
+    if (rw) out.push({ t: 'safe', s: `${tileName(base + r0 + 1)}が場に${seenAt(base + r0 + 1)}枚見えていて“壁”。${tileName(idx)}に刺さる両面が減る。` });
   }
   const seen4 = seenAt(idx);
-  if (seen4 === 0) out.push({ t: 'risk', s: '生牌（場に1枚も切れていない）→ 相手が待ちに使いやすい' });
-  else if (seen4 >= 3) out.push({ t: 'safe', s: `場に${seen4}枚見え → シャンポン・単騎で当たりにくい` });
+  if (seen4 === 0) out.push({ t: 'risk', s: `${tileName(idx)}は場に1枚も切れていない生牌。誰の手にも残っていて、待ちに使われている可能性が高い。` });
+  else if (seen4 >= 3) out.push({ t: 'safe', s: `${tileName(idx)}は場に${seen4}枚見えている。残り${4 - seen4}枚しかなく、シャンポン・単騎で当てられる可能性が低い。` });
   return out;
 }
