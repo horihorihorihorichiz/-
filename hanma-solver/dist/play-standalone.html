@@ -198,16 +198,11 @@ code { background: var(--panel-2); padding: 1px 5px; border-radius: 4px; font-si
 .tile.back::after { content: ''; position: absolute; inset: 4px; border-radius: 3px; border: 1.5px solid rgba(255,255,255,.16);
   background: repeating-linear-gradient(45deg, rgba(255,255,255,.06) 0 3px, transparent 3px 6px); }
 
-.pips { width: 100%; height: 100%; display: block; }
-.pdot { fill: #215f9e; } .pdot.rd { fill: #c0392b; } .pdotc { fill: #faf7ec; }
-.stalk rect { fill: #17843f; } .stalk .node { fill: rgba(255,255,255,.6); }
-.stalk.rd rect { fill: #c0392b; }
-.rnum { fill: rgba(35,35,35,.42); font: 800 15px -apple-system, sans-serif; }
-.pips.suit-p .rnum { fill: rgba(33,95,158,.5); }
-.pips.suit-s .rnum { fill: rgba(23,120,58,.62); }
-.fm { display: flex; flex-direction: column; align-items: center; line-height: .95; color: #8a1f1f; font-family: "Hiragino Mincho ProN", "Yu Mincho", serif; }
-.fm b { font-size: 21px; font-weight: 800; } .fm i { font-size: 10px; font-style: normal; margin-top: 1px; }
-.t-sm .fm b { font-size: 12px; } .t-sm .fm i { font-size: 6px; }
+.fn { display: flex; flex-direction: column; align-items: center; justify-content: center; line-height: .82; font-family: -apple-system, "Hiragino Kaku Gothic ProN", sans-serif; }
+.fn b { font-size: 30px; font-weight: 800; }
+.fn i { font-size: 13px; font-weight: 700; font-style: normal; margin-top: 2px; }
+.t-sm .fn b { font-size: 18px; } .t-sm .fn i { font-size: 8px; }
+.fn.suit-m { color: #a81d1d; } .fn.suit-p { color: #1a5aa8; } .fn.suit-s { color: #12813c; }
 .fz { font-family: "Hiragino Mincho ProN", "Yu Mincho", serif; font-weight: 800; font-size: 23px; color: #243349; }
 .t-sm .fz { font-size: 13px; }
 .fz.z4 { color: #2565a8; } .fz.z5 { color: #1e7a41; } .fz.z6 { color: #c0392b; }
@@ -379,39 +374,13 @@ function doraFromIndicator(indIdx) {
 // tileview.js — 本物風の牌フェイス描画（play/quiz 共通）
 
 
-const KAN_NUM = ['一', '二', '三', '四', '五', '六', '七', '八', '九'];
 const HONOR_CH = ['東', '南', '西', '北', '白', '發', '中'];
-// 筒子/索子のドット配置（viewBox 0 0 60 84）
-const PIP = {
-  1: [[30, 42]],
-  2: [[30, 26], [30, 58]],
-  3: [[18, 22], [30, 42], [42, 62]],
-  4: [[20, 24], [40, 24], [20, 60], [40, 60]],
-  5: [[20, 24], [40, 24], [30, 42], [20, 60], [40, 60]],
-  6: [[20, 22], [40, 22], [20, 42], [40, 42], [20, 62], [40, 62]],
-  7: [[30, 18], [20, 34], [40, 34], [20, 52], [40, 52], [20, 66], [40, 66]],
-  8: [[20, 18], [40, 18], [20, 37], [40, 37], [20, 55], [40, 55], [20, 71], [40, 71]],
-  9: [[17, 22], [30, 22], [43, 22], [17, 42], [30, 42], [43, 42], [17, 62], [30, 62], [43, 62]],
-};
+const SUIT_CH = { m: '萬', p: 'ピ', s: '索' };
+// 見やすさ優先: 数牌は「大きな数字＋スート表記（萬 / ピ / 索）」で描画。
 function faceHTML(idx) {
   const s = suitOf(idx), r = rankOf(idx);
-  if (s === 'm') return `<span class="fm"><b>${KAN_NUM[r - 1]}</b><i>萬</i></span>`;
   if (s === 'z') { const h = idx - 27; return `<span class="fz z${h}">${HONOR_CH[h]}</span>`; }
-  const red = r === 5;
-  const marks = PIP[r].map(([x, y], i) => {
-    if (s === 'p') {
-      const isC = red && i === 2;
-      return `<circle cx="${x}" cy="${y}" r="8.8" class="pdot${isC ? ' rd' : ''}"/><circle cx="${x}" cy="${y}" r="3.4" class="pdotc"/>`;
-    }
-    // 索子: 竹を1本ずつ間隔を空けて描く（節つき）
-    const rd = red && i === Math.floor(PIP[r].length / 2);
-    return `<g class="stalk${rd ? ' rd' : ''}">` +
-      `<rect x="${x - 4}" y="${y - 7.5}" width="8" height="15" rx="4"/>` +
-      `<rect x="${x - 4}" y="${y - 1.2}" width="8" height="2.4" class="node"/></g>`;
-  }).join('');
-  // 隅に小さく数字（索子・筒子は数えやすく）
-  const num = `<text x="7" y="15" class="rnum">${r}</text>`;
-  return `<svg viewBox="0 0 60 84" class="pips suit-${s}">${num}${marks}</svg>`;
+  return `<span class="fn suit-${s}"><b>${r}</b><i>${SUIT_CH[s]}</i></span>`;
 }
 function tileEl(idx, opts = {}) {
   const el = document.createElement('span');

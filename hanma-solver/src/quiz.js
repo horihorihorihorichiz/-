@@ -6,7 +6,7 @@
 import { N_TILES, tileName } from './tiles.js';
 import { newGame, advance, humanDiscard, humanCall } from './game.js';
 import { analyzeDiscards } from './analyze.js';
-import { dealInProb } from './danger.js';
+import { dealInProb, dangerReasons } from './danger.js';
 import { tileEl, backsInto } from './tileview.js';
 
 const $ = (id) => document.getElementById(id);
@@ -91,7 +91,7 @@ function grade(state) {
     r.score = -r.shanten * 100000 + value * 10;
   }
   results.sort((a, b) => b.score - a.score || a.dealIn - b.dealIn);
-  return { results, threats, oppInfo };
+  return { results, threats, oppInfo, seenAll };
 }
 
 function evalValue(r) { return (r.ukeireTotal + r.dora * 3) * (1 - 0.85 * r.dealIn); }
@@ -194,6 +194,32 @@ function renderResult(g) {
       `<td>${g.threats > 0.05 ? (r.dealIn * 100).toFixed(1) + '%' : '—'}</td></tr>`;
   }
   html += `</tbody></table></div>`;
+
+  // 放銃率の理由説明（警戒相手がいるとき）
+  if (g.threats > 0.1) {
+    const riichiOpps = g.oppInfo.filter(o => o.riichi).length;
+    const ctx = riichiOpps > 0
+      ? `<strong>${riichiOpps}人がリーチ</strong>しており放銃の危険が高い局面です。`
+      : `相手の河が伸びていて<strong>テンパイ濃厚な相手が約${g.threats.toFixed(1)}人</strong>。放銃に注意。`;
+    const reasonBlock = (r, label, cls) => {
+      const rs = dangerReasons(r.discard, g.seenAll, g.threats);
+      if (!rs.length) return '';
+      const items = rs.map(x => `<li class="${x.t}">${x.t === 'risk' ? '⚠' : '✓'} ${x.s}</li>`).join('');
+      return `<div class="reason-card ${cls}"><div class="rc-head">${label}：${tileName(r.discard)}（放銃率 ${(r.dealIn * 100).toFixed(1)}%）</div><ul>${items}</ul></div>`;
+    };
+    html += `<div class="danger-explain"><div class="de-ctx">🀫 ${ctx}</div>`;
+    // 危険な選択をしたら、その理由を強調
+    if (pick.discard !== best.discard && pick.dealIn > best.dealIn + 0.02) {
+      html += reasonBlock(pick, 'あなたの選択が危険な理由', 'risk');
+      html += reasonBlock(best, '最善が安全な理由', 'safe');
+    } else {
+      // そうでなければ手牌中で最も危険な牌を教材として説明
+      const mostRisk = g.results.slice().sort((a, b) => b.dealIn - a.dealIn)[0];
+      if (mostRisk && mostRisk.dealIn > 0.05) html += reasonBlock(mostRisk, 'この手で一番危険な牌', 'risk');
+    }
+    html += `</div>`;
+  }
+
   html += `<div class="rnote">評価 = 手広さ(受け入れ)＋打点(ドラ) を放銃リスクで割り引いた値。${g.threats > 0 ? `相手のテンパイ濃厚度 約${g.threats.toFixed(1)}人ぶんを加味。` : '危険な相手がいないため純粋な牌効率で判定。'}</div>`;
   box.innerHTML = html;
 }

@@ -57,3 +57,26 @@ export function dealInProb(idx, seen, threats, cfg = DANGER_CONFIG) {
   const p = perOpponent(idx, seen, cfg);
   return 1 - Math.pow(1 - p, threats);
 }
+
+// なぜ危険/安全か、の理由を返す。{ t:'risk'|'safe', s:説明 } の配列。
+export function dangerReasons(idx, seen, threats) {
+  const out = [];
+  if (!threats || threats <= 0) return out;
+  const seenAt = (i) => (seen ? seen[i] : 0);
+  if (isHonor(idx)) {
+    out.push({ t: 'safe', s: '字牌：対子・単騎の待ちにしか当たらず比較的安全' });
+  } else {
+    const r = rankOf(idx);
+    const base = idx - (idx % 9), r0 = idx % 9;
+    if (r === 1 || r === 9) out.push({ t: 'safe', s: '端牌(1・9)：両面が片側だけで危険度は低め' });
+    else if (r === 4 || r === 5 || r === 6) out.push({ t: 'risk', s: '中張(4〜6)：両面・嵌張・辺張どの待ちにも刺さりやすく最も危険' });
+    else out.push({ t: 'risk', s: '2・3・7・8：両面待ちに当たりやすい' });
+    const leftWall = r0 - 1 >= 0 && seenAt(base + r0 - 1) >= 3;
+    const rightWall = r0 + 1 <= 8 && seenAt(base + r0 + 1) >= 3;
+    if (leftWall || rightWall) out.push({ t: 'safe', s: '隣の牌が場に3枚以上（壁）→ 両面待ちが減り危険度ダウン' });
+  }
+  const seen4 = seenAt(idx);
+  if (seen4 === 0) out.push({ t: 'risk', s: '生牌（場に1枚も切れていない）→ 相手が待ちに使いやすい' });
+  else if (seen4 >= 3) out.push({ t: 'safe', s: `場に${seen4}枚見え → シャンポン・単騎で当たりにくい` });
+  return out;
+}
