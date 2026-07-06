@@ -173,6 +173,29 @@ function formTag(r) {
   return '';
 }
 
+// あなたの選択 vs 最善 の直接比較
+function renderCompare(best, pick, g) {
+  if (!pick || pick.discard === best.discard) return '';
+  const cmp = (label, pRaw, bRaw, betterHigh, disp) => {
+    const worse = betterHigh ? pRaw < bRaw : pRaw > bRaw;
+    return `<tr><td class="cl">${label}</td>` +
+      `<td class="${worse ? 'worse' : 'same'}">${disp(pRaw)}</td>` +
+      `<td class="pick-best">${disp(bRaw)}</td></tr>`;
+  };
+  let rows = '';
+  rows += cmp('向聴（アガリまで）', pick.shanten, best.shanten, false, v => fmtSh(v));
+  rows += cmp('受け入れ（手広さ）', pick.ukeireTotal, best.ukeireTotal, true, v => v + '枚');
+  rows += cmp('ドラ（打点）', pick.dora, best.dora, true, v => v + '枚');
+  if (g.threats > 0.05) rows += cmp('放銃率（危険）', pick.dealIn, best.dealIn, false, v => (v * 100).toFixed(1) + '%');
+  if (pick.ev != null && best.ev != null) rows += cmp('得点期待値', pick.ev, best.ev, true, v => v.toFixed(2) + '点');
+  else rows += `<tr><td class="cl">得点期待値</td><td colspan="2" class="ev-wait">計算中…</td></tr>`;
+
+  return `<div class="compare"><div class="cmp-head">📊 あなた と 最善 の比較</div>` +
+    `<table class="cmp-table"><thead><tr><th></th>` +
+    `<th class="th-pick">あなた ${tileName(pick.discard)}</th>` +
+    `<th class="th-best">最善 ${tileName(best.discard)}</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+}
+
 // 「なぜこれが最善か」の解説（高校生向けの文章）
 function explainWhy(best, pick, g) {
   const bt = tileName(best.discard);
@@ -271,6 +294,9 @@ function renderResult(g) {
   }
   html += `<div class="verdict ${v.cls}"><span class="vmark">${v.mark}</span> ${v.text}` +
     `<span class="best-badge">最善は <b>${tileName(best.discard)}</b></span></div>`;
+
+  // あなたの選択 と 最善 の直接比較
+  html += renderCompare(best, pick, g);
 
   const evReady = g._evDone;
   html += `<div class="rank-caption">🏆 切る牌ランキング（上ほど総合的に良い＝おすすめ順）</div>`;
