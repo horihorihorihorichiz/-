@@ -260,14 +260,19 @@ code { background: var(--panel-2); padding: 1px 5px; border-radius: 4px; font-si
 /* ===== 携帯 横画面: 卓＋手牌＋操作が1画面に収まるよう縮小 ===== */
 @media (orientation: landscape) and (max-height: 600px) {
   :root { --bw: 24px; --bh: 32px; --tw: 12px; --th: 16px; }
-  .wrap-play { padding: 2px 8px; max-width: 100%; }
-  .topbar { margin-bottom: 2px; gap: 6px; }
+  html, body { height: 100%; }
+  /* 画面の高さいっぱいに: 卓を残り領域へ伸ばす */
+  .wrap-play { display: flex; flex-direction: column; min-height: 100vh; min-height: 100dvh;
+    padding: 2px 8px; max-width: 100%; box-sizing: border-box; overflow-x: hidden; }
+  .topbar { flex: none; margin-bottom: 2px; gap: 6px; }
+  .tray { flex: none; }
+  #resultPanel { flex: none; }
   .topbar .ttl { font-size: .85rem; }
   .topbar .controls { gap: 6px; }
   .topbar select, .topbar .btn { padding: 3px 7px; font-size: .75rem; }
   .hintToggle, .solverlink { font-size: .68rem; }
   .rotate-hint { display: none !important; }
-  .table { min-height: 0; padding: 4px; gap: 2px; border-width: 4px;
+  .table { flex: 1 1 auto; min-height: 0; padding: 4px; gap: 2px; border-width: 4px;
     grid-template-columns: 42px minmax(90px, 1fr) 42px; }
   .pond { min-height: 0; padding: 3px; gap: 2px; grid-template-columns: 46px minmax(80px, 1fr) 46px; }
   .seat { padding: 1px; gap: 2px; }
@@ -289,6 +294,23 @@ code { background: var(--panel-2); padding: 1px 5px; border-radius: 4px; font-si
   .table { border-width: 3px; padding: 3px; }
   .topbar .ttl { font-size: .8rem; }
   .hand { padding: 2px 5px; }
+}
+
+/* ===== 携帯 縦画面: 画面の高さいっぱいに卓（緑エリア）を広げる ===== */
+@media (orientation: portrait) and (max-width: 820px) {
+  :root { --bw: 26px; --bh: 35px; --tw: 17px; --th: 23px; }
+  html, body { height: 100%; }
+  .wrap-play { display: flex; flex-direction: column; min-height: 100vh; min-height: 100dvh;
+    padding: 6px 6px 8px; max-width: 100%; box-sizing: border-box; overflow-x: hidden; }
+  .topbar { flex: none; margin-bottom: 5px; }
+  .topbar .ttl { font-size: 1rem; }
+  .rotate-hint { display: none !important; }
+  /* 卓を残り高さいっぱいに伸ばす＝緑エリアが縦画面を埋める */
+  .table { flex: 1 1 auto; min-height: 0; padding: 8px; }
+  .pond { min-height: 0; }
+  .tray { flex: none; margin-top: 8px; }
+  #resultPanel { flex: none; }
+  .hand { min-height: 0; }
 }
 
 </style></head><body>
