@@ -160,6 +160,16 @@ code { background: var(--panel-2); padding: 1px 5px; border-radius: 4px; font-si
 .pc-info b { color: #fff; font-size: .95rem; font-variant-numeric: tabular-nums; }
 .pc-info .pot b { color: #ffd24a; }
 
+/* ===== 対戦相手を実際の麻雀卓の向きに回転 ===== */
+/* 上家(左)=90° / 下家(右)=-90° で縦積み、対面(上)=180° */
+.seat-left .backs, .seat-right .backs { flex-direction: column; flex-wrap: nowrap; max-width: none; gap: 0; }
+.seat-left .seat-melds, .seat-right .seat-melds { flex-direction: column; flex-wrap: nowrap; }
+.seat-left .tile, .river-left .tile { transform: rotate(90deg); margin: -3.5px 5px; }
+.seat-right .tile, .river-right .tile { transform: rotate(-90deg); margin: -3.5px 5px; }
+.seat-top .backs .tile, .river-top .tile { transform: rotate(180deg); }
+/* 河も縦向きに積み、あふれたら隣の列へ */
+.river-left, .river-right { flex-direction: column; flex-wrap: wrap; max-height: 172px; max-width: none; gap: 0; align-content: flex-start; justify-content: flex-start; }
+
 /* 自分の手牌トレイ */
 .tray { margin-top: 12px; }
 .tray .melds { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; min-height: 0; margin-bottom: 6px; }
