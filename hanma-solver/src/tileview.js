@@ -13,7 +13,7 @@ export function tileEl(idx, opts = {}) {
   const red = idx < 27 && rankOf(idx) === 5;
   el.className = 'tile' + (opts.small ? ' t-sm' : '') + (red ? ' red' : '') +
     (opts.drawn ? ' drawn' : '') + (opts.disabled ? ' disabled' : '') + (opts.pick ? ' pick' : '') +
-    (opts.best ? ' best' : '');
+    (opts.best ? ' best' : '') + (opts.dora ? ' is-dora' : '');
   el.innerHTML = faceHTML(idx);
   return el;
 }

@@ -104,7 +104,11 @@
 .tile.back { background: linear-gradient(135deg, #2e8494, #114f5c); border-color: #0b3a44; }
 .tile.back::after { content: ''; position: absolute; inset: 4px; border-radius: 3px; border: 1.5px solid rgba(255,255,255,.16); background: repeating-linear-gradient(45deg, rgba(255,255,255,.06) 0 3px, transparent 3px 6px); }
 .tface { width: 100%; height: 100%; object-fit: contain; display: block; pointer-events: none; }
-/* 赤ドラ(5)＝牌全体を赤くする / ドラ＝全体に金色をかける（画像の上にオーバーレイ） */
+/* 赤ドラ(5)＝牌全体を赤くする / ドラ＝全体に黄色（金色）をかける（画像の上にオーバーレイ・文字ラベルなし） */
+.tile.red::before { content: ''; position: absolute; inset: 0; border-radius: inherit; background: rgba(214,42,42,.36); pointer-events: none; z-index: 1; }
+.tile.is-dora::after { content: ''; position: absolute; inset: 0; border-radius: inherit; background: rgba(245,179,1,.36); pointer-events: none; z-index: 2; }
+.tile.is-dora { box-shadow: inset 0 -3px 0 #d6cdb0, 0 0 0 2.5px #f5b301, 0 0 9px rgba(245,179,1,.6), 0 2px 4px rgba(0,0,0,.5); }
+.qhand .tile.is-dora.best { box-shadow: inset 0 -3px 0 #d6cdb0, 0 0 0 3px var(--accent), 0 0 9px rgba(245,179,1,.6); }
 .fz { font-family: "Hiragino Mincho ProN", "Yu Mincho", serif; font-weight: 800; font-size: 23px; color: #243349; }
 .t-sm .fz { font-size: 13px; }
 .fz.z4 { color: #2565a8; } .fz.z5 { color: #1e7a41; } .fz.z6 { color: #c0392b; }

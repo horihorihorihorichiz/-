@@ -199,6 +199,10 @@ code { background: var(--panel-2); padding: 1px 5px; border-radius: 4px; font-si
   background: repeating-linear-gradient(45deg, rgba(255,255,255,.06) 0 3px, transparent 3px 6px); }
 
 .tface { width: 100%; height: 100%; object-fit: contain; display: block; pointer-events: none; }
+/* 赤ドラ(5)＝赤くする / ドラ＝黄色（金色）オーバーレイ（文字ラベルなし） */
+.tile.red::before { content: ''; position: absolute; inset: 0; border-radius: inherit; background: rgba(214,42,42,.36); pointer-events: none; z-index: 1; }
+.tile.is-dora::after { content: ''; position: absolute; inset: 0; border-radius: inherit; background: rgba(245,179,1,.36); pointer-events: none; z-index: 2; }
+.tile.is-dora { box-shadow: inset 0 -3px 0 #d6cdb0, 0 0 0 2.5px #f5b301, 0 0 9px rgba(245,179,1,.6), 0 2px 4px rgba(0,0,0,.5); }
 /* リーチ宣言牌: 横向き＋赤枠 */
 .tile.riichi-tile { transform: rotate(90deg); margin: 0 7px; box-shadow: inset 0 -3px 0 #d6cdb0, 0 0 0 2px #ff5252, 0 2px 4px rgba(0,0,0,.5); }
 .fz { font-family: "Hiragino Mincho ProN", "Yu Mincho", serif; font-weight: 800; font-size: 23px; color: #243349; }
@@ -420,7 +424,7 @@ function tileEl(idx, opts = {}) {
   const red = idx < 27 && rankOf(idx) === 5;
   el.className = 'tile' + (opts.small ? ' t-sm' : '') + (red ? ' red' : '') +
     (opts.drawn ? ' drawn' : '') + (opts.disabled ? ' disabled' : '') + (opts.pick ? ' pick' : '') +
-    (opts.best ? ' best' : '');
+    (opts.best ? ' best' : '') + (opts.dora ? ' is-dora' : '');
   el.innerHTML = faceHTML(idx);
   return el;
 }

@@ -266,11 +266,14 @@ function render() {
   const best = g.results[0];
   const pickMap = new Map(g.results.map(r => [r.discard, r]));
   const c = st.hands[0];
+  // ドラ（黄色がけ用）: 赤5は常にドラ扱い＋表ドラ表示牌から求めたドラ
+  const doraSet = new Set([MAN + 4, PIN + 4, SOU + 4]);
+  for (const ind of st.doraIndicators) doraSet.add(doraFromIndicator(ind));
   for (let i = 0; i < N_TILES; i++) {
     for (let k = 0; k < c[i]; k++) {
       const isBest = answered && i === best.discard;
       const isPick = answered && st._pick === i;
-      const el = tileEl(i, { best: isBest, pick: isPick });
+      const el = tileEl(i, { best: isBest, pick: isPick, dora: doraSet.has(i) });
       if (!answered) el.onclick = () => onPick(i);
       else el.style.cursor = 'default';
       hand.appendChild(el);
