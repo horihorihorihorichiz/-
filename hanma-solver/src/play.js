@@ -1,5 +1,5 @@
 // play.js — 韓麻 実戦UI（対AI）
-import { N_TILES, tileName } from './tiles.js';
+import { N_TILES, tileName, doraFromIndicator, MAN, PIN, SOU } from './tiles.js';
 import {
   newGame, advance, humanDiscard, humanRiichiDiscard, humanCall,
   canDeclareRiichi, tenpaiAfterDiscard,
@@ -102,9 +102,12 @@ function renderHand() {
   if (state.drawnTile != null && c[state.drawnTile] > 0 && isMyDiscard) { c[state.drawnTile]--; drawn = state.drawnTile; }
 
   const clickable = isMyDiscard;
+  // ドラ（黄色がけ用）: 赤5は常にドラ扱い＋表ドラ表示牌から求めたドラ
+  const doraSet = new Set([MAN + 4, PIN + 4, SOU + 4]);
+  for (const ind of state.doraIndicators) doraSet.add(doraFromIndicator(ind));
   const mk = (idx, isDrawn) => {
     const disabled = clickable && riichiArmed && !tenpaiAfterDiscard(state, p, idx);
-    const el = tileEl(idx, { drawn: isDrawn, disabled });
+    const el = tileEl(idx, { drawn: isDrawn, disabled, dora: doraSet.has(idx) });
     if (clickable && !disabled) el.onclick = () => onDiscard(idx);
     return el;
   };
