@@ -282,29 +282,37 @@ function renderReview() {
   const topCnt = myLog.filter((l) => l.top).length;
   const total = myLog.length;
 
+  // 気になった手番（最善から外れた打牌）だけを対象に。正解手番は省略。
+  const misses = myLog.map((l, i) => ({ l, i })).filter((x) => !x.l.top);
+
   let h = `<div class="review">`;
-  h += `<div class="rv-head">🔍 打牌レビュー（総合評価）<span class="rv-score">最善一致 ${topCnt}/${total}</span>` +
-    `<span class="rv-note">向聴・受け入れ・ドラ・放銃リスクを合わせた総合順位。行の「局面」で盤面を再現。</span></div>`;
+  h += `<div class="rv-head">🔍 打牌レビュー（総合評価）<span class="rv-score">最善一致 ${topCnt}/${total}</span></div>`;
+
+  if (misses.length === 0) {
+    h += `<div class="rv-allbest">🎉 リーチ前の${total}手すべてが総合1位（最善）でした。文句なしの打ち回り！</div>`;
+    h += `<div class="rv-note">※採点は向聴・受け入れ・ドラ・相手の河からの放銃リスクを合わせた総合評価（リーチ前の打牌のみ）。</div>`;
+    h += `</div>`;
+    return h;
+  }
+
+  h += `<div class="rv-note">最善から外れた<strong>${misses.length}手</strong>だけ表示（正解手は省略）。「局面 →」でその盤面に戻れます。</div>`;
   h += `<div class="rv-table-wrap"><table class="rv-table"><thead><tr>` +
     `<th>打</th><th>あなたの打牌</th><th>総合順位</th><th>推奨（1位）</th><th>ひとこと</th><th></th></tr></thead><tbody>`;
-  myLog.forEach((l, i) => {
-    const rankCls = l.top ? 'rv-rk-top' : l.rank <= 3 ? 'rv-rk-mid' : 'rv-rk-bad';
+  for (const { l, i } of misses) {
+    const rankCls = l.rank <= 3 ? 'rv-rk-mid' : 'rv-rk-bad';
     const rankCell = `<span class="${rankCls}">${l.rank}位<span class="rv-num"> / ${l.total}</span></span>`;
-    const recCell = l.top
-      ? '<span class="rv-num">＝あなたが最善</span>'
-      : `${tileHTML(l.bestTile, { dora: doraSet.has(l.bestTile), best: true })} ${tileName(l.bestTile)}`;
-    const reason = reviewReason(l);
-    h += `<tr class="${l.top ? '' : 'rv-row-bad'}">` +
+    const recCell = `${tileHTML(l.bestTile, { dora: doraSet.has(l.bestTile), best: true })} ${tileName(l.bestTile)}`;
+    h += `<tr class="rv-row-bad">` +
       `<td class="rv-num">${l.turn}</td>` +
       `<td>${tileHTML(l.chosenTile, { dora: doraSet.has(l.chosenTile), pick: true })} ${tileName(l.chosenTile)}` +
       `${l.riichi ? ' <span class="riichi-tag">リーチ</span>' : ''}</td>` +
       `<td>${rankCell}</td>` +
       `<td>${recCell}</td>` +
-      `<td class="rv-reason">${reason || '<span class="rv-ok">✓ 最善</span>'}</td>` +
+      `<td class="rv-reason"><span class="rv-bad">${reviewReason(l)}</span></td>` +
       `<td><button class="btn rv-jump" data-rev="${i}">局面 →</button></td></tr>`;
-  });
+  }
   h += `</tbody></table></div>`;
-  h += `<div class="rv-note">※「総合順位」＝相手の河・放銃リスクまで加味した全打牌候補中の順位。「局面 →」でその手番の盤面に戻れます。</div>`;
+  h += `<div class="rv-note">※「総合順位」＝相手の河・放銃リスクまで加味した全打牌候補中の順位。</div>`;
   h += `</div>`;
   return h;
 }

@@ -112,6 +112,7 @@
 .rv-table .tile.t-sm { vertical-align: middle; }
 .rv-ok { color: var(--accent); font-weight: 700; }
 .rv-bad { color: #ff8a8a; font-weight: 700; }
+.rv-allbest { background: rgba(74,222,128,.12); border: 1px solid rgba(74,222,128,.35); color: var(--accent); border-radius: 8px; padding: 10px 12px; font-weight: 700; margin-bottom: 8px; }
 .rv-num { font-variant-numeric: tabular-nums; color: var(--muted); }
 .rv-reason { font-size: .8rem; }
 .rv-rk-top { color: var(--accent); font-weight: 800; }
