@@ -6,12 +6,17 @@ import {
   ankanOptions, shouminkanOptions, humanAnkan, humanShouminkan,
 } from './game.js';
 import { analyzeDiscards } from './analyze.js';
+import { dealInProb } from './danger.js';
 import { tileEl, backsInto, faceHTML } from './tileview.js';
+
+const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
 
 const $ = (id) => document.getElementById(id);
 let state = null;
 let riichiArmed = false;
 let myLog = []; // 自分の打牌レビュー用（リーチ宣言前の打牌のみ記録）
+let reviewEntry = null; // レビューで局面を再現中の myLog エントリ（null＝通常表示）
+let savedOverState = null; // レビュー突入時に退避した対局終了状態
 
 function tilesInto(container, counts, opts = {}) {
   container.innerHTML = '';
@@ -102,13 +107,16 @@ function renderHand() {
   let drawn = null;
   if (state.drawnTile != null && c[state.drawnTile] > 0 && isMyDiscard) { c[state.drawnTile]--; drawn = state.drawnTile; }
 
-  const clickable = isMyDiscard;
+  const clickable = isMyDiscard && !reviewEntry;
   // ドラ（黄色がけ用）: 赤5は常にドラ扱い＋表ドラ表示牌から求めたドラ
   const doraSet = new Set([MAN + 4, PIN + 4, SOU + 4]);
   for (const ind of state.doraIndicators) doraSet.add(doraFromIndicator(ind));
   const mk = (idx, isDrawn) => {
     const disabled = clickable && riichiArmed && !tenpaiAfterDiscard(state, p, idx);
-    const el = tileEl(idx, { drawn: isDrawn, disabled, dora: doraSet.has(idx) });
+    // レビュー中は最善（緑）とあなたの選択（青）をハイライト
+    const isBest = reviewEntry && idx === reviewEntry.bestTile;
+    const isPick = reviewEntry && idx === reviewEntry.chosenTile && idx !== reviewEntry.bestTile;
+    const el = tileEl(idx, { drawn: isDrawn, disabled, dora: doraSet.has(idx), best: isBest, pick: isPick });
     if (clickable && !disabled) el.onclick = () => onDiscard(idx);
     return el;
   };
@@ -118,6 +126,11 @@ function renderHand() {
 
 function renderActions() {
   const box = $('actions'); box.innerHTML = '';
+  if (reviewEntry) {
+    const b = document.createElement('button'); b.className = 'btn act-skip';
+    b.textContent = '← 結果に戻る'; b.onclick = exitReview; box.appendChild(b);
+    return;
+  }
   if (state.phase === 'over') return;
   const w = state.waiting;
   if (!w) return;
@@ -167,6 +180,15 @@ function renderActions() {
 
 function renderHint() {
   const box = $('hint');
+  if (reviewEntry) {
+    const l = reviewEntry;
+    box.style.display = '';
+    box.innerHTML = `🔍 <strong>${l.turn}手目の局面</strong>　` +
+      `お手本（1位）: <span class="rec">${tileName(l.bestTile)}</span> 切り　／　` +
+      `あなた: ${tileName(l.chosenTile)}（総合 ${l.rank}位／${l.total}）` +
+      (l.top ? ' <span class="rv-ok">✓ 最善</span>' : ` <span class="rv-bad">${reviewReason(l)}</span>`);
+    return;
+  }
   const on = $('showHint').checked;
   const isMyDiscard = state.phase === 'discard' && state.turn === state.humanIndex && state.waiting?.type === 'discard';
   if (!on || !isMyDiscard) { box.style.display = 'none'; return; }
@@ -213,8 +235,25 @@ function renderResult() {
 
   if (r.type === 'win') tilesInto($('winHand'), r.hand, { small: true });
   $('nextGame').onclick = startGame;
+  panel.querySelectorAll('.rv-jump').forEach((btn) => {
+    btn.onclick = () => enterReview(parseInt(btn.dataset.rev, 10));
+  });
+}
 
-  // 勝敗をハンド上部にも
+// 局面レビュー: その打牌時点の盤面を再現表示（操作不可・最善/自分をハイライト）
+function enterReview(i) {
+  if (!myLog[i]) return;
+  savedOverState = state;
+  reviewEntry = myLog[i];
+  state = reviewEntry.snap;
+  render();
+  $('table').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+function exitReview() {
+  if (savedOverState) state = savedOverState;
+  reviewEntry = null; savedOverState = null;
+  render();
+  $('resultPanel').scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
 // 牌1枚のHTML文字列（結果パネルは innerHTML 一括なので DOM でなく文字列で組む）
@@ -225,45 +264,47 @@ function tileHTML(idx, opts = {}) {
   return `<span class="${cls}">${faceHTML(idx)}</span>`;
 }
 
-// 対局後の打牌レビュー（リーチ宣言前の自分の打牌を牌効率で採点）
+// レビュー行の「ひとこと」（なぜ最善でなかったか）
+function reviewReason(l) {
+  if (l.top) return '';
+  if (l.chosenSh > l.bestSh) return 'アガリから遠回り';
+  if (l.threats > 0.05 && l.chosenDealIn > l.bestDealIn + 0.03)
+    return `放銃リスク高（${(l.chosenDealIn * 100).toFixed(0)}%→${(l.bestDealIn * 100).toFixed(0)}%）`;
+  if (l.chosenUke < l.bestUke) return `手が狭い（受け入れ −${l.bestUke - l.chosenUke}枚）`;
+  if (l.chosenDora < l.bestDora) return `打点減（ドラ −${l.bestDora - l.chosenDora}）`;
+  return 'わずかに劣る';
+}
+
+// 対局後の打牌レビュー（リーチ宣言前の自分の打牌を「総合評価」で採点）
 function renderReview() {
   const doraSet = new Set([MAN + 4, PIN + 4, SOU + 4]);
   for (const ind of state.doraIndicators) doraSet.add(doraFromIndicator(ind));
-  const correct = myLog.filter((l) => l.tie).length;
+  const topCnt = myLog.filter((l) => l.top).length;
   const total = myLog.length;
 
   let h = `<div class="review">`;
-  h += `<div class="rv-head">🔍 打牌レビュー <span class="rv-score">${correct}/${total} 最善一致</span>` +
-    `<span class="rv-note">（牌効率ベース：向聴・受け入れ・ドラ。安全度は含みません）</span></div>`;
+  h += `<div class="rv-head">🔍 打牌レビュー（総合評価）<span class="rv-score">最善一致 ${topCnt}/${total}</span>` +
+    `<span class="rv-note">向聴・受け入れ・ドラ・放銃リスクを合わせた総合順位。行の「局面」で盤面を再現。</span></div>`;
   h += `<div class="rv-table-wrap"><table class="rv-table"><thead><tr>` +
-    `<th>打</th><th>あなた</th><th>最善</th><th>あなたの結果</th><th>評価</th></tr></thead><tbody>`;
-  const fmtSh = (s) => s <= -1 ? 'アガリ' : s === 0 ? 'テンパイ' : `${s}向聴`;
-  for (const l of myLog) {
-    let verdict;
-    if (l.chosenTile === l.bestTile) verdict = '<span class="rv-ok">✓ 最善</span>';
-    else if (l.tie) verdict = '<span class="rv-ok">✓ 同着</span>';
-    else {
-      let delta;
-      if (l.chosenSh > l.bestSh) delta = `向聴 ${l.chosenSh - l.bestSh} 遠回り`;
-      else if (l.chosenUke < l.bestUke) delta = `受け入れ −${l.bestUke - l.chosenUke}枚`;
-      else if (l.chosenDora < l.bestDora) delta = `ドラ −${l.bestDora - l.chosenDora}`;
-      else delta = 'やや損';
-      verdict = `<span class="rv-bad">✗ ${delta}</span>`;
-    }
-    const bestCell = l.chosenTile === l.bestTile
-      ? '<span class="rv-num">—</span>'
-      : `${tileHTML(l.bestTile, { dora: doraSet.has(l.bestTile), best: true })} ${tileName(l.bestTile)}` +
-        (l.bestSh < l.chosenSh ? ` <span class="rv-num">(${fmtSh(l.bestSh)}・受${l.bestUke})</span>` : '');
-    h += `<tr class="${l.tie ? '' : 'rv-row-bad'}">` +
+    `<th>打</th><th>あなたの打牌</th><th>総合順位</th><th>推奨（1位）</th><th>ひとこと</th><th></th></tr></thead><tbody>`;
+  myLog.forEach((l, i) => {
+    const rankCls = l.top ? 'rv-rk-top' : l.rank <= 3 ? 'rv-rk-mid' : 'rv-rk-bad';
+    const rankCell = `<span class="${rankCls}">${l.rank}位<span class="rv-num"> / ${l.total}</span></span>`;
+    const recCell = l.top
+      ? '<span class="rv-num">＝あなたが最善</span>'
+      : `${tileHTML(l.bestTile, { dora: doraSet.has(l.bestTile), best: true })} ${tileName(l.bestTile)}`;
+    const reason = reviewReason(l);
+    h += `<tr class="${l.top ? '' : 'rv-row-bad'}">` +
       `<td class="rv-num">${l.turn}</td>` +
       `<td>${tileHTML(l.chosenTile, { dora: doraSet.has(l.chosenTile), pick: true })} ${tileName(l.chosenTile)}` +
       `${l.riichi ? ' <span class="riichi-tag">リーチ</span>' : ''}</td>` +
-      `<td>${bestCell}</td>` +
-      `<td class="rv-num">${fmtSh(l.chosenSh)}・受${l.chosenUke}枚</td>` +
-      `<td>${verdict}</td></tr>`;
-  }
+      `<td>${rankCell}</td>` +
+      `<td>${recCell}</td>` +
+      `<td class="rv-reason">${reason || '<span class="rv-ok">✓ 最善</span>'}</td>` +
+      `<td><button class="btn rv-jump" data-rev="${i}">局面 →</button></td></tr>`;
+  });
   h += `</tbody></table></div>`;
-  h += `<div class="rv-note">※「最善」は牌効率で最も手が広い打牌。相手の河・放銃リスクは含みません（それは何切るクイズで確認できます）。</div>`;
+  h += `<div class="rv-note">※「総合順位」＝相手の河・放銃リスクまで加味した全打牌候補中の順位。「局面 →」でその手番の盤面に戻れます。</div>`;
   h += `</div>`;
   return h;
 }
@@ -281,18 +322,76 @@ function onDiscard(tile) {
   render();
 }
 
+// 何切るクイズと同じ「総合評価」で全打牌候補をランキング。
+// 総合 = 向聴優先、同向聴で（受け入れ＋ドラ＋ドラそば）を放銃リスクで割り引く。
+function rankDiscards(state) {
+  const p = state.humanIndex;
+  const counts = state.hands[p];
+  const omote = state.doraIndicators;
+  const calledMelds = state.melds[p].length;
+
+  // 場に見えている牌（自分の手牌以外）: 全員の河＋副露＋表ドラ
+  const boardSeen = new Array(N_TILES).fill(0);
+  for (let q = 0; q < state.players; q++) {
+    for (const t of state.discards[q]) boardSeen[t]++;
+    for (const m of state.melds[q]) boardSeen[m.tile] += (m.type === 'pon' ? 3 : 4);
+  }
+  for (const d of omote) boardSeen[d]++;
+  for (let i = 0; i < N_TILES; i++) boardSeen[i] = Math.min(4, boardSeen[i]);
+  const seenAll = boardSeen.slice();
+  for (let i = 0; i < N_TILES; i++) seenAll[i] = Math.min(4, seenAll[i] + counts[i]);
+
+  // 警戒度（テンパイ濃厚な相手数）: 相手の河の長さ＋リーチ
+  let threats = 0;
+  for (let q = 0; q < state.players; q++) {
+    if (q === p) continue;
+    threats += state.riichi[q] ? 1 : clamp((state.discards[q].length - 6) / 9, 0, 0.6);
+  }
+
+  // ドラ集合とドラそば
+  const doraTiles = new Set([MAN + 4, PIN + 4, SOU + 4]);
+  for (const ind of omote) doraTiles.add(doraFromIndicator(ind));
+  const sobaCount = (c) => {
+    let s = 0;
+    for (let i = 0; i < 27; i++) {
+      if (!c[i]) continue;
+      const suit = Math.floor(i / 9), r = i % 9;
+      for (const D of doraTiles) {
+        if (D < 27 && Math.floor(D / 9) === suit) {
+          const d = Math.abs(r - (D % 9));
+          if (d >= 1 && d <= 2) { s += c[i]; break; }
+        }
+      }
+    }
+    return s;
+  };
+
+  const results = analyzeDiscards({ counts, calledMelds, omoteIndicators: omote, seen: boardSeen });
+  for (const r of results) {
+    r.dealIn = dealInProb(r.discard, seenAll, threats);
+    const c = counts.slice(); c[r.discard]--;
+    r.soba = sobaCount(c);
+    const value = (r.ukeireTotal + r.dora * 3 + r.soba * 0.7) * (1 - 0.85 * r.dealIn);
+    r.score = -r.shanten * 100000 + value * 10;
+  }
+  results.sort((a, b) => b.score - a.score || a.dealIn - b.dealIn);
+  return { results, threats };
+}
+
 function recordMyDiscard(p, tile) {
-  const res = analyzeDiscards({
-    counts: state.hands[p], calledMelds: state.melds[p].length, omoteIndicators: state.doraIndicators,
-  });
-  const best = res[0];
-  const chosen = res.find((r) => r.discard === tile) || best;
+  const { results, threats } = rankDiscards(state);
+  const best = results[0];
+  const chosen = results.find((r) => r.discard === tile) || best;
+  const rank = results.findIndex((r) => r.discard === tile) + 1;
   myLog.push({
     turn: state.discards[p].length + 1,
     riichi: riichiArmed,
-    chosenTile: tile, chosenSh: chosen.shanten, chosenUke: chosen.ukeireTotal, chosenDora: chosen.dora,
-    bestTile: best.discard, bestSh: best.shanten, bestUke: best.ukeireTotal, bestDora: best.dora,
-    tie: chosen.shanten === best.shanten && chosen.ukeireTotal === best.ukeireTotal,
+    snap: structuredClone(state), // 打牌直前（この牌がまだ手にある）の盤面
+    threats,
+    rank, total: results.length,
+    top: Math.abs(chosen.score - best.score) < 1e-6, // 総合スコアが最善と同点＝最善級
+    chosenTile: tile, chosenSh: chosen.shanten, chosenUke: chosen.ukeireTotal, chosenDora: chosen.dora, chosenDealIn: chosen.dealIn,
+    bestTile: best.discard, bestSh: best.shanten, bestUke: best.ukeireTotal, bestDora: best.dora, bestDealIn: best.dealIn,
   });
 }
 function onCall(choice) {
@@ -308,6 +407,7 @@ function startGame() {
   advance(state);
   riichiArmed = false;
   myLog = [];
+  reviewEntry = null; savedOverState = null;
   render();
 }
 

@@ -92,6 +92,12 @@
 .rv-ok { color: var(--accent); font-weight: 700; }
 .rv-bad { color: #ff8a8a; font-weight: 700; }
 .rv-num { font-variant-numeric: tabular-nums; color: var(--muted); }
+.rv-reason { font-size: .8rem; }
+.rv-rk-top { color: var(--accent); font-weight: 800; }
+.rv-rk-mid { color: var(--gold); font-weight: 800; }
+.rv-rk-bad { color: #ff8a8a; font-weight: 800; }
+.rv-jump { padding: 3px 10px; font-size: .76rem; background: var(--panel-2); color: var(--accent-2); border: 1px solid var(--border); margin: 0; }
+.rv-jump:hover { border-color: var(--accent-2); }
 
 /* ===== 牌（本物風） ===== */
 .tiles { display: flex; flex-wrap: wrap; align-items: center; }
