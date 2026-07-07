@@ -103,7 +103,9 @@ tr.best td:first-child { border-left: 3px solid var(--accent); }
 code { background: var(--panel-2); padding: 1px 5px; border-radius: 4px; font-size: .82em; }
 
 /* ===== 韓麻 実戦: よくある麻雀アプリ風の四辺レイアウト ===== */
-:root { --tile-edge: #cbc3a8; --felt-a: #1a7a4e; --felt-b: #0e4a2d; }
+:root { --tile-edge: #cbc3a8; --felt-a: #1a7a4e; --felt-b: #0e4a2d;
+  --bw: 42px; --bh: 58px; /* 大牌(手牌) */ --tw: 24px; --th: 33px; /* 小牌(河/相手) */ }
+/* 回転牌の縦積み補正マージン（縦=負で詰める / 横=正で幅を確保） */
 
 .wrap-play { max-width: 1040px; margin: 0 auto; padding: 16px; }
 .topbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 10px; flex-wrap: wrap; }
@@ -163,17 +165,17 @@ code { background: var(--panel-2); padding: 1px 5px; border-radius: 4px; font-si
 /* 上家(左)=90° / 下家(右)=-90° / 対面(上)=180° */
 /* 手牌(伏せ牌): 各牌を回転して縦積み */
 .seat-left .backs, .seat-right .backs { flex-direction: column; flex-wrap: nowrap; max-width: none; gap: 0; }
-.seat-left .backs .tile { transform: rotate(90deg); margin: -3.5px 5px; }
-.seat-right .backs .tile { transform: rotate(-90deg); margin: -3.5px 5px; }
+.seat-left .backs .tile { transform: rotate(90deg); margin: calc((var(--tw) - var(--th)) / 2) calc((var(--th) - var(--tw)) / 2); }
+.seat-right .backs .tile { transform: rotate(-90deg); margin: calc((var(--tw) - var(--th)) / 2) calc((var(--th) - var(--tw)) / 2); }
 .seat-top .backs .tile { transform: rotate(180deg); }
 /* 副露: 縦積みグループ */
 .seat-left .seat-melds, .seat-right .seat-melds { flex-direction: column; align-items: center; gap: 10px; }
 .seat-left .meld, .seat-right .meld { display: flex; flex-direction: column; align-items: center; gap: 0; }
-.seat-left .meld .tile { transform: rotate(90deg); margin: -3.5px 5px; }
-.seat-right .meld .tile { transform: rotate(-90deg); margin: -3.5px 5px; }
+.seat-left .meld .tile { transform: rotate(90deg); margin: calc((var(--tw) - var(--th)) / 2) calc((var(--th) - var(--tw)) / 2); }
+.seat-right .meld .tile { transform: rotate(-90deg); margin: calc((var(--tw) - var(--th)) / 2) calc((var(--th) - var(--tw)) / 2); }
 .seat-left .meld span:not(.tile), .seat-right .meld span:not(.tile) { transform: none; }
 /* 河: 正立の「6枚で1段・左から順」のブロックを座席ごとにまるごと回転（並び順も向きも自動で正しい） */
-.river { width: 156px; flex-wrap: wrap; gap: 1px; align-content: flex-start; justify-content: flex-start; }
+.river { width: calc(var(--tw) * 6 + 8px); flex-wrap: wrap; gap: 1px; align-content: flex-start; justify-content: flex-start; }
 .river-left, .river-right, .river-top, .river-bottom { justify-self: center; align-self: center; }
 .river-left { transform: rotate(90deg); }
 .river-right { transform: rotate(-90deg); }
@@ -226,13 +228,13 @@ code { background: var(--panel-2); padding: 1px 5px; border-radius: 4px; font-si
 .tiles { display: flex; flex-wrap: wrap; align-items: center; }
 .tile {
   position: relative; display: inline-flex; align-items: center; justify-content: center;
-  width: 42px; height: 58px; min-width: 0; padding: 0; box-sizing: border-box;
+  width: var(--bw); height: var(--bh); min-width: 0; padding: 0; box-sizing: border-box;
   border-radius: 7px; border: 1px solid var(--tile-edge); color: #222;
   background: linear-gradient(158deg, #fffef9, #ece4d0);
   box-shadow: inset 0 -4px 0 #d6cdb0, inset 0 2px 2px #fff, 0 3px 5px rgba(0,0,0,.45);
   cursor: default; overflow: hidden; user-select: none;
 }
-.tile.t-sm { width: 24px; height: 33px; border-radius: 4px; box-shadow: inset 0 -3px 0 #d6cdb0, 0 1px 2px rgba(0,0,0,.4); }
+.tile.t-sm { width: var(--tw); height: var(--th); border-radius: 4px; box-shadow: inset 0 -3px 0 #d6cdb0, 0 1px 2px rgba(0,0,0,.4); }
 .tile.red { background: linear-gradient(158deg, #fff6f4, #f0d7d3); }
 .tile.back { background: linear-gradient(135deg, #2e8494, #114f5c); border-color: #0b3a44; box-shadow: inset 0 -3px 0 #0b3a44, 0 2px 3px rgba(0,0,0,.4); }
 .tile.back::after { content: ''; position: absolute; inset: 4px; border-radius: 3px; border: 1.5px solid rgba(255,255,255,.16);
@@ -254,6 +256,40 @@ code { background: var(--panel-2); padding: 1px 5px; border-radius: 4px; font-si
 .hand .tile.drawn { margin-left: 16px; box-shadow: inset 0 -4px 0 #d6cdb0, inset 0 2px 2px #fff, 0 3px 5px rgba(0,0,0,.45), 0 0 0 2px rgba(255,210,74,.6); }
 .hand .tile.disabled { opacity: .38; cursor: default; } .hand .tile.disabled:hover { transform: none; }
 @media (prefers-reduced-motion: reduce) { .hand .tile { transition: none; } }
+
+/* ===== 携帯 横画面: 卓＋手牌＋操作が1画面に収まるよう縮小 ===== */
+@media (orientation: landscape) and (max-height: 600px) {
+  :root { --bw: 24px; --bh: 32px; --tw: 12px; --th: 16px; }
+  .wrap-play { padding: 2px 8px; max-width: 100%; }
+  .topbar { margin-bottom: 2px; gap: 6px; }
+  .topbar .ttl { font-size: .85rem; }
+  .topbar .controls { gap: 6px; }
+  .topbar select, .topbar .btn { padding: 3px 7px; font-size: .75rem; }
+  .hintToggle, .solverlink { font-size: .68rem; }
+  .rotate-hint { display: none !important; }
+  .table { min-height: 0; padding: 4px; gap: 2px; border-width: 4px;
+    grid-template-columns: 42px minmax(90px, 1fr) 42px; }
+  .pond { min-height: 0; padding: 3px; gap: 2px; grid-template-columns: 46px minmax(80px, 1fr) 46px; }
+  .seat { padding: 1px; gap: 2px; }
+  .seat-info { font-size: .58rem; padding: 1px 6px; }
+  .pc-info { font-size: .58rem; gap: 8px; }
+  .dora-wall { padding: 2px 4px; }
+  .tray { margin-top: 3px; }
+  .tray .melds { margin-bottom: 2px; }
+  .hand { min-height: 0; padding: 3px 6px; gap: 3px; border-radius: 10px; }
+  .hand .tile.drawn { margin-left: 10px; }
+  .actions { margin: 3px 0; gap: 6px; min-height: 0; }
+  .actions .btn { padding: 5px 12px; font-size: .8rem; }
+  .riichi-arm { font-size: .72rem; }
+  .hint-box { padding: 4px 8px; font-size: .72rem; margin: 4px auto; }
+}
+/* さらに背の低い横画面（旧機種など）向けに一段圧縮 */
+@media (orientation: landscape) and (max-height: 380px) {
+  :root { --bw: 22px; --bh: 29px; --tw: 11px; --th: 15px; }
+  .table { border-width: 3px; padding: 3px; }
+  .topbar .ttl { font-size: .8rem; }
+  .hand { padding: 2px 5px; }
+}
 
 </style>
 
