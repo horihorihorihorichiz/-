@@ -78,6 +78,21 @@
 #resultPanel .deltas { display: flex; gap: 16px; flex-wrap: wrap; margin-top: 10px; font-variant-numeric: tabular-nums; }
 #resultPanel .deltas .up { color: var(--accent); } #resultPanel .deltas .down { color: var(--warn); }
 
+/* 対局後の打牌レビュー */
+.review { margin-top: 16px; border-top: 1px solid var(--border); padding-top: 12px; }
+.rv-head { font-weight: 800; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.rv-score { color: var(--accent); }
+.rv-note { color: var(--muted); font-size: .74rem; font-weight: 400; }
+.rv-table-wrap { overflow-x: auto; }
+.rv-table { width: 100%; border-collapse: collapse; font-size: .84rem; }
+.rv-table th, .rv-table td { padding: 5px 9px; border-bottom: 1px solid var(--border); text-align: left; white-space: nowrap; vertical-align: middle; }
+.rv-table th { color: var(--muted); font-size: .72rem; }
+.rv-table .rv-row-bad { background: rgba(224,83,83,.09); }
+.rv-table .tile.t-sm { vertical-align: middle; }
+.rv-ok { color: var(--accent); font-weight: 700; }
+.rv-bad { color: #ff8a8a; font-weight: 700; }
+.rv-num { font-variant-numeric: tabular-nums; color: var(--muted); }
+
 /* ===== 牌（本物風） ===== */
 .tiles { display: flex; flex-wrap: wrap; align-items: center; }
 .tile {
