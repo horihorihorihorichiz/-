@@ -59,12 +59,15 @@
 /* ===== 対戦相手を実際の麻雀卓の向きに回転 ===== */
 /* 上家(左)=90° / 下家(右)=-90° で縦積み、対面(上)=180° */
 .seat-left .backs, .seat-right .backs { flex-direction: column; flex-wrap: nowrap; max-width: none; gap: 0; }
-.seat-left .seat-melds, .seat-right .seat-melds { flex-direction: column; flex-wrap: nowrap; }
+/* 副露も手牌と同じ縦向きに（各メンツを縦積みのグループに） */
+.seat-left .seat-melds, .seat-right .seat-melds { flex-direction: column; flex-wrap: nowrap; align-items: center; gap: 10px; }
+.seat-left .meld, .seat-right .meld { display: flex; flex-direction: column; align-items: center; gap: 0; }
+.seat-left .meld span:not(.tile), .seat-right .meld span:not(.tile) { align-self: center; transform: none; }
 .seat-left .tile, .river-left .tile { transform: rotate(90deg); margin: -3.5px 5px; }
 .seat-right .tile, .river-right .tile { transform: rotate(-90deg); margin: -3.5px 5px; }
 .seat-top .backs .tile, .river-top .tile { transform: rotate(180deg); }
-/* 河も縦向きに積み、あふれたら隣の列へ */
-.river-left, .river-right { flex-direction: column; flex-wrap: wrap; max-height: 172px; max-width: none; gap: 0; align-content: flex-start; justify-content: flex-start; }
+/* 河も縦向きに、上から下へ積み、あふれたら隣の列へ */
+.river-left, .river-right { flex-direction: column; flex-wrap: wrap; max-height: 240px; max-width: none; gap: 0; align-content: flex-start; justify-content: flex-start; align-self: start; }
 
 /* 自分の手牌トレイ */
 .tray { margin-top: 12px; }
