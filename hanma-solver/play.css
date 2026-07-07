@@ -49,7 +49,6 @@
 .river-top { grid-area: rt; } .river-bottom { grid-area: rb; }
 .river-left { grid-area: rl; } .river-right { grid-area: rr; } .pond-center { grid-area: pc; }
 .river { display: flex; flex-wrap: wrap; gap: 2px; align-content: center; justify-content: center; }
-.river-left, .river-right { max-width: 90px; }
 .pond-center { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; }
 .dora-wall { display: flex; gap: 2px; padding: 4px 6px; background: rgba(0,0,0,.34); border-radius: 7px; }
 .pc-info { display: flex; gap: 12px; font-size: .72rem; color: #cfe9db; }
