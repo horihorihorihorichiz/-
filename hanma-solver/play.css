@@ -44,8 +44,9 @@
 
 /* 中央の河 */
 .pond {
-  display: grid; grid-template-columns: 78px minmax(120px, 1fr) 78px; grid-template-rows: auto 1fr auto;
-  grid-template-areas: ". rt ." "rl pc rr" ". rb ."; gap: 4px;
+  display: grid; grid-template-columns: 68px auto 68px; grid-template-rows: auto auto auto;
+  grid-template-areas: ". rt ." "rl pc rr" ". rb ."; gap: 4px 2px;
+  justify-content: center; align-content: center;
   background: rgba(0,0,0,.16); border-radius: 12px; padding: 6px; min-height: 210px; overflow: visible;
 }
 .river-top { grid-area: rt; } .river-bottom { grid-area: rb; }
@@ -171,7 +172,7 @@
   .rotate-hint { display: none !important; }
   .table { flex: 1 1 auto; min-height: 0; padding: 4px; gap: 2px; border-width: 4px;
     grid-template-columns: 42px minmax(90px, 1fr) 42px; }
-  .pond { min-height: 0; padding: 3px; gap: 2px; grid-template-columns: 46px minmax(80px, 1fr) 46px; }
+  .pond { min-height: 0; padding: 3px; gap: 2px; grid-template-columns: 40px auto 40px; justify-content: center; }
   .seat { padding: 1px; gap: 2px; }
   .seat-info { font-size: .58rem; padding: 1px 6px; }
   .pc-info { font-size: .58rem; gap: 8px; }
