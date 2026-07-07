@@ -146,9 +146,9 @@ code { background: var(--panel-2); padding: 1px 5px; border-radius: 4px; font-si
 
 /* 中央の河 */
 .pond {
-  display: grid; grid-template-columns: auto minmax(120px, 1fr) auto; grid-template-rows: auto 1fr auto;
+  display: grid; grid-template-columns: 78px minmax(120px, 1fr) 78px; grid-template-rows: auto 1fr auto;
   grid-template-areas: ". rt ." "rl pc rr" ". rb ."; gap: 4px;
-  background: rgba(0,0,0,.16); border-radius: 12px; padding: 6px; min-height: 200px;
+  background: rgba(0,0,0,.16); border-radius: 12px; padding: 6px; min-height: 210px; overflow: visible;
 }
 .river-top { grid-area: rt; } .river-bottom { grid-area: rb; }
 .river-left { grid-area: rl; } .river-right { grid-area: rr; } .pond-center { grid-area: pc; }
@@ -160,18 +160,25 @@ code { background: var(--panel-2); padding: 1px 5px; border-radius: 4px; font-si
 .pc-info b { color: #fff; font-size: .95rem; font-variant-numeric: tabular-nums; }
 .pc-info .pot b { color: #ffd24a; }
 
-/* ===== 対戦相手を実際の麻雀卓の向きに回転 ===== */
-/* 上家(左)=90° / 下家(右)=-90° で縦積み、対面(上)=180° */
+/* ===== 対戦相手を実際の麻雀卓の向きに ===== */
+/* 上家(左)=90° / 下家(右)=-90° / 対面(上)=180° */
+/* 手牌(伏せ牌): 各牌を回転して縦積み */
 .seat-left .backs, .seat-right .backs { flex-direction: column; flex-wrap: nowrap; max-width: none; gap: 0; }
-/* 副露も手牌と同じ縦向きに（各メンツを縦積みのグループに） */
-.seat-left .seat-melds, .seat-right .seat-melds { flex-direction: column; flex-wrap: nowrap; align-items: center; gap: 10px; }
+.seat-left .backs .tile { transform: rotate(90deg); margin: -3.5px 5px; }
+.seat-right .backs .tile { transform: rotate(-90deg); margin: -3.5px 5px; }
+.seat-top .backs .tile { transform: rotate(180deg); }
+/* 副露: 縦積みグループ */
+.seat-left .seat-melds, .seat-right .seat-melds { flex-direction: column; align-items: center; gap: 10px; }
 .seat-left .meld, .seat-right .meld { display: flex; flex-direction: column; align-items: center; gap: 0; }
-.seat-left .meld span:not(.tile), .seat-right .meld span:not(.tile) { align-self: center; transform: none; }
-.seat-left .tile, .river-left .tile { transform: rotate(90deg); margin: -3.5px 5px; }
-.seat-right .tile, .river-right .tile { transform: rotate(-90deg); margin: -3.5px 5px; }
-.seat-top .backs .tile, .river-top .tile { transform: rotate(180deg); }
-/* 河も縦向きに、上から下へ積み、あふれたら隣の列へ */
-.river-left, .river-right { flex-direction: column; flex-wrap: wrap; max-height: 240px; max-width: none; gap: 0; align-content: flex-start; justify-content: flex-start; align-self: start; }
+.seat-left .meld .tile { transform: rotate(90deg); margin: -3.5px 5px; }
+.seat-right .meld .tile { transform: rotate(-90deg); margin: -3.5px 5px; }
+.seat-left .meld span:not(.tile), .seat-right .meld span:not(.tile) { transform: none; }
+/* 河: 正立の「6枚で1段・左から順」のブロックを座席ごとにまるごと回転（並び順も向きも自動で正しい） */
+.river { width: 156px; flex-wrap: wrap; gap: 1px; align-content: flex-start; justify-content: flex-start; }
+.river-left, .river-right, .river-top, .river-bottom { justify-self: center; align-self: center; }
+.river-left { transform: rotate(90deg); }
+.river-right { transform: rotate(-90deg); }
+.river-top { transform: rotate(180deg); }
 
 /* 自分の手牌トレイ */
 .tray { margin-top: 12px; }
