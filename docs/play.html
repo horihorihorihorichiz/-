@@ -1583,16 +1583,14 @@ function renderHint() {
   const on = $('showHint').checked;
   const isMyDiscard = state.phase === 'discard' && state.turn === state.humanIndex && state.waiting?.type === 'discard';
   if (!on || !isMyDiscard) { box.style.display = 'none'; return; }
-  const res = analyzeDiscards({
-    counts: state.hands[state.humanIndex],
-    calledMelds: state.melds[state.humanIndex].length,
-    omoteIndicators: state.doraIndicators,
-  });
-  const best = res[0];
+  // お手本は対局後レビューと同じ「総合評価」の1位（向聴・受け入れ・ドラ・放銃リスク込み）
+  const { results, threats } = rankDiscards(state);
+  const best = results[0];
   const shTxt = best.shanten <= 0 ? (best.shanten === 0 ? 'テンパイ' : 'アガリ') : best.shanten + '向聴';
   box.style.display = '';
-  box.innerHTML = `お手本: <span class="rec">${tileName(best.discard)}</span> 切り` +
+  box.innerHTML = `お手本（総合1位）: <span class="rec">${tileName(best.discard)}</span> 切り` +
     ` → ${shTxt}・受け入れ<strong>${best.ukeireTotal}</strong>枚・ドラ${best.dora}` +
+    (threats > 0.05 ? `・放銃率${(best.dealIn * 100).toFixed(0)}%` : '') +
     (best.discardsRed ? '（※5切りは赤ドラ損）' : '');
 }
 
