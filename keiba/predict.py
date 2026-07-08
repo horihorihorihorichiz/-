@@ -41,48 +41,53 @@ def _f(x):
     except: return None
 
 def fetch_jra(race_id):
-    """JRA JSON API。type=1単/4馬連/5ワイド/7三連複。返り値 dict(tan,umaren,wide,sanrenpuku)"""
+    """JRA JSON API。1単/4馬連/5ワイド/6馬単/7三連複/8三連単。"""
     base = "https://race.netkeiba.com/api/api_get_jra_odds.html?race_id=%s&type=%d&action=init"
     def grab(t):
-        d = json.loads(_http(base % (race_id, t)))
-        return d["data"]["odds"][str(t)]
-    def pair_key(k):   # "0409" -> "4-9"
-        a, b = int(k[:2]), int(k[2:4]); return "%d-%d" % tuple(sorted((a, b)))
-    def trip_key(k):   # "020409" -> "2-4-9"
-        n = sorted(int(k[i:i+2]) for i in range(0, 6, 2)); return "%d-%d-%d" % tuple(n)
+        try:
+            d = json.loads(_http(base % (race_id, t)))
+            return d["data"]["odds"][str(t)]
+        except Exception:
+            return {}
+    def us(k, n): return [int(k[i:i+2]) for i in range(0, 2*n, 2)]      # 分解
     tan = {str(int(k)): _f(v[0]) for k, v in grab(1).items()}
-    umaren = {pair_key(k): _f(v[0]) for k, v in grab(4).items()}
-    wide = {pair_key(k): _f(v[0]) for k, v in grab(5).items()}
-    trip = {trip_key(k): _f(v[0]) for k, v in grab(7).items()}
-    return dict(tan=tan, umaren=umaren, wide=wide, sanrenpuku=trip)
+    umaren = {"%d-%d" % tuple(sorted(us(k, 2))): _f(v[0]) for k, v in grab(4).items()}
+    wide   = {"%d-%d" % tuple(sorted(us(k, 2))): _f(v[0]) for k, v in grab(5).items()}
+    umatan = {"%d>%d" % tuple(us(k, 2)): _f(v[0]) for k, v in grab(6).items()}     # 順序
+    trip   = {"%d-%d-%d" % tuple(sorted(us(k, 3))): _f(v[0]) for k, v in grab(7).items()}
+    santan = {">".join(map(str, us(k, 3))): _f(v[0]) for k, v in grab(8).items()}  # 順序
+    return dict(tan=tan, umaren=umaren, wide=wide, umatan=umatan,
+                sanrenpuku=trip, santan=santan)
 
 def fetch_nar(race_id, field, axis=None):
-    """NAR HTML。b1単/b4馬連/b5ワイド。組合せは昇順lexで並ぶのでzipで対応付け。
-       三連複(b7)は軸(&jiku=)指定が要るので axis を渡した時だけ取得。"""
+    """NAR HTML。cart-item属性(例 _b8_c0_14_1_2=三連単⑭→①→②)から券種・組合せ・順序を確実に取得。
+       b1単/b4馬連/b5ワイド/b6馬単/b7三連複/b8三連単。三連系(b7,b8)は&jiku=で軸1着固定。"""
     base = "https://nar.netkeiba.com/odds/odds_get_form.html?type=%s&race_id=%s&housiki=c0"
-    def odds_list(t, extra=""):
+    def grab(t, extra=""):
+        """cart-item から (combo_tuple, odds) を返す。comboは表示順(=着順)。"""
         h = _http((base % (t, race_id)) + extra)
-        return [_f(x) for x in re.findall(r'class="[^"]*Odds[^"]*"[^>]*>([0-9.]+)', h)]
-    nums = list(range(1, field + 1))
-    tan = {}
-    tl = odds_list("b1")
-    for i, n in enumerate(nums):
-        if i < len(tl): tan[str(n)] = tl[i]
-    def pairs(t):
-        ol = odds_list(t); d = {}; combos = list(itertools.combinations(nums, 2))
-        for c, o in zip(combos, ol): d["%d-%d" % c] = o
-        return d
-    umaren = pairs("b4"); wide = pairs("b5")
-    trip = {}
-    if axis:  # 軸流し用: 各軸で b7&jiku= を引くと軸を含む三連複が全部並ぶ
+        out = {}
+        for combo, od in re.findall(
+                r'cart-item="[^"]*_%s_c0_([0-9_]+)"[^>]*>\s*([0-9.,]+)' % t, h):
+            v = _f(od)
+            if v: out[tuple(int(x) for x in combo.split("_"))] = v
+        return out
+    # 単勝(b1)はcart-item無し。'複勝'手前のOddsセルを馬番順に拾う。
+    h1 = _http(base % ("b1", race_id)).split("複勝")[0]
+    tl = [_f(x) for x in re.findall(r'class="[^"]*Odds[^"]*"[^>]*>\s*([0-9]+\.[0-9])', h1)]
+    tan = {str(i+1): tl[i] for i in range(min(field, len(tl))) if tl[i]}
+    umaren = {"%d-%d" % tuple(sorted(k)): v for k, v in grab("b4").items()}
+    wide   = {"%d-%d" % tuple(sorted(k)): v for k, v in grab("b5").items()}
+    umatan = {"%d>%d" % k: v for k, v in grab("b6").items()}          # 馬単(順序)
+    trip, santan = {}, {}
+    if axis:
         for jk in (axis if isinstance(axis, (list, tuple)) else [axis]):
-            ol = odds_list("b7", "&jiku=%d" % jk)
-            others = [n for n in nums if n != jk]
-            combos = list(itertools.combinations(others, 2))
-            for c, o in zip(combos, ol):
-                key = "-".join(map(str, sorted((jk,) + c)))
-                trip[key] = o
-    return dict(tan=tan, umaren=umaren, wide=wide, sanrenpuku=trip)
+            for k, v in grab("b7", "&jiku=%d" % jk).items():
+                trip["%d-%d-%d" % tuple(sorted(k))] = v
+            for k, v in grab("b8", "&jiku=%d" % jk).items():
+                santan[">".join(map(str, k))] = v                    # 三連単(軸1着固定)
+    return dict(tan=tan, umaren=umaren, wide=wide, umatan=umatan,
+                sanrenpuku=trip, santan=santan)
 
 JRA_VENUES = set("札幌 函館 福島 新潟 東京 中山 中京 京都 阪神 小倉".split())
 
@@ -101,6 +106,12 @@ def _p3(pw, a, b, c):
     for x, y, z in itertools.permutations([a, b, c]):
         t += pw[x]*(pw[y]/(1-pw[x]))*(pw[z]/(1-pw[x]-pw[y]))
     return t
+def _umt(pw, i, j):     # 馬単 P(i→j)  順序付き
+    return pw[i] * pw[j] / (1 - pw[i])
+def _st(pw, i, j, k):   # 三連単 P(i→j→k) 順序付き
+    return pw[i] * (pw[j]/(1-pw[i])) * (pw[k]/(1-pw[i]-pw[j]))
+def _nums(label):       # "8>3>4" / "3-4-8" どちらも [8,3,4]/[3,4,8]
+    return [int(x) for x in re.split(r"[>-]", label)]
 
 # ---------- 軸の決め方(7/5北九州記念の反省を反映) ----------
 def decide_axis(rows, two_axis=False):
@@ -140,6 +151,8 @@ def build_buylist(rows, odds, budget=10000, floor=2.5, unit=100,
     um  = {tuple(sorted(map(int, k.split("-")))): v for k, v in odds.get("umaren", {}).items() if v}
     wd  = {tuple(sorted(map(int, k.split("-")))): v for k, v in odds.get("wide", {}).items() if v}
     tp  = {tuple(sorted(map(int, k.split("-")))): v for k, v in odds.get("sanrenpuku", {}).items() if v}
+    ut  = {tuple(map(int, k.split(">"))): v for k, v in odds.get("umatan", {}).items() if v}   # 馬単(順)
+    st  = {tuple(map(int, k.split(">"))): v for k, v in odds.get("santan", {}).items() if v}    # 三連単(順)
     order = sorted(pw, key=lambda h: -pw[h])
     dec = force or decide_axis(rows, two_axis=two_axis)
     axis = dec["axis"]; mode = dec["mode"]
@@ -187,17 +200,19 @@ def build_buylist(rows, odds, budget=10000, floor=2.5, unit=100,
     # 【核】: 単勝a + (2頭軸なら両軸) 馬連/ワイド a×core + 三連複 a+core2
     for ax in axis:
         add(core, "単勝", "%d" % ax, tan.get(ax), pw[ax])
+    # 軸が「勝つ」と読めるか(=Sランク かつ 単勝で人気/短め)→馬単・三連単の1着固定を上積みに使う
+    head = (rk.get(a) == "S") and (tan.get(a, 99) <= 5.0 or pw[a] >= 0.25)
+    # 【核】= 順序に強い券種のみ(単勝/馬連/ワイド/三連複)。的中率で担保。
     for ax in axis:
         for c in core_p:
             k = tuple(sorted((ax, c)))
             add(core, "馬連", "%d-%d" % k, um.get(k), _um(pw, *k))
             add(core, "ワイド", "%d-%d" % k, wd.get(k), _wide(pw, *k))
     if len(core_p) >= 2 or (mode == "2AXIS"):
-        base = sorted(set(list(axis) + core_p))
-        for c in itertools.combinations(base, 3):
+        for c in itertools.combinations(sorted(set(list(axis) + core_p)), 3):
             if set(axis) & set(c) and c in tp:
                 add(core, "三連複", "%d-%d-%d" % c, tp[c], _p3(pw, *c))
-    # 【上積み】: 軸+核+期待値馬 の三連複、軸×期待値馬 の馬連/ワイド(EV降順)
+    # 【上積み】= 期待値馬の馬連/ワイド/三連複 ＋ (軸が勝つ読みなら)馬単・三連単の1着固定。各点floor厳守。
     for v in val_p:
         k = tuple(sorted((a, v)))
         add(value, "馬連", "%d-%d" % k, um.get(k), _um(pw, *k))
@@ -206,6 +221,14 @@ def build_buylist(rows, odds, budget=10000, floor=2.5, unit=100,
     for c in itertools.combinations(bridge, 3):
         if a in c and c in tp and not set(c) <= (set(axis) | set(core_p)):
             add(value, "三連複", "%d-%d-%d" % c, tp[c], _p3(pw, *c))
+    if head:
+        # 馬単 軸→(核∪期待値馬)：馬連より高配当を上積み
+        for c in core_p + val_p:
+            add(value, "馬単", "%d>%d" % (a, c), ut.get((a, c)), _umt(pw, a, c))
+        # 三連単 軸1着固定→(核∪期待値馬)の2頭を両順：exact的中の高配当を薄く
+        pool = core_p + val_p
+        for x, y in itertools.permutations(pool, 2):
+            add(value, "三連単", "%d>%d>%d" % (a, x, y), st.get((a, x, y)), _st(pw, a, x, y))
 
     # 重複除去
     def dedup(lst):
@@ -220,13 +243,16 @@ def build_buylist(rows, odds, budget=10000, floor=2.5, unit=100,
     # ---- 配分 ----
     # 参照決着(軸1着→核①2着→核②3着)。この「買い目」で当たる核点を合算し floor(250%) を担保。
     #   複合(同一買い目の馬連＋ワイド＋単勝＋三連複)は一緒に当たるので合算でfloorを考える。
-    ref = list(axis[:1]) + core_p[:2]
+    ref = list(axis[:1]) + core_p[:2]     # 想定決着 軸→核①→核②
     refset = set(ref)
     def hits_ref(kind, label):
-        ns = set(int(x) for x in label.split("-"))
-        if kind == "単勝":  return ns <= refset and ns == set(axis[:1])
-        if kind in ("馬連", "ワイド"): return ns <= refset and len(ns) == 2
+        seq = _nums(label); ns = set(seq)
+        if kind == "単勝":  return seq == [ref[0]]
+        if kind == "馬連":  return ns <= refset and len(ns) == 2
+        if kind == "ワイド": return ns <= refset and len(ns) == 2
+        if kind == "馬単":  return seq == ref[:2]                    # 順序一致
         if kind == "三連複": return ns == refset
+        if kind == "三連単": return seq == ref                       # 完全順序一致
         return False
     core_budget = int(budget * core_ratio // unit) * unit
     picks = []
@@ -280,7 +306,7 @@ def print_buylist(picks, total, dec, budget, floor):
     exp = 0.0; d = defaultdict(lambda: [0, 0])
     for kind, lbl, o, st, p, ev in picks:
         exp += st*p*o; d[kind][0] += st; d[kind][1] += 1
-        nums = set(int(x) for x in lbl.split("-"))
+        nums = set(_nums(lbl))
         seg = "核" if nums <= core_horses else "上積"
         flag = "" if o*st >= floor*budget else "*"
         print("  %-5s%-9s%8.1f%7d%9.0f%6.0f%% %s%s" % (kind, lbl, o, st, o*st, ev*100, seg, flag))
@@ -290,7 +316,7 @@ def print_buylist(picks, total, dec, budget, floor):
     from collections import OrderedDict
     grp = OrderedDict()
     for kind, lbl, o, st, p, ev in picks:
-        key = tuple(sorted(int(x) for x in lbl.split("-")))
+        key = tuple(sorted(_nums(lbl)))
         grp.setdefault(key, []).append((kind, o, st))
     print("  ── 買い目(複合)ごとの合算払戻＝250%%担保チェック ──")
     for key, items in grp.items():
