@@ -286,6 +286,19 @@ def print_buylist(picks, total, dec, budget, floor):
         print("  %-5s%-9s%8.1f%7d%9.0f%6.0f%% %s%s" % (kind, lbl, o, st, o*st, ev*100, seg, flag))
     print("  ── 点数まとめ ──（*=単体floor未満だが複合で担保）")
     for k, (s, n) in d.items(): print("  %s %d点 %d円" % (k, n, s))
+    # ── 買い目(複合)単位の合算floorチェック：同一買い目の馬連＋ワイド＋単勝＋三連複は一緒に当たる ──
+    from collections import OrderedDict
+    grp = OrderedDict()
+    for kind, lbl, o, st, p, ev in picks:
+        key = tuple(sorted(int(x) for x in lbl.split("-")))
+        grp.setdefault(key, []).append((kind, o, st))
+    print("  ── 買い目(複合)ごとの合算払戻＝250%%担保チェック ──")
+    for key, items in grp.items():
+        pay = sum(o*st for _, o, st in items)
+        kinds = "+".join(k for k, _, _ in items)
+        m = "○" if pay >= floor*budget else ("△" if pay >= floor*budget*0.8 else "・")
+        print("   %s %-9s 合算払戻%7d円 (対予算%4.0f%%) [%s]" % (
+            m, "-".join(map(str, key)), pay, pay/budget*100, kinds))
     if dec.get("core_return"):
         cr = dec["core_return"]; ref = dec.get("core_ref", [])
         print("  【核】想定決着 %s で複合合算払戻=%d円 (対予算%.0f%%)" % (
