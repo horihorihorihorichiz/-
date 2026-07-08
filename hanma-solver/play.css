@@ -93,6 +93,26 @@
 .hint-box { background: rgba(56,189,248,.1); border: 1px solid #23506b; border-radius: 8px; padding: 8px 12px; font-size: .82rem; margin: 8px auto; max-width: 640px; text-align: center; }
 .hint-box .rec { color: var(--accent-2); font-weight: 700; }
 
+/* リーチ告知トースト */
+.toast { position: fixed; left: 50%; top: 16%; transform: translateX(-50%); z-index: 50;
+  background: linear-gradient(90deg, #e0424c, #a11722); color: #fff; font-weight: 800; letter-spacing: .04em;
+  padding: 12px 26px; border-radius: 999px; font-size: 1.15rem; box-shadow: 0 6px 24px rgba(0,0,0,.5), 0 0 0 3px rgba(255,255,255,.15);
+  animation: toastPop .35s ease-out; pointer-events: none; white-space: nowrap; }
+@keyframes toastPop { from { opacity: 0; transform: translateX(-50%) translateY(-12px) scale(.9); } to { opacity: 1; transform: translateX(-50%) translateY(0) scale(1); } }
+@media (prefers-reduced-motion: reduce) { .toast { animation: none; } }
+
+/* ベタおり／防御ガイド */
+.defense-box { border-radius: 10px; padding: 8px 12px; margin: 0 auto 8px; max-width: 680px; font-size: .82rem;
+  background: rgba(224,83,83,.1); border: 1px solid rgba(224,83,83,.4); }
+.defense-box.push { background: rgba(251,191,36,.1); border-color: rgba(251,191,36,.4); }
+.def-head { font-weight: 800; margin-bottom: 5px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.def-fold { color: #ff9d9d; } .def-push { color: var(--gold); }
+.def-safe { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.def-safe .st { display: inline-flex; align-items: center; gap: 4px; background: rgba(0,0,0,.25); border-radius: 8px; padding: 3px 6px; }
+.def-safe .st .pct { font-variant-numeric: tabular-nums; font-weight: 700; }
+.def-safe .st.s0 { outline: 2px solid var(--accent); }
+.def-note { color: var(--muted); font-size: .74rem; margin-top: 5px; }
+
 #resultPanel { margin-top: 14px; }
 #resultPanel .rhead { font-size: 1.2rem; font-weight: 800; margin-bottom: 8px; }
 #resultPanel .win { color: var(--accent); } #resultPanel .lose { color: var(--warn); }

@@ -20,6 +20,8 @@ let riichiArmed = false;
 let myLog = []; // 自分の打牌レビュー用（リーチ宣言前の打牌のみ記録）
 let reviewEntry = null; // レビューで局面を再現中の myLog エントリ（null＝通常表示）
 let savedOverState = null; // レビュー突入時に退避した対局終了状態
+let announcedRiichi = new Set(); // リーチ告知済みの家（重複告知防止）
+let toastTimer = null;
 
 function tilesInto(container, counts, opts = {}) {
   container.innerHTML = '';
@@ -98,9 +100,77 @@ function render() {
 
   renderHand();
   renderActions();
+  renderDefense();
   renderHint();
   renderResult();
+  checkRiichiAnnounce();
   scheduleAutoRiichiDiscard();
+}
+
+// リーチ宣言の瞬間にトースト告知（1家1回）
+function showToast(text) {
+  const el = $('toast');
+  el.textContent = text;
+  el.style.display = '';
+  el.style.animation = 'none'; void el.offsetWidth; el.style.animation = '';
+  if (toastTimer) clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => { el.style.display = 'none'; }, 2200);
+}
+function checkRiichiAnnounce() {
+  if (reviewEntry) return;
+  for (let p = 0; p < state.players; p++) {
+    if (state.riichi[p] && !announcedRiichi.has(p)) {
+      announcedRiichi.add(p);
+      showToast(`🀄 ${seatLabel(state, p)} リーチ！`);
+    }
+  }
+}
+
+// ベタおり／防御ガイド: 相手が警戒（リーチ or テンパイ気配）のとき、押し引き判断と安全牌を教える
+function renderDefense() {
+  const box = $('defense');
+  const p = state.humanIndex;
+  const isMyDiscard = state.phase === 'discard' && state.turn === p && state.waiting?.type === 'discard';
+  if (reviewEntry || !isMyDiscard || state.riichi[p]) { box.style.display = 'none'; return; }
+
+  const { results, threats } = rankDiscards(state);
+  const riichiOpps = [];
+  for (let q = 0; q < state.players; q++) if (q !== p && state.riichi[q]) riichiOpps.push(q);
+  // 警戒発動: リーチが居る or テンパイ濃厚（threats が高い）
+  const anyThreat = riichiOpps.length > 0 || threats >= 0.5;
+  if (!anyThreat) { box.style.display = 'none'; return; }
+
+  const myShanten = Math.min(...results.map((r) => r.shanten));
+  const safe = [...results].sort((a, b) => a.dealIn - b.dealIn); // 放銃率の低い順＝安全順
+  const bestSafe = safe[0];
+
+  // 押し引き: テンパイなら押し、1向聴は要検討、2向聴以上はベタおり
+  const fold = myShanten >= 2;
+  const consider = myShanten === 1;
+  box.className = 'defense-box' + (fold ? '' : ' push');
+
+  // 警戒相手のラベル
+  const who = riichiOpps.length
+    ? riichiOpps.map((q) => `${seatLabel(state, q)}<span class="riichi-tag">リーチ</span>`).join('・')
+    : `テンパイ気配の相手（約${threats.toFixed(1)}人）`;
+  const shTxt = myShanten <= 0 ? 'テンパイ' : `${myShanten}向聴`;
+  const advice = fold
+    ? `<span class="def-fold">🛡 ベタおり推奨（あなた${shTxt}で遠い）</span>`
+    : consider
+      ? `<span class="def-push">⚖ 押し引き要検討（${shTxt}）</span>`
+      : `<span class="def-push">⚔ 押してOK（${shTxt}）</span>`;
+
+  let h = `<div class="def-head">⚠ ${who}　${advice}</div>`;
+  h += `<div class="def-safe"><span style="color:var(--muted)">安全な牌:</span>` +
+    safe.slice(0, 5).map((r, i) =>
+      `<span class="st ${i === 0 ? 's0' : ''}">${tileHTML(r.discard)} ${tileName(r.discard)} <span class="pct">${(r.dealIn * 100).toFixed(0)}%</span></span>`
+    ).join('') + `</div>`;
+  const nearSafe = bestSafe.dealIn < 0.02;
+  h += `<div class="def-note">韓麻は<strong>フリテン無し＝現物でも当たる</strong>ので「完全安全」は4枚見え等だけ。数字は放銃率の目安（低いほど安全）。` +
+    (fold ? `${nearSafe ? '通りやすい牌から丁寧に。' : '一番低い牌から切ろう。'}` : '押すなら放銃率の低い牌で。') +
+    `</div>`;
+  box.innerHTML = h;
+  box.style.display = '';
 }
 
 // リーチ後は自動ツモ切り（ツモ和了・カンの選択が無い＝打牌だけの局面のみ）
@@ -453,6 +523,7 @@ function startGame() {
   riichiArmed = false;
   myLog = [];
   reviewEntry = null; savedOverState = null;
+  announcedRiichi = new Set();
   render();
 }
 
