@@ -1,5 +1,5 @@
 // play.js — 韓麻 実戦UI（対AI）
-import { N_TILES, tileName, rankOf, doraFromIndicator, MAN, PIN, SOU } from './tiles.js';
+import { N_TILES, tileName, rankOf, doraFromIndicator, MAN, PIN, SOU, HONOR } from './tiles.js';
 import {
   newGame, advance, humanDiscard, humanRiichiDiscard, humanCall,
   canDeclareRiichi, tenpaiAfterDiscard,
@@ -393,12 +393,27 @@ function rankDiscards(state) {
     return s;
   };
 
+  // 字牌の持ちすぎ補正: 字牌は順子が作れず、対子→刻子も2枚待ちで遅い。
+  // 受け入れ枚数だと過大評価しがちなので、残した字牌を軽く割り引く（完成刻子は減点しない）。
+  const honorHoldPenalty = (c) => {
+    let pen = 0;
+    for (let i = HONOR; i < N_TILES; i++) {
+      if (c[i] === 2) pen += 3.5;      // 字牌対子: 遅い・伸びない
+      else if (c[i] === 1) pen += 0.8; // 孤立字牌: ほぼ価値なし
+      // c[i] >= 3 は完成刻子なので減点しない
+    }
+    return pen;
+  };
+
   const results = analyzeDiscards({ counts, calledMelds, omoteIndicators: omote, seen: boardSeen });
   for (const r of results) {
     r.dealIn = dealInProb(r.discard, seenAll, threats);
     const c = counts.slice(); c[r.discard]--;
     r.soba = sobaCount(c);
-    r.value = (r.ukeireTotal + r.dora * 3 + r.soba * 0.7) * (1 - 0.85 * r.dealIn);
+    // 七対子・国士を狙える手では字牌（対子・単騎）が必要なので割り引かない
+    const chiiKokushi = r.forms.includes('chiitoi') || r.forms.includes('kokushi');
+    const hPen = chiiKokushi ? 0 : honorHoldPenalty(c);
+    r.value = (r.ukeireTotal + r.dora * 3 + r.soba * 0.7) * (1 - 0.85 * r.dealIn) - hPen;
     r.score = -r.shanten * 100000 + r.value * 10;
   }
   results.sort((a, b) => b.score - a.score || a.dealIn - b.dealIn);
