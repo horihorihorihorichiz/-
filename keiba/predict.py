@@ -23,7 +23,7 @@ predict.py ── 競馬予想 司令塔スクリプト（Ver.99.27 エンジン
 ★ JRAオッズAPIの型番(重要): type=1単勝 / 4馬連 / 5ワイド / 7三連複 / 8三連単。
   （8を三連複と取り違えると三連単オッズを使ってしまうので必ず7）。
 """
-import sys, json, re, itertools, argparse
+import sys, json, re, itertools, argparse, math
 import calc
 
 # ---------- オッズ取得 ----------
@@ -123,10 +123,19 @@ def decide_axis(rows, two_axis=False):
                 note=("S2頭→1位を単軸・2位を相手筆頭(片飛び全滅回避=7/5反省)"
                       if len(S) == 2 else "単軸1頭流し"))
 
-# ---------- 買い目(軸流し形式, floor担保, 上位厚く) ----------
+# ---------- 買い目: 二層構造 核(Sランク×上位A/B)＋上積み(期待値馬) ----------
 def build_buylist(rows, odds, budget=10000, floor=2.5, unit=100,
-                  ev_min=1.0, n_rel=6, force=None, two_axis=False):
+                  ev_min=1.0, n_rel=6, force=None, two_axis=False,
+                  core_ratio=0.6):
+    """設計思想(7/8スパーキング反省):
+       ① 軸=モデル最上位Sランク馬(decide_axis)。SをEV妙味で外さない。
+       ② 【核】軸×上位A/B(pwin上位2頭) を単勝/馬連/ワイド/三連複で必ず押さえる
+          =的中率重視。短オッズ本命はfloor未満でも可(核は当てにいく)。
+       ③ 【上積み】期待値馬(軸と組んでEV高い穴)を三連複中心に薄く=配当重視。
+          上積みだけは floor(250%) を厳守。
+       core_ratio=核に回す予算割合。"""
     pw = {r["num"]: r["pwin"] / 100.0 for r in rows}
+    rk = {r["num"]: r["rank"] for r in rows}
     tan = {int(k): v for k, v in odds.get("tan", {}).items() if v}
     um  = {tuple(sorted(map(int, k.split("-")))): v for k, v in odds.get("umaren", {}).items() if v}
     wd  = {tuple(sorted(map(int, k.split("-")))): v for k, v in odds.get("wide", {}).items() if v}
@@ -134,57 +143,125 @@ def build_buylist(rows, odds, budget=10000, floor=2.5, unit=100,
     order = sorted(pw, key=lambda h: -pw[h])
     dec = force or decide_axis(rows, two_axis=two_axis)
     axis = dec["axis"]; mode = dec["mode"]
-    rel = [h for h in order if h not in axis][:n_rel]      # 相手(モデル上位)
     need = floor * budget
-    cands = []  # (ev, prob, odds, 券種, label)
-    # 単勝(軸のみ)
-    for h in axis:
-        if h in tan:
-            p = pw[h]; cands.append((p*tan[h], p, tan[h], "単勝", "%d" % h))
+
+    def ceil_floor(o):   # floor担保の最小額
+        return math.ceil(need / o / unit) * unit if o else unit
+
+    # ---- BOX(S3頭)は従来通り ----
     if mode == "BOX":
+        cands = []
+        for h in axis:
+            if h in tan: cands.append((pw[h]*tan[h], pw[h], tan[h], "単勝", "%d" % h))
         for i, j in itertools.combinations(axis, 2):
             k = tuple(sorted((i, j)))
-            if k in um: p = _um(pw, i, j); cands.append((p*um[k], p, um[k], "馬連", "%d-%d" % k))
-            if k in wd: p = _wide(pw, i, j); cands.append((p*wd[k], p, wd[k], "ワイド", "%d-%d" % k))
+            if k in um: cands.append((_um(pw,i,j)*um[k], _um(pw,i,j), um[k], "馬連", "%d-%d"%k))
+            if k in wd: cands.append((_wide(pw,i,j)*wd[k], _wide(pw,i,j), wd[k], "ワイド", "%d-%d"%k))
         for c in itertools.combinations(sorted(axis), 3):
-            if c in tp: p = _p3(pw, *c); cands.append((p*tp[c], p, tp[c], "三連複", "%d-%d-%d" % c))
-    else:  # 1AXIS / 2AXIS 軸流し
-        # 馬連・ワイド: 軸 × (相手 ∪ もう片方の軸)
-        partners = rel + [a for a in axis]
-        for a in axis:
-            for r in partners:
-                if r == a: continue
-                k = tuple(sorted((a, r)))
-                if k in um and ("馬連", k) not in [(c[3], tuple(sorted(map(int, c[4].split("-"))))) for c in cands]:
-                    p = _um(pw, *k); cands.append((p*um[k], p, um[k], "馬連", "%d-%d" % k))
-                if k in wd and ("ワイド", k) not in [(c[3], tuple(sorted(map(int, c[4].split("-"))))) for c in cands]:
-                    p = _wide(pw, *k); cands.append((p*wd[k], p, wd[k], "ワイド", "%d-%d" % k))
-        # 三連複: 軸(全頭)を含む × 相手2頭
-        seen = set()
-        for c in itertools.combinations(sorted(set(axis) | set(rel) | ({dec.get("second")} - {None})), 3):
-            if not set(axis).issubset(c) if mode == "2AXIS" else not (set(axis) & set(c)):
-                continue
-            if c in tp and c not in seen:
-                seen.add(c); p = _p3(pw, *c); cands.append((p*tp[c], p, tp[c], "三連複", "%d-%d-%d" % c))
-    # EVプラスのみ・EV降順
-    cands = [c for c in cands if c[0] >= ev_min]
-    cands.sort(key=lambda c: -c[0])
-    # floor最小額(unit切上げ)
+            if c in tp: cands.append((_p3(pw,*c)*tp[c], _p3(pw,*c), tp[c], "三連複", "%d-%d-%d"%c))
+        cands = sorted([c for c in cands if c[0] >= ev_min], key=lambda c: -c[0])
+        picks = [[k, l, o, ceil_floor(o), p, ev] for ev, p, o, k, l in cands]
+        tot = sum(x[3] for x in picks)
+        while tot > budget and picks: picks.pop(); tot = sum(x[3] for x in picks)
+        picks.sort(key=lambda x: -x[4]); i = 0
+        while tot + unit <= budget and picks:
+            picks[i % min(3, len(picks))][3] += unit; tot += unit; i += 1
+        picks.sort(key=lambda x: -x[5])
+        return picks, tot, dec
+
+    # ---- 1AXIS/2AXIS: 核＋上積み ----
+    a = axis[0]
+    non = [h for h in order if h not in axis]
+    # 核相手=「モデルも市場も評価」する馬=ランクS/A/Bかつ単勝オッズが低い(人気)上位2頭。
+    #   期待値馬(モデルだけ高評価の高オッズ穴)が核に紛れ込むのを防ぐ。
+    core_pool = [h for h in non if rk.get(h) in ("S", "A", "B")] or non
+    core_p = sorted(core_pool, key=lambda h: tan.get(h, 9999))[:2]
+    # 期待値馬=核以外で 軸と組んだ時のEVが高い順(=市場に売られてる妙味馬)
+    val_p = sorted([h for h in non if h not in core_p],
+                   key=lambda h: -(pw[h]*tan.get(h, 0)))[:3]
+    dec["core"] = core_p; dec["value"] = val_p
+
+    core, value = [], []   # [kind,label,odds,prob,ev]
+    def add(lst, kind, key, o, p):
+        if o: lst.append([kind, key, o, p, p*o])
+    # 【核】: 単勝a + (2頭軸なら両軸) 馬連/ワイド a×core + 三連複 a+core2
+    for ax in axis:
+        add(core, "単勝", "%d" % ax, tan.get(ax), pw[ax])
+    for ax in axis:
+        for c in core_p:
+            k = tuple(sorted((ax, c)))
+            add(core, "馬連", "%d-%d" % k, um.get(k), _um(pw, *k))
+            add(core, "ワイド", "%d-%d" % k, wd.get(k), _wide(pw, *k))
+    if len(core_p) >= 2 or (mode == "2AXIS"):
+        base = sorted(set(list(axis) + core_p))
+        for c in itertools.combinations(base, 3):
+            if set(axis) & set(c) and c in tp:
+                add(core, "三連複", "%d-%d-%d" % c, tp[c], _p3(pw, *c))
+    # 【上積み】: 軸+核+期待値馬 の三連複、軸×期待値馬 の馬連/ワイド(EV降順)
+    for v in val_p:
+        k = tuple(sorted((a, v)))
+        add(value, "馬連", "%d-%d" % k, um.get(k), _um(pw, *k))
+        add(value, "ワイド", "%d-%d" % k, wd.get(k), _wide(pw, *k))
+    bridge = sorted(set(list(axis) + core_p + val_p))
+    for c in itertools.combinations(bridge, 3):
+        if a in c and c in tp and not set(c) <= (set(axis) | set(core_p)):
+            add(value, "三連複", "%d-%d-%d" % c, tp[c], _p3(pw, *c))
+
+    # 重複除去
+    def dedup(lst):
+        seen = set(); out = []
+        for x in lst:
+            key = (x[0], x[1])
+            if key not in seen: seen.add(key); out.append(x)
+        return out
+    core = dedup(core); value = dedup([v for v in value if (v[0], v[1]) not in
+                                       {(c[0], c[1]) for c in core}])
+
+    # ---- 配分 ----
+    # 参照決着(軸1着→核①2着→核②3着)。この「買い目」で当たる核点を合算し floor(250%) を担保。
+    #   複合(同一買い目の馬連＋ワイド＋単勝＋三連複)は一緒に当たるので合算でfloorを考える。
+    ref = list(axis[:1]) + core_p[:2]
+    refset = set(ref)
+    def hits_ref(kind, label):
+        ns = set(int(x) for x in label.split("-"))
+        if kind == "単勝":  return ns <= refset and ns == set(axis[:1])
+        if kind in ("馬連", "ワイド"): return ns <= refset and len(ns) == 2
+        if kind == "三連複": return ns == refset
+        return False
+    core_budget = int(budget * core_ratio // unit) * unit
     picks = []
-    for ev, p, o, kind, lbl in cands:
-        st = -(-int(need / o) // unit) * unit
-        if st <= 0: st = unit
-        picks.append([kind, lbl, o, st, p, ev])
-    total = sum(x[3] for x in picks)
-    while total > budget and picks:
-        picks.pop(); total = sum(x[3] for x in picks)     # EV最低から落とす
-    # 余りは高確率(=システム上位)から上乗せ=厚く
-    picks.sort(key=lambda x: -x[4])
-    i = 0
-    while total + unit <= budget and picks:
-        picks[i % min(3, len(picks))][3] += unit; total += unit; i += 1
+    hit_core = sorted([x for x in core if hits_ref(x[0], x[1])], key=lambda x: -x[2])
+    miss_core = [x for x in core if not hits_ref(x[0], x[1])]
+    if hit_core:
+        # 先頭(最高オッズの当たり買い目)を floor 担保。以降は安全網としてprob重み配分。
+        top = hit_core[0]
+        st0 = min(ceil_floor(top[2]), core_budget)
+        picks.append([top[0], top[1], top[2], st0, top[3], top[4]])
+        rest = hit_core[1:] + miss_core
+        rb = max(0, core_budget - st0); ws = sum(x[3] for x in rest) or 1
+        for x in rest:
+            st = max(unit, int(rb * x[3] / ws // unit) * unit)
+            picks.append([x[0], x[1], x[2], st, x[3], x[4]])
+    else:
+        for x in core: picks.append([x[0], x[1], x[2], unit, x[3], x[4]])
+    core_total = sum(x[3] for x in picks)
+    # 参照決着での核・合算払戻(=複合で当たる合計)
+    dec["core_ref"] = ref
+    dec["core_return"] = sum(o*st for k, l, o, st, p, ev in picks if hits_ref(k, l))
+    # 上積み(期待値馬): 残予算で EV降順・各点 floor(250%)厳守
+    value = sorted([v for v in value if v[4] >= ev_min], key=lambda x: -x[4])
+    tot = core_total
+    for x in value:
+        st = ceil_floor(x[2])
+        if tot + st > budget: continue
+        picks.append([x[0], x[1], x[2], st, x[3], x[4]]); tot += st
+    # 余りは核の当たり買い目(合算floor)へ上乗せ
+    picks.sort(key=lambda x: -x[4]); i = 0
+    while tot + unit <= budget and picks:
+        picks[i % min(3, len(picks))][3] += unit; tot += unit; i += 1
+    dec["core_return"] = sum(o*st for k, l, o, st, p, ev in picks if hits_ref(k, l))
     picks.sort(key=lambda x: -x[5])
-    return picks, total, dec
+    return picks, tot, dec
 
 # ---------- 出力(RULES.md準拠) ----------
 def print_ranking(res):
@@ -195,15 +272,24 @@ def print_ranking(res):
 
 def print_buylist(picks, total, dec, budget, floor):
     from collections import defaultdict
-    print("\n買い目（%s／軸=%s）" % (dec["note"], ",".join(map(str, dec["axis"]))))
-    print("  %-5s%-9s%8s%7s%9s%7s" % ("券種", "買い目", "オッズ", "金額", "払戻", "EV"))
+    core_horses = set(dec.get("axis", [])) | set(dec.get("core", []))
+    print("\n買い目（%s／軸=%s 核相手=%s 期待値馬=%s）" % (
+        dec["note"], ",".join(map(str, dec["axis"])),
+        ",".join(map(str, dec.get("core", []))), ",".join(map(str, dec.get("value", [])))))
+    print("  %-5s%-9s%8s%7s%9s%7s %s" % ("券種", "買い目", "オッズ", "金額", "払戻", "EV", "区分"))
     exp = 0.0; d = defaultdict(lambda: [0, 0])
     for kind, lbl, o, st, p, ev in picks:
         exp += st*p*o; d[kind][0] += st; d[kind][1] += 1
-        flag = "" if o*st >= floor*budget else " ★floor割れ"
-        print("  %-5s%-9s%8.1f%7d%9.0f%6.0f%%%s" % (kind, lbl, o, st, o*st, ev*100, flag))
-    print("  ── 点数まとめ ──")
+        nums = set(int(x) for x in lbl.split("-"))
+        seg = "核" if nums <= core_horses else "上積"
+        flag = "" if o*st >= floor*budget else "*"
+        print("  %-5s%-9s%8.1f%7d%9.0f%6.0f%% %s%s" % (kind, lbl, o, st, o*st, ev*100, seg, flag))
+    print("  ── 点数まとめ ──（*=単体floor未満だが複合で担保）")
     for k, (s, n) in d.items(): print("  %s %d点 %d円" % (k, n, s))
+    if dec.get("core_return"):
+        cr = dec["core_return"]; ref = dec.get("core_ref", [])
+        print("  【核】想定決着 %s で複合合算払戻=%d円 (対予算%.0f%%)" % (
+            "→".join(map(str, ref)), cr, cr/budget*100))
     print("  合計 %d点 / %d円 / 期待回収 %.0f%%" % (len(picks), total, exp/total*100 if total else 0))
 
 def print_ipat(race, race_id, picks, total):
@@ -274,10 +360,14 @@ def main():
     order = sorted(res["rows"], key=lambda r: -r["pwin"])
     tan = {int(k): v for k, v in odds.get("tan", {}).items() if v}
     ev1 = (order[0]["pwin"]/100.0) * tan.get(order[0]["num"], 0)
+    ev2 = (order[1]["pwin"]/100.0) * tan.get(order[1]["num"], 0) if len(order) > 1 else 0
     exp = sum(st*p*o for _, _, o, st, p, _ in picks) / (total or 1)
-    go = ev1 >= 1.5 and exp >= 1.3 and picks
-    print("\nEV裁定: %s（単勝EV1位=%.0f%% / 期待回収=%.0f%%）"
-          % ("GO ●" if go else "見送り ○", ev1*100, exp*100))
+    # GO: 核(Sランク軸)が機能し、想定決着の複合合算がfloor近辺以上、かつ portfolio EVプラス。
+    core_ok = dec.get("core_return", 0) >= a.floor * a.budget * 0.9
+    go = bool(picks and exp >= 1.2 and (core_ok or ev1 >= 1.5 or ev2 >= 1.8))
+    print("\nEV裁定: %s（単勝EV1位=%.0f%% 2位=%.0f%% / 期待回収=%.0f%% / 核合算=%.0f%%）"
+          % ("GO ●" if go else "見送り ○", ev1*100, ev2*100, exp*100,
+             dec.get("core_return", 0)/a.budget*100))
     print_buylist(picks, total, dec, a.budget, a.floor)
     print_ipat(race, race_id, picks, total)
 
