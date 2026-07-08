@@ -1401,6 +1401,9 @@ function humanCall(state, choice) {
 
 
 const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
+// 打牌レビューで「ミス」とみなす期待値ロスのしきい値（最善に対する割合）。
+// これ未満なら期待値ほぼ互角＝誤差とみなして上げない。
+const EV_TOLERANCE = 0.10;
 
 const $ = (id) => document.getElementById(id);
 let state = null;
@@ -1488,6 +1491,19 @@ function render() {
   renderActions();
   renderHint();
   renderResult();
+  scheduleAutoRiichiDiscard();
+}
+
+// リーチ後は自動ツモ切り（ツモ和了・カンの選択が無い＝打牌だけの局面のみ）
+let autoTimer = null;
+function scheduleAutoRiichiDiscard() {
+  if (autoTimer) return;
+  const p = state.humanIndex;
+  const auto = !reviewEntry && state.phase === 'discard' && state.turn === p &&
+    state.riichi[p] && state.waiting?.type === 'discard' && state.drawnTile != null;
+  if (!auto) return;
+  const tile = state.drawnTile;
+  autoTimer = setTimeout(() => { autoTimer = null; onDiscard(tile); }, 500);
 }
 
 function renderHand() {
@@ -1498,7 +1514,8 @@ function renderHand() {
   let drawn = null;
   if (state.drawnTile != null && c[state.drawnTile] > 0 && isMyDiscard) { c[state.drawnTile]--; drawn = state.drawnTile; }
 
-  const clickable = isMyDiscard && !reviewEntry;
+  // リーチ中は自動ツモ切りなので手牌はクリック不可（他の牌を切れないように）
+  const clickable = isMyDiscard && !reviewEntry && !state.riichi[p];
   // ドラ（黄色がけ用）: 赤5は常にドラ扱い＋表ドラ表示牌から求めたドラ
   const doraSet = new Set([MAN + 4, PIN + 4, SOU + 4]);
   for (const ind of state.doraIndicators) doraSet.add(doraFromIndicator(ind));
@@ -1564,7 +1581,8 @@ function renderActions() {
     }
     const note = document.createElement('span');
     note.style.color = 'var(--muted)'; note.style.fontSize = '.8rem';
-    note.textContent = riichiArmed ? '　切る牌を選択（リーチ宣言）' : '　切る牌をクリック';
+    note.textContent = state.riichi[state.humanIndex] ? '　リーチ中：自動でツモ切り'
+      : riichiArmed ? '　切る牌を選択（リーチ宣言）' : '　切る牌をクリック';
     box.appendChild(note);
   }
 }
@@ -1577,7 +1595,7 @@ function renderHint() {
     box.innerHTML = `🔍 <strong>${l.turn}手目の局面</strong>　` +
       `お手本（1位）: <span class="rec">${tileName(l.bestTile)}</span> 切り　／　` +
       `あなた: ${tileName(l.chosenTile)}（総合 ${l.rank}位／${l.total}）` +
-      (l.top ? ' <span class="rv-ok">✓ 最善</span>' : ` <span class="rv-bad">${reviewReason(l)}</span>`);
+      (l.ok ? ' <span class="rv-ok">✓ 問題なし（期待値ほぼ互角）</span>' : ` <span class="rv-bad">${reviewReason(l)}</span>`);
     return;
   }
   const on = $('showHint').checked;
@@ -1655,7 +1673,7 @@ function tileHTML(idx, opts = {}) {
 
 // レビュー行の「ひとこと」（なぜ最善でなかったか）
 function reviewReason(l) {
-  if (l.top) return '';
+  if (l.ok) return '';
   if (l.chosenSh > l.bestSh) return 'アガリから遠回り';
   if (l.threats > 0.05 && l.chosenDealIn > l.bestDealIn + 0.03)
     return `放銃リスク高（${(l.chosenDealIn * 100).toFixed(0)}%→${(l.bestDealIn * 100).toFixed(0)}%）`;
@@ -1668,40 +1686,43 @@ function reviewReason(l) {
 function renderReview() {
   const doraSet = new Set([MAN + 4, PIN + 4, SOU + 4]);
   for (const ind of state.doraIndicators) doraSet.add(doraFromIndicator(ind));
-  const topCnt = myLog.filter((l) => l.top).length;
+  const okCnt = myLog.filter((l) => l.ok).length;
   const total = myLog.length;
 
-  // 気になった手番（最善から外れた打牌）だけを対象に。正解手番は省略。
-  const misses = myLog.map((l, i) => ({ l, i })).filter((x) => !x.l.top);
+  // 「ミス」は期待値が明確に落ちた手番だけ（誤差レベルの差は上げない）。
+  const misses = myLog.map((l, i) => ({ l, i })).filter((x) => !x.l.ok);
 
   let h = `<div class="review">`;
-  h += `<div class="rv-head">🔍 打牌レビュー（総合評価）<span class="rv-score">最善一致 ${topCnt}/${total}</span></div>`;
+  h += `<div class="rv-head">🔍 打牌レビュー（総合評価）<span class="rv-score">問題なし ${okCnt}/${total}</span></div>`;
 
   if (misses.length === 0) {
-    h += `<div class="rv-allbest">🎉 リーチ前の${total}手すべてが総合1位（最善）でした。文句なしの打ち回り！</div>`;
-    h += `<div class="rv-note">※採点は向聴・受け入れ・ドラ・相手の河からの放銃リスクを合わせた総合評価（リーチ前の打牌のみ）。</div>`;
+    h += `<div class="rv-allbest">🎉 リーチ前の${total}手すべて、期待値でみて最善とほぼ互角。文句なしの打ち回り！</div>`;
+    h += `<div class="rv-note">※採点は向聴・受け入れ・ドラ・相手の河からの放銃リスクを合わせた総合評価。最善との期待値差が誤差（${Math.round(EV_TOLERANCE * 100)}%未満）なら「問題なし」として省略（リーチ前の打牌のみ）。</div>`;
     h += `</div>`;
     return h;
   }
 
-  h += `<div class="rv-note">最善から外れた<strong>${misses.length}手</strong>だけ表示（正解手は省略）。「局面 →」でその盤面に戻れます。</div>`;
+  h += `<div class="rv-note">期待値が明確に落ちた<strong>${misses.length}手</strong>だけ表示（誤差レベルの手は省略）。「局面 →」でその盤面に戻れます。</div>`;
   h += `<div class="rv-table-wrap"><table class="rv-table"><thead><tr>` +
-    `<th>打</th><th>あなたの打牌</th><th>総合順位</th><th>推奨（1位）</th><th>ひとこと</th><th></th></tr></thead><tbody>`;
+    `<th>打</th><th>あなたの打牌</th><th>期待値ロス</th><th>推奨（1位）</th><th>ひとこと</th><th></th></tr></thead><tbody>`;
   for (const { l, i } of misses) {
-    const rankCls = l.rank <= 3 ? 'rv-rk-mid' : 'rv-rk-bad';
-    const rankCell = `<span class="${rankCls}">${l.rank}位<span class="rv-num"> / ${l.total}</span></span>`;
+    // 期待値ロスの大きさで色分け（順位では絞らない）。向聴が違うと%比較は無効なので向聴差で表示。
+    const shWorse = l.chosenSh > l.bestSh;
+    const lossTxt = shWorse ? `向聴+${l.chosenSh - l.bestSh}` : `−${Math.max(0, Math.round(l.lossFrac * 100))}%`;
+    const big = shWorse || l.lossFrac >= 0.30;
+    const lossCell = `<span class="${big ? 'rv-rk-bad' : 'rv-rk-mid'}">${lossTxt}<span class="rv-num"> (${l.rank}位/${l.total})</span></span>`;
     const recCell = `${tileHTML(l.bestTile, { dora: doraSet.has(l.bestTile), best: true })} ${tileName(l.bestTile)}`;
     h += `<tr class="rv-row-bad">` +
       `<td class="rv-num">${l.turn}</td>` +
       `<td>${tileHTML(l.chosenTile, { dora: doraSet.has(l.chosenTile), pick: true })} ${tileName(l.chosenTile)}` +
       `${l.riichi ? ' <span class="riichi-tag">リーチ</span>' : ''}</td>` +
-      `<td>${rankCell}</td>` +
+      `<td>${lossCell}</td>` +
       `<td>${recCell}</td>` +
       `<td class="rv-reason"><span class="rv-bad">${reviewReason(l)}</span></td>` +
       `<td><button class="btn rv-jump" data-rev="${i}">局面 →</button></td></tr>`;
   }
   h += `</tbody></table></div>`;
-  h += `<div class="rv-note">※「総合順位」＝相手の河・放銃リスクまで加味した全打牌候補中の順位。</div>`;
+  h += `<div class="rv-note">※「期待値ロス」＝最善打牌に対する総合期待値（向聴・受け入れ・ドラ・放銃リスク込み）の低下率。誤差(${Math.round(EV_TOLERANCE * 100)}%未満)は省略。</div>`;
   h += `</div>`;
   return h;
 }
@@ -1768,8 +1789,8 @@ function rankDiscards(state) {
     r.dealIn = dealInProb(r.discard, seenAll, threats);
     const c = counts.slice(); c[r.discard]--;
     r.soba = sobaCount(c);
-    const value = (r.ukeireTotal + r.dora * 3 + r.soba * 0.7) * (1 - 0.85 * r.dealIn);
-    r.score = -r.shanten * 100000 + value * 10;
+    r.value = (r.ukeireTotal + r.dora * 3 + r.soba * 0.7) * (1 - 0.85 * r.dealIn);
+    r.score = -r.shanten * 100000 + r.value * 10;
   }
   results.sort((a, b) => b.score - a.score || a.dealIn - b.dealIn);
   return { results, threats };
@@ -1780,13 +1801,16 @@ function recordMyDiscard(p, tile) {
   const best = results[0];
   const chosen = results.find((r) => r.discard === tile) || best;
   const rank = results.findIndex((r) => r.discard === tile) + 1;
+  // 「ミス」判定は順位でなく期待値(value)の差で。向聴が同じで期待値がほぼ互角なら許容（＝上げない）。
+  const lossFrac = best.value > 0 ? (best.value - chosen.value) / best.value : 0;
+  const ok = chosen.shanten === best.shanten && lossFrac <= EV_TOLERANCE;
   myLog.push({
     turn: state.discards[p].length + 1,
     riichi: riichiArmed,
     snap: structuredClone(state), // 打牌直前（この牌がまだ手にある）の盤面
     threats,
     rank, total: results.length,
-    top: Math.abs(chosen.score - best.score) < 1e-6, // 総合スコアが最善と同点＝最善級
+    ok, lossFrac, // ok=期待値ほぼ互角（許容）／lossFrac=最善に対する期待値ロス割合
     chosenTile: tile, chosenSh: chosen.shanten, chosenUke: chosen.ukeireTotal, chosenDora: chosen.dora, chosenDealIn: chosen.dealIn,
     bestTile: best.discard, bestSh: best.shanten, bestUke: best.ukeireTotal, bestDora: best.dora, bestDealIn: best.dealIn,
   });
