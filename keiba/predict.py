@@ -63,14 +63,17 @@ def fetch_nar(race_id, field, axis=None):
     """NAR HTML。cart-item属性(例 _b8_c0_14_1_2=三連単⑭→①→②)から券種・組合せ・順序を確実に取得。
        b1単/b4馬連/b5ワイド/b6馬単/b7三連複/b8三連単。三連系(b7,b8)は&jiku=で軸1着固定。"""
     base = "https://nar.netkeiba.com/odds/odds_get_form.html?type=%s&race_id=%s&housiki=c0"
+    prefix = [None]   # cart-item接頭辞(例 a4-45-12)を捕獲→ブックマークレット自動生成に使う
     def grab(t, extra=""):
         """cart-item から (combo_tuple, odds) を返す。comboは表示順(=着順)。"""
         h = _http((base % (t, race_id)) + extra)
         out = {}
-        for combo, od in re.findall(
-                r'cart-item="[^"]*_%s_c0_([0-9_]+)"[^>]*>\s*([0-9.,]+)' % t, h):
+        for pre, combo, od in re.findall(
+                r'cart-item="([^"]+)_%s_c0_([0-9_]+)"[^>]*>\s*([0-9.,]+)' % t, h):
             v = _f(od)
-            if v: out[tuple(int(x) for x in combo.split("_"))] = v
+            if v:
+                out[tuple(int(x) for x in combo.split("_"))] = v
+                prefix[0] = prefix[0] or pre
         return out
     # 単勝(b1)はcart-item無し。'複勝'手前のOddsセルを馬番順に拾う。
     h1 = _http(base % ("b1", race_id)).split("複勝")[0]
@@ -87,9 +90,39 @@ def fetch_nar(race_id, field, axis=None):
             for k, v in grab("b8", "&jiku=%d" % jk).items():
                 santan[">".join(map(str, k))] = v                    # 三連単(軸1着固定)
     return dict(tan=tan, umaren=umaren, wide=wide, umatan=umatan,
-                sanrenpuku=trip, santan=santan)
+                sanrenpuku=trip, santan=santan, _prefix=prefix[0])
 
 JRA_VENUES = set("札幌 函館 福島 新潟 東京 中山 中京 京都 阪神 小倉".split())
+
+# ---------- 自動購入: netkeibaカート投入ブックマークレット生成 ----------
+BTYPE = {"単勝": "b1", "複勝": "b2", "馬連": "b4", "ワイド": "b5",
+         "馬単": "b6", "三連複": "b7", "三連単": "b8"}
+def make_bookmarklets(picks, race_id, prefix, budget):
+    """買い目リストから netkeiba カート自動投入JSを生成。
+       A=選択(オッズ画面) / B=金額セット(投票画面, NDIsam)。購入ボタンは押さない。"""
+    items = []   # (btype, nums, yen)
+    for kind, lbl, o, stake, p, ev in picks:
+        bt = BTYPE.get(kind)
+        if not bt: continue
+        nums = "_".join(lbl.replace(">", "-").split("-"))   # 順序付きはそのまま連結
+        items.append((bt, nums, int(stake)))
+    sel = ",".join('["%s","%s"]' % (b, n) for b, n, _ in items)
+    amt = ",".join('["%s","%s",%d]' % (b, n, y) for b, n, y in items)
+    total = sum(y for _, _, y in items)
+    js_a = ('javascript:(function(){var P="%s",R="%s",G="bet_"+R;var B=[%s];'
+            'if(typeof update_cart_checkbox!=="function"){alert("netkeibaのオッズ画面で実行");return;}'
+            'function add(i){if(i>=B.length){alert("%d点選択完了。画面下の購入ボタンから投票画面へ。");return;}'
+            'var id=P+"_"+B[i][0]+"_c0_"+B[i][1];try{update_cart_checkbox(G,id,1,"",true);}catch(e){}'
+            'setTimeout(function(){add(i+1)},120);}add(0);})();'
+            % (prefix, race_id, sel, len(items)))
+    js_b = ('javascript:(function(){var P="%s",R="%s",D="bet_"+R;'
+            'if(typeof NDIsam!=="function"){alert("投票(金額入力)画面で実行");return;}'
+            'var B=[%s];var nd=new NDIsam();var t=Date.now();'
+            'for(var i=0;i<B.length;i++){var bid=P+"_"+B[i][0]+"_c0_"+B[i][1];'
+            'nd.replace(D,R+"_k"+i+"_"+t,{bet_id:bid,bet_money:B[i][2]*100});}'
+            'alert("%d点・合計%d円をセット。再読込→金額確認→購入は必ず自分で。");})();'
+            % (prefix, race_id, amt, len(items), total))
+    return js_a, js_b, total, len(items)
 
 # ---------- 確率(Harville) ----------
 def _um(pw, i, j):
@@ -406,6 +439,10 @@ def main():
     ap.add_argument("--box", type=int, nargs="+", default=None, help="3頭BOX指定")
     ap.add_argument("--two-axis", action="store_true", help="S2頭を2頭軸流しにする(既定は1頭軸流し)")
     ap.add_argument("--no-odds", action="store_true", help="ランキングだけ出す")
+    ap.add_argument("--cart", action="store_true",
+                    help="netkeibaカート自動投入ブックマークレットを生成(bookmarklets_<race_id>.txt)")
+    ap.add_argument("--cap", type=int, default=10000,
+                    help="自動投入のハードキャップ(円)。買い目合計がこれを超えると生成拒否")
     a = ap.parse_args()
 
     race = json.load(open(a.race_json, encoding="utf-8"))
@@ -461,6 +498,26 @@ def main():
              dec.get("core_return", 0)/a.budget*100))
     print_buylist(picks, total, dec, a.budget, a.floor)
     print_ipat(race, race_id, picks, total)
+
+    # 自動購入(カート投入まで): --cart でブックマークレット生成。購入ボタンは人間。
+    if a.cart:
+        prefix = odds.get("_prefix")
+        if not prefix:
+            print("\n[--cart] cart-item接頭辞が取れませんでした(JRA/オッズ手渡しは非対応)。")
+        elif not go:
+            print("\n[--cart] EV裁定が見送りのため生成しません(GOのみ自動投入)。")
+        elif total > a.cap:
+            print("\n[--cart] 合計%d円がハードキャップ%d円を超過。生成しません。" % (total, a.cap))
+        else:
+            js_a, js_b, tt, n = make_bookmarklets(picks, race_id, prefix, a.budget)
+            fn = "bookmarklets_%s.txt" % race_id
+            with open(fn, "w", encoding="utf-8") as f:
+                f.write("%s %d点 合計%d円 (cap %d円)\n" % (race.get("name", ""), n, tt, a.cap))
+                f.write("オッズ画面: https://nar.netkeiba.com/odds/index.html?race_id=%s\n\n" % race_id)
+                f.write("A) オッズ画面で実行=%d点選択:\n%s\n\n" % (n, js_a))
+                f.write("B) 投票(金額)画面で実行=金額セット:\n%s\n\n" % js_b)
+                f.write("※最後の購入(投票確定)は必ず人間が押す。\n")
+            print("\n[--cart] %s を生成(%d点/%d円)。A→Bの順にブラウザで実行。購入は手動。" % (fn, n, tt))
 
 if __name__ == "__main__":
     main()

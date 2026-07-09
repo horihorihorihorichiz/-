@@ -39,3 +39,34 @@ NO-GO（見送り）条件のどれかで即見送り:
 - ローカルClaude Code(リポジトリ+Python)で: データ→build_*.py→calc→buylist.screen/allocate→i-PAT入力ブロック生成。
 - Chrome拡張のClaudeが: netkeiba読み取り＆i-PAT入力を担当。
 - 判定・配分の数値ロジックは buylist.py に集約(人はGO/NO-GOと合計を確認)。
+
+---
+
+# 自動購入パイプライン（7/9確立・--cart）
+
+```
+predict.py --cart 一発で:
+予想(calc) → オッズ取得 → シナリオ保証2倍の買い目 → EV裁定
+  → GOなら bookmarklets_<race_id>.txt を自動生成（cart-item接頭辞も自動検出）
+ブラウザ側(30秒):
+  A をオッズ画面で実行 → 全点カート選択
+  B を投票(金額)画面で実行 → 金額一括セット
+  → 合計を目視確認 → 【購入ボタンだけ人間が押す】
+```
+
+## 使い方
+```bash
+python predict.py race_xxx.json --race-id <id> --cart            # 既定cap=10,000円
+python predict.py race_xxx.json --race-id <id> --cart --cap 5000 # キャップ変更
+```
+
+## 安全装置（外さない）
+1. **GOのみ生成**（EV裁定が見送りなら生成拒否）
+2. **ハードキャップ**（--cap、既定10,000円/レース。超過は生成拒否）
+3. **購入(投票確定)ボタンは常に人間**。ブックマークレットはカート投入と金額セットまで。
+4. 認証情報は一切扱わない（ログイン済みブラウザ内で動くだけ）。
+
+## さらに自動化したい場合（任意・ローカル限定）
+ローカルClaude Code＋Playwright(ipat_local_CLAUDE.md)で「Aを実行→購入画面へ→Bを実行→確認画面で停止」
+までは自動化可。**確定クリックの自動化は非推奨**（誤発注・二重発注・オッズ急変リスク）。
+どうしても行う場合も 1日上限・1レース上限・GO限定・全ログ記録をハードコードすること。
