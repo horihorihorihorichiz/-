@@ -451,6 +451,25 @@ def print_ipat(race, race_id, picks, total):
     print("合計 %d円 / 全%d点" % (total, len(picks)))
     print("※確認画面で必ず停止。購入(投票)ボタンは人間が押す。")
 
+def print_mobile(race, race_id, picks, total, is_jra):
+    """スマホ投票用のコンパクト表示。券種ごとにまとめ、馬番昇順。
+       地方=SPAT4 / JRA=IPAT のアプリに親指入力しやすい最短形。購入は人間。"""
+    site = "IPAT(JRA)" if is_jra else "SPAT4(地方)"
+    order = ["単勝", "複勝", "馬連", "馬単", "ワイド", "三連複", "三連単"]
+    by = {}
+    for kind, lbl, o, st, p, ev in picks:
+        by.setdefault(kind, []).append((lbl, int(st)))
+    print("\n📱[スマホ投票] %s / %s" % (race.get("name", ""), site))
+    print("  各行: 買い目=金額。%s アプリに上から入力→確認→購入は自分で。" % site)
+    for kind in order:
+        if kind not in by: continue
+        rows = sorted(by[kind], key=lambda x: [int(n) for n in re.split(r"[>-]", x[0])])
+        print("─ %s ─" % kind)
+        for lbl, st in rows:
+            print("  %s = %d円" % (lbl, st))
+    print("─────────  計 %d円 / %d点" % (total, len(picks)))
+    print("  ※ネット投票はnetkeibaの公式IPAT/SPAT4連携で（ID登録は自分の手で・GOも自分）。")
+
 # ---------- main ----------
 def main():
     ap = argparse.ArgumentParser()
@@ -470,6 +489,8 @@ def main():
                     help="netkeibaカート自動投入ブックマークレットを生成(bookmarklets_<race_id>.txt)")
     ap.add_argument("--bets", action="store_true",
                     help="自動投票ツール(IPATVoter等)向けの bets_<race_id>.json を出力")
+    ap.add_argument("--mobile", action="store_true",
+                    help="スマホ投票用のコンパクト買い目表示(SPAT4/IPATアプリ入力向け)")
     ap.add_argument("--cap", type=int, default=10000,
                     help="自動投入のハードキャップ(円)。買い目合計がこれを超えると生成拒否")
     a = ap.parse_args()
@@ -527,6 +548,8 @@ def main():
              dec.get("core_return", 0)/a.budget*100))
     print_buylist(picks, total, dec, a.budget, a.floor)
     print_ipat(race, race_id, picks, total)
+    if a.mobile:
+        print_mobile(race, race_id, picks, total, is_jra=(venue in JRA_VENUES))
 
     # 自動購入(カート投入まで): --cart でブックマークレット生成。購入ボタンは人間。
     if a.cart:

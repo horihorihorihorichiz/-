@@ -60,6 +60,10 @@ python fetch_race.py <race_id> --run --budget 10000
 # 手動（馬柱を貼られた／race_id不明時）
 python predict.py race_xxx.json --race-id <id> [--budget N]   # ランキング〜買い目〜i-PATまで自動
 python stats.py                                               # 通算 的中率・回収率
+
+# ★週末まるごと自動: その日の全レースから約10レース選定→各レース予想まで
+python pick_races.py <YYYYMMDD> --run --budget 10000
+#   毎週土日の恒久自動起動は Routines（keiba/ROUTINE.md 参照）。買い目提示まで・購入とGOは人間。
 ```
 
 ## 7. 安全（絶対）

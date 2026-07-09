@@ -201,6 +201,7 @@ def main():
     ap.add_argument("--out")
     ap.add_argument("--run", action="store_true", help="生成後そのまま predict.py を実行")
     ap.add_argument("--budget", type=int, help="--run時の予算をpredictへ渡す")
+    ap.add_argument("--mobile", action="store_true", help="--run時 スマホ投票用表示もpredictに出させる")
     args = ap.parse_args()
 
     rid = args.race_id
@@ -269,6 +270,8 @@ def main():
     cmd = ["python", "predict.py", out, "--race-id", rid]
     if args.budget:
         cmd += ["--budget", str(args.budget)]
+    if args.mobile:
+        cmd.append("--mobile")
     print(f"\n次のコマンド:\n  {' '.join(cmd)}\n", file=sys.stderr)
 
     if args.run:

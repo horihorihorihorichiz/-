@@ -161,4 +161,13 @@ python stats.py                                   # 通算成績
 ```
 - 取得: fetch_race.py（出馬表→各馬の競走成績9走→race_json） / エンジン: calc.py (Ver.99.27)
 - レース入力(手動): build_*.py が race_*.json を生成
-- 安全: 購入ボタンは人間。認証情報は扱わない。
+- 安全: 購入ボタンは人間。認証情報は扱わない。netkeibaへのログインもしない。
+
+## 週末まるごと自動（毎週土日）
+```bash
+python pick_races.py                       # 次の土日の全レースから約10レースを自動選定
+python pick_races.py <YYYYMMDD> --run       # 選定→各レース予想(fetch_race→predict)まで一気通貫
+```
+- pick_races.py: netkeiba公開のレース一覧から 重賞>OP/特別>特別 の順で選定（帯広ばんえいは除外）。
+- **恒久運用（毎週自動起動）は Routines**（`/schedule` or claude.ai/code/routines）。設定手順とコピペ用
+  プロンプトは `keiba/ROUTINE.md`。ルーチンは買い目の確認連絡まで・購入とGOは人間。
