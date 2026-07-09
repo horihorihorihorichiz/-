@@ -170,7 +170,7 @@ def decide_axis(rows, two_axis=False):
 # ---------- 買い目: 二層構造 核(Sランク×上位A/B)＋上積み(期待値馬) ----------
 def build_buylist(rows, odds, budget=10000, floor=2.0, unit=100,
                   ev_min=1.0, n_rel=6, force=None, two_axis=False,
-                  core_ratio=0.6):
+                  core_ratio=0.6, simple=True):
     """設計思想(7/8スパーキング反省):
        ① 軸=モデル最上位Sランク馬(decide_axis)。SをEV妙味で外さない。
        ② 【核】軸×上位A/B(pwin上位2頭) を単勝/馬連/ワイド/三連複で必ず押さえる
@@ -299,40 +299,65 @@ def build_buylist(rows, odds, budget=10000, floor=2.0, unit=100,
     if tan.get(a) and ceil_floor(tan[a]) <= budget * 0.15:
         push("単勝", "%d" % a, tan[a], pw[a], ceil_floor(tan[a]))
 
-    # ===== EVブースト層(残予算・各点floor倍厳守・EV降順) =====
-    boost = []
-    for c in itertools.combinations(sorted(partners), 2):
-        k = tuple(sorted((a,) + c))
-        if k in tp:
-            p = _p3(pw, *k)
-            boost.append((p * tp[k], "三連複", "%d-%d-%d" % k, tp[k], p))
-    if head:
-        for x, y in itertools.permutations(partners[:4], 2):
-            if (a, x, y) in st:
-                p = _st(pw, a, x, y)
-                boost.append((p * st[(a, x, y)], "三連単", "%d>%d>%d" % (a, x, y), st[(a, x, y)], p))
+    # ===== EVブースト層(残予算・各点floor倍厳守) =====
+    if simple:
+        # 【シンプルモード(既定)】三連複は「軸ながし・均一額」1グループだけ=ながし1回で入力可。
+        #   均一額でもfloor倍を満たすオッズの組合せのみ採用(トークン禁止は維持)。
+        remain = budget - tot
+        combos = []
+        for c in itertools.combinations(sorted(partners), 2):
+            k = tuple(sorted((a,) + c))
+            if k in tp and _p3(pw, *k) * tp[k] >= ev_min:
+                combos.append((k, tp[k], _p3(pw, *k)))
+        best = None   # (期待値合計, 均一額, 採用組)
+        for u in (unit, unit*2, unit*3, unit*5):
+            ok = [(k, o, p) for k, o, p in combos if o * u >= need]
+            ok.sort(key=lambda x: -x[2]*x[1])
+            n_max = min(len(ok), int(remain // u))
+            if n_max <= 0: continue
+            sel = ok[:n_max]
+            evsum = sum(p*o for _, o, p in sel) * u
+            if best is None or evsum > best[0]:
+                best = (evsum, u, sel)
+        if best:
+            _, u, sel = best
+            for k, o, p in sorted(sel):
+                push("三連複", "%d-%d-%d" % k, o, p, u)
+            dec["nagashi"] = (u, [k for k, _, _ in sel])
+    else:
+        # 【フルモード(--full)】三連複個別＋三連単/馬単の1着固定までEV降順で詰める
+        boost = []
+        for c in itertools.combinations(sorted(partners), 2):
+            k = tuple(sorted((a,) + c))
+            if k in tp:
+                p = _p3(pw, *k)
+                boost.append((p * tp[k], "三連複", "%d-%d-%d" % k, tp[k], p))
+        if head:
+            for x, y in itertools.permutations(partners[:4], 2):
+                if (a, x, y) in st:
+                    p = _st(pw, a, x, y)
+                    boost.append((p * st[(a, x, y)], "三連単", "%d>%d>%d" % (a, x, y), st[(a, x, y)], p))
+            for h in partners:
+                if (a, h) in ut:
+                    p = _umt(pw, a, h)
+                    boost.append((p * ut[(a, h)], "馬単", "%d>%d" % (a, h), ut[(a, h)], p))
         for h in partners:
-            if (a, h) in ut:
-                p = _umt(pw, a, h)
-                boost.append((p * ut[(a, h)], "馬単", "%d>%d" % (a, h), ut[(a, h)], p))
-    # full カバー済み相手の馬連もEV+ならブースト(ワンツー時の上乗せ)
-    for h in partners:
-        if covered.get(h) == "full":
-            k = tuple(sorted((a, h)))
-            if um.get(k):
-                p = _um(pw, *k)
-                boost.append((p * um[k], "馬連", "%d-%d" % k, um[k], p))
-    seen = {(x[0], x[1]) for x in picks}
-    boost = [b for b in boost if b[0] >= ev_min and (b[1], b[2]) not in seen]
-    boost.sort(key=lambda x: -x[0])
-    cap1 = budget * 0.15
-    for ev, kind, lbl, o, p in boost:
-        c = ceil_floor(o)
-        if c > cap1: continue                     # 1点が重すぎるブーストは見送り
-        push(kind, lbl, o, p, c)
+            if covered.get(h) == "full":
+                k = tuple(sorted((a, h)))
+                if um.get(k):
+                    p = _um(pw, *k)
+                    boost.append((p * um[k], "馬連", "%d-%d" % k, um[k], p))
+        seen = {(x[0], x[1]) for x in picks}
+        boost = [b for b in boost if b[0] >= ev_min and (b[1], b[2]) not in seen]
+        boost.sort(key=lambda x: -x[0])
+        cap1 = budget * 0.15
+        for ev, kind, lbl, o, p in boost:
+            c = ceil_floor(o)
+            if c > cap1: continue
+            push(kind, lbl, o, p, c)
 
-    # 余り: 保証層ワイド(システム上位順)へ上乗せ=シナリオ回収がfloor倍を超えて伸びる
-    prio = [x for x in picks if x[0] == "ワイド"]
+    # 余り: 保証層ワイド/馬連(システム上位順)へ上乗せ=シナリオ回収がfloor倍を超えて伸びる
+    prio = [x for x in picks if x[0] in ("ワイド", "馬連")]
     prio.sort(key=lambda x: -x[4])
     i = 0
     while tot + unit <= budget and prio:
@@ -439,6 +464,8 @@ def main():
     ap.add_argument("--box", type=int, nargs="+", default=None, help="3頭BOX指定")
     ap.add_argument("--two-axis", action="store_true", help="S2頭を2頭軸流しにする(既定は1頭軸流し)")
     ap.add_argument("--no-odds", action="store_true", help="ランキングだけ出す")
+    ap.add_argument("--full", action="store_true",
+                    help="フルモード(三連複個別+三連単/馬単)。既定はシンプル(保証層+三連複ながし均一)")
     ap.add_argument("--cart", action="store_true",
                     help="netkeibaカート自動投入ブックマークレットを生成(bookmarklets_<race_id>.txt)")
     ap.add_argument("--cap", type=int, default=10000,
@@ -483,7 +510,7 @@ def main():
 
     picks, total, dec = build_buylist(res["rows"], odds, budget=a.budget,
                                       floor=a.floor, unit=a.unit, force=force,
-                                      two_axis=a.two_axis)
+                                      two_axis=a.two_axis, simple=not a.full)
     # GO/NO-GO(単勝EVで簡易裁定)
     order = sorted(res["rows"], key=lambda r: -r["pwin"])
     tan = {int(k): v for k, v in odds.get("tan", {}).items() if v}
