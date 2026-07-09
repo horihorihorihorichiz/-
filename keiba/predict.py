@@ -468,6 +468,8 @@ def main():
                     help="フルモード(三連複個別+三連単/馬単)。既定はシンプル(保証層+三連複ながし均一)")
     ap.add_argument("--cart", action="store_true",
                     help="netkeibaカート自動投入ブックマークレットを生成(bookmarklets_<race_id>.txt)")
+    ap.add_argument("--bets", action="store_true",
+                    help="自動投票ツール(IPATVoter等)向けの bets_<race_id>.json を出力")
     ap.add_argument("--cap", type=int, default=10000,
                     help="自動投入のハードキャップ(円)。買い目合計がこれを超えると生成拒否")
     a = ap.parse_args()
@@ -545,6 +547,31 @@ def main():
                 f.write("B) 投票(金額)画面で実行=金額セット:\n%s\n\n" % js_b)
                 f.write("※最後の購入(投票確定)は必ず人間が押す。\n")
             print("\n[--cart] %s を生成(%d点/%d円)。A→Bの順にブラウザで実行。購入は手動。" % (fn, n, tt))
+
+    # 自動投票ツール(IPATVoter/Selenium等)向け機械可読フォーマット
+    if a.bets:
+        if not go:
+            print("\n[--bets] EV裁定が見送りのため出力しません(GOのみ)。")
+        elif total > a.cap:
+            print("\n[--bets] 合計%d円がハードキャップ%d円を超過。出力しません。" % (total, a.cap))
+        else:
+            ENG = {"単勝": "TANSYO", "複勝": "FUKUSYO", "馬連": "UMAREN", "ワイド": "WIDE",
+                   "馬単": "UMATAN", "三連複": "SANRENPUKU", "三連単": "SANRENTAN"}
+            items = []
+            for kind, lbl, o, stake, p, ev in picks:
+                nums = _nums(lbl)   # 馬単/三連単は着順、他は昇順
+                items.append(dict(type=ENG.get(kind, kind), kind=kind,
+                                  numbers=nums, amount=int(stake),
+                                  odds_at_build=o, ev=round(ev, 3)))
+            out = dict(race_id=str(race_id), race_name=race.get("name", ""),
+                       venue=race.get("venue", ""), baba=race.get("baba", ""),
+                       budget=a.budget, total=total, n_bets=len(items),
+                       hard_cap=a.cap, verdict="GO",
+                       generated_note="購入確定は人間が確認してから。オッズ急変時は再生成。",
+                       bets=items)
+            fn = "bets_%s.json" % race_id
+            json.dump(out, open(fn, "w", encoding="utf-8"), ensure_ascii=False, indent=2)
+            print("\n[--bets] %s を出力(%d点/%d円)。IPATVoter系ツールの入力に。" % (fn, len(items), total))
 
 if __name__ == "__main__":
     main()

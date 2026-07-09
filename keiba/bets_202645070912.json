@@ -1,0 +1,141 @@
+{
+  "race_id": "202645070912",
+  "race_name": "アンドロメダ賞(C1) 川崎12R ダ2000",
+  "venue": "川崎",
+  "baba": "良",
+  "budget": 10000,
+  "total": 10000,
+  "n_bets": 11,
+  "hard_cap": 10000,
+  "verdict": "GO",
+  "generated_note": "購入確定は人間が確認してから。オッズ急変時は再生成。",
+  "bets": [
+    {
+      "type": "SANRENPUKU",
+      "kind": "三連複",
+      "numbers": [
+        6,
+        7,
+        11
+      ],
+      "amount": 500,
+      "odds_at_build": 231.8,
+      "ev": 8.537
+    },
+    {
+      "type": "SANRENPUKU",
+      "kind": "三連複",
+      "numbers": [
+        3,
+        6,
+        11
+      ],
+      "amount": 500,
+      "odds_at_build": 287.1,
+      "ev": 4.738
+    },
+    {
+      "type": "SANRENPUKU",
+      "kind": "三連複",
+      "numbers": [
+        3,
+        7,
+        11
+      ],
+      "amount": 500,
+      "odds_at_build": 47.7,
+      "ev": 3.875
+    },
+    {
+      "type": "SANRENPUKU",
+      "kind": "三連複",
+      "numbers": [
+        1,
+        6,
+        11
+      ],
+      "amount": 500,
+      "odds_at_build": 102.8,
+      "ev": 3.757
+    },
+    {
+      "type": "WIDE",
+      "kind": "ワイド",
+      "numbers": [
+        6,
+        11
+      ],
+      "amount": 800,
+      "odds_at_build": 31.1,
+      "ev": 3.455
+    },
+    {
+      "type": "SANRENPUKU",
+      "kind": "三連複",
+      "numbers": [
+        6,
+        11,
+        13
+      ],
+      "amount": 500,
+      "odds_at_build": 371.5,
+      "ev": 2.926
+    },
+    {
+      "type": "UMAREN",
+      "kind": "馬連",
+      "numbers": [
+        3,
+        11
+      ],
+      "amount": 800,
+      "odds_at_build": 27.8,
+      "ev": 2.186
+    },
+    {
+      "type": "UMAREN",
+      "kind": "馬連",
+      "numbers": [
+        7,
+        11
+      ],
+      "amount": 1800,
+      "odds_at_build": 13.2,
+      "ev": 2.117
+    },
+    {
+      "type": "SANRENPUKU",
+      "kind": "三連複",
+      "numbers": [
+        7,
+        11,
+        13
+      ],
+      "amount": 500,
+      "odds_at_build": 48.7,
+      "ev": 1.895
+    },
+    {
+      "type": "UMAREN",
+      "kind": "馬連",
+      "numbers": [
+        11,
+        13
+      ],
+      "amount": 700,
+      "odds_at_build": 32.8,
+      "ev": 1.279
+    },
+    {
+      "type": "UMAREN",
+      "kind": "馬連",
+      "numbers": [
+        1,
+        11
+      ],
+      "amount": 2900,
+      "odds_at_build": 7.3,
+      "ev": 1.163
+    }
+  ]
+}
