@@ -114,28 +114,104 @@ def weekend_dates():
         sat, sun = today, today
     return sorted({sat, sun})
 
-def select(races, n, tracks):
+def select(races, n, tracks, include_all=False):
     races = [r for r in races if r["venue"] != "帯広"]  # ばんえいは calc.py 対象外
     if tracks:
         races = [r for r in races if any(t in r["venue"] for t in tracks)]
-    # 条件戦(平場)は既定で除外して「特別/重賞/名物」を優先
+    # 条件戦(平場)は既定で除外して「特別/重賞/名物」を優先（--all で全部）
     named = [r for r in races if r["score"] >= 40]
-    pool = named if named else races
+    pool = races if include_all else (named if named else races)
     pool.sort(key=lambda r: (-r["score"], r["time"] or "99:99"))
     return pool[:n]
 
+def run_ev_scan(dates, args, tracks):
+    """毎日の期待値スキャン: 候補を評価し GO(期待値+) だけ報告。"""
+    for date in dates:
+        races = fetch_list(date, nar=True) + fetch_list(date, nar=False)
+        cands = select(races, args.n, tracks, include_all=args.all)
+        dd = datetime.datetime.strptime(date, "%Y%m%d").strftime("%Y-%m-%d (%a)")
+        print(f"\n==== {dd}  期待値スキャン: 候補{len(cands)}レースを評価中… ====")
+        hits = []
+        for r in cands:
+            print(f"  評価 {r['venue']}{r['r']}R {r['name'][:16]} …", end="", flush=True)
+            try:
+                ev = evaluate_ev(r["race_id"], args.budget, mobile=args.mobile)
+            except Exception as e:
+                print(f" スキップ({e})")
+                continue
+            if ev is None:
+                print(" 判定不可")
+                continue
+            print(f" {'★GO' if ev['go'] else '見送り'} 期待回収{ev['exp']}%")
+            if ev["go"]:
+                hits.append((r, ev))
+        hits.sort(key=lambda x: -x[1]["exp"])
+        print(f"\n──── {dd} 今日の期待値レース: {len(hits)}件 ────")
+        if not hits:
+            print("  GO該当なし（無理に張らない日）。")
+        for r, ev in hits:
+            print(f"  {r['time']:>5} {r['venue']}{r['r']}R {r['name'][:20]} "
+                  f"｜軸{ev['axis']} 期待回収{ev['exp']}% 単勝EV{ev['ev1']}% "
+                  f"｜{ev['points']}点/{ev['total']}円")
+            print(f"        詳細: python fetch_race.py {r['race_id']} --run"
+                  + (" --mobile" if args.mobile else "") + f" --budget {args.budget}")
+        print("  ※タイム指数(新聞)を貼ればさらに精度UP: --tsi tsi.txt。購入とGOは人間。")
+
+def evaluate_ev(rid, budget, mobile=False):
+    """1レースをモデル+オッズで評価し EV裁定を返す。GOなら期待値レース。
+       fetch_race で race_json 生成 → predict を捕捉してGO/期待回収/軸/点数を抜く。"""
+    import subprocess, os
+    d = os.path.dirname(os.path.abspath(__file__))
+    j = f"race_{rid}.json"
+    fr = subprocess.run(["python", "fetch_race.py", rid], cwd=d,
+                        capture_output=True, text=True, timeout=600)
+    if not os.path.exists(os.path.join(d, j)):
+        return None
+    cmd = ["python", "predict.py", j, "--race-id", rid, "--budget", str(budget)]
+    if mobile:
+        cmd.append("--mobile")
+    p = subprocess.run(cmd, cwd=d, capture_output=True, text=True, timeout=300)
+    out = p.stdout
+    mv = re.search(r"EV裁定: (GO|見送り)", out)
+    if not mv:
+        return None
+    exp = re.search(r"期待回収=(\d+)%", out)
+    ev1 = re.search(r"単勝EV1位=(\d+)%", out)
+    ax = re.search(r"軸=([\d,]+)", out)
+    tot = re.search(r"合計 (\d+)円 / 全(\d+)点", out)
+    return {
+        "go": mv.group(1) == "GO",
+        "exp": int(exp.group(1)) if exp else 0,
+        "ev1": int(ev1.group(1)) if ev1 else 0,
+        "axis": ax.group(1) if ax else "?",
+        "total": int(tot.group(1)) if tot else 0,
+        "points": int(tot.group(2)) if tot else 0,
+        "out": out,
+    }
+
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("date", nargs="?", help="YYYYMMDD（省略時=次の土日）")
+    ap.add_argument("date", nargs="?", help="YYYYMMDD（省略時=次の土日 / --ev時は今日）")
     ap.add_argument("--n", type=int, default=10, help="1日あたり選ぶ本数（既定10）")
     ap.add_argument("--tracks", help="場を絞る（カンマ区切り 例: 川崎,福島）")
     ap.add_argument("--run", action="store_true", help="選定後 各レースを fetch_race --run で回す")
+    ap.add_argument("--ev", action="store_true",
+                    help="毎日の期待値スキャン: 候補をモデル評価しGO(期待値+)のレースだけ拾う")
+    ap.add_argument("--all", action="store_true", help="平場条件戦も候補に含める(EVスキャンの母数を広げる)")
     ap.add_argument("--budget", type=int, default=10000)
     ap.add_argument("--mobile", action="store_true", help="スマホ投票用表示も出す")
     args = ap.parse_args()
 
-    dates = [args.date] if args.date else [d.strftime("%Y%m%d") for d in weekend_dates()]
+    if args.date:
+        dates = [args.date]
+    elif args.ev:
+        dates = [datetime.date.today().strftime("%Y%m%d")]   # EVスキャンは今日
+    else:
+        dates = [d.strftime("%Y%m%d") for d in weekend_dates()]
     tracks = [t.strip() for t in args.tracks.split(",")] if args.tracks else None
+
+    if args.ev:
+        return run_ev_scan(dates, args, tracks)
 
     picked_all = []
     for date in dates:

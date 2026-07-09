@@ -163,10 +163,12 @@ python stats.py                                   # 通算成績
 - レース入力(手動): build_*.py が race_*.json を生成
 - 安全: 購入ボタンは人間。認証情報は扱わない。netkeibaへのログインもしない。
 
-## 週末まるごと自動（毎週土日）
+## 週末まるごと自動（毎週土日）／毎日の期待値スキャン
 ```bash
 python pick_races.py                       # 次の土日の全レースから約10レースを自動選定
 python pick_races.py <YYYYMMDD> --run       # 選定→各レース予想(fetch_race→predict)まで一気通貫
+python pick_races.py --ev                   # ★毎日: 今日の候補を評価しGO(期待値+)レースだけ報告
+python pick_races.py --ev --all --tracks 川崎 # 平場も含め場を絞ってスキャン
 ```
 - pick_races.py: netkeiba公開のレース一覧から 重賞>OP/特別>特別 の順で選定（帯広ばんえいは除外）。
 - **恒久運用（毎週自動起動）は Routines**（`/schedule` or claude.ai/code/routines）。設定手順とコピペ用

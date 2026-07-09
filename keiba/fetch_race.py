@@ -196,6 +196,8 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("race_id")
     ap.add_argument("--tsi", help="馬番ごとのタイム指数ファイル（'num t1 t2 ...'新しい順）")
+    ap.add_argument("--from-netkeiba", dest="from_netkeiba",
+                    help="別ツールの <race_id>_all.json からタイム指数(近5走)を反映")
     ap.add_argument("--baba", help="馬場を上書き（良/稍/重/不）")
     ap.add_argument("--jra", action="store_true", help="JRAレース（既定はNAR）")
     ap.add_argument("--out")
@@ -221,12 +223,32 @@ def main():
     baba = args.baba or su["baba"]
     print(f"      {su['race_name']} / {su['surface']}{su['distance']}m / 馬場{baba} / {su['field']}頭 / tier{su['tier']}", file=sys.stderr)
 
+    def _num(v):
+        s = str(v).strip()
+        return float(s) if s and s.lstrip("-").replace(".", "", 1).isdigit() else None
+
     tsi_map = {}
     if args.tsi:
         for line in open(args.tsi, encoding="utf-8"):
             p = line.split()
             if p and p[0].isdigit():
-                tsi_map[int(p[0])] = [float(x) if x.replace(".", "").replace("-", "").isdigit() else None for x in p[1:]]
+                tsi_map[int(p[0])] = [_num(x) for x in p[1:]]
+    if args.from_netkeiba:
+        # 別ツール（netkeiba_run.py）の統合JSON: time_index[].r1..r5.index（新しい順）を反映
+        data = json.load(open(args.from_netkeiba, encoding="utf-8"))
+        applied = 0
+        for e in data.get("time_index", []):
+            um = _num(e.get("umaban"))
+            if um is None:
+                continue
+            idxs = []
+            for k in ("r1", "r2", "r3", "r4", "r5"):
+                v = e.get(k)
+                idxs.append(_num(v.get("index")) if isinstance(v, dict) else None)
+            if any(x is not None for x in idxs):
+                tsi_map[int(um)] = idxs
+                applied += 1
+        print(f"      --from-netkeiba: {applied}頭にタイム指数を反映", file=sys.stderr)
 
     horses = []
     for i, hs in enumerate(su["horses"]):
@@ -266,7 +288,8 @@ def main():
     print(f"[3/3] 書き出し: {out}", file=sys.stderr)
     n_tsi = sum(1 for hh in horses for r in hh["races"] if r["tsi"] is not None)
     print(f"\n★ {out} 生成完了（{len(horses)}頭）。タイム指数反映: {n_tsi}走"
-          + ("（--tsi 未指定=プレミアム限定のため None）" if not args.tsi else ""), file=sys.stderr)
+          + ("（未指定=プレミアム限定のため None。--tsi か --from-netkeiba で反映可）"
+             if not args.tsi and not args.from_netkeiba else ""), file=sys.stderr)
     cmd = ["python", "predict.py", out, "--race-id", rid]
     if args.budget:
         cmd += ["--budget", str(args.budget)]
