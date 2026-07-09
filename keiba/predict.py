@@ -135,7 +135,7 @@ def decide_axis(rows, two_axis=False):
                       if len(S) == 2 else "単軸1頭流し"))
 
 # ---------- 買い目: 二層構造 核(Sランク×上位A/B)＋上積み(期待値馬) ----------
-def build_buylist(rows, odds, budget=10000, floor=2.5, unit=100,
+def build_buylist(rows, odds, budget=10000, floor=2.0, unit=100,
                   ev_min=1.0, n_rel=6, force=None, two_axis=False,
                   core_ratio=0.6):
     """設計思想(7/8スパーキング反省):
@@ -224,56 +224,86 @@ def build_buylist(rows, odds, budget=10000, floor=2.5, unit=100,
         picks.append([kind, label, o, stake, p, p*o]); tot += stake
         return True
 
-    # (1) 単勝 軸: floor額が予算25%以内ならfloor、超えるなら安全網10%
-    st_tan = ceil_floor(tan.get(a))
-    if tan.get(a):
-        push("単勝", "%d" % a, tan[a], pw[a],
-             st_tan if st_tan <= budget*0.25 else budget*0.10)
-
-    # (2) 各相手(モデル順)に 馬連＋ワイド を必ず: ペア複合250%を目指す
-    pair_cap = budget * 0.16
-    for h in partners:
+    # ===== 保証層(シナリオベース・最低ライン floor倍) =====
+    # 原理: 馬連的中⇒同じ買い目のワイドも必ず的中。だから
+    #   ・ワイドを「単独でfloor倍」に置けば『軸と相手が両方馬券内』の全シナリオをfloor倍保証(最安のカバー)
+    #   ・ワイドが高すぎる人気相手は「馬連単独floor倍」に格下げ(ワンツーのみカバー・安い)
+    #   ・floor倍に届かないトークン買いは廃止(当たっても回収が合わない買い方をしない)
+    # カバー優先度 = 的中確率/円(≒EV効率) → システム上位×期待値が自然に両立
+    base_cap = budget * 0.75
+    covered = {}   # h -> 'full'(ワイド=両方馬券内) / 'pair'(馬連=ワンツーのみ)
+    base_spent = 0
+    def cover(h, cap_each):
+        """相手hをfloor倍で担保。安い方(通常は馬連<ワイド)を優先しつつ、
+           ワイドが cap_each 内ならfullカバー(両方馬券内シナリオまで保証)を選ぶ。"""
+        nonlocal base_spent
         k = tuple(sorted((a, h)))
-        uo, wo = um.get(k), wd.get(k)
-        if not (uo or wo): continue
-        lbl = "%d-%d" % k
-        if uo and ceil_floor(uo) <= pair_cap:      # 馬連単独でfloor到達可
-            push("馬連", lbl, uo, _um(pw, *k), ceil_floor(uo))
-            if wo: push("ワイド", lbl, wo, _wide(pw, *k), unit*2)
-        elif wo and ceil_floor(wo) <= pair_cap:    # ワイドでfloor到達可
-            push("ワイド", lbl, wo, _wide(pw, *k), ceil_floor(wo))
-            if uo: push("馬連", lbl, uo, _um(pw, *k), unit*2)
-        else:                                      # 人気ペア=安全網(複合で拾う)
-            if wo: push("ワイド", lbl, wo, _wide(pw, *k), pair_cap*0.6)
-            if uo: push("馬連", lbl, uo, _um(pw, *k), pair_cap*0.4)
+        wo, uo = wd.get(k), um.get(k)
+        cw = ceil_floor(wo) if wo else None
+        cu = ceil_floor(uo) if uo else None
+        if cw and cw <= cap_each and base_spent + cw <= base_cap:
+            if push("ワイド", "%d-%d" % k, wo, _wide(pw, *k), cw):
+                covered[h] = "full"; base_spent += cw; return True
+        if cu and cu <= cap_each and base_spent + cu <= base_cap:
+            if push("馬連", "%d-%d" % k, uo, _um(pw, *k), cu):
+                covered[h] = "pair"; base_spent += cu; return True
+        return False
+    # PhaseA: 核(人気本命S/A/B or ≤3.5倍)は必須カバー(1本かぶりを切らない)。1頭あたり上限30%。
+    for h in core_p:
+        cover(h, budget * 0.30)
+    # PhaseB: 残る相手を効率(的中確率/円)順にカバー。1頭あたり上限22%。
+    rest = [h for h in partners if h not in covered]
+    def eff(h):
+        k = tuple(sorted((a, h)))
+        best = 0
+        if wd.get(k): best = max(best, _wide(pw, *k) / ceil_floor(wd[k]))
+        if um.get(k): best = max(best, _um(pw, *k) / ceil_floor(um[k]))
+        return best
+    for h in sorted(rest, key=lambda x: -eff(x)):
+        cover(h, budget * 0.22)
+    dec["coverage"] = dict(covered)
+    # 単勝軸: 「軸1着・2着が相手外」のシナリオ用。floor額が予算15%以内の時だけ(トークン禁止)
+    if tan.get(a) and ceil_floor(tan[a]) <= budget * 0.15:
+        push("単勝", "%d" % a, tan[a], pw[a], ceil_floor(tan[a]))
 
-    # (3) 三連複: 軸×相手2頭 全組合せ(EV+のみ)、EV降順にfloor額で
-    trio = []
+    # ===== EVブースト層(残予算・各点floor倍厳守・EV降順) =====
+    boost = []
     for c in itertools.combinations(sorted(partners), 2):
         k = tuple(sorted((a,) + c))
         if k in tp:
-            p = _p3(pw, *k); ev = p * tp[k]
-            if ev >= ev_min: trio.append((ev, k, tp[k], p))
-    trio.sort(key=lambda x: -x[0])
-    for ev, k, o, p in trio:
-        push("三連複", "%d-%d-%d" % k, o, p, ceil_floor(o))
-
-    # (4) head時: 三連単 軸1着固定×相手上位3頭の順列(6点)＋馬単上位2 を薄く
+            p = _p3(pw, *k)
+            boost.append((p * tp[k], "三連複", "%d-%d-%d" % k, tp[k], p))
     if head:
-        top3 = partners[:3]
-        for x, y in itertools.permutations(top3, 2):
-            if (a, x, y) in st and _st(pw, a, x, y)*st[(a, x, y)] >= ev_min:
-                push("三連単", "%d>%d>%d" % (a, x, y), st[(a, x, y)], _st(pw, a, x, y), unit)
-        for h in partners[:2]:
-            if (a, h) in ut and _umt(pw, a, h)*ut[(a, h)] >= ev_min:
-                push("馬単", "%d>%d" % (a, h), ut[(a, h)], _umt(pw, a, h), unit)
+        for x, y in itertools.permutations(partners[:4], 2):
+            if (a, x, y) in st:
+                p = _st(pw, a, x, y)
+                boost.append((p * st[(a, x, y)], "三連単", "%d>%d>%d" % (a, x, y), st[(a, x, y)], p))
+        for h in partners:
+            if (a, h) in ut:
+                p = _umt(pw, a, h)
+                boost.append((p * ut[(a, h)], "馬単", "%d>%d" % (a, h), ut[(a, h)], p))
+    # full カバー済み相手の馬連もEV+ならブースト(ワンツー時の上乗せ)
+    for h in partners:
+        if covered.get(h) == "full":
+            k = tuple(sorted((a, h)))
+            if um.get(k):
+                p = _um(pw, *k)
+                boost.append((p * um[k], "馬連", "%d-%d" % k, um[k], p))
+    seen = {(x[0], x[1]) for x in picks}
+    boost = [b for b in boost if b[0] >= ev_min and (b[1], b[2]) not in seen]
+    boost.sort(key=lambda x: -x[0])
+    cap1 = budget * 0.15
+    for ev, kind, lbl, o, p in boost:
+        c = ceil_floor(o)
+        if c > cap1: continue                     # 1点が重すぎるブーストは見送り
+        push(kind, lbl, o, p, c)
 
-    # (5) 余りはシステム上位ペア(ワイド→馬連)へ上乗せ＝上位を厚く
-    prio = [x for x in picks if x[0] in ("ワイド", "馬連", "単勝")]
+    # 余り: 保証層ワイド(システム上位順)へ上乗せ=シナリオ回収がfloor倍を超えて伸びる
+    prio = [x for x in picks if x[0] == "ワイド"]
     prio.sort(key=lambda x: -x[4])
     i = 0
     while tot + unit <= budget and prio:
-        prio[i % min(4, len(prio))][3] += unit; tot += unit; i += 1
+        prio[i % min(3, len(prio))][3] += unit; tot += unit; i += 1
 
     # 想定決着(軸→相手1→相手2)の複合合算
     ref = [a] + partners[:2]
@@ -320,13 +350,33 @@ def print_buylist(picks, total, dec, budget, floor):
     for kind, lbl, o, st, p, ev in picks:
         key = tuple(sorted(_nums(lbl)))
         grp.setdefault(key, []).append((kind, o, st))
-    print("  ── 買い目(複合)ごとの合算払戻＝250%%担保チェック ──")
+    print("  ── 買い目(複合)ごとの合算払戻＝最低%.0f%%チェック ──" % (floor*100))
     for key, items in grp.items():
         pay = sum(o*st for _, o, st in items)
         kinds = "+".join(k for k, _, _ in items)
         m = "○" if pay >= floor*budget else ("△" if pay >= floor*budget*0.8 else "・")
         print("   %s %-9s 合算払戻%7d円 (対予算%4.0f%%) [%s]" % (
             m, "-".join(map(str, key)), pay, pay/budget*100, kinds))
+    # ── シナリオ別保証(軸×相手が馬券内になった時の最低回収) ──
+    cov = dec.get("coverage")
+    if cov:
+        ax = dec["axis"][0]
+        print("  ── シナリオ保証（軸%dと相手が馬券内の時の最低回収）──" % ax)
+        wide_st = {tuple(sorted(_nums(l))): (o, s) for k2, l, o, s, p, e in picks if k2 == "ワイド"}
+        um_st   = {tuple(sorted(_nums(l))): (o, s) for k2, l, o, s, p, e in picks if k2 == "馬連"}
+        for h, mode_c in cov.items():
+            k = tuple(sorted((ax, h)))
+            if mode_c == "full":
+                o, s = wide_st.get(k, (0, 0))
+                extra = um_st.get(k)
+                w_ret = o * s
+                u_ret = w_ret + (extra[0]*extra[1] if extra else 0)
+                print("   相手%2d [full] 両方馬券内=%6d円(%.0f%%) / ワンツー=%6d円(%.0f%%)"
+                      % (h, w_ret, w_ret/budget*100, u_ret, u_ret/budget*100))
+            else:
+                o, s = um_st.get(k, (0, 0))
+                print("   相手%2d [pair] ワンツーのみ=%6d円(%.0f%%)（両方馬券内どまりは対象外）"
+                      % (h, o*s, o*s/budget*100))
     if dec.get("core_return"):
         cr = dec["core_return"]; ref = dec.get("core_ref", [])
         print("  【核】想定決着 %s で複合合算払戻=%d円 (対予算%.0f%%)" % (
@@ -350,7 +400,7 @@ def main():
     ap.add_argument("--race-id", default=None)
     ap.add_argument("--odds", default=None, help="手渡しオッズjson")
     ap.add_argument("--budget", type=int, default=10000)
-    ap.add_argument("--floor", type=float, default=2.5)
+    ap.add_argument("--floor", type=float, default=2.0)
     ap.add_argument("--unit", type=int, default=100)
     ap.add_argument("--axis", type=int, nargs="+", default=None, help="軸を手動指定")
     ap.add_argument("--box", type=int, nargs="+", default=None, help="3頭BOX指定")
