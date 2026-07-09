@@ -152,8 +152,13 @@ Webで確認したままの見た目がそのままパワポになる。
 ## 実行
 ```bash
 cd keiba
+# ★完全自動（race_idだけ・既定）: 出馬表+過去9走をnetkeiba公開ページから自動取得→予想まで一気通貫
+python fetch_race.py <race_id> --run --budget 10000
+#   タイム指数のみプレミアム限定→既定None（軸はほぼ不変）。貼れる時だけ --tsi tsi.txt。
+# 手動（馬柱を貼られた／race_id不明時）
 python predict.py race_xxx.json --race-id <id>   # ランキング→オッズ→買い目→i-PAT
 python stats.py                                   # 通算成績
 ```
-- エンジン: calc.py (Ver.99.27) / レース入力: build_*.py が race_*.json を生成
+- 取得: fetch_race.py（出馬表→各馬の競走成績9走→race_json） / エンジン: calc.py (Ver.99.27)
+- レース入力(手動): build_*.py が race_*.json を生成
 - 安全: 購入ボタンは人間。認証情報は扱わない。

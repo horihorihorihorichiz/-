@@ -7,8 +7,22 @@
 
 ## 全体フロー（毎レース同じ）
 
+### ★A. 完全自動（race_id が分かる時。既定はこれ）
 ```
-STEP1 データ受領   ユーザーから馬柱(9走)+タイム指数+オッズ+馬場+馬体重 を受け取る
+python fetch_race.py <race_id> --run --budget 10000
+  → 出馬表＋各馬の競走成績(過去9走)を netkeiba 公開ページから取得
+  → race_<race_id>.json を生成 → そのまま predict.py 実行（オッズ取得〜買い目〜i-PATまで）
+```
+`fetch_race.py` が自動取得するもの: 馬番/馬名/斤量/**馬体重(増減)**/**馬場**/距離/クラス→tier/
+ 頭数、各馬の過去9走(着順/頭数/馬番/通過→4角/上り/馬場/クラス/日数)、脚質・csi・道悪着順は自動導出。
+- **タイム指数だけは netkeiba プレミアム限定**なので既定 None（軸選定はほぼ不変。相手/穴の判別精度がやや落ちる）。
+  精度を上げたい時のみ、ユーザーが**タイム指数の数字だけ**を貼る → `--tsi tsi.txt`（`馬番 t1 t2 …`新しい順）。
+- 直前に馬体重/馬場/最終オッズが更新されたら **fetch_race を再実行**すれば取り直す。
+- 認証情報は一切扱わない。オッズ取得・GO/NO-GO・買い目は predict.py が担当。
+
+### B. 手動（ユーザーが馬柱テキストを貼ってきた／race_id 不明／JRAで自動取得が不完全な時）
+```
+STEP1 データ受領   馬柱(9走)+タイム指数+オッズ+馬場+馬体重 を受け取る
 STEP2 race_json化  下の「変換規則」で build_<レース名>.py を書く → race_<名>.json 生成
 STEP3 実行         python predict.py race_<名>.json --race-id <id> [--budget N]
 STEP4 出力         RULES.md §1 の形式で提示（全頭ランキング=得点列必須/買い目/点数/i-PAT）
@@ -16,7 +30,8 @@ STEP5 直前更新     馬体重・馬場・最終オッズが変わったら bu
 STEP6 記録         結果確定後 results.jsonl に追記 → python stats.py で通算を報告
 ```
 
-race_id の作り方は `RULES.md` §5。GO/NO-GO・買い目構造は predict.py が自動判断する。
+どちらの経路でも STEP4 出力チェック・STEP6 記録は必須。race_id の作り方は `RULES.md` §5。
+GO/NO-GO・買い目構造は predict.py が自動判断する。
 
 ---
 

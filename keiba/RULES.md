@@ -52,6 +52,12 @@
 
 ## 6. 実行
 ```bash
+# ★完全自動（race_idだけ／既定）: 出馬表+過去9走をnetkeiba公開ページから取得→予想まで一気通貫
+python fetch_race.py <race_id> --run --budget 10000
+#   タイム指数はプレミアム限定→既定None（軸はほぼ不変・相手判別のみやや低下）。
+#   精度UP時のみ数字を貼って --tsi tsi.txt（"馬番 t1 t2 …"新しい順）。
+
+# 手動（馬柱を貼られた／race_id不明時）
 python predict.py race_xxx.json --race-id <id> [--budget N]   # ランキング〜買い目〜i-PATまで自動
 python stats.py                                               # 通算 的中率・回収率
 ```
