@@ -6,7 +6,7 @@ import {
   ankanOptions, shouminkanOptions, humanAnkan, humanShouminkan,
 } from './game.js';
 import { analyzeDiscards } from './analyze.js';
-import { dealInProb } from './danger.js';
+import { dealInProb, dangerReasons } from './danger.js';
 import { tileEl, backsInto, faceHTML } from './tileview.js';
 
 const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
@@ -417,6 +417,42 @@ function renderReview() {
       `<td><button class="btn rv-jump" data-rev="${i}">局面 →</button></td></tr>`;
   }
   h += `</tbody></table></div>`;
+
+  // 各ミスに「なぜ推奨の方がいいか」を詳しく解説（最大4手分）
+  const details = misses.slice(0, 4);
+  for (const { l } of details) {
+    if (l.mode === 'fold') {
+      // ベタおり: 放銃理由（字牌/端/壁/見え枚数）で安全・危険を説明
+      const safeR = (l.seen ? dangerReasons(l.bestTile, l.seen, l.threats) : []).filter((x) => x.t === 'safe');
+      const riskR = (l.seen ? dangerReasons(l.chosenTile, l.seen, l.threats) : []).filter((x) => x.t === 'risk');
+      const li = (arr, cls, mark) => arr.length
+        ? `<ul>${arr.map((x) => `<li class="${cls}">${mark} ${x.s}</li>`).join('')}</ul>`
+        : `<ul><li class="${cls}">${mark} （特筆する要素なし）</li></ul>`;
+      h += `<div class="rv-detail">` +
+        `<div class="rvd-head">🛡 ${l.turn}手目：なぜ <b>${tileName(l.bestTile)}</b>（放銃率${(l.bestDealIn * 100).toFixed(0)}%）が正解で、<b>${tileName(l.chosenTile)}</b>（${(l.chosenDealIn * 100).toFixed(0)}%）が危険か</div>` +
+        `<div class="reason-card safe"><div class="rc-head">✓ 推奨 ${tileName(l.bestTile)} が安全な理由</div>${li(safeR, 'safe', '✓')}</div>` +
+        `<div class="reason-card risk"><div class="rc-head">⚠ あなたの ${tileName(l.chosenTile)} が危険な理由</div>${li(riskR, 'risk', '⚠')}</div>` +
+        `<div class="rvd-logic">▶ ロジック：韓麻は<strong>フリテン無し＝現物でも当たる</strong>ので、狙うのは「相手が待ちに使えない牌」。<b>字牌＞端牌＞中張牌</b>の順に当たりにくく、<b>場に多く見えている牌・壁の裏</b>ほど安全。手が遠いこの局面はアガリ価値より放銃回避が優先なので、最も放銃率が低い ${tileName(l.bestTile)} が正解。</div>` +
+        `</div>`;
+    } else {
+      // 攻め: なぜ推奨が良いか（向聴・受け入れ・ドラ・安全）を理由化
+      const pros = [];
+      if (l.bestSh < l.chosenSh) pros.push(`<li class="safe">✓ 向聴が<b>${l.chosenSh - l.bestSh}つ近い</b>：アガリまで速く、無駄が少ない</li>`);
+      if (l.bestUke > l.chosenUke) pros.push(`<li class="safe">✓ 受け入れが<b>${l.bestUke - l.chosenUke}枚広い</b>：手を進める有効牌が多く残る（良形が崩れない）</li>`);
+      if (l.bestDora > l.chosenDora) pros.push(`<li class="safe">✓ ドラを<b>${l.bestDora - l.chosenDora}枚多く残せる</b>：同じアガリでも打点が高い</li>`);
+      if (l.bestDealIn < l.chosenDealIn - 0.02) pros.push(`<li class="safe">✓ 放銃率が<b>${((l.chosenDealIn - l.bestDealIn) * 100).toFixed(0)}%低い</b>：より安全</li>`);
+      if (!pros.length) pros.push(`<li class="safe">✓ 総合評価（向聴・受け入れ・ドラ・放銃率）でわずかに上</li>`);
+      h += `<div class="rv-detail">` +
+        `<div class="rvd-head">🎯 ${l.turn}手目：なぜ <b>${tileName(l.bestTile)}</b> が推奨か（あなたは ${tileName(l.chosenTile)}）</div>` +
+        `<div class="reason-card safe"><div class="rc-head">推奨 ${tileName(l.bestTile)} 切りの利点</div><ul>${pros.join('')}</ul></div>` +
+        `<div class="rvd-logic">▶ ロジック：向聴（アガリまでの近さ）を最優先に、同じ向聴なら<b>受け入れの広さ＋打点（ドラ）</b>を放銃リスクで割り引いた総合期待値で比較。${tileName(l.bestTile)} 切りがこの局面で最も期待値が高い。</div>` +
+        `</div>`;
+    }
+  }
+  if (misses.length > details.length) {
+    h += `<div class="rv-note">（詳しい解説は最初の${details.length}手分のみ表示）</div>`;
+  }
+
   h += `<div class="rv-note">※攻めの手番は<strong>総合期待値</strong>の低下率、🛡ベタおり局面は<strong>放銃率</strong>で採点。誤差は省略。</div>`;
   h += `</div>`;
   return h;
@@ -503,11 +539,11 @@ function rankDiscards(state) {
     r.score = -r.shanten * 100000 + r.value * 10;
   }
   results.sort((a, b) => b.score - a.score || a.dealIn - b.dealIn);
-  return { results, threats };
+  return { results, threats, seenAll };
 }
 
 function recordMyDiscard(p, tile) {
-  const { results, threats } = rankDiscards(state);
+  const { results, threats, seenAll } = rankDiscards(state);
   const chosen = results.find((r) => r.discard === tile) || results[0];
   // ベタおりモード判定（renderと同じ基準）
   let riichiN = 0;
@@ -532,6 +568,7 @@ function recordMyDiscard(p, tile) {
       rank: safe.findIndex((r) => r.discard === tile) + 1,
       ok: (chosen.dealIn - best.dealIn) <= 0.03, // 最安全から放銃率+3%以内なら許容
       bestTile: best.discard, bestDealIn: best.dealIn,
+      seen: seenAll, // 放銃理由の説明用（見え牌）
     });
     return;
   }

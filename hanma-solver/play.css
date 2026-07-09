@@ -140,6 +140,18 @@ body.betaori .hand { border-color: #1e7d8c; background: linear-gradient(#0e3a42,
 .rv-ok { color: var(--accent); font-weight: 700; }
 .rv-bad { color: #ff8a8a; font-weight: 700; }
 .rv-allbest { background: rgba(74,222,128,.12); border: 1px solid rgba(74,222,128,.35); color: var(--accent); border-radius: 8px; padding: 10px 12px; font-weight: 700; margin-bottom: 8px; }
+
+/* ベタおり局面の詳しい解説 */
+.rv-detail { margin-top: 12px; background: rgba(0,0,0,.18); border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px; }
+.rvd-head { font-weight: 800; font-size: .88rem; margin-bottom: 8px; color: #8fd3ff; }
+.rvd-logic { font-size: .8rem; line-height: 1.6; margin-top: 8px; color: #cfe3ef; background: rgba(56,189,248,.08); border: 1px solid #23506b; border-radius: 8px; padding: 8px 10px; }
+.reason-card { border-radius: 8px; padding: 8px 10px; margin-top: 8px; font-size: .82rem; }
+.reason-card.risk { background: rgba(224,83,83,.1); border: 1px solid rgba(224,83,83,.35); }
+.reason-card.safe { background: rgba(74,222,128,.08); border: 1px solid rgba(74,222,128,.3); }
+.reason-card .rc-head { font-weight: 700; margin-bottom: 4px; }
+.reason-card.risk .rc-head { color: #ff9d9d; } .reason-card.safe .rc-head { color: var(--accent); }
+.reason-card ul { margin: 0; padding-left: 1.1em; } .reason-card li { margin: 3px 0; line-height: 1.55; }
+.reason-card li.risk { color: #ffc9c9; } .reason-card li.safe { color: #b6f0cf; }
 .rv-num { font-variant-numeric: tabular-nums; color: var(--muted); }
 .rv-reason { font-size: .8rem; }
 .rv-rk-top { color: var(--accent); font-weight: 800; }
