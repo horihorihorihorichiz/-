@@ -197,115 +197,97 @@ def build_buylist(rows, odds, budget=10000, floor=2.5, unit=100,
         picks.sort(key=lambda x: -x[5])
         return picks, tot, dec
 
-    # ---- 1AXIS/2AXIS: 核＋上積み ----
+    # ---- 1AXIS/2AXIS: 相手を決めて「馬連＋ワイド＋三連複」のハシゴを必ず揃える ----
+    #   (7/9修正: 三連複に入る馬が馬連/ワイドに居ない“歯抜け”を禁止。相手＝システム順位ベース)
     a = axis[0]
     non = [h for h in order if h not in axis]
-    # 核相手=「モデルも市場も評価」する馬=ランクS/A/B。
-    #   ＋sub-3.5倍の明確な人気馬は評価Cでも必ず核に含める(1.9倍本命を切らない=7/8反省)。
-    core_pool = [h for h in non if rk.get(h) in ("S", "A", "B") or tan.get(h, 99) <= 3.5] or non
+    # 相手選定: ①人気の明確な本命(S/A/B or 単勝≤3.5)は必ず ②残りはモデルpwin順 ③S/A/Bは全員入れる
+    core_pool = [h for h in non if rk.get(h) in ("S", "A", "B") or tan.get(h, 99) <= 3.5]
     core_p = sorted(core_pool, key=lambda h: tan.get(h, 9999))[:2]
-    # 期待値馬=核以外で 軸と組んだ時のEVが高い順(=市場に売られてる妙味馬)
-    val_p = sorted([h for h in non if h not in core_p],
-                   key=lambda h: -(pw[h]*tan.get(h, 0)))[:3]
-    # ★モデルS/A/Bランク馬(=システム上位)は核に入らなくても必ず相手に含める
-    #   (7/6閃光賞: 勝ち馬を相手から外した反省 / 7/9笠松: モデル3位⑩をEV順で落とした反省)
-    for h in non:
-        if rk.get(h) in ("S", "A", "B") and h not in core_p and h not in val_p:
-            val_p.append(h)
-    dec["core"] = core_p; dec["value"] = val_p
+    partners = list(core_p)
+    for h in non:                                  # システム順位で補充(最大5頭)
+        if h not in partners and len(partners) < 5:
+            partners.append(h)
+    for h in non:                                  # S/A/Bは5頭を超えても必ず入れる
+        if rk.get(h) in ("S", "A", "B") and h not in partners:
+            partners.append(h)
+    # 表示・想定決着用: 相手はモデルpwin順で持つ
+    partners = sorted(partners, key=lambda h: -pw[h])
+    dec["core"] = core_p; dec["value"] = [h for h in partners if h not in core_p]
 
-    core, value = [], []   # [kind,label,odds,prob,ev]
-    def add(lst, kind, key, o, p):
-        if o: lst.append([kind, key, o, p, p*o])
-    # 【核】: 単勝a + (2頭軸なら両軸) 馬連/ワイド a×core + 三連複 a+core2
-    for ax in axis:
-        add(core, "単勝", "%d" % ax, tan.get(ax), pw[ax])
-    # 軸が「勝つ」と読めるか(=Sランク かつ 単勝で人気/短め)→馬単・三連単の1着固定を上積みに使う
     head = (rk.get(a) == "S") and (tan.get(a, 99) <= 5.0 or pw[a] >= 0.25)
-    # 【核】= 順序に強い券種のみ(単勝/馬連/ワイド/三連複)。的中率で担保。
-    for ax in axis:
-        for c in core_p:
-            k = tuple(sorted((ax, c)))
-            add(core, "馬連", "%d-%d" % k, um.get(k), _um(pw, *k))
-            add(core, "ワイド", "%d-%d" % k, wd.get(k), _wide(pw, *k))
-    if len(core_p) >= 2 or (mode == "2AXIS"):
-        for c in itertools.combinations(sorted(set(list(axis) + core_p)), 3):
-            if set(axis) & set(c) and c in tp:
-                add(core, "三連複", "%d-%d-%d" % c, tp[c], _p3(pw, *c))
-    # 【上積み】= 期待値馬の馬連/ワイド/三連複 ＋ (軸が勝つ読みなら)馬単・三連単の1着固定。各点floor厳守。
-    for v in val_p:
-        k = tuple(sorted((a, v)))
-        add(value, "馬連", "%d-%d" % k, um.get(k), _um(pw, *k))
-        add(value, "ワイド", "%d-%d" % k, wd.get(k), _wide(pw, *k))
-    bridge = sorted(set(list(axis) + core_p + val_p))
-    for c in itertools.combinations(bridge, 3):
-        if a in c and c in tp and not set(c) <= (set(axis) | set(core_p)):
-            add(value, "三連複", "%d-%d-%d" % c, tp[c], _p3(pw, *c))
+    picks = []; tot = 0
+    def push(kind, label, o, p, stake):
+        nonlocal tot
+        stake = int(stake // unit) * unit
+        if not o or stake < unit or tot + stake > budget: return False
+        picks.append([kind, label, o, stake, p, p*o]); tot += stake
+        return True
+
+    # (1) 単勝 軸: floor額が予算25%以内ならfloor、超えるなら安全網10%
+    st_tan = ceil_floor(tan.get(a))
+    if tan.get(a):
+        push("単勝", "%d" % a, tan[a], pw[a],
+             st_tan if st_tan <= budget*0.25 else budget*0.10)
+
+    # (2) 各相手(モデル順)に 馬連＋ワイド を必ず: ペア複合250%を目指す
+    pair_cap = budget * 0.16
+    for h in partners:
+        k = tuple(sorted((a, h)))
+        uo, wo = um.get(k), wd.get(k)
+        if not (uo or wo): continue
+        lbl = "%d-%d" % k
+        if uo and ceil_floor(uo) <= pair_cap:      # 馬連単独でfloor到達可
+            push("馬連", lbl, uo, _um(pw, *k), ceil_floor(uo))
+            if wo: push("ワイド", lbl, wo, _wide(pw, *k), unit*2)
+        elif wo and ceil_floor(wo) <= pair_cap:    # ワイドでfloor到達可
+            push("ワイド", lbl, wo, _wide(pw, *k), ceil_floor(wo))
+            if uo: push("馬連", lbl, uo, _um(pw, *k), unit*2)
+        else:                                      # 人気ペア=安全網(複合で拾う)
+            if wo: push("ワイド", lbl, wo, _wide(pw, *k), pair_cap*0.6)
+            if uo: push("馬連", lbl, uo, _um(pw, *k), pair_cap*0.4)
+
+    # (3) 三連複: 軸×相手2頭 全組合せ(EV+のみ)、EV降順にfloor額で
+    trio = []
+    for c in itertools.combinations(sorted(partners), 2):
+        k = tuple(sorted((a,) + c))
+        if k in tp:
+            p = _p3(pw, *k); ev = p * tp[k]
+            if ev >= ev_min: trio.append((ev, k, tp[k], p))
+    trio.sort(key=lambda x: -x[0])
+    for ev, k, o, p in trio:
+        push("三連複", "%d-%d-%d" % k, o, p, ceil_floor(o))
+
+    # (4) head時: 三連単 軸1着固定×相手上位3頭の順列(6点)＋馬単上位2 を薄く
     if head:
-        # 馬単 軸→(核∪期待値馬)：馬連より高配当を上積み
-        for c in core_p + val_p:
-            add(value, "馬単", "%d>%d" % (a, c), ut.get((a, c)), _umt(pw, a, c))
-        # 三連単 軸1着固定→(核∪期待値馬)の2頭を両順：exact的中の高配当を薄く
-        pool = core_p + val_p
-        for x, y in itertools.permutations(pool, 2):
-            add(value, "三連単", "%d>%d>%d" % (a, x, y), st.get((a, x, y)), _st(pw, a, x, y))
+        top3 = partners[:3]
+        for x, y in itertools.permutations(top3, 2):
+            if (a, x, y) in st and _st(pw, a, x, y)*st[(a, x, y)] >= ev_min:
+                push("三連単", "%d>%d>%d" % (a, x, y), st[(a, x, y)], _st(pw, a, x, y), unit)
+        for h in partners[:2]:
+            if (a, h) in ut and _umt(pw, a, h)*ut[(a, h)] >= ev_min:
+                push("馬単", "%d>%d" % (a, h), ut[(a, h)], _umt(pw, a, h), unit)
 
-    # 重複除去
-    def dedup(lst):
-        seen = set(); out = []
-        for x in lst:
-            key = (x[0], x[1])
-            if key not in seen: seen.add(key); out.append(x)
-        return out
-    core = dedup(core); value = dedup([v for v in value if (v[0], v[1]) not in
-                                       {(c[0], c[1]) for c in core}])
+    # (5) 余りはシステム上位ペア(ワイド→馬連)へ上乗せ＝上位を厚く
+    prio = [x for x in picks if x[0] in ("ワイド", "馬連", "単勝")]
+    prio.sort(key=lambda x: -x[4])
+    i = 0
+    while tot + unit <= budget and prio:
+        prio[i % min(4, len(prio))][3] += unit; tot += unit; i += 1
 
-    # ---- 配分 ----
-    # 参照決着(軸1着→核①2着→核②3着)。この「買い目」で当たる核点を合算し floor(250%) を担保。
-    #   複合(同一買い目の馬連＋ワイド＋単勝＋三連複)は一緒に当たるので合算でfloorを考える。
-    ref = list(axis[:1]) + core_p[:2]     # 想定決着 軸→核①→核②
+    # 想定決着(軸→相手1→相手2)の複合合算
+    ref = [a] + partners[:2]
     refset = set(ref)
     def hits_ref(kind, label):
         seq = _nums(label); ns = set(seq)
         if kind == "単勝":  return seq == [ref[0]]
-        if kind == "馬連":  return ns <= refset and len(ns) == 2
-        if kind == "ワイド": return ns <= refset and len(ns) == 2
-        if kind == "馬単":  return seq == ref[:2]                    # 順序一致
+        if kind in ("馬連", "ワイド"): return ns <= refset and len(ns) == 2
+        if kind == "馬単":  return seq == ref[:2]
         if kind == "三連複": return ns == refset
-        if kind == "三連単": return seq == ref                       # 完全順序一致
+        if kind == "三連単": return seq == ref
         return False
-    core_budget = int(budget * core_ratio // unit) * unit
-    picks = []
-    hit_core = sorted([x for x in core if hits_ref(x[0], x[1])], key=lambda x: -x[2])
-    miss_core = [x for x in core if not hits_ref(x[0], x[1])]
-    if hit_core:
-        # 先頭(最高オッズの当たり買い目)を floor 担保。以降は安全網としてprob重み配分。
-        top = hit_core[0]
-        st0 = min(ceil_floor(top[2]), core_budget)
-        picks.append([top[0], top[1], top[2], st0, top[3], top[4]])
-        rest = hit_core[1:] + miss_core
-        rb = max(0, core_budget - st0); ws = sum(x[3] for x in rest) or 1
-        for x in rest:
-            st = max(unit, int(rb * x[3] / ws // unit) * unit)
-            picks.append([x[0], x[1], x[2], st, x[3], x[4]])
-    else:
-        for x in core: picks.append([x[0], x[1], x[2], unit, x[3], x[4]])
-    core_total = sum(x[3] for x in picks)
-    # 参照決着での核・合算払戻(=複合で当たる合計)
     dec["core_ref"] = ref
-    dec["core_return"] = sum(o*st for k, l, o, st, p, ev in picks if hits_ref(k, l))
-    # 上積み(期待値馬): 残予算で EV降順・各点 floor(250%)厳守
-    value = sorted([v for v in value if v[4] >= ev_min], key=lambda x: -x[4])
-    tot = core_total
-    for x in value:
-        st = ceil_floor(x[2])
-        if tot + st > budget: continue
-        picks.append([x[0], x[1], x[2], st, x[3], x[4]]); tot += st
-    # 余りは核の当たり買い目(合算floor)へ上乗せ
-    picks.sort(key=lambda x: -x[4]); i = 0
-    while tot + unit <= budget and picks:
-        picks[i % min(3, len(picks))][3] += unit; tot += unit; i += 1
-    dec["core_return"] = sum(o*st for k, l, o, st, p, ev in picks if hits_ref(k, l))
+    dec["core_return"] = sum(o*s for k2, l2, o, s, p2, e2 in picks if hits_ref(k2, l2))
     picks.sort(key=lambda x: -x[5])
     return picks, tot, dec
 
