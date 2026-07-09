@@ -17,9 +17,11 @@ python fetch_race.py <race_id> --run --budget 10000
  頭数、各馬の過去9走(着順/頭数/馬番/通過→4角/上り/馬場/クラス/日数)、脚質・csi・道悪着順は自動導出。
 - **タイム指数だけは netkeiba プレミアム限定**なので既定 None（軸選定はほぼ不変。相手/穴の判別精度がやや落ちる）。
   精度を上げたい時のみ、ユーザーが**タイム指数の数字だけ**を貼る → `--tsi tsi.txt`（`馬番 t1 t2 …`新しい順）。
-- **別ツール連携（ユーザーのローカル）**: ユーザーPC上の `netkeiba_run.py <race_id>`（本人のGoogleログイン済み
-  プロファイルで会員ページ取得）が `<race_id>_all.json` を吐く。そのJSONを渡せば近5走のタイム指数を自動反映:
-  `python fetch_race.py <race_id> --from-netkeiba <race_id>_all.json --run`。
+- **別ツール連携（ユーザーのローカル）／タイム指数は常時反映**: ユーザーPC上の `netkeiba_run.py <race_id>`
+  （本人のGoogleログイン済みプロファイルで会員ページ取得）が `<race_id>_all.json` を吐く。
+  **fetch_race は `<race_id>_all.json` を自動検出**（カレント / `netkeiba_html/` / `$KEIBA_NETKEIBA_DIR`）して
+  近5走のタイム指数を毎回自動反映する。明示するなら `--from-netkeiba <file>`。
+  無い時は「⚠️タイム指数なしで評価中」と毎回警告が出る（＝tsiを常に見る運用の担保）。
   ※このログイン取得ツールはユーザー領域。**こちらは認証情報を扱わない・ログインしない・IPAT購入コードも書かない**（線引き厳守）。
 - 直前に馬体重/馬場/最終オッズが更新されたら **fetch_race を再実行**すれば取り直す。
 - 認証情報は一切扱わない。オッズ取得・GO/NO-GO・買い目は predict.py が担当。

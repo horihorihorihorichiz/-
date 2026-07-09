@@ -15,7 +15,7 @@ netkeiba の公開ページのみ使用（プレミアム/ログイン不要）:
 
 安全: 認証情報は一切扱わない。オッズ/買い目は predict.py 側で取得・判定。
 """
-import sys, re, json, argparse, datetime, urllib.request, gzip, io, time
+import sys, os, re, json, argparse, datetime, urllib.request, gzip, io, time
 
 UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120 Safari/537.36"
 
@@ -233,9 +233,21 @@ def main():
             p = line.split()
             if p and p[0].isdigit():
                 tsi_map[int(p[0])] = [_num(x) for x in p[1:]]
-    if args.from_netkeiba:
+    # タイム指数は「常に見る」: --from-netkeiba 未指定でも <race_id>_all.json を自動検出して必ず反映
+    nk_src = args.from_netkeiba
+    if not nk_src:
+        cands = [f"{rid}_all.json", os.path.join("netkeiba_html", f"{rid}_all.json")]
+        d = os.environ.get("KEIBA_NETKEIBA_DIR")
+        if d:
+            cands.insert(0, os.path.join(d, f"{rid}_all.json"))
+        for c in cands:
+            if os.path.exists(c):
+                nk_src = c
+                print(f"      タイム指数を自動検出: {c}", file=sys.stderr)
+                break
+    if nk_src:
         # 別ツール（netkeiba_run.py）の統合JSON: time_index[].r1..r5.index（新しい順）を反映
-        data = json.load(open(args.from_netkeiba, encoding="utf-8"))
+        data = json.load(open(nk_src, encoding="utf-8"))
         applied = 0
         for e in data.get("time_index", []):
             um = _num(e.get("umaban"))
@@ -290,9 +302,12 @@ def main():
     json.dump(race, open(out, "w", encoding="utf-8"), ensure_ascii=False, indent=2)
     print(f"[3/3] 書き出し: {out}", file=sys.stderr)
     n_tsi = sum(1 for hh in horses for r in hh["races"] if r["tsi"] is not None)
-    print(f"\n★ {out} 生成完了（{len(horses)}頭）。タイム指数反映: {n_tsi}走"
-          + ("（未指定=プレミアム限定のため None。--tsi か --from-netkeiba で反映可）"
-             if not args.tsi and not args.from_netkeiba else ""), file=sys.stderr)
+    print(f"\n★ {out} 生成完了（{len(horses)}頭）。タイム指数反映: {n_tsi}走", file=sys.stderr)
+    if n_tsi == 0:
+        print("⚠️ タイム指数なしで評価中（相手/穴の判別精度が落ちる）。"
+              "\n   常に反映するには: ローカルの netkeiba_run.py で "
+              f"{rid}_all.json を作り、keibaフォルダ(または $KEIBA_NETKEIBA_DIR)に置けば自動検出します。",
+              file=sys.stderr)
     cmd = ["python", "predict.py", out, "--race-id", rid]
     if args.budget:
         cmd += ["--budget", str(args.budget)]
@@ -301,7 +316,7 @@ def main():
     print(f"\n次のコマンド:\n  {' '.join(cmd)}\n", file=sys.stderr)
 
     if args.run:
-        import subprocess, os
+        import subprocess
         print("=" * 60, file=sys.stderr)
         subprocess.run(cmd, cwd=os.path.dirname(os.path.abspath(__file__)))
 
