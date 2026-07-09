@@ -240,51 +240,37 @@ def build_buylist(rows, odds, budget=10000, floor=2.5, unit=100,
     core = dedup(core); value = dedup([v for v in value if (v[0], v[1]) not in
                                        {(c[0], c[1]) for c in core}])
 
-    # ---- 配分 ----
-    # 参照決着(軸1着→核①2着→核②3着)。この「買い目」で当たる核点を合算し floor(250%) を担保。
-    #   複合(同一買い目の馬連＋ワイド＋単勝＋三連複)は一緒に当たるので合算でfloorを考える。
-    ref = list(axis[:1]) + core_p[:2]     # 想定決着 軸→核①→核②
+    # ---- 配分: 全券種・全買い目を「個別に250%floor厳守」＋EVプラスのみ ----
+    #   250%に届かない/EVマイナスの短オッズ買い目(人気本命がらみの安全網)は自動で不採用。
+    #   ⇒ どの買い目が当たっても払戻は必ず投資額の250%以上。
+    ref = list(axis[:1]) + core_p[:2]     # 想定決着(表示用)
     refset = set(ref)
     def hits_ref(kind, label):
         seq = _nums(label); ns = set(seq)
         if kind == "単勝":  return seq == [ref[0]]
-        if kind == "馬連":  return ns <= refset and len(ns) == 2
-        if kind == "ワイド": return ns <= refset and len(ns) == 2
-        if kind == "馬単":  return seq == ref[:2]                    # 順序一致
+        if kind in ("馬連", "ワイド"): return ns <= refset and len(ns) == 2
+        if kind == "馬単":  return seq == ref[:2]
         if kind == "三連複": return ns == refset
-        if kind == "三連単": return seq == ref                       # 完全順序一致
+        if kind == "三連単": return seq == ref
         return False
-    core_budget = int(budget * core_ratio // unit) * unit
-    picks = []
-    hit_core = sorted([x for x in core if hits_ref(x[0], x[1])], key=lambda x: -x[2])
-    miss_core = [x for x in core if not hits_ref(x[0], x[1])]
-    if hit_core:
-        # 先頭(最高オッズの当たり買い目)を floor 担保。以降は安全網としてprob重み配分。
-        top = hit_core[0]
-        st0 = min(ceil_floor(top[2]), core_budget)
-        picks.append([top[0], top[1], top[2], st0, top[3], top[4]])
-        rest = hit_core[1:] + miss_core
-        rb = max(0, core_budget - st0); ws = sum(x[3] for x in rest) or 1
-        for x in rest:
-            st = max(unit, int(rb * x[3] / ws // unit) * unit)
-            picks.append([x[0], x[1], x[2], st, x[3], x[4]])
-    else:
-        for x in core: picks.append([x[0], x[1], x[2], unit, x[3], x[4]])
-    core_total = sum(x[3] for x in picks)
-    # 参照決着での核・合算払戻(=複合で当たる合計)
-    dec["core_ref"] = ref
-    dec["core_return"] = sum(o*st for k, l, o, st, p, ev in picks if hits_ref(k, l))
-    # 上積み(期待値馬): 残予算で EV降順・各点 floor(250%)厳守
-    value = sorted([v for v in value if v[4] >= ev_min], key=lambda x: -x[4])
-    tot = core_total
-    for x in value:
-        st = ceil_floor(x[2])
+    seen = set(); cand = []
+    for x in core + value:                      # 核・上積みを統合
+        key = (x[0], x[1])
+        if key in seen: continue
+        seen.add(key)
+        if x[4] >= ev_min:                      # EVプラスのみ(＝250%を賄えない-EVは除外)
+            cand.append(x)
+    cand.sort(key=lambda x: -x[4])              # EV降順
+    picks = []; tot = 0
+    for kind, lbl, o, p, ev in cand:
+        st = ceil_floor(o)                      # 各買い目を個別に250%担保
         if tot + st > budget: continue
-        picks.append([x[0], x[1], x[2], st, x[3], x[4]]); tot += st
-    # 余りは核の当たり買い目(合算floor)へ上乗せ
+        picks.append([kind, lbl, o, st, p, ev]); tot += st
+    # 余りはシステム上位(高prob)から上乗せ＝厚く(floorは維持)
     picks.sort(key=lambda x: -x[4]); i = 0
     while tot + unit <= budget and picks:
         picks[i % min(3, len(picks))][3] += unit; tot += unit; i += 1
+    dec["core_ref"] = ref
     dec["core_return"] = sum(o*st for k, l, o, st, p, ev in picks if hits_ref(k, l))
     picks.sort(key=lambda x: -x[5])
     return picks, tot, dec
