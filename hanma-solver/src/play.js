@@ -354,6 +354,28 @@ function tileHTML(idx, opts = {}) {
   return `<span class="${cls}">${faceHTML(idx)}</span>`;
 }
 
+// 相手の河をどう読むか（韓麻版）— ベタおり解説に添える
+function riverReadNote(l) {
+  const st = l.snap;
+  const h = st.humanIndex;
+  const opps = [];
+  for (let q = 0; q < st.players; q++) {
+    if (q === h) continue;
+    const rc = st.discards[q].length;
+    if (st.riichi[q] || rc >= 8) opps.push({ q, rc, riichi: st.riichi[q] });
+  }
+  const genbutsu = opps.some((o) => st.discards[o.q].includes(l.bestTile));
+  let s = `<div class="rvd-river"><b>🀫 相手の河の読み方（韓麻）</b><ul>`;
+  s += `<li><strong>フリテンが無い</strong>ので、相手の河に切れている牌（＝現物）でも当たる。普通のリーチ麻雀の「現物・スジは安全」が<strong>通用しない</strong>のが韓麻最大の注意点。</li>`;
+  s += `<li>だから河から使える安全材料は主に2つ：<b>壁</b>（同じ数牌が3〜4枚見え→その牌を使うリャンメンが物理的に作れない）と、<b>見え枚数</b>（場に多く出ている牌ほど残りが少なく、待ちに使われにくい）。</li>`;
+  if (opps.length) {
+    s += `<li>この局面の警戒相手：${opps.map((o) => `${seatLabel(st, o.q)}（河${o.rc}枚${o.riichi ? '・リーチ' : ''}）`).join('、')}。河が伸びている＝テンパイ濃厚。</li>`;
+  }
+  s += `<li>推奨 ${tileName(l.bestTile)} は${genbutsu ? '相手の河にも切れている（現物）が、韓麻では油断せず' : '場に見えている枚数を確認しつつ'}、字牌・端牌・壁の裏など「待ちに使いにくい牌」を選ぶのが軸。序盤に切られた牌の周りは相手の本命から遠いことが多い（弱い手掛かり）。</li>`;
+  s += `</ul></div>`;
+  return s;
+}
+
 // レビュー行の「ひとこと」（なぜ最善でなかったか）
 function reviewReason(l) {
   if (l.ok) return '';
@@ -432,7 +454,8 @@ function renderReview() {
         `<div class="rvd-head">🛡 ${l.turn}手目：なぜ <b>${tileName(l.bestTile)}</b>（放銃率${(l.bestDealIn * 100).toFixed(0)}%）が正解で、<b>${tileName(l.chosenTile)}</b>（${(l.chosenDealIn * 100).toFixed(0)}%）が危険か</div>` +
         `<div class="reason-card safe"><div class="rc-head">✓ 推奨 ${tileName(l.bestTile)} が安全な理由</div>${li(safeR, 'safe', '✓')}</div>` +
         `<div class="reason-card risk"><div class="rc-head">⚠ あなたの ${tileName(l.chosenTile)} が危険な理由</div>${li(riskR, 'risk', '⚠')}</div>` +
-        `<div class="rvd-logic">▶ ロジック：韓麻は<strong>フリテン無し＝現物でも当たる</strong>ので、狙うのは「相手が待ちに使えない牌」。<b>字牌＞端牌＞中張牌</b>の順に当たりにくく、<b>場に多く見えている牌・壁の裏</b>ほど安全。手が遠いこの局面はアガリ価値より放銃回避が優先なので、最も放銃率が低い ${tileName(l.bestTile)} が正解。</div>` +
+        riverReadNote(l) +
+        `<div class="rvd-logic">▶ ロジック：狙うのは「相手が待ちに使えない牌」。<b>字牌＞端牌＞中張牌</b>の順に当たりにくく、<b>場に多く見えている牌・壁の裏</b>ほど安全。手が遠いこの局面はアガリ価値より放銃回避が優先なので、最も放銃率が低い ${tileName(l.bestTile)} が正解。</div>` +
         `</div>`;
     } else {
       // 攻め: なぜ推奨が良いか（向聴・受け入れ・ドラ・安全）を理由化
