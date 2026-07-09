@@ -161,24 +161,39 @@ def build_buylist(rows, odds, budget=10000, floor=2.5, unit=100,
     def ceil_floor(o):   # floor担保の最小額
         return math.ceil(need / o / unit) * unit if o else unit
 
-    # ---- BOX(S3頭)は従来通り ----
+    # ---- BOX(S3頭): S3頭のBOX ＋ 妙味の相手(次点4頭)も含めてEV+floorで詰める ----
     if mode == "BOX":
+        order_all = sorted(pw, key=lambda h: -pw[h])
+        relays = [h for h in order_all if h not in axis][:4]   # 妙味相手候補
+        pool = list(axis) + relays
         cands = []
         for h in axis:
             if h in tan: cands.append((pw[h]*tan[h], pw[h], tan[h], "単勝", "%d" % h))
-        for i, j in itertools.combinations(axis, 2):
+        for i, j in itertools.combinations(pool, 2):
+            if not (set((i, j)) & set(axis)): continue     # 軸を1頭は含む
             k = tuple(sorted((i, j)))
             if k in um: cands.append((_um(pw,i,j)*um[k], _um(pw,i,j), um[k], "馬連", "%d-%d"%k))
             if k in wd: cands.append((_wide(pw,i,j)*wd[k], _wide(pw,i,j), wd[k], "ワイド", "%d-%d"%k))
-        for c in itertools.combinations(sorted(axis), 3):
+        for c in itertools.combinations(sorted(pool), 3):
+            if len(set(c) & set(axis)) < 2: continue        # 軸を2頭は含む三連複
             if c in tp: cands.append((_p3(pw,*c)*tp[c], _p3(pw,*c), tp[c], "三連複", "%d-%d-%d"%c))
         cands = sorted([c for c in cands if c[0] >= ev_min], key=lambda c: -c[0])
-        picks = [[k, l, o, ceil_floor(o), p, ev] for ev, p, o, k, l in cands]
-        tot = sum(x[3] for x in picks)
-        while tot > budget and picks: picks.pop(); tot = sum(x[3] for x in picks)
+        picks = []; tot = 0
+        for ev, p, o, k, l in cands:
+            st = ceil_floor(o)
+            if tot + st > budget: continue
+            picks.append([k, l, o, st, p, ev]); tot += st
+        # 余りは高prob点へ(1点あたり予算の40%まで=1点集中を防ぐ)
+        cap = max(unit, int(budget * 0.4 // unit) * unit)
         picks.sort(key=lambda x: -x[4]); i = 0
-        while tot + unit <= budget and picks:
-            picks[i % min(3, len(picks))][3] += unit; tot += unit; i += 1
+        guard = 0
+        while tot + unit <= budget and picks and guard < 1000:
+            guard += 1
+            idx = i % min(3, len(picks))
+            if picks[idx][3] + unit <= cap:
+                picks[idx][3] += unit; tot += unit
+            i += 1
+        dec["core_ref"] = list(axis[:3]); dec["core_return"] = 0
         picks.sort(key=lambda x: -x[5])
         return picks, tot, dec
 
