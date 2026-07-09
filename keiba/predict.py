@@ -192,6 +192,10 @@ def build_buylist(rows, odds, budget=10000, floor=2.5, unit=100,
     # 期待値馬=核以外で 軸と組んだ時のEVが高い順(=市場に売られてる妙味馬)
     val_p = sorted([h for h in non if h not in core_p],
                    key=lambda h: -(pw[h]*tan.get(h, 0)))[:3]
+    # ★モデルS/Aランク馬は核に入らなくても必ず相手に含める(7/6閃光賞: 勝ち馬を相手から外した反省)
+    for h in non:
+        if rk.get(h) in ("S", "A") and h not in core_p and h not in val_p:
+            val_p.append(h)
     dec["core"] = core_p; dec["value"] = val_p
 
     core, value = [], []   # [kind,label,odds,prob,ev]
