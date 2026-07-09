@@ -157,12 +157,19 @@ function renderDefense() {
     ? riichiOpps.map((q) => `${seatLabel(state, q)}<span class="riichi-tag">リーチ</span>`).join('・')
     : `テンパイ気配の相手（約${threats.toFixed(1)}人）`;
   let h = `<div class="def-head"><span class="def-mode">🛡 ベタおりモード</span> ${who}／あなた${myShanten}向聴で遠い</div>`;
-  h += `<div class="def-safe"><span style="color:var(--muted)">正解＝放銃率の低い牌:</span>` +
-    safe.slice(0, 5).map((r, i) =>
-      `<span class="st ${i === 0 ? 's0' : ''}">${tileHTML(r.discard)} ${tileName(r.discard)} <span class="pct">${(r.dealIn * 100).toFixed(0)}%</span></span>`
-    ).join('') + `</div>`;
-  const nearSafe = bestSafe.dealIn < 0.02;
-  h += `<div class="def-note">韓麻は<strong>フリテン無し＝現物でも当たる</strong>ので「完全安全」は4枚見え等だけ。手が遠いこの局面は<strong>アガリを諦めて放銃を避ける</strong>のが正解。${nearSafe ? '通りやすい牌から丁寧に。' : '緑枠（最安全）から切ろう。'}</div>`;
+
+  if ($('showHint').checked) {
+    // お手本ON: 答え（安全牌）を提示
+    const nearSafe = bestSafe.dealIn < 0.02;
+    h += `<div class="def-safe"><span style="color:var(--muted)">正解＝放銃率の低い牌:</span>` +
+      safe.slice(0, 5).map((r, i) =>
+        `<span class="st ${i === 0 ? 's0' : ''}">${tileHTML(r.discard)} ${tileName(r.discard)} <span class="pct">${(r.dealIn * 100).toFixed(0)}%</span></span>`
+      ).join('') + `</div>`;
+    h += `<div class="def-note">韓麻は<strong>フリテン無し＝現物でも当たる</strong>ので「完全安全」は4枚見え等だけ。${nearSafe ? '通りやすい牌から丁寧に。' : '水色枠（最安全）から切ろう。'}</div>`;
+  } else {
+    // お手本OFF: 状況だけ伝えて答えは隠す（自分で考える）
+    h += `<div class="def-note">手が遠いのでアガリを諦めて<strong>放銃を避けよう</strong>。どれが一番安全か自分で考えて選んでみて（答え合わせは対局後レビュー、または上の「お手本」ON）。韓麻は<strong>フリテン無し＝現物でも当たる</strong>ので要注意。</div>`;
+  }
   box.innerHTML = h;
   box.style.display = '';
 }
@@ -192,8 +199,8 @@ function renderHand() {
   // ドラ（黄色がけ用）: 赤5は常にドラ扱い＋表ドラ表示牌から求めたドラ
   const doraSet = new Set([MAN + 4, PIN + 4, SOU + 4]);
   for (const ind of state.doraIndicators) doraSet.add(doraFromIndicator(ind));
-  // ベタおりモード中は「最安全牌」を正解としてハイライト
-  const safeTile = curDecision?.fold ? curDecision.safeBest.discard : null;
+  // ベタおりモード中の「最安全牌」ハイライトは、お手本ON時だけ（答えを見たい人向け）
+  const safeTile = (curDecision?.fold && $('showHint').checked) ? curDecision.safeBest.discard : null;
   const mk = (idx, isDrawn) => {
     const disabled = clickable && riichiArmed && !tenpaiAfterDiscard(state, p, idx);
     // レビュー中は最善（緑）とあなたの選択（青）をハイライト
