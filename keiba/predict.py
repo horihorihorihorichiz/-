@@ -185,9 +185,9 @@ def build_buylist(rows, odds, budget=10000, floor=2.5, unit=100,
     # ---- 1AXIS/2AXIS: 核＋上積み ----
     a = axis[0]
     non = [h for h in order if h not in axis]
-    # 核相手=「モデルも市場も評価」する馬=ランクS/A/Bかつ単勝オッズが低い(人気)上位2頭。
-    #   期待値馬(モデルだけ高評価の高オッズ穴)が核に紛れ込むのを防ぐ。
-    core_pool = [h for h in non if rk.get(h) in ("S", "A", "B")] or non
+    # 核相手=「モデルも市場も評価」する馬=ランクS/A/B。
+    #   ＋sub-3.5倍の明確な人気馬は評価Cでも必ず核に含める(1.9倍本命を切らない=7/8反省)。
+    core_pool = [h for h in non if rk.get(h) in ("S", "A", "B") or tan.get(h, 99) <= 3.5] or non
     core_p = sorted(core_pool, key=lambda h: tan.get(h, 9999))[:2]
     # 期待値馬=核以外で 軸と組んだ時のEVが高い順(=市場に売られてる妙味馬)
     val_p = sorted([h for h in non if h not in core_p],
