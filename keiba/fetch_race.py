@@ -113,7 +113,7 @@ def fetch_shutuba(race_id, nar=True):
             "baba": baba, "tier": tier, "field": field, "venue": venue, "horses": horses}
 
 # ---- 競走成績（過去走） ----
-def fetch_horse_results(horse_id, race_date, today_surface, today_dist, max_races=9):
+def fetch_horse_results(horse_id, race_date, today_surface, today_dist):
     h = get(f"https://db.netkeiba.com/horse/result/{horse_id}/", "euc-jp")
     m = re.search(r'<table[^>]*db_h_race_results[^>]*>(.*?)</table>', h, re.S)
     if not m:
@@ -160,9 +160,7 @@ def fetch_horse_results(horse_id, race_date, today_surface, today_dist, max_race
             "days": days, "pace": pace_label(g("ペース")), "baba_idx": None, "tsi": None,
             "_baba": baba, "_venue": g("開催"),
         })
-        if len(out) >= max_races:
-            break
-    return out
+    return out   # 全キャリアを返す（truncateは呼び出し側。csi/道悪はキャリア全走で判定）
 
 # ---- 脚質・csi・off の導出 ----
 def derive_style(races):
@@ -190,7 +188,9 @@ def derive_csi(races, venue, today_dist):
     return 0
 
 def derive_off(races):
-    return [r["finish"] for r in races if r.get("_baba") in ("稍", "重", "不")]
+    # 道悪(TAS)は calc.py 仕様で「1年以内の稍/重/不」。min(off)採用のため古い好走で過大評価しない。
+    return [r["finish"] for r in races
+            if r.get("_baba") in ("稍", "重", "不") and r.get("days", 9999) <= 365]
 
 def main():
     ap = argparse.ArgumentParser()
@@ -253,14 +253,17 @@ def main():
     horses = []
     for i, hs in enumerate(su["horses"]):
         print(f"[2/3] 馬柱取得 {hs['num']:>2} {hs['name']} ...", file=sys.stderr)
-        races = fetch_horse_results(hs["horse_id"], race_date, su["surface"], su["distance"])
-        # tsi 反映
+        career = fetch_horse_results(hs["horse_id"], race_date, su["surface"], su["distance"])
+        # csi(コース・距離実績)と道悪着順は「キャリア全走」で判定（履歴が薄い若馬対策=7/9指摘）
+        off = derive_off(career)
+        csi = derive_csi(career, su["venue"], su["distance"])
+        # エンジンへ渡す馬柱は直近9走（recency重視のVer.99.27仕様）
+        races = career[:9]
+        # tsi 反映（直近9走に対応）
         tl = tsi_map.get(hs["num"], [])
         for j, r in enumerate(races):
             if j < len(tl):
                 r["tsi"] = tl[j]
-        off = derive_off(races)
-        csi = derive_csi(races, su["venue"], su["distance"])
         for r in races:
             r.pop("_baba", None)
             r.pop("_venue", None)
