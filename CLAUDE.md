@@ -169,6 +169,8 @@ python pick_races.py                       # 次の土日の全レースから�
 python pick_races.py <YYYYMMDD> --run       # 選定→各レース予想(fetch_race→predict)まで一気通貫
 python pick_races.py --ev                   # ★毎日: 今日の候補を評価しGO(期待値+)レースだけ報告
 python pick_races.py --ev --all --tracks 川崎 # 平場も含め場を絞ってスキャン
+python pick_races.py --prescreen             # ★オッズ前の事前絞り: 頭数+モデルで軸が立つレースを先に選ぶ
+python pick_races.py --prescreen --max-field 12 # 頭数上限で更に絞る
 ```
 - pick_races.py: netkeiba公開のレース一覧から 重賞>OP/特別>特別 の順で選定（帯広ばんえいは除外）。
 - **恒久運用（毎週自動起動）は Routines**（`/schedule` or claude.ai/code/routines）。設定手順とコピペ用

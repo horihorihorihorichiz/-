@@ -124,6 +124,36 @@ def select(races, n, tracks, include_all=False):
     pool.sort(key=lambda r: (-r["score"], r["time"] or "99:99"))
     return pool[:n]
 
+def run_prescreen(dates, args, tracks):
+    """オッズ不要の事前絞り: 頭数+モデルで『軸が立つレース』を先に選ぶ。
+       オッズ発売前(前夜〜朝)に、買う候補を先に絞るための工程。"""
+    for date in dates:
+        races = fetch_list(date, nar=True) + fetch_list(date, nar=False)
+        cands = select(races, args.n, tracks, include_all=args.all)
+        dd = datetime.datetime.strptime(date, "%Y%m%d").strftime("%Y-%m-%d (%a)")
+        print(f"\n==== {dd}  事前スクリーン(オッズ不要): 候補{len(cands)}レース ====")
+        rows = []
+        for r in cands:
+            print(f"  診断 {r['venue']}{r['r']}R {r['name'][:16]} …", end="", flush=True)
+            try:
+                ps = prescreen_one(r["race_id"])
+            except Exception as e:
+                print(f" スキップ({e})"); continue
+            if ps is None:
+                print(" 判定不可(自動馬柱=地方のみ)"); continue
+            if ps["field"] > args.max_field:
+                print(f" 除外(頭数{ps['field']})"); continue
+            print(f" {ps['shape']} 軸{ps['axis']}({ps['rank']}) 頭{ps['field']}")
+            rows.append((r, ps))
+        rows.sort(key=lambda x: (-int(x[1]["clear"]), -x[1]["conf"]))
+        print(f"\n──── {dd} 買いやすい形のレース（軸が立つ順）────")
+        print("  ※オッズ前の下ごしらえ。実際のGO/買い目は発走前にオッズ込みで --ev / fetch_race --run")
+        for r, ps in rows:
+            print(f"  {r['time']:>5} {r['venue']}{r['r']}R {r['name'][:20]:<20} "
+                  f"｜{ps['shape']} 軸{ps['axis']}({ps['rank']}) PWin{ps['pwin']}% "
+                  f"2着差{ps['gap']}pt 頭{ps['field']} S{ps['n_s']}頭")
+        print("\n  ◎(単独S明確)から優先。発走30〜60分前にオッズが出たら --ev でEV確定。")
+
 def run_ev_scan(dates, args, tracks):
     """毎日の期待値スキャン: 候補を評価し GO(期待値+) だけ報告。"""
     for date in dates:
@@ -156,6 +186,34 @@ def run_ev_scan(dates, args, tracks):
             print(f"        詳細: python fetch_race.py {r['race_id']} --run"
                   + (" --mobile" if args.mobile else "") + f" --budget {args.budget}")
         print("  ※タイム指数(新聞)を貼ればさらに精度UP: --tsi tsi.txt。購入とGOは人間。")
+
+def prescreen_one(rid):
+    """オッズ不要の事前スクリーン: 馬柱だけ取ってモデルを回し、
+       『軸(本命)が立つレースか』を頭数・S有無・トップとの差で判定する。"""
+    import subprocess, os, json as _json
+    d = os.path.dirname(os.path.abspath(__file__))
+    j = f"race_{rid}.json"
+    subprocess.run(["python", "fetch_race.py", rid], cwd=d, capture_output=True, text=True, timeout=600)
+    p = os.path.join(d, j)
+    if not os.path.exists(p):
+        return None
+    import calc
+    race = _json.load(open(p, encoding="utf-8"))
+    res = calc.run(race)
+    rows = sorted(res["rows"], key=lambda r: -r["pwin"])
+    if not rows:
+        return None
+    top, second = rows[0], (rows[1] if len(rows) > 1 else None)
+    gap = top["pwin"] - (second["pwin"] if second else 0)
+    n_s = sum(1 for r in rows if r["rank"] == "S")
+    field = len(rows)
+    # 買いやすさ: 明確な単独S + 頭数手頃 + トップとの差が大きい
+    clear = top["rank"] == "S" and n_s == 1 and gap >= 10
+    conf = round(top["pwin"] + gap - (field - 8) * 1.5 - (n_s - 1) * 8, 1)  # 目安スコア
+    shape = "◎単独S明確" if clear else ("○S複数(混戦)" if n_s >= 2 else "△軸不明確")
+    return {"axis": top["num"], "rank": top["rank"], "pwin": round(top["pwin"], 1),
+            "gap": round(gap, 1), "field": field, "n_s": n_s, "shape": shape,
+            "clear": clear, "conf": conf}
 
 def evaluate_ev(rid, budget, mobile=False):
     """1レースをモデル+オッズで評価し EV裁定を返す。GOなら期待値レース。
@@ -198,18 +256,23 @@ def main():
     ap.add_argument("--ev", action="store_true",
                     help="毎日の期待値スキャン: 候補をモデル評価しGO(期待値+)のレースだけ拾う")
     ap.add_argument("--all", action="store_true", help="平場条件戦も候補に含める(EVスキャンの母数を広げる)")
+    ap.add_argument("--prescreen", action="store_true",
+                    help="オッズ不要の事前絞り: 頭数+モデルで『軸が立つレース』を先に選ぶ")
+    ap.add_argument("--max-field", type=int, default=99, help="この頭数を超えるレースは除外(事前絞り)")
     ap.add_argument("--budget", type=int, default=10000)
     ap.add_argument("--mobile", action="store_true", help="スマホ投票用表示も出す")
     args = ap.parse_args()
 
     if args.date:
         dates = [args.date]
-    elif args.ev:
-        dates = [datetime.date.today().strftime("%Y%m%d")]   # EVスキャンは今日
+    elif args.ev or args.prescreen:
+        dates = [datetime.date.today().strftime("%Y%m%d")]   # EV/事前絞りは既定=今日
     else:
         dates = [d.strftime("%Y%m%d") for d in weekend_dates()]
     tracks = [t.strip() for t in args.tracks.split(",")] if args.tracks else None
 
+    if args.prescreen:
+        return run_prescreen(dates, args, tracks)
     if args.ev:
         return run_ev_scan(dates, args, tracks)
 
