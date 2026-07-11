@@ -478,6 +478,56 @@ def print_mobile(race, race_id, picks, total, is_jra):
             print("  %s = %d円 （%.1f倍 → %s円）" % (lbl, st, o, f"{int(st * o):,}"))
     print("─────────  計 %d円 / %d点" % (total, len(picks)))
     print("  ※オッズは取得時点。発走直前に変わるので最終確認は画面で。")
+    _print_nagashi_plan(by, order)
+
+def _print_nagashi_plan(by, order):
+    """🎯入力プラン: アプリの「ながし」入力手順(軸→相手→金額)にまとめ直す。買い目自体は同一。"""
+    print("\n🎯[入力プラン(ながし形式)] アプリの流し/BOX画面でこの通り選ぶだけ")
+    for kind in order:
+        if kind not in by: continue
+        rows = [(sorted(_nums(lbl)) if kind in ("馬連", "ワイド", "三連複") else _nums(lbl), int(st))
+                for lbl, st, o in by[kind]]
+        if kind in ("単勝", "複勝"):
+            for ns, st in rows:
+                print("  【%s】 %d = %s円" % (kind, ns[0], f"{st:,}"))
+            continue
+        remain = rows[:]
+        while remain:
+            # 最頻出の馬を軸に貪欲グルーピング
+            freq = {}
+            for ns, st in remain:
+                for n in ns: freq[n] = freq.get(n, 0) + 1
+            axis = max(freq, key=lambda n: freq[n])
+            grp = sorted([(ns, st) for ns, st in remain if axis in ns],
+                         key=lambda x: sorted(set(x[0]) - {axis}))
+            remain = [(ns, st) for ns, st in remain if axis not in ns]
+            if kind == "三連複" and len(grp) >= 2:
+                # 軸2頭が共通ならながし2頭で表示
+                inter = set(grp[0][0])
+                for ns, _ in grp[1:]: inter &= set(ns)
+                if len(inter) == 2:
+                    ax = sorted(inter)
+                    parts = [(sorted(set(ns) - inter)[0], st) for ns, st in grp]
+                    amt = {st for _, st in parts}
+                    a = ("各%s円" % f"{parts[0][1]:,}") if len(amt) == 1 else \
+                        " ".join("%d=%s円" % (p, f"{s:,}") for p, s in parts)
+                    print("  【三連複 軸2頭ながし】 軸 %d-%d → 相手 %s（%d点） %s"
+                          % (ax[0], ax[1], ",".join(str(p) for p, _ in parts), len(parts), a))
+                    continue
+            if kind == "三連複":
+                pairs = [(sorted(set(ns) - {axis}), st) for ns, st in grp]
+                amt = {st for _, st in pairs}
+                a = ("各%s円" % f"{pairs[0][1]:,}") if len(amt) == 1 else \
+                    " ".join("%d-%d=%s円" % (p[0], p[1], f"{s:,}") for p, s in pairs)
+                print("  【三連複 軸1頭ながし】 軸 %d → 相手ペア %s（%d点） %s"
+                      % (axis, " / ".join("%d-%d" % (p[0], p[1]) for p, _ in pairs), len(pairs), a))
+            else:
+                parts = [(next(n for n in ns if n != axis), st) for ns, st in grp]
+                amt = {st for _, st in parts}
+                a = ("各%s円" % f"{parts[0][1]:,}") if len(amt) == 1 else \
+                    " ".join("%d=%s円" % (p, f"{s:,}") for p, s in parts)
+                print("  【%s ながし】 軸 %d → 相手 %s（%d点） %s"
+                      % (kind, axis, ",".join(str(p) for p, _ in parts), len(parts), a))
     print("  ※ネット投票はnetkeibaの公式IPAT/SPAT4連携で（ID登録は自分の手で・GOも自分）。")
 
 # ---------- main ----------
