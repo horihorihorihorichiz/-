@@ -463,7 +463,7 @@ def print_ipat(race, race_id, picks, total):
     print("合計 %d円 / 全%d点" % (total, len(picks)))
     print("※確認画面で必ず停止。購入(投票)ボタンは人間が押す。")
 
-def print_mobile(race, race_id, picks, total, is_jra):
+def print_mobile(race, race_id, picks, total, is_jra, hint=None):
     """スマホ投票用のコンパクト表示。券種ごとにまとめ、馬番昇順。
        地方=SPAT4 / JRA=IPAT のアプリに親指入力しやすい最短形。購入は人間。"""
     site = "IPAT(JRA)" if is_jra else "SPAT4(地方)"
@@ -481,7 +481,7 @@ def print_mobile(race, race_id, picks, total, is_jra):
             print("  %s = %d円 （%.1f倍 → %s円）" % (lbl, st, o, f"{int(st * o):,}"))
     print("─────────  計 %d円 / %d点" % (total, len(picks)))
     print("  ※オッズは取得時点。発走直前に変わるので最終確認は画面で。")
-    _print_nagashi_plan(by, order)
+    _print_nagashi_plan(by, order, hint or {})
 
 def _amt_str(parts):
     """parts=[(表示ラベル, 金額)] → 均一なら『各N円』、バラなら個別表記"""
@@ -490,7 +490,7 @@ def _amt_str(parts):
         return "各%s円" % f"{parts[0][1]:,}"
     return " ".join("%s=%s円" % (lb, f"{st:,}") for lb, st in parts)
 
-def _find_core(rows):
+def _find_core(rows, hint):
     """全買い目が『核セット∪外1頭』で表せる核(2-3頭)を探す（S軍団+相手の型）"""
     import itertools as _it
     horses = sorted({n for ns, _ in rows for n in ns})
@@ -507,14 +507,15 @@ def _find_core(rows):
                     axes[sorted(out)[0]] = axes.get(sorted(out)[0], 0) + 1
             inside = sum(1 for ns, _ in rows if set(ns) <= cs)
             # 軸の数が少なく・各軸の点数がまとまる核ほど読みやすい
-            score = (-len(axes), sum(v * v for v in axes.values()), inside)
+            hs = sum(hint.get(n, 0) for n in cs)   # システム軸/上位相手を枠に優先
+            score = (hs, -len(axes), sum(v * v for v in axes.values()), inside)
             if best is None or score > best[0]:
                 best = (score, cs)
         if best:
             return best[1]
     return None
 
-def _print_nagashi_plan(by, order):
+def _print_nagashi_plan(by, order, hint):
     """🎯入力プラン: アプリの「ながし/BOX」入力手順(軸→相手→金額)にまとめ直す。買い目自体は同一。"""
     print("\n🎯[入力プラン(ながし形式)] アプリの流し/BOX画面でこの通り選ぶだけ")
     for kind in order:
@@ -549,7 +550,7 @@ def _print_nagashi_plan(by, order):
                     print("  【%s ながし】 軸 %d → 相手 %s（%d点） %s"
                           % (kind, axis, ",".join(lb for lb, _ in parts), len(parts), _amt_str(parts)))
                 continue
-        core = _find_core(rows)
+        core = _find_core(rows, hint)
         if core:
             # 型B: 核(S軍団)が相手枠。核内BOX + 外の馬ごとに核へながし
             cs = sorted(core)
@@ -677,7 +678,10 @@ def main():
     print_buylist(picks, total, dec, a.budget, a.floor)
     print_ipat(race, race_id, picks, total)
     if a.mobile:
-        print_mobile(race, race_id, picks, total, is_jra=(venue in JRA_VENUES))
+        hint = {h: 2 for h in dec.get("axis", [])}
+        for h in dec.get("core", [])[:2]:
+            hint.setdefault(h, 1)
+        print_mobile(race, race_id, picks, total, is_jra=(venue in JRA_VENUES), hint=hint)
 
     # 自動購入(カート投入まで): --cart でブックマークレット生成。購入ボタンは人間。
     if a.cart:
