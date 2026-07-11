@@ -38,16 +38,21 @@ def strip(s):
 
 # ---- クラス → tier（小さいほど格上。SOP/RULES 準拠） ----
 def class_to_tier(text):
-    t = text
-    if re.search(r"(Jpn1|G1|GⅠ|ＧⅠ)", t): return 1
+    # 全角英数を半角化（JRAは ３勝クラス / Ａ 等 全角が混じる）
+    t = text.translate(str.maketrans("０１２３４５６７８９ＡＢＣＳＬ", "0123456789ABCSL"))
+    if re.search(r"(Jpn1|G1|GⅠ)", t): return 1
     if re.search(r"(Jpn2|Jpn3|G2|G3|GⅡ|GⅢ|重賞)", t): return 2
-    if re.search(r"(\(L\)|リステッド|オープン|ＯＰ|OP|Listed)", t): return 3
-    if re.search(r"(A1|A2|Ａ1|Ａ2|3勝)", t): return 4
-    if re.search(r"(B1|Ｂ1|2勝)", t): return 6
-    if re.search(r"(B2|B3|Ｂ2|Ｂ3)", t): return 7
-    if re.search(r"(C1|Ｃ1)", t): return 8
-    if re.search(r"(C2|Ｃ2)", t): return 9
-    if re.search(r"(C3|Ｃ3|新馬|未勝利|1勝)", t): return 10
+    # JRA条件クラスは明示表記を優先（○勝クラス）。地方A/Bもここ
+    if re.search(r"(3勝|A1|A2)", t): return 4
+    if re.search(r"(2勝)", t): return 5
+    if re.search(r"(B1)", t): return 6
+    if re.search(r"(B2|B3)", t): return 7
+    # オープン/リステッド/ステークス(末尾S)。クラス表記が無い時のOP扱い
+    if re.search(r"(オープン|OP|Listed|リステッド|\(L\)|ステークス|[ぁ-んァ-ヶ一-龠ー]S(\b|$|\s|\(|杯))", t): return 3
+    if re.search(r"(1勝)", t): return 6          # JRA1勝クラス
+    if re.search(r"(C1)", t): return 8
+    if re.search(r"(C2)", t): return 9
+    if re.search(r"(C3|新馬|未勝利)", t): return 10
     if re.search(r"(3歳|2歳)", t): return 9
     return 8  # 不明時はC1相当（中庸）
 
@@ -72,7 +77,7 @@ def parse_dist_surface(txt):
 def fetch_shutuba(race_id, nar=True):
     host = "nar.netkeiba.com" if nar else "race.netkeiba.com"
     h = get(f"https://{host}/race/shutuba.html?race_id={race_id}", "utf-8")
-    rn = re.search(r'<div class="RaceName"[^>]*>(.*?)</div>', h, re.S)
+    rn = re.search(r'class="RaceName"[^>]*>\s*([^<]+)', h)   # NAR=div JRA=h1、spanの手前まで
     race_name = strip(rn.group(1)) if rn else ""
     rd1 = re.search(r'RaceData01[^>]*>(.*?)</div>', h, re.S)
     d1 = strip(rd1.group(1)) if rd1 else ""
@@ -91,9 +96,9 @@ def fetch_shutuba(race_id, nar=True):
     for r in re.findall(r'<tr class="HorseList[^>]*>(.*?)</tr>', h, re.S):
         hid = re.findall(r"horse/(\d+)", r)
         if not hid: continue
-        um = re.search(r'class="Umaban\d+"[^>]*>(\d+)<', r)
+        um = re.search(r'class="Umaban\d+[^"]*"[^>]*>(\d+)<', r)  # NAR="Umaban1" JRA="Umaban1 Txt_C"
         if not um: continue  # 空テンプレ行を除外
-        nm = re.search(r'HorseName.*?>\s*([^<]+?)\s*</a>', r, re.S)
+        nm = re.search(r'class="HorseName">\s*<a[^>]*>\s*([^<]+)', r, re.S)  # <img>手前の馬名テキスト
         kin = re.search(r'class="Txt_C"[^>]*>\s*([\d.]+)\s*</td>', r)
         wt = re.search(r'class="Weight"[^>]*>(.*?)</td>', r, re.S)
         wtxt = strip(wt.group(1)) if wt else ""
@@ -126,6 +131,7 @@ def fetch_horse_results(horse_id, race_date, today_surface, today_dist):
                 return i
         return -1
     I = {k: idx(k) for k in ["日付", "開催", "天気", "頭数", "馬番", "着順", "斤量", "距離", "馬場", "レース名", "通過", "ペース", "上り", "馬体重"]}
+    i_tsi = idx("ﾀｲﾑ指数")  # JRAは前走のみ無料で数値、それ以前は ** (会員限定)
     rows = re.findall(r'<tr[^>]*>(.*?)</tr>', tbl, re.S)
     out = []
     for r in rows[1:]:
@@ -154,10 +160,15 @@ def fetch_horse_results(horse_id, race_date, today_surface, today_dist):
         agari = float(ag.group()) if ag else 40.0
         baba = next((b for b in ["良", "稍", "重", "不"] if b in g("馬場")), "良")
         tier = class_to_tier(g("レース名"))
+        tsi = None  # 公開ページで数値が出ていれば拾う（JRAは前走のみ無料）
+        if 0 <= i_tsi < len(tds):
+            tv = tds[i_tsi].strip()
+            if re.fullmatch(r"-?\d+", tv):
+                tsi = float(tv)
         out.append({
             "surface": surf, "dist": dist, "finish": int(fin.group()), "field": field,
             "umaban": um, "corner4": c4, "agari": agari, "vg": 2, "tier": tier,
-            "days": days, "pace": pace_label(g("ペース")), "baba_idx": None, "tsi": None,
+            "days": days, "pace": pace_label(g("ペース")), "baba_idx": None, "tsi": tsi,
             "_baba": baba, "_venue": g("開催"),
         })
     return out   # 全キャリアを返す（truncateは呼び出し側。csi/道悪はキャリア全走で判定）
@@ -207,8 +218,10 @@ def main():
     args = ap.parse_args()
 
     rid = args.race_id
-    nar = not args.jra
-    # NAR race_id = YYYY場MMDDRR → 日付
+    # JRA自動判定: race_id 5-6桁目が 01〜10 = 中央(札幌01…小倉10)、それ以外=地方(NAR)
+    jra_codes = {"%02d" % i for i in range(1, 11)}
+    nar = not (args.jra or (len(rid) == 12 and rid[4:6] in jra_codes))
+    # NAR race_id = YYYY場MMDDRR → 日付。JRAは暦日を持たないので当日基準(days誤差±数日=NRJAに無影響)
     race_date = None
     if nar and len(rid) == 12:
         try:
@@ -271,10 +284,10 @@ def main():
         csi = derive_csi(career, su["venue"], su["distance"])
         # エンジンへ渡す馬柱は直近9走（recency重視のVer.99.27仕様）
         races = career[:9]
-        # tsi 反映（直近9走に対応）
+        # tsi 反映（直近9走に対応）。貼付(--tsi/--from-netkeiba)があれば優先、無い所は公開ページの値を維持
         tl = tsi_map.get(hs["num"], [])
         for j, r in enumerate(races):
-            if j < len(tl):
+            if j < len(tl) and tl[j] is not None:
                 r["tsi"] = tl[j]
         for r in races:
             r.pop("_baba", None)
@@ -292,7 +305,8 @@ def main():
 
     race = {
         "name": f"{su['race_name']} {su['surface']}{su['distance']}",
-        "venue": rid[4:6] if nar else "",
+        # NAR=場コード(predictはrace_idでNAR判定) / JRA=場名(predictがJRA_VENUESで判定→fetch_jra)
+        "venue": rid[4:6] if nar else su["venue"],
         "surface": su["surface"], "distance": su["distance"], "field": su["field"],
         "baba": baba, "today_vg": 2, "dist_cat": dist_cat(su["distance"]),
         "dsi_haiten": 5, "today_tier": su["tier"], "nsi_haiten": 20,
