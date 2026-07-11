@@ -458,16 +458,17 @@ def print_mobile(race, race_id, picks, total, is_jra):
     order = ["単勝", "複勝", "馬連", "馬単", "ワイド", "三連複", "三連単"]
     by = {}
     for kind, lbl, o, st, p, ev in picks:
-        by.setdefault(kind, []).append((lbl, int(st)))
+        by.setdefault(kind, []).append((lbl, int(st), o))
     print("\n📱[スマホ投票] %s / %s" % (race.get("name", ""), site))
-    print("  各行: 買い目=金額。%s アプリに上から入力→確認→購入は自分で。" % site)
+    print("  各行: 買い目=金額（現在オッズ→的中時払戻）。%s アプリに上から入力→確認→購入は自分で。" % site)
     for kind in order:
         if kind not in by: continue
         rows = sorted(by[kind], key=lambda x: [int(n) for n in re.split(r"[>-]", x[0])])
         print("─ %s ─" % kind)
-        for lbl, st in rows:
-            print("  %s = %d円" % (lbl, st))
+        for lbl, st, o in rows:
+            print("  %s = %d円 （%.1f倍 → %s円）" % (lbl, st, o, f"{int(st * o):,}"))
     print("─────────  計 %d円 / %d点" % (total, len(picks)))
+    print("  ※オッズは取得時点。発走直前に変わるので最終確認は画面で。")
     print("  ※ネット投票はnetkeibaの公式IPAT/SPAT4連携で（ID登録は自分の手で・GOも自分）。")
 
 # ---------- main ----------
