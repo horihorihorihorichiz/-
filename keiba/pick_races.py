@@ -143,16 +143,20 @@ def run_prescreen(dates, args, tracks):
                 print(" 判定不可(自動馬柱=地方のみ)"); continue
             if ps["field"] > args.max_field:
                 print(f" 除外(頭数{ps['field']})"); continue
-            print(f" {ps['shape']} 軸{ps['axis']}({ps['rank']}) 頭{ps['field']}")
+            ev = f" 単勝EV{ps['tan_ev']}%" if ps.get("tan_ev") else ""
+            print(f" {ps['shape']} 軸{ps['axis']}({ps['rank']}) 頭{ps['field']}{ev}")
             rows.append((r, ps))
-        rows.sort(key=lambda x: (-int(x[1]["clear"]), -x[1]["conf"]))
-        print(f"\n──── {dd} 買いやすい形のレース（軸が立つ順）────")
-        print("  ※オッズ前の下ごしらえ。実際のGO/買い目は発走前にオッズ込みで --ev / fetch_race --run")
+        # 妙味順: 単独S明確 > 単勝EV高い > confidence
+        rows.sort(key=lambda x: (-int(x[1]["clear"]), -(x[1].get("tan_ev") or 0), -x[1]["conf"]))
+        print(f"\n──── {dd} おすすめ（軸が立つ×単勝妙味 順）────")
+        print("  ※単勝は無料で出てる分を反映。馬連/ワイド/三連複は発走前に --ev / fetch_race --run で確定。")
         for r, ps in rows:
-            print(f"  {r['time']:>5} {r['venue']}{r['r']}R {r['name'][:20]:<20} "
-                  f"｜{ps['shape']} 軸{ps['axis']}({ps['rank']}) PWin{ps['pwin']}% "
-                  f"2着差{ps['gap']}pt 頭{ps['field']} S{ps['n_s']}頭")
-        print("\n  ◎(単独S明確)から優先。発走30〜60分前にオッズが出たら --ev でEV確定。")
+            odds = f"{ps['odds']}倍" if ps.get("odds") else "単勝未"
+            ev = f"単勝EV{ps['tan_ev']}%" if ps.get("tan_ev") else "EV未算出"
+            mark = "🔥" if (ps["clear"] and (ps.get("tan_ev") or 0) >= 120) else ("○" if ps["clear"] else "・")
+            print(f"  {mark}{r['time']:>5} {r['venue']}{r['r']}R {r['name'][:18]:<18} "
+                  f"｜{ps['shape']} 軸{ps['axis']}({ps['rank']}) {odds} {ev} 頭{ps['field']}")
+        print("\n  🔥=単独S明確×単勝妙味あり(最優先)。発走前にオッズ全部出たら --ev でGO/買い目確定。")
 
 def run_ev_scan(dates, args, tracks):
     """毎日の期待値スキャン: 候補を評価し GO(期待値+) だけ報告。"""
@@ -211,9 +215,20 @@ def prescreen_one(rid):
     clear = top["rank"] == "S" and n_s == 1 and gap >= 10
     conf = round(top["pwin"] + gap - (field - 8) * 1.5 - (n_s - 1) * 8, 1)  # 目安スコア
     shape = "◎単独S明確" if clear else ("○S複数(混戦)" if n_s >= 2 else "△軸不明確")
+    # 無料で出てる単勝オッズで妙味(単勝EV)も見る（馬連等は当日発売でも単勝は前日から出る）
+    axis_odds = tan_ev = None
+    try:
+        import predict
+        o = predict.fetch_nar(rid, field)
+        tan = {int(k): v for k, v in o.get("tan", {}).items() if v}
+        axis_odds = tan.get(top["num"])
+        if axis_odds:
+            tan_ev = round(top["pwin"] / 100.0 * axis_odds * 100)
+    except Exception:
+        pass
     return {"axis": top["num"], "rank": top["rank"], "pwin": round(top["pwin"], 1),
             "gap": round(gap, 1), "field": field, "n_s": n_s, "shape": shape,
-            "clear": clear, "conf": conf}
+            "clear": clear, "conf": conf, "odds": axis_odds, "tan_ev": tan_ev}
 
 def evaluate_ev(rid, budget, mobile=False):
     """1レースをモデル+オッズで評価し EV裁定を返す。GOなら期待値レース。
