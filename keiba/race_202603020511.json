@@ -17,8 +17,8 @@
       "name": "ショウナンハクラク",
       "paper_style": "追",
       "kinryo": 57.0,
-      "weight": 0,
-      "weight_change": 0,
+      "weight": 472,
+      "weight_change": -8,
       "boost": 0,
       "last_race_days": 76,
       "csi": 5,
@@ -55,7 +55,7 @@
           "days": 146,
           "pace": "H",
           "baba_idx": null,
-          "tsi": null
+          "tsi": 82.0
         },
         {
           "surface": "芝",
@@ -70,7 +70,7 @@
           "days": 203,
           "pace": "M",
           "baba_idx": null,
-          "tsi": null
+          "tsi": 97.0
         },
         {
           "surface": "芝",
@@ -85,7 +85,7 @@
           "days": 244,
           "pace": "H",
           "baba_idx": null,
-          "tsi": null
+          "tsi": 93.0
         },
         {
           "surface": "芝",
@@ -100,7 +100,7 @@
           "days": 280,
           "pace": "M",
           "baba_idx": null,
-          "tsi": null
+          "tsi": 92.0
         },
         {
           "surface": "芝",
@@ -169,8 +169,8 @@
       "name": "シークレットヴァウ",
       "paper_style": "先",
       "kinryo": 57.0,
-      "weight": 0,
-      "weight_change": 0,
+      "weight": 464,
+      "weight_change": -2,
       "boost": 0,
       "last_race_days": 48,
       "csi": 5,
@@ -207,7 +207,7 @@
           "days": 111,
           "pace": "H",
           "baba_idx": null,
-          "tsi": null
+          "tsi": 80.0
         },
         {
           "surface": "ダ",
@@ -222,7 +222,7 @@
           "days": 202,
           "pace": "H",
           "baba_idx": null,
-          "tsi": null
+          "tsi": 97.0
         },
         {
           "surface": "ダ",
@@ -237,7 +237,7 @@
           "days": 328,
           "pace": "H",
           "baba_idx": null,
-          "tsi": null
+          "tsi": 84.0
         },
         {
           "surface": "ダ",
@@ -252,7 +252,7 @@
           "days": 433,
           "pace": "H",
           "baba_idx": null,
-          "tsi": null
+          "tsi": 96.0
         },
         {
           "surface": "ダ",
@@ -321,8 +321,8 @@
       "name": "レッドアヴァンティ",
       "paper_style": "追",
       "kinryo": 57.0,
-      "weight": 0,
-      "weight_change": 0,
+      "weight": 488,
+      "weight_change": -12,
       "boost": 0,
       "last_race_days": 76,
       "csi": 5,
@@ -358,7 +358,7 @@
           "days": 146,
           "pace": "H",
           "baba_idx": null,
-          "tsi": null
+          "tsi": 89.0
         },
         {
           "surface": "ダ",
@@ -373,7 +373,7 @@
           "days": 216,
           "pace": "H",
           "baba_idx": null,
-          "tsi": null
+          "tsi": 92.0
         },
         {
           "surface": "芝",
@@ -388,7 +388,7 @@
           "days": 244,
           "pace": "H",
           "baba_idx": null,
-          "tsi": null
+          "tsi": 80.0
         },
         {
           "surface": "芝",
@@ -403,7 +403,7 @@
           "days": 307,
           "pace": "H",
           "baba_idx": null,
-          "tsi": null
+          "tsi": 91.0
         },
         {
           "surface": "芝",
@@ -472,8 +472,8 @@
       "name": "ゾンニッヒ",
       "paper_style": "差",
       "kinryo": 59.0,
-      "weight": 0,
-      "weight_change": 0,
+      "weight": 474,
+      "weight_change": -6,
       "boost": 0,
       "last_race_days": 98,
       "csi": 5,
@@ -509,7 +509,7 @@
           "days": 118,
           "pace": "M",
           "baba_idx": null,
-          "tsi": null
+          "tsi": 100.0
         },
         {
           "surface": "芝",
@@ -524,7 +524,7 @@
           "days": 168,
           "pace": "S",
           "baba_idx": null,
-          "tsi": null
+          "tsi": 73.0
         },
         {
           "surface": "芝",
@@ -539,7 +539,7 @@
           "days": 180,
           "pace": "M",
           "baba_idx": null,
-          "tsi": null
+          "tsi": 102.0
         },
         {
           "surface": "芝",
@@ -554,7 +554,7 @@
           "days": 321,
           "pace": "H",
           "baba_idx": null,
-          "tsi": null
+          "tsi": 85.0
         },
         {
           "surface": "芝",
@@ -623,8 +623,8 @@
       "name": "マサノカナリア",
       "paper_style": "差",
       "kinryo": 55.0,
-      "weight": 0,
-      "weight_change": 0,
+      "weight": 478,
+      "weight_change": 2,
       "boost": 0,
       "last_race_days": 27,
       "csi": 5,
@@ -658,7 +658,7 @@
           "days": 62,
           "pace": "H",
           "baba_idx": null,
-          "tsi": null
+          "tsi": 89.0
         },
         {
           "surface": "芝",
@@ -673,7 +673,7 @@
           "days": 111,
           "pace": "M",
           "baba_idx": null,
-          "tsi": null
+          "tsi": 87.0
         },
         {
           "surface": "芝",
@@ -688,7 +688,7 @@
           "days": 140,
           "pace": "H",
           "baba_idx": null,
-          "tsi": null
+          "tsi": 108.0
         },
         {
           "surface": "芝",
@@ -703,7 +703,7 @@
           "days": 188,
           "pace": "S",
           "baba_idx": null,
-          "tsi": null
+          "tsi": 84.0
         },
         {
           "surface": "芝",
@@ -772,8 +772,8 @@
       "name": "クリエープキー",
       "paper_style": "先",
       "kinryo": 52.0,
-      "weight": 0,
-      "weight_change": 0,
+      "weight": 438,
+      "weight_change": 2,
       "boost": 0,
       "last_race_days": 13,
       "csi": 5,
@@ -807,7 +807,7 @@
           "days": 42,
           "pace": "M",
           "baba_idx": null,
-          "tsi": null
+          "tsi": 83.0
         },
         {
           "surface": "芝",
@@ -822,7 +822,7 @@
           "days": 126,
           "pace": "H",
           "baba_idx": null,
-          "tsi": null
+          "tsi": 67.0
         },
         {
           "surface": "芝",
@@ -837,7 +837,7 @@
           "days": 153,
           "pace": "H",
           "baba_idx": null,
-          "tsi": null
+          "tsi": 80.0
         },
         {
           "surface": "芝",
@@ -852,7 +852,7 @@
           "days": 168,
           "pace": "H",
           "baba_idx": null,
-          "tsi": null
+          "tsi": 88.0
         },
         {
           "surface": "芝",
@@ -921,8 +921,8 @@
       "name": "クムシラコ",
       "paper_style": "追",
       "kinryo": 57.0,
-      "weight": 0,
-      "weight_change": 0,
+      "weight": 470,
+      "weight_change": -6,
       "boost": 0,
       "last_race_days": 48,
       "csi": 5,
@@ -959,7 +959,7 @@
           "days": 76,
           "pace": "M",
           "baba_idx": null,
-          "tsi": null
+          "tsi": 88.0
         },
         {
           "surface": "芝",
@@ -974,7 +974,7 @@
           "days": 175,
           "pace": "M",
           "baba_idx": null,
-          "tsi": null
+          "tsi": 93.0
         },
         {
           "surface": "芝",
@@ -989,7 +989,7 @@
           "days": 258,
           "pace": "M",
           "baba_idx": null,
-          "tsi": null
+          "tsi": 77.0
         },
         {
           "surface": "芝",
@@ -1004,7 +1004,7 @@
           "days": 342,
           "pace": "M",
           "baba_idx": null,
-          "tsi": null
+          "tsi": 93.0
         },
         {
           "surface": "芝",
@@ -1073,7 +1073,7 @@
       "name": "マイネルジェロディ",
       "paper_style": "差",
       "kinryo": 57.0,
-      "weight": 0,
+      "weight": 484,
       "weight_change": 0,
       "boost": 0,
       "last_race_days": 118,
@@ -1111,7 +1111,7 @@
           "days": 146,
           "pace": "H",
           "baba_idx": null,
-          "tsi": null
+          "tsi": 84.0
         },
         {
           "surface": "芝",
@@ -1126,7 +1126,7 @@
           "days": 280,
           "pace": "M",
           "baba_idx": null,
-          "tsi": null
+          "tsi": 59.0
         },
         {
           "surface": "芝",
@@ -1141,7 +1141,7 @@
           "days": 335,
           "pace": "M",
           "baba_idx": null,
-          "tsi": null
+          "tsi": 89.0
         },
         {
           "surface": "芝",
@@ -1156,7 +1156,7 @@
           "days": 482,
           "pace": "H",
           "baba_idx": null,
-          "tsi": null
+          "tsi": 93.0
         },
         {
           "surface": "芝",
@@ -1225,8 +1225,8 @@
       "name": "カウンターセブン",
       "paper_style": "逃",
       "kinryo": 57.0,
-      "weight": 0,
-      "weight_change": 0,
+      "weight": 506,
+      "weight_change": -8,
       "boost": 0,
       "last_race_days": 63,
       "csi": 5,
@@ -1262,7 +1262,7 @@
           "days": 69,
           "pace": "M",
           "baba_idx": null,
-          "tsi": null
+          "tsi": 93.0
         },
         {
           "surface": "芝",
@@ -1277,7 +1277,7 @@
           "days": 84,
           "pace": "M",
           "baba_idx": null,
-          "tsi": null
+          "tsi": 93.0
         },
         {
           "surface": "芝",
@@ -1292,7 +1292,7 @@
           "days": 132,
           "pace": "H",
           "baba_idx": null,
-          "tsi": null
+          "tsi": 85.0
         },
         {
           "surface": "芝",
@@ -1307,7 +1307,7 @@
           "days": 160,
           "pace": "H",
           "baba_idx": null,
-          "tsi": null
+          "tsi": 103.0
         },
         {
           "surface": "芝",
