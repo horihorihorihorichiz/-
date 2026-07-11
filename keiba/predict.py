@@ -542,7 +542,9 @@ def main():
     exp = sum(st*p*o for _, _, o, st, p, _ in picks) / (total or 1)
     # GO: 核(Sランク軸)が機能し、想定決着の複合合算がfloor近辺以上、かつ portfolio EVプラス。
     core_ok = dec.get("core_return", 0) >= a.floor * a.budget * 0.9
-    go = bool(picks and exp >= 1.2 and (core_ok or ev1 >= 1.5 or ev2 >= 1.8))
+    # BOX(S3頭混戦)は核returnを持たないので、BOX全体の期待回収がfloor以上ならGO扱い
+    box_ok = dec.get("mode") == "BOX" and exp >= a.floor
+    go = bool(picks and exp >= 1.2 and (core_ok or box_ok or ev1 >= 1.5 or ev2 >= 1.8))
     print("\nEV裁定: %s（単勝EV1位=%.0f%% 2位=%.0f%% / 期待回収=%.0f%% / 核合算=%.0f%%）"
           % ("GO ●" if go else "見送り ○", ev1*100, ev2*100, exp*100,
              dec.get("core_return", 0)/a.budget*100))
