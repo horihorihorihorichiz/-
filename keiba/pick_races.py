@@ -219,7 +219,8 @@ def prescreen_one(rid):
     axis_odds = tan_ev = None
     try:
         import predict
-        o = predict.fetch_nar(rid, field)
+        jra = len(rid) == 12 and rid[4:6] in {"%02d" % i for i in range(1, 11)}
+        o = predict.fetch_jra(rid) if jra else predict.fetch_nar(rid, field)
         tan = {int(k): v for k, v in o.get("tan", {}).items() if v}
         axis_odds = tan.get(top["num"])
         if axis_odds:
