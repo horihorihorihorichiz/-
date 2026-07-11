@@ -380,10 +380,19 @@ def build_buylist(rows, odds, budget=10000, floor=2.0, unit=100,
     return picks, tot, dec
 
 # ---------- 出力(RULES.md準拠) ----------
-def print_ranking(res):
-    print("全頭ランキング  馬番 脚質  得点(WAvg)  PWin  ランク")
+def print_ranking(res, tan=None):
+    """全頭ランキング。RULES§1: 馬番・馬名・脚質・得点(WAvg)・PWin・ランク・単勝オッズ(人気) 全列必須・全頭省略禁止"""
+    ninki = {}
+    if tan:
+        for i, (n, o) in enumerate(sorted(tan.items(), key=lambda kv: kv[1]), 1):
+            ninki[n] = i
+    print("全頭ランキング（全%d頭）" % len(res["rows"]))
+    print("  馬番 馬名             脚質  得点(WAvg)   PWin  ランク  単勝(人気)")
     for r in sorted(res["rows"], key=lambda x: -x["pwin"]):
-        print("  %2d %-4s  %6.1f   %5.1f%%   %s" % (r["num"], r["style"], r["wavg"], r["pwin"], r["rank"]))
+        od = ("%6.1f (%d人気)" % (tan[r["num"]], ninki[r["num"]])
+              if tan and r["num"] in tan else "    --")
+        print("  %2d  %-16s %-4s %7.1f  %6.1f%%   %s   %s" % (
+            r["num"], r.get("name", "")[:8], r["style"], r["wavg"], r["pwin"], r["rank"], od))
     print("  展開=%s / %s" % (res.get("drlbl", ""), res.get("case", "")))
 
 def print_buylist(picks, total, dec, budget, floor):
@@ -501,8 +510,8 @@ def main():
     print("=" * 60)
     print(race.get("name", a.race_json), " 馬場:", race.get("baba", "?"))
     print("=" * 60)
-    print_ranking(res)
     if a.no_odds:
+        print_ranking(res)
         return
 
     # race_id: 明示 > jsonの race_id > 推定不可なら中断
@@ -516,11 +525,15 @@ def main():
                     else fetch_nar(race_id, race.get("field", 16),
                                    axis=(a.box or a.axis or [sorted(res["rows"], key=lambda r:-r["pwin"])[0]["num"]])))
         except Exception as e:
+            print_ranking(res)
             print("\n[オッズ自動取得に失敗:%s] --odds でオッズjsonを渡してください。" % e)
             return
     else:
+        print_ranking(res)
         print("\n[race_id不明] jsonに \"race_id\" を入れるか --race-id / --odds を指定してください。")
         return
+    # ランキングは単勝オッズ(人気)列込みで出す（RULES§1）
+    print_ranking(res, tan={int(k): v for k, v in odds.get("tan", {}).items() if v})
 
     # 軸の手動上書き
     force = None

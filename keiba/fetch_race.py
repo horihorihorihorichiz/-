@@ -93,7 +93,9 @@ def fetch_shutuba(race_id, nar=True):
     venue = mv.group(1) if mv else ""
 
     horses = []
-    for r in re.findall(r'<tr class="HorseList[^>]*>(.*?)</tr>', h, re.S):
+    for cls, r in re.findall(r'<tr class="(HorseList[^"]*)"[^>]*>(.*?)</tr>', h, re.S):
+        if re.search(r"Cancel", cls) or re.search(r"(出走取消|競走除外|>取消<|>除外<)", r):
+            continue  # 取消・除外馬はランキングに入れない
         hid = re.findall(r"horse/(\d+)", r)
         if not hid: continue
         um = re.search(r'class="Umaban\d+[^"]*"[^>]*>(\d+)<', r)  # NAR="Umaban1" JRA="Umaban1 Txt_C"
@@ -317,6 +319,10 @@ def main():
     print(f"[3/3] 書き出し: {out}", file=sys.stderr)
     n_tsi = sum(1 for hh in horses for r in hh["races"] if r["tsi"] is not None)
     print(f"\n★ {out} 生成完了（{len(horses)}頭）。タイム指数反映: {n_tsi}走", file=sys.stderr)
+    no_wt = [h["num"] for h in horses if not h["weight"]]
+    if no_wt:
+        print(f"⚠️ 馬体重未発表: 馬番{no_wt}（HCS=中立で計算。当日発表後に再実行して反映すること）",
+              file=sys.stderr)
     if n_tsi == 0:
         print("⚠️ タイム指数なしで評価中（相手/穴の判別精度が落ちる）。"
               "\n   常に反映するには: ローカルの netkeiba_run.py で "
