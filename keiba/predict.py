@@ -242,19 +242,21 @@ def build_buylist(rows, odds, budget=10000, floor=2.0, unit=100,
         a2 = order[1]
     axis_set = {a} | ({a2} if a2 else set())
     non = [h for h in order if h not in axis_set]
-    # 相手選定: システム順位ベース + 人気本命(≤3.5倍)は必ず + S/A/Bは全員
-    partners = []
-    for h in non:
-        if len(partners) < 5 or rk.get(h) in ("S", "A", "B") or tan.get(h, 99) <= 3.5:
-            partners.append(h)
+    # 相手選定(7/12改): 【相手(2頭系・妙味対象)＝Bランク以上 or 人気本命(≤3.5倍)のみ】
+    #   Cランク低得点馬は「紐」(三連複の3列目)まで。軸・馬連/ワイド相手には使わない
+    #   （7/12七夕賞: ③⑦(C)が軸的に立ちすぎ。「3は紐としてはいいけど軸には得点が低すぎる」）
+    partners = [h for h in non if rk.get(h) in ("S", "A", "B") or tan.get(h, 99) <= 3.5]
     partners = sorted(set(partners), key=lambda h: -pw[h])
-    core_p = [h for h in partners if rk.get(h) in ("S", "A", "B") or tan.get(h, 99) <= 3.5][:2]
+    himo = [h for h in non if h not in partners][:4]     # 紐=Cランク上位(システム順・三連複3列目専用)
+    himo = sorted(himo, key=lambda h: -pw[h])
+    core_p = partners[:2]
     dec["axis"] = [a] + ([a2] if a2 else [])
     dec["mode"] = "2AXIS_SYS" if a2 else "1AXIS"
-    dec["note"] = ("システム最上位2頭軸=%d,%d(7/12確立・配分はシステム順位優先)" % (a, a2)) if a2 \
-        else "単軸1頭流し(2番手が弱くシステム軸1頭に縮退)"
+    dec["note"] = ("システム最上位2頭軸=%d,%d(7/12確立・相手=B+のみ/Cは紐)" % (a, a2)) if a2 \
+        else "単軸1頭流し(2番手が弱くシステム軸1頭に縮退・相手=B+のみ/Cは紐)"
     dec["core"] = ([a2] if a2 else []) + core_p
     dec["value"] = [h for h in partners if h not in core_p]
+    dec["himo"] = himo
 
     head = (rk.get(a) == "S") and (tan.get(a, 99) <= 5.0 or pw[a] >= 0.25)
     picks = []; tot = 0
@@ -313,15 +315,17 @@ def build_buylist(rows, odds, budget=10000, floor=2.0, unit=100,
     tri_cap = budget * 0.30
     tri_spent = 0
     tris = []
-    if a2:   # 軸2頭ながし a1-a2-相手(システム順) + a1軸の上位ペア(a2飛び保険)
-        for h in partners:
+    if a2:   # 軸2頭ながし a1-a2-相手(B+相手→紐の順) + a1軸の上位ペア(a2飛び保険)
+        for h in partners + himo:                     # 紐(C)は3列目のみOK
             k = tuple(sorted((a, a2, h)))
             if k in tp: tris.append((k, tp[k], _p3(pw, *k)))
-        for c in itertools.combinations(sorted(partners[:3]), 2):
-            k = tuple(sorted((a,) + c))
+        for c in itertools.combinations(sorted((partners + himo)[:3]), 2):
+            k = tuple(sorted((a,) + c))               # a2飛び保険(相手が居なければ紐で構成)
             if k in tp: tris.append((k, tp[k], _p3(pw, *k)))
     else:
-        for c in itertools.combinations(sorted(partners), 2):
+        # 1軸: 三連複の2・3列目はどちらも「軸の後ろ」=紐扱い。B+相手優先で紐も使う
+        pool = partners + himo
+        for c in itertools.combinations(sorted(pool), 2):
             k = tuple(sorted((a,) + c))
             if k in tp: tris.append((k, tp[k], _p3(pw, *k)))
     tris.sort(key=lambda x: -x[2])                 # ★システム(確率)順=当たりやすい順
@@ -401,9 +405,10 @@ def print_ranking(res, tan=None):
 def print_buylist(picks, total, dec, budget, floor):
     from collections import defaultdict
     core_horses = set(dec.get("axis", [])) | set(dec.get("core", []))
-    print("\n買い目（%s／軸=%s 核相手=%s 期待値馬=%s）" % (
+    print("\n買い目（%s／軸=%s 相手(B+)=%s 紐(C)=%s）" % (
         dec["note"], ",".join(map(str, dec["axis"])),
-        ",".join(map(str, dec.get("core", []))), ",".join(map(str, dec.get("value", [])))))
+        ",".join(map(str, dec.get("core", []) + [h for h in dec.get("value", []) if h not in dec.get("core", [])])),
+        ",".join(map(str, dec.get("himo", [])))))
     print("  %-5s%-9s%8s%7s%9s%7s %s" % ("券種", "買い目", "オッズ", "金額", "払戻", "EV", "区分"))
     exp = 0.0; d = defaultdict(lambda: [0, 0])
     for kind, lbl, o, st, p, ev in picks:
