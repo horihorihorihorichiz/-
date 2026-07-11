@@ -4,7 +4,7 @@
   "surface": "ダ",
   "distance": 1600,
   "field": 10,
-  "baba": "良",
+  "baba": "重",
   "today_vg": 2,
   "dist_cat": "M",
   "dsi_haiten": 5,
@@ -17,8 +17,8 @@
       "name": "フォートポータル",
       "paper_style": "追",
       "kinryo": 54.0,
-      "weight": 0,
-      "weight_change": 0,
+      "weight": 474,
+      "weight_change": 5,
       "boost": 0,
       "last_race_days": 14,
       "csi": 5,
@@ -43,7 +43,7 @@
           "days": 14,
           "pace": null,
           "baba_idx": null,
-          "tsi": null
+          "tsi": 30.0
         },
         {
           "surface": "ダ",
@@ -58,7 +58,7 @@
           "days": 27,
           "pace": null,
           "baba_idx": null,
-          "tsi": null
+          "tsi": -31.0
         },
         {
           "surface": "ダ",
@@ -69,11 +69,11 @@
           "corner4": 15,
           "agari": 38.5,
           "vg": 2,
-          "tier": 10,
+          "tier": 6,
           "days": 76,
           "pace": "H",
           "baba_idx": null,
-          "tsi": null
+          "tsi": 56.0
         },
         {
           "surface": "芝",
@@ -84,11 +84,11 @@
           "corner4": 11,
           "agari": 37.0,
           "vg": 2,
-          "tier": 10,
+          "tier": 6,
           "days": 91,
           "pace": "H",
           "baba_idx": null,
-          "tsi": null
+          "tsi": 68.0
         },
         {
           "surface": "芝",
@@ -99,11 +99,11 @@
           "corner4": 4,
           "agari": 39.0,
           "vg": 2,
-          "tier": 10,
+          "tier": 6,
           "days": 119,
           "pace": "M",
           "baba_idx": null,
-          "tsi": null
+          "tsi": 76.0
         },
         {
           "surface": "ダ",
@@ -114,7 +114,7 @@
           "corner4": 13,
           "agari": 42.9,
           "vg": 2,
-          "tier": 10,
+          "tier": 6,
           "days": 196,
           "pace": "H",
           "baba_idx": null,
@@ -129,7 +129,7 @@
           "corner4": 11,
           "agari": 36.3,
           "vg": 2,
-          "tier": 10,
+          "tier": 6,
           "days": 209,
           "pace": "S",
           "baba_idx": null,
@@ -172,8 +172,8 @@
       "name": "ジェットブレイク",
       "paper_style": "差",
       "kinryo": 57.0,
-      "weight": 0,
-      "weight_change": 0,
+      "weight": 511,
+      "weight_change": -5,
       "boost": 0,
       "last_race_days": 27,
       "csi": 0,
@@ -196,7 +196,7 @@
           "days": 27,
           "pace": null,
           "baba_idx": null,
-          "tsi": null
+          "tsi": 7.0
         },
         {
           "surface": "ダ",
@@ -211,7 +211,7 @@
           "days": 247,
           "pace": "M",
           "baba_idx": null,
-          "tsi": null
+          "tsi": 51.0
         },
         {
           "surface": "ダ",
@@ -226,7 +226,7 @@
           "days": 256,
           "pace": "H",
           "baba_idx": null,
-          "tsi": null
+          "tsi": 67.0
         },
         {
           "surface": "ダ",
@@ -241,7 +241,7 @@
           "days": 337,
           "pace": "H",
           "baba_idx": null,
-          "tsi": null
+          "tsi": 35.0
         },
         {
           "surface": "ダ",
@@ -256,7 +256,7 @@
           "days": 404,
           "pace": "H",
           "baba_idx": null,
-          "tsi": null
+          "tsi": 33.0
         },
         {
           "surface": "ダ",
@@ -297,7 +297,7 @@
           "corner4": 15,
           "agari": 37.8,
           "vg": 2,
-          "tier": 10,
+          "tier": 6,
           "days": 497,
           "pace": "H",
           "baba_idx": null,
@@ -312,7 +312,7 @@
           "corner4": 9,
           "agari": 37.9,
           "vg": 2,
-          "tier": 10,
+          "tier": 6,
           "days": 573,
           "pace": "H",
           "baba_idx": null,
@@ -325,8 +325,8 @@
       "name": "フクノスパイン",
       "paper_style": "差",
       "kinryo": 55.0,
-      "weight": 0,
-      "weight_change": 0,
+      "weight": 463,
+      "weight_change": -9,
       "boost": 0,
       "last_race_days": 13,
       "csi": 5,
@@ -352,7 +352,7 @@
           "days": 13,
           "pace": null,
           "baba_idx": null,
-          "tsi": null
+          "tsi": 21.0
         },
         {
           "surface": "ダ",
@@ -367,7 +367,7 @@
           "days": 35,
           "pace": null,
           "baba_idx": null,
-          "tsi": null
+          "tsi": 46.0
         },
         {
           "surface": "ダ",
@@ -382,7 +382,7 @@
           "days": 49,
           "pace": null,
           "baba_idx": null,
-          "tsi": null
+          "tsi": 41.0
         },
         {
           "surface": "ダ",
@@ -397,7 +397,7 @@
           "days": 77,
           "pace": null,
           "baba_idx": null,
-          "tsi": null
+          "tsi": 34.0
         },
         {
           "surface": "ダ",
@@ -481,8 +481,8 @@
       "name": "ブラウナイル",
       "paper_style": "追",
       "kinryo": 53.0,
-      "weight": 0,
-      "weight_change": 0,
+      "weight": 499,
+      "weight_change": -6,
       "boost": 0,
       "last_race_days": 14,
       "csi": 2.5,
@@ -519,7 +519,7 @@
           "days": 14,
           "pace": null,
           "baba_idx": null,
-          "tsi": null
+          "tsi": 33.0
         },
         {
           "surface": "ダ",
@@ -534,7 +534,7 @@
           "days": 28,
           "pace": null,
           "baba_idx": null,
-          "tsi": null
+          "tsi": -13.0
         },
         {
           "surface": "ダ",
@@ -549,7 +549,7 @@
           "days": 41,
           "pace": null,
           "baba_idx": null,
-          "tsi": null
+          "tsi": 29.0
         },
         {
           "surface": "ダ",
@@ -564,7 +564,7 @@
           "days": 62,
           "pace": null,
           "baba_idx": null,
-          "tsi": null
+          "tsi": 22.0
         },
         {
           "surface": "ダ",
@@ -579,7 +579,7 @@
           "days": 77,
           "pace": null,
           "baba_idx": null,
-          "tsi": null
+          "tsi": 24.0
         },
         {
           "surface": "ダ",
@@ -648,8 +648,8 @@
       "name": "ヴィクトリーナイト",
       "paper_style": "差",
       "kinryo": 57.0,
-      "weight": 0,
-      "weight_change": 0,
+      "weight": 477,
+      "weight_change": -1,
       "boost": 0,
       "last_race_days": 14,
       "csi": 0,
@@ -673,7 +673,7 @@
           "days": 14,
           "pace": null,
           "baba_idx": null,
-          "tsi": null
+          "tsi": 35.0
         },
         {
           "surface": "ダ",
@@ -688,7 +688,7 @@
           "days": 27,
           "pace": null,
           "baba_idx": null,
-          "tsi": null
+          "tsi": 6.0
         },
         {
           "surface": "ダ",
@@ -703,7 +703,7 @@
           "days": 41,
           "pace": null,
           "baba_idx": null,
-          "tsi": null
+          "tsi": 25.0
         },
         {
           "surface": "ダ",
@@ -718,7 +718,7 @@
           "days": 55,
           "pace": null,
           "baba_idx": null,
-          "tsi": null
+          "tsi": -1.0
         },
         {
           "surface": "ダ",
@@ -733,7 +733,7 @@
           "days": 94,
           "pace": null,
           "baba_idx": null,
-          "tsi": null
+          "tsi": 0.0
         },
         {
           "surface": "ダ",
@@ -802,8 +802,8 @@
       "name": "リュウノラブゲーム",
       "paper_style": "差",
       "kinryo": 55.0,
-      "weight": 0,
-      "weight_change": 0,
+      "weight": 453,
+      "weight_change": 9,
       "boost": 0,
       "last_race_days": 14,
       "csi": 5,
@@ -840,7 +840,7 @@
           "days": 14,
           "pace": null,
           "baba_idx": null,
-          "tsi": null
+          "tsi": 14.0
         },
         {
           "surface": "ダ",
@@ -855,7 +855,7 @@
           "days": 27,
           "pace": null,
           "baba_idx": null,
-          "tsi": null
+          "tsi": 23.0
         },
         {
           "surface": "ダ",
@@ -870,7 +870,7 @@
           "days": 49,
           "pace": null,
           "baba_idx": null,
-          "tsi": null
+          "tsi": 26.0
         },
         {
           "surface": "ダ",
@@ -885,7 +885,7 @@
           "days": 62,
           "pace": null,
           "baba_idx": null,
-          "tsi": null
+          "tsi": 4.0
         },
         {
           "surface": "ダ",
@@ -900,7 +900,7 @@
           "days": 76,
           "pace": null,
           "baba_idx": null,
-          "tsi": null
+          "tsi": 36.0
         },
         {
           "surface": "ダ",
@@ -969,8 +969,8 @@
       "name": "グッドエクスプレス",
       "paper_style": "追",
       "kinryo": 57.0,
-      "weight": 0,
-      "weight_change": 0,
+      "weight": 562,
+      "weight_change": -5,
       "boost": 0,
       "last_race_days": 14,
       "csi": 2.5,
@@ -997,7 +997,7 @@
           "days": 14,
           "pace": null,
           "baba_idx": null,
-          "tsi": null
+          "tsi": -8.0
         },
         {
           "surface": "ダ",
@@ -1012,7 +1012,7 @@
           "days": 27,
           "pace": null,
           "baba_idx": null,
-          "tsi": null
+          "tsi": -13.0
         },
         {
           "surface": "ダ",
@@ -1027,7 +1027,7 @@
           "days": 41,
           "pace": null,
           "baba_idx": null,
-          "tsi": null
+          "tsi": 13.0
         },
         {
           "surface": "ダ",
@@ -1042,7 +1042,7 @@
           "days": 56,
           "pace": null,
           "baba_idx": null,
-          "tsi": null
+          "tsi": -32.0
         },
         {
           "surface": "ダ",
@@ -1126,8 +1126,8 @@
       "name": "ノアファラオ",
       "paper_style": "追",
       "kinryo": 57.0,
-      "weight": 0,
-      "weight_change": 0,
+      "weight": 475,
+      "weight_change": -5,
       "boost": 0,
       "last_race_days": 14,
       "csi": 0,
@@ -1163,7 +1163,7 @@
           "days": 14,
           "pace": null,
           "baba_idx": null,
-          "tsi": null
+          "tsi": 29.0
         },
         {
           "surface": "ダ",
@@ -1178,7 +1178,7 @@
           "days": 27,
           "pace": null,
           "baba_idx": null,
-          "tsi": null
+          "tsi": -9.0
         },
         {
           "surface": "ダ",
@@ -1193,7 +1193,7 @@
           "days": 41,
           "pace": null,
           "baba_idx": null,
-          "tsi": null
+          "tsi": 1.0
         },
         {
           "surface": "ダ",
@@ -1208,7 +1208,7 @@
           "days": 55,
           "pace": null,
           "baba_idx": null,
-          "tsi": null
+          "tsi": -11.0
         },
         {
           "surface": "ダ",
@@ -1223,7 +1223,7 @@
           "days": 70,
           "pace": null,
           "baba_idx": null,
-          "tsi": null
+          "tsi": -3.0
         },
         {
           "surface": "ダ",
@@ -1292,8 +1292,8 @@
       "name": "アルハイルフォート",
       "paper_style": "追",
       "kinryo": 57.0,
-      "weight": 0,
-      "weight_change": 0,
+      "weight": 490,
+      "weight_change": 2,
       "boost": 0,
       "last_race_days": 129,
       "csi": 0,
@@ -1317,7 +1317,7 @@
           "days": 129,
           "pace": "H",
           "baba_idx": null,
-          "tsi": null
+          "tsi": 27.0
         },
         {
           "surface": "ダ",
@@ -1332,7 +1332,7 @@
           "days": 158,
           "pace": "H",
           "baba_idx": null,
-          "tsi": null
+          "tsi": 35.0
         },
         {
           "surface": "ダ",
@@ -1347,7 +1347,7 @@
           "days": 189,
           "pace": "H",
           "baba_idx": null,
-          "tsi": null
+          "tsi": 36.0
         },
         {
           "surface": "ダ",
@@ -1362,7 +1362,7 @@
           "days": 205,
           "pace": "H",
           "baba_idx": null,
-          "tsi": null
+          "tsi": 50.0
         },
         {
           "surface": "ダ",
@@ -1377,7 +1377,7 @@
           "days": 236,
           "pace": "H",
           "baba_idx": null,
-          "tsi": null
+          "tsi": 46.0
         },
         {
           "surface": "ダ",
@@ -1446,7 +1446,7 @@
       "name": "アウゲンブリック",
       "paper_style": "追",
       "kinryo": 55.0,
-      "weight": 0,
+      "weight": 514,
       "weight_change": 0,
       "boost": 0,
       "last_race_days": 14,
@@ -1483,7 +1483,7 @@
           "days": 14,
           "pace": null,
           "baba_idx": null,
-          "tsi": null
+          "tsi": 40.0
         },
         {
           "surface": "ダ",
@@ -1498,7 +1498,7 @@
           "days": 27,
           "pace": null,
           "baba_idx": null,
-          "tsi": null
+          "tsi": -3.0
         },
         {
           "surface": "ダ",
@@ -1513,7 +1513,7 @@
           "days": 41,
           "pace": null,
           "baba_idx": null,
-          "tsi": null
+          "tsi": 2.0
         },
         {
           "surface": "ダ",
@@ -1528,7 +1528,7 @@
           "days": 55,
           "pace": null,
           "baba_idx": null,
-          "tsi": null
+          "tsi": -8.0
         },
         {
           "surface": "ダ",
@@ -1543,7 +1543,7 @@
           "days": 69,
           "pace": null,
           "baba_idx": null,
-          "tsi": null
+          "tsi": 16.0
         },
         {
           "surface": "ダ",
