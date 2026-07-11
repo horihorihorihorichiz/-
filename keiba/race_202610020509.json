@@ -52,7 +52,7 @@
           "days": 90,
           "pace": "M",
           "baba_idx": null,
-          "tsi": null
+          "tsi": 75.0
         },
         {
           "surface": "芝",
@@ -67,7 +67,7 @@
           "days": 244,
           "pace": "S",
           "baba_idx": null,
-          "tsi": null
+          "tsi": 71.0
         },
         {
           "surface": "芝",
@@ -82,7 +82,7 @@
           "days": 349,
           "pace": "S",
           "baba_idx": null,
-          "tsi": null
+          "tsi": 79.0
         },
         {
           "surface": "芝",
@@ -97,7 +97,7 @@
           "days": 413,
           "pace": "S",
           "baba_idx": null,
-          "tsi": null
+          "tsi": 77.0
         },
         {
           "surface": "芝",
@@ -190,7 +190,7 @@
           "days": 55,
           "pace": "S",
           "baba_idx": null,
-          "tsi": null
+          "tsi": 85.0
         },
         {
           "surface": "芝",
@@ -205,7 +205,7 @@
           "days": 69,
           "pace": "S",
           "baba_idx": null,
-          "tsi": null
+          "tsi": 80.0
         },
         {
           "surface": "ダ",
@@ -220,7 +220,7 @@
           "days": 104,
           "pace": "H",
           "baba_idx": null,
-          "tsi": null
+          "tsi": 75.0
         },
         {
           "surface": "ダ",
@@ -235,7 +235,7 @@
           "days": 133,
           "pace": "H",
           "baba_idx": null,
-          "tsi": null
+          "tsi": 57.0
         },
         {
           "surface": "ダ",
@@ -341,7 +341,7 @@
           "days": 62,
           "pace": "M",
           "baba_idx": null,
-          "tsi": null
+          "tsi": 79.0
         },
         {
           "surface": "芝",
@@ -356,7 +356,7 @@
           "days": 146,
           "pace": "S",
           "baba_idx": null,
-          "tsi": null
+          "tsi": 82.0
         },
         {
           "surface": "芝",
@@ -371,7 +371,7 @@
           "days": 168,
           "pace": "S",
           "baba_idx": null,
-          "tsi": null
+          "tsi": 99.0
         },
         {
           "surface": "芝",
@@ -386,7 +386,7 @@
           "days": 210,
           "pace": "M",
           "baba_idx": null,
-          "tsi": null
+          "tsi": 95.0
         },
         {
           "surface": "芝",
@@ -493,7 +493,7 @@
           "days": 63,
           "pace": "H",
           "baba_idx": null,
-          "tsi": null
+          "tsi": 67.0
         },
         {
           "surface": "ダ",
@@ -508,7 +508,7 @@
           "days": 118,
           "pace": "M",
           "baba_idx": null,
-          "tsi": null
+          "tsi": 83.0
         },
         {
           "surface": "芝",
@@ -523,7 +523,7 @@
           "days": 140,
           "pace": "S",
           "baba_idx": null,
-          "tsi": null
+          "tsi": 82.0
         },
         {
           "surface": "芝",
@@ -538,7 +538,7 @@
           "days": 217,
           "pace": "S",
           "baba_idx": null,
-          "tsi": null
+          "tsi": 93.0
         },
         {
           "surface": "芝",
@@ -644,7 +644,7 @@
           "days": 125,
           "pace": "M",
           "baba_idx": null,
-          "tsi": null
+          "tsi": 79.0
         },
         {
           "surface": "芝",
@@ -659,7 +659,7 @@
           "days": 161,
           "pace": "S",
           "baba_idx": null,
-          "tsi": null
+          "tsi": 56.0
         }
       ]
     },
@@ -705,7 +705,7 @@
           "days": 133,
           "pace": "S",
           "baba_idx": null,
-          "tsi": null
+          "tsi": 80.0
         },
         {
           "surface": "芝",
@@ -720,7 +720,7 @@
           "days": 244,
           "pace": "S",
           "baba_idx": null,
-          "tsi": null
+          "tsi": 74.0
         },
         {
           "surface": "芝",
@@ -735,7 +735,7 @@
           "days": 272,
           "pace": "S",
           "baba_idx": null,
-          "tsi": null
+          "tsi": 80.0
         },
         {
           "surface": "芝",
@@ -750,7 +750,7 @@
           "days": 420,
           "pace": "S",
           "baba_idx": null,
-          "tsi": null
+          "tsi": 81.0
         },
         {
           "surface": "芝",
@@ -854,7 +854,7 @@
           "days": 224,
           "pace": "M",
           "baba_idx": null,
-          "tsi": null
+          "tsi": 78.0
         },
         {
           "surface": "芝",
@@ -869,7 +869,7 @@
           "days": 287,
           "pace": "S",
           "baba_idx": null,
-          "tsi": null
+          "tsi": 74.0
         }
       ]
     },
@@ -915,7 +915,7 @@
           "days": 56,
           "pace": "S",
           "baba_idx": null,
-          "tsi": null
+          "tsi": 73.0
         },
         {
           "surface": "芝",
@@ -930,7 +930,7 @@
           "days": 146,
           "pace": "M",
           "baba_idx": null,
-          "tsi": null
+          "tsi": 69.0
         },
         {
           "surface": "芝",
@@ -945,7 +945,7 @@
           "days": 167,
           "pace": "H",
           "baba_idx": null,
-          "tsi": null
+          "tsi": 81.0
         },
         {
           "surface": "芝",
@@ -960,7 +960,7 @@
           "days": 433,
           "pace": "H",
           "baba_idx": null,
-          "tsi": null
+          "tsi": 91.0
         },
         {
           "surface": "芝",
@@ -1066,7 +1066,7 @@
           "days": 84,
           "pace": "S",
           "baba_idx": null,
-          "tsi": null
+          "tsi": 92.0
         },
         {
           "surface": "芝",
@@ -1081,7 +1081,7 @@
           "days": 147,
           "pace": "M",
           "baba_idx": null,
-          "tsi": null
+          "tsi": 78.0
         },
         {
           "surface": "芝",
@@ -1096,7 +1096,7 @@
           "days": 202,
           "pace": "S",
           "baba_idx": null,
-          "tsi": null
+          "tsi": 78.0
         }
       ]
     },
@@ -1140,7 +1140,7 @@
           "days": 84,
           "pace": "S",
           "baba_idx": null,
-          "tsi": null
+          "tsi": 78.0
         },
         {
           "surface": "芝",
@@ -1155,7 +1155,7 @@
           "days": 104,
           "pace": "S",
           "baba_idx": null,
-          "tsi": null
+          "tsi": 94.0
         },
         {
           "surface": "芝",
@@ -1170,7 +1170,7 @@
           "days": 229,
           "pace": "S",
           "baba_idx": null,
-          "tsi": null
+          "tsi": 98.0
         },
         {
           "surface": "芝",
@@ -1185,7 +1185,7 @@
           "days": 272,
           "pace": "S",
           "baba_idx": null,
-          "tsi": null
+          "tsi": 90.0
         },
         {
           "surface": "芝",
@@ -1292,7 +1292,7 @@
           "days": 98,
           "pace": "S",
           "baba_idx": null,
-          "tsi": null
+          "tsi": 86.0
         },
         {
           "surface": "芝",
@@ -1307,7 +1307,7 @@
           "days": 118,
           "pace": "M",
           "baba_idx": null,
-          "tsi": null
+          "tsi": 86.0
         },
         {
           "surface": "芝",
@@ -1322,7 +1322,7 @@
           "days": 168,
           "pace": "M",
           "baba_idx": null,
-          "tsi": null
+          "tsi": 58.0
         },
         {
           "surface": "芝",
@@ -1337,7 +1337,7 @@
           "days": 187,
           "pace": "M",
           "baba_idx": null,
-          "tsi": null
+          "tsi": 61.0
         },
         {
           "surface": "芝",
