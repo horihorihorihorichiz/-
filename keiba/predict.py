@@ -253,7 +253,7 @@ def build_buylist(rows, odds, budget=10000, floor=2.0, unit=100,
     #   （7/12七夕賞: ③⑦(C)が軸的に立ちすぎ。「3は紐としてはいいけど軸には得点が低すぎる」）
     partners = [h for h in non if rk.get(h) in ("S", "A", "B") or tan.get(h, 99) <= 3.5]
     partners = sorted(set(partners), key=lambda h: -pw[h])
-    himo = [h for h in non if h not in partners][:4]     # 紐=Cランク上位(システム順・三連複3列目専用)
+    himo = [h for h in non if h not in partners and rk.get(h) == "C"][:4]  # 紐=Cのみ(三連複3列目専用)。Dは買わない
     himo = sorted(himo, key=lambda h: -pw[h])
     core_p = partners[:2]
     dec["axis"] = [a] + ([a2] if a2 else [])

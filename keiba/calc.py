@@ -426,7 +426,7 @@ def run(race):
     topw = rows[0]["wavg"]
     for r in rows:
         gr = (topw - r["wavg"])/topw
-        r["rank"] = "S" if gr<=0.03 else "A" if gr<=0.08 else "B" if gr<=0.14 else "C"
+        r["rank"] = "S" if gr<=0.03 else "A" if gr<=0.08 else "B" if gr<=0.14 else "C" if gr<=0.30 else "D"  # 7/12: C(紐まで可)/D(消し)を分離
     nS = sum(1 for r in rows if r["rank"]=="S")
     dr = rows[0]["pwin"]/rows[1]["pwin"] if len(rows)>1 and rows[1]["pwin"]>0 else 99
     if nS == 1:
