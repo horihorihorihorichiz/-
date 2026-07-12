@@ -236,10 +236,16 @@ def build_buylist(rows, odds, budget=10000, floor=2.0, unit=100,
     #       ②金の配分はシステム順位優先(核=当てにいく)。EVは妙味レイヤーのみ
     #       ③7/5の片飛び対策: 第1軸単独カバー(ワイドa1-相手)は必ず残す
     #       ④S3頭のBOXは「軸2頭+第3Sを最厚相手」として自然に内包される
-    a = order[0]
+    # 軸選定(7/12v2): エリート=Aランク以上。◎=得点(システム)1位 / ○=エリート内EV(pwin×単勝)最大
+    #   「◎か○のどちらかが馬券に絡めば獲れる」二重ラダーを組む
+    elite = [h for h in order if rk.get(h) in ("S", "A")]
+    a = order[0]                                       # ◎ = システム得点1位
     a2 = None
-    if len(order) > 1 and (pw[order[1]] >= 0.12 or rk.get(order[1]) in ("S", "A")):
-        a2 = order[1]
+    if len(elite) >= 2 and tan:
+        by_ev = sorted(elite, key=lambda h: -(pw[h] * tan.get(h, 0)))
+        a2 = by_ev[0] if by_ev[0] != a else (by_ev[1] if len(by_ev) > 1 else None)
+    elif len(order) > 1 and (pw[order[1]] >= 0.12 or rk.get(order[1]) in ("S", "A")):
+        a2 = order[1]                                  # エリート不足時は従来縮退
     axis_set = {a} | ({a2} if a2 else set())
     non = [h for h in order if h not in axis_set]
     # 相手選定(7/12改): 【相手(2頭系・妙味対象)＝Bランク以上 or 人気本命(≤3.5倍)のみ】
@@ -252,8 +258,8 @@ def build_buylist(rows, odds, budget=10000, floor=2.0, unit=100,
     core_p = partners[:2]
     dec["axis"] = [a] + ([a2] if a2 else [])
     dec["mode"] = "2AXIS_SYS" if a2 else "1AXIS"
-    dec["note"] = ("システム最上位2頭軸=%d,%d(7/12確立・相手=B+のみ/Cは紐)" % (a, a2)) if a2 \
-        else "単軸1頭流し(2番手が弱くシステム軸1頭に縮退・相手=B+のみ/Cは紐)"
+    dec["note"] = ("◎%d(得点1位)×○%d(A+内EV最大)の二重ラダー(どちらか絡めば獲る/相手=B+・Cは紐)" % (a, a2)) if a2 \
+        else "単軸1頭流し(エリート不足で◎のみに縮退・相手=B+/Cは紐)"
     dec["core"] = ([a2] if a2 else []) + core_p
     dec["value"] = [h for h in partners if h not in core_p]
     dec["himo"] = himo
@@ -267,11 +273,13 @@ def build_buylist(rows, odds, budget=10000, floor=2.0, unit=100,
         picks.append([kind, label, o, stake, p, p*o]); tot += stake
         return True
 
-    # ===== 核レイヤー(システム順・当てにいく。EV不問/floor倍は担保) =====
-    base_cap = budget * 0.70
-    covered = {}   # h -> 'full'(ワイド=両方馬券内) / 'pair'(馬連=ワンツーのみ)
+    # ===== 核レイヤー【◎○二重ラダー】(EV不問・floor倍担保・システム順) =====
+    # 目標:「◎か○のどちらかが馬券内に絡んだシナリオ」を可能な限り全て2倍以上にする
+    base_cap = budget * 0.72
+    covered = {}    # ◎ラダー: h -> 'full'/'pair'
+    covered2 = {}   # ○ラダー: h -> 'full'/'pair'
     base_spent = 0
-    def cover(ax, h, cap_each, mark=True):
+    def cover(ax, h, cap_each, book):
         """軸axと相手hをfloor倍で担保。ワイド(両方馬券内)優先、高すぎれば馬連(ワンツー)に格下げ。"""
         nonlocal base_spent
         k = tuple(sorted((ax, h)))
@@ -280,32 +288,28 @@ def build_buylist(rows, odds, budget=10000, floor=2.0, unit=100,
         cu = ceil_floor(uo) if uo else None
         if cw and cw <= cap_each and base_spent + cw <= base_cap:
             if push("ワイド", "%d-%d" % k, wo, _wide(pw, *k), cw):
-                if mark: covered[h] = "full"
+                if book is not None: book[h] = "full"
                 base_spent += cw; return True
         if cu and cu <= cap_each and base_spent + cu <= base_cap:
             if push("馬連", "%d-%d" % k, uo, _um(pw, *k), cu):
-                if mark: covered[h] = "pair"
+                if book is not None: book[h] = "pair"
                 base_spent += cu; return True
         return False
-    # (1) 軸ペア a1-a2 = モデル上もっとも当たる2頭の組合せ。最優先で厚く
+    # (1) ◎-○ペア = 両ラダーの交点。最優先・最厚(ワイド+馬連)
     if a2:
-        cover(a, a2, budget * 0.35, mark=False)
+        cover(a, a2, budget * 0.35, None)
         k12 = tuple(sorted((a, a2)))
         if um.get(k12) and not any(x[0] == "馬連" and set(_nums(x[1])) == set(k12) for x in picks):
             push("馬連", "%d-%d" % k12, um[k12], _um(pw, *k12), ceil_floor(um[k12]))
-    # (2a) 第1軸→核相手(システム上位)を先にカバー
-    for h in core_p:
-        cover(a, h, budget * 0.30)
-    # (2b) 第2軸→上位相手2頭(a1が飛んでも拾う)。相手もシステム上位なので妙味相手より先
-    if a2:
-        for h in partners[:2]:
-            cover(a2, h, budget * 0.15, mark=False)
-    # (2c) 第1軸→残り相手をシステム順にカバー(片飛び対策の生命線)
+    # (2) 相手をシステム順に、◎ラダー→○ラダーの順で交互にカバー
+    #     (どちらの軸が絡んでも、その相手との組合せで2倍が立つ)
     for h in partners:
-        if h not in covered:
-            cover(a, h, budget * 0.20)
+        cover(a, h, budget * (0.28 if h in core_p else 0.18), covered)
+        if a2:
+            cover(a2, h, budget * (0.20 if h in core_p else 0.14), covered2)
     dec["coverage"] = dict(covered)
-    # 単勝: 軸のfloor額が予算15%以内なら(トークン禁止)。第2軸は妙味(EV≥1.3)時のみ薄く
+    dec["coverage2"] = dict(covered2)
+    # (3) 単勝=「軸1着・相手総崩れ」の保険。◎はfloor額が予算15%以内なら。○はEV≥1.3かつ10%以内
     if tan.get(a) and ceil_floor(tan[a]) <= budget * 0.15:
         push("単勝", "%d" % a, tan[a], pw[a], ceil_floor(tan[a]))
     if a2 and tan.get(a2) and pw[a2] * tan[a2] >= 1.3 and ceil_floor(tan[a2]) <= budget * 0.10:
@@ -315,12 +319,15 @@ def build_buylist(rows, odds, budget=10000, floor=2.0, unit=100,
     tri_cap = budget * 0.30
     tri_spent = 0
     tris = []
-    if a2:   # 軸2頭ながし a1-a2-相手(B+相手→紐の順) + a1軸の上位ペア(a2飛び保険)
+    if a2:   # ◎○2頭ながし(最優先) + ◎単独トリオ(○飛び保険) + ○単独トリオ(◎飛び保険)
         for h in partners + himo:                     # 紐(C)は3列目のみOK
             k = tuple(sorted((a, a2, h)))
             if k in tp: tris.append((k, tp[k], _p3(pw, *k)))
         for c in itertools.combinations(sorted((partners + himo)[:3]), 2):
-            k = tuple(sorted((a,) + c))               # a2飛び保険(相手が居なければ紐で構成)
+            k = tuple(sorted((a,) + c))               # ○飛び: ◎+相手/紐ペア
+            if k in tp: tris.append((k, tp[k], _p3(pw, *k)))
+        for c in itertools.combinations(sorted((partners + himo)[:3]), 2):
+            k = tuple(sorted((a2,) + c))              # ◎飛び: ○+相手/紐ペア
             if k in tp: tris.append((k, tp[k], _p3(pw, *k)))
     else:
         # 1軸: 三連複の2・3列目はどちらも「軸の後ろ」=紐扱い。B+相手優先で紐も使う
@@ -432,13 +439,12 @@ def print_buylist(picks, total, dec, budget, floor):
         m = "○" if pay >= floor*budget else ("△" if pay >= floor*budget*0.8 else "・")
         print("   %s %-9s 合算払戻%7d円 (対予算%4.0f%%) [%s]" % (
             m, "-".join(map(str, key)), pay, pay/budget*100, kinds))
-    # ── シナリオ別保証(軸×相手が馬券内になった時の最低回収) ──
-    cov = dec.get("coverage")
-    if cov:
-        ax = dec["axis"][0]
-        print("  ── シナリオ保証（軸%dと相手が馬券内の時の最低回収）──" % ax)
-        wide_st = {tuple(sorted(_nums(l))): (o, s) for k2, l, o, s, p, e in picks if k2 == "ワイド"}
-        um_st   = {tuple(sorted(_nums(l))): (o, s) for k2, l, o, s, p, e in picks if k2 == "馬連"}
+    # ── シナリオ別保証(◎/○それぞれ×相手が馬券内になった時の最低回収) ──
+    wide_st = {tuple(sorted(_nums(l))): (o, s) for k2, l, o, s, p, e in picks if k2 == "ワイド"}
+    um_st   = {tuple(sorted(_nums(l))): (o, s) for k2, l, o, s, p, e in picks if k2 == "馬連"}
+    def _cov_table(ax, cov, mark):
+        if not cov: return
+        print("  ── シナリオ保証（%s軸%dと相手が馬券内の時の最低回収）──" % (mark, ax))
         for h, mode_c in cov.items():
             k = tuple(sorted((ax, h)))
             if mode_c == "full":
@@ -452,6 +458,11 @@ def print_buylist(picks, total, dec, budget, floor):
                 o, s = um_st.get(k, (0, 0))
                 print("   相手%2d [pair] ワンツーのみ=%6d円(%.0f%%)（両方馬券内どまりは対象外）"
                       % (h, o*s, o*s/budget*100))
+    axes = dec.get("axis", [])
+    if axes:
+        _cov_table(axes[0], dec.get("coverage"), "◎")
+    if len(axes) > 1:
+        _cov_table(axes[1], dec.get("coverage2"), "○")
     if dec.get("core_return"):
         cr = dec["core_return"]; ref = dec.get("core_ref", [])
         print("  【核】想定決着 %s で複合合算払戻=%d円 (対予算%.0f%%)" % (
