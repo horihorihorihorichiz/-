@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>韓麻 ベタおり練習</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="quiz.css">
+  <link rel="stylesheet" href="betaori.css">
+</head>
+<body>
+  <div class="wrap-quiz">
+    <div class="qtopbar">
+      <div class="ttl">韓麻 ベタおり練習 <span class="badge">守り専用</span></div>
+      <div class="controls">
+        <select id="playerCount"><option value="4">4人</option><option value="3">3人</option></select>
+        <button class="btn" id="newQuizTop">別の局面</button>
+        <a href="quiz.html" class="link">何切る →</a>
+        <a href="play.html" class="link">実戦 →</a>
+      </div>
+    </div>
+
+    <div class="situation panel">
+      <div class="sit-head">
+        <span class="lbl">表ドラ</span><span id="doraDisp" class="tiles"></span>
+        <span id="turnInfo" class="turninfo"></span>
+      </div>
+      <div id="opps" class="opps"></div>
+    </div>
+
+    <div class="panel qmy">
+      <div class="q-instr">危険な相手がいて手が遠い。<strong>一番安全な牌を切ってベタおり</strong>しよう（牌をクリック）</div>
+      <div id="quizHand" class="qhand"></div>
+    </div>
+
+    <div class="panel" id="quizResult" style="display:none"></div>
+    <div class="nextrow"><button class="btn btn-next" id="nextBtn" style="display:none">次の局面へ →</button></div>
+  </div>
+
+  <script type="module" src="src/betaori.js"></script>
+</body>
+</html>

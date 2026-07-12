@@ -63,3 +63,14 @@ build({
   title: '韓麻 何切るクイズ 🀄',
   standaloneName: '韓麻-何切るクイズ.html',
 });
+
+// ベタおり練習（守り専用ドリル）
+build({
+  modules: ['src/tiles.js', 'src/tiles-data.js', 'src/tileview.js', 'src/shanten.js', 'src/ukeire.js', 'src/score.js', 'src/analyze.js', 'src/danger.js', 'src/game.js', 'src/betaori.js'],
+  css: ['styles.css', 'quiz.css', 'betaori.css'],
+  html: 'betaori.html',
+  out: 'betaori-standalone.html',
+  docsName: 'betaori.html',
+  title: '韓麻 ベタおり練習 🀄',
+  standaloneName: '韓麻-ベタおり練習.html',
+});
