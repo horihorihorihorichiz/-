@@ -25,8 +25,8 @@ def ret_of(r):
 def main():
     rows = load()
     graded = [r for r in rows if r.get('pnl') is not None]     # 結果が出たもの
-    go = [r for r in graded if r.get('verdict') == 'GO' or (r.get('bet') and r.get('bet') != 'なし')]
-    miken = [r for r in graded if r.get('verdict') == '見送り']
+    miken = [r for r in graded if str(r.get('verdict', '')).startswith('見送り')]
+    go = [r for r in graded if r not in miken and stake_of(r) > 0]
     hits = [r for r in go if r.get('hit')]
     staked = sum(stake_of(r) for r in go)
     returned = sum(ret_of(r) for r in go)
@@ -36,7 +36,7 @@ def main():
     print(" 明細:")
     for r in graded:
         st = stake_of(r); rt = ret_of(r)
-        mark = "○的中" if r.get('hit') else ("―見送" if r.get('verdict') == '見送り' else "×ハズレ")
+        mark = "○的中" if r.get('hit') else ("―見送" if str(r.get('verdict', '')).startswith('見送り') else ("・無効" if stake_of(r) == 0 else "×ハズレ"))
         res = r.get('result', {})
         rs = "→".join(str(res[k]) for k in ('1st', '2nd', '3rd') if k in res) if res else ""
         print("  %-10s %-24s %s 投%5d 戻%6d 損益%+6d  着[%s]"
