@@ -319,16 +319,17 @@ def build_buylist(rows, odds, budget=10000, floor=2.0, unit=100,
     tri_cap = budget * 0.30
     tri_spent = 0
     tris = []
-    if a2:   # ◎○2頭ながし(最優先) + ◎単独トリオ(○飛び保険) + ○単独トリオ(◎飛び保険)
-        for h in partners + himo:                     # 紐(C)は3列目のみOK
+    tris2 = []
+    if a2:   # 優先1: ◎○2頭ながし=相手B+と紐(C上位)を全頭必ず絡める / 優先2: 片飛び保険トリオ
+        for h in partners + himo:                     # 紐(C)は3列目のみOK・全頭確保
             k = tuple(sorted((a, a2, h)))
             if k in tp: tris.append((k, tp[k], _p3(pw, *k)))
         for c in itertools.combinations(sorted((partners + himo)[:3]), 2):
             k = tuple(sorted((a,) + c))               # ○飛び: ◎+相手/紐ペア
-            if k in tp: tris.append((k, tp[k], _p3(pw, *k)))
+            if k in tp: tris2.append((k, tp[k], _p3(pw, *k)))
         for c in itertools.combinations(sorted((partners + himo)[:3]), 2):
             k = tuple(sorted((a2,) + c))              # ◎飛び: ○+相手/紐ペア
-            if k in tp: tris.append((k, tp[k], _p3(pw, *k)))
+            if k in tp: tris2.append((k, tp[k], _p3(pw, *k)))
     else:
         # 1軸: 三連複の2・3列目はどちらも「軸の後ろ」=紐扱い。B+相手優先で紐も使う
         pool = partners + himo
@@ -336,14 +337,16 @@ def build_buylist(rows, odds, budget=10000, floor=2.0, unit=100,
             k = tuple(sorted((a,) + c))
             if k in tp: tris.append((k, tp[k], _p3(pw, *k)))
     tris.sort(key=lambda x: -x[2])                 # ★システム(確率)順=当たりやすい順
+    tris2.sort(key=lambda x: -x[2])
     seen3 = set()
-    for k, o, p in tris:
-        if k in seen3: continue
-        c = ceil_floor(o)
-        if c > budget * 0.08: continue
-        if tri_spent + c > tri_cap: continue
-        if push("三連複", "%d-%d-%d" % k, o, p, c):
-            tri_spent += c; seen3.add(k)
+    for tier in (tris, tris2):                     # 優先1(◎○ながし=紐全頭)を確保してから優先2(片飛び保険)
+        for k, o, p in tier:
+            if k in seen3: continue
+            c = ceil_floor(o)
+            if c > budget * 0.08: continue
+            if tri_spent + c > tri_cap: continue
+            if push("三連複", "%d-%d-%d" % k, o, p, c):
+                tri_spent += c; seen3.add(k)
 
     # ===== EV妙味レイヤー(残予算のみ・EV≥1.2・各点floor倍) =====
     boost = []
