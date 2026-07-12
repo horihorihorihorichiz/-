@@ -13,7 +13,19 @@
     from calc import run, print_report
     res = run(race_dict); print_report(res)
 """
-import math, json, sys
+import math, json, sys, os
+
+# ── 較正パラメータ(Ver.100): fit.py が params.json に書く。無ければ従来値で動く ──
+_PARAMS = None
+def load_params():
+    global _PARAMS
+    if _PARAMS is None:
+        p = os.path.join(os.path.dirname(os.path.abspath(__file__)), "params.json")
+        try:
+            _PARAMS = json.load(open(p, encoding="utf-8"))
+        except Exception:
+            _PARAMS = {}
+    return _PARAMS
 
 # ───────────────────────── 基礎テーブル ─────────────────────────
 KIJUN = {
@@ -403,23 +415,35 @@ def run(race):
         s2 = (tsi_score[i] + lts_final[i] + f_fsi + f_bonus + f_dsi + f_csi
               + f_nsi + f_was + f_tas + f_hcs + f_nrja)
         mult = KANKAI[h["style"]][stage]
-        wavg = s2*mult
+        # 展開乗数のダンプニング(Ver.100): 未検証レバーの効きを実測フィット値に縮める
+        ks = load_params().get("kankai_scale", 1.0)
+        wavg = s2*(1.0 + (mult - 1.0)*ks)
         rows.append(dict(num=h["num"], name=h["name"], style=h["style"],
             band=band, ltsrank=h["_lts_rank"], tsi=tsi_score[i], lts=lts_final[i],
             fsi=f_fsi, bonus=f_bonus, dsi=f_dsi, dsi_g=dsi_g, nsi=f_nsi, nsi_g=nsi_g,
             csi=f_csi, was=f_was, tas=f_tas, hcs=f_hcs, nrja=f_nrja,
             s2=round(s2,2), mult=mult, wavg=round(wavg,2)))
 
-    # Power / %
-    for r in rows: r["power"] = math.exp(r["wavg"]/14)
+    # Power / % — 温度は実測フィット(params.json)、無ければ従来の14。
+    T = load_params().get("temp", 14.0)
+    for r in rows: r["power"] = math.exp(r["wavg"]/T)
     tot = sum(r["power"] for r in rows)
     for r in rows: r["raw"] = r["power"]/tot*100
-    top = max(r["raw"] for r in rows)
-    if top > 30:
-        f = 30/top
-        for r in rows: r["pwin"] = r["raw"]*f
-    else:
-        for r in rows: r["pwin"] = r["raw"]
+    # cap修正(Ver.100): 旧実装は全馬を一律圧縮し確率の総和を破壊していた(監査 欠陥1)。
+    # → 上限30%で切り、超過分は残りの馬へ再正規化(反復)。総和は常に100%。
+    cap = load_params().get("cap", 30.0)
+    p = {r["num"]: r["raw"] for r in rows}
+    for _ in range(len(rows)):
+        over = {n: v for n, v in p.items() if v > cap + 1e-9}
+        if not over:
+            break
+        rest = {n: v for n, v in p.items() if n not in over}
+        room = 100.0 - cap*len(over)
+        s = sum(rest.values())
+        for n in over: p[n] = cap
+        if s > 0:
+            for n in rest: p[n] = rest[n]/s*room
+    for r in rows: r["pwin"] = p[r["num"]]
     rows.sort(key=lambda r: r["wavg"], reverse=True)
 
     # ランク + Case

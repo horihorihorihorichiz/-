@@ -51,12 +51,13 @@ def fetch_jra(race_id):
             return {}
     def us(k, n): return [int(k[i:i+2]) for i in range(0, 2*n, 2)]      # 分解
     tan = {str(int(k)): _f(v[0]) for k, v in grab(1).items()}
+    fuku = {str(int(k)): _f(v[0]) for k, v in grab(2).items()}   # 複勝(下限)
     umaren = {"%d-%d" % tuple(sorted(us(k, 2))): _f(v[0]) for k, v in grab(4).items()}
     wide   = {"%d-%d" % tuple(sorted(us(k, 2))): _f(v[0]) for k, v in grab(5).items()}
     umatan = {"%d>%d" % tuple(us(k, 2)): _f(v[0]) for k, v in grab(6).items()}     # 順序
     trip   = {"%d-%d-%d" % tuple(sorted(us(k, 3))): _f(v[0]) for k, v in grab(7).items()}
     santan = {">".join(map(str, us(k, 3))): _f(v[0]) for k, v in grab(8).items()}  # 順序
-    return dict(tan=tan, umaren=umaren, wide=wide, umatan=umatan,
+    return dict(tan=tan, fuku=fuku, umaren=umaren, wide=wide, umatan=umatan,
                 sanrenpuku=trip, santan=santan)
 
 def fetch_nar(race_id, field, axis=None):
@@ -76,9 +77,21 @@ def fetch_nar(race_id, field, axis=None):
                 prefix[0] = prefix[0] or pre
         return out
     # 単勝(b1)はcart-item無し。'複勝'手前のOddsセルを馬番順に拾う。
-    h1 = _http(base % ("b1", race_id)).split("複勝")[0]
+    h1full = _http(base % ("b1", race_id))
+    h1 = h1full.split("複勝")[0]
     tl = [_f(x) for x in re.findall(r'class="[^"]*Odds[^"]*"[^>]*>\s*([0-9]+\.[0-9])', h1)]
     tan = {str(i+1): tl[i] for i in range(min(field, len(tl))) if tl[i]}
+    # 複勝(下限): '複勝'以降のOddsセル。下限-上限の2セル/頭なら偶数個→step2で下限
+    fuku = {}
+    try:
+        fl = [_f(x) for x in re.findall(
+            r'class="[^"]*Odds[^"]*"[^>]*>\s*([0-9]+\.[0-9])', h1full.split("複勝", 1)[1])]
+        if len(fl) >= field*2:
+            fuku = {str(i+1): fl[2*i] for i in range(field) if fl[2*i]}
+        elif len(fl) >= field:
+            fuku = {str(i+1): fl[i] for i in range(field) if fl[i]}
+    except Exception:
+        pass
     umaren = {"%d-%d" % tuple(sorted(k)): v for k, v in grab("b4").items()}
     wide   = {"%d-%d" % tuple(sorted(k)): v for k, v in grab("b5").items()}
     umatan = {"%d>%d" % k: v for k, v in grab("b6").items()}          # 馬単(順序)
@@ -89,7 +102,7 @@ def fetch_nar(race_id, field, axis=None):
                 trip["%d-%d-%d" % tuple(sorted(k))] = v
             for k, v in grab("b8", "&jiku=%d" % jk).items():
                 santan[">".join(map(str, k))] = v                    # 三連単(軸1着固定)
-    return dict(tan=tan, umaren=umaren, wide=wide, umatan=umatan,
+    return dict(tan=tan, fuku=fuku, umaren=umaren, wide=wide, umatan=umatan,
                 sanrenpuku=trip, santan=santan, _prefix=prefix[0])
 
 JRA_VENUES = set("札幌 函館 福島 新潟 東京 中山 中京 京都 阪神 小倉".split())
@@ -145,6 +158,139 @@ def _st(pw, i, j, k):   # 三連単 P(i→j→k) 順序付き
     return pw[i] * (pw[j]/(1-pw[i])) * (pw[k]/(1-pw[i]-pw[j]))
 def _nums(label):       # "8>3>4" / "3-4-8" どちらも [8,3,4]/[3,4,8]
     return [int(x) for x in re.split(r"[>-]", label)]
+
+# ---------- Ver.100: 較正確率 × 市場ブレンド × エッジ購入 ----------
+def market_probs(tan):
+    """最終単勝オッズ→控除率を除いた市場の勝率"""
+    inv = {h: 1.0/o for h, o in tan.items() if o and o > 0}
+    s = sum(inv.values())
+    return {h: v/s for h, v in inv.items()} if s else {}
+
+def blend_probs(rows, tan):
+    """較正済みモデル確率と市場確率の対数線形ブレンド(params.jsonのα,β)。
+       params未フィット/オッズ欠損時はモデル単体にフォールバック。"""
+    pm = {r["num"]: max(r["pwin"], 0.05)/100.0 for r in rows}
+    s = sum(pm.values())
+    pm = {n: v/s for n, v in pm.items()}
+    bl = calc.load_params().get("blend")
+    if not bl or not tan:
+        return pm
+    q = market_probs({int(k): v for k, v in tan.items()})
+    ns = [n for n in pm if n in q]
+    if len(ns) < len(pm)*0.8:
+        return pm
+    a, b = bl.get("alpha", 0.0), bl.get("beta", 1.0)
+    lg = {n: a*math.log(max(pm[n], 1e-9)) + b*math.log(max(q[n], 1e-9)) for n in ns}
+    mx = max(lg.values())
+    e = {n: math.exp(lg[n]-mx) for n in ns}
+    s = sum(e.values())
+    pb = {n: e[n]/s for n in ns}
+    for n in pm:            # オッズ欠損馬(取消等)は極小で残す
+        pb.setdefault(n, 1e-4)
+    return pb
+
+def _wide2(pb, i, j):
+    """P(i,j 両方3着内) = Σ_k P(i,j,k が3着内)  (Harville)"""
+    return sum(_p3(pb, i, j, k) for k in pb if k not in (i, j))
+
+def p_place3(pb, h):
+    """P(hが3着内) (Harville)"""
+    p1 = pb[h]
+    p2 = sum(pb[i]*pb[h]/(1-pb[i]) for i in pb if i != h)
+    p3 = 0.0
+    for i in pb:
+        if i == h: continue
+        for j in pb:
+            if j in (i, h): continue
+            p3 += pb[i]*(pb[j]/(1-pb[i]))*(pb[h]/(1-pb[i]-pb[j]))
+    return p1 + p2 + p3
+
+# 券種別の最小エッジ(期待回収/円)。確率の推定誤差が大きい券種ほど高く要求する。
+EDGE_MIN = {"単勝": 1.30, "複勝": 1.15, "馬連": 1.45, "ワイド": 1.40,
+            "三連複": 1.70, "馬単": 1.60, "三連単": 2.00}
+
+def build_buylist_ev(rows, odds, budget=10000, unit=100, kelly=0.25,
+                     max_bets=12, edge_scale=1.0, topk=8):
+    """新既定モード: 較正ブレンド確率で全券種のエッジ(p×オッズ)を計算し、
+       閾値を超えた点だけをフラクショナルKellyで購入。エッジが無ければ買わない。"""
+    tan = {int(k): v for k, v in odds.get("tan", {}).items() if v}
+    fuku = {int(k): v for k, v in odds.get("fuku", {}).items() if v}
+    um = {tuple(sorted(map(int, k.split("-")))): v for k, v in odds.get("umaren", {}).items() if v}
+    wd = {tuple(sorted(map(int, k.split("-")))): v for k, v in odds.get("wide", {}).items() if v}
+    tp = {tuple(sorted(map(int, k.split("-")))): v for k, v in odds.get("sanrenpuku", {}).items() if v}
+    pb = blend_probs(rows, odds.get("tan", {}))
+    order = sorted(pb, key=lambda h: -pb[h])
+    top = order[:topk]
+
+    cands = []   # (kind, lbl, o, p, edge)
+    for h, o in tan.items():
+        if h in pb:
+            cands.append(("単勝", str(h), o, pb[h], pb[h]*o))
+    for h, o in fuku.items():
+        if h in pb:
+            p = p_place3(pb, h)
+            cands.append(("複勝", str(h), o, p, p*o))   # oは下限=保守的
+    for i in range(len(top)):
+        for j in range(i+1, len(top)):
+            a, b = sorted((top[i], top[j]))
+            if (a, b) in um:
+                p = _um(pb, a, b)
+                cands.append(("馬連", f"{a}-{b}", um[(a, b)], p, p*um[(a, b)]))
+            if (a, b) in wd:
+                p = _wide2(pb, a, b)
+                cands.append(("ワイド", f"{a}-{b}", wd[(a, b)], p, p*wd[(a, b)]))
+    t3 = top[:7]
+    for i in range(len(t3)):
+        for j in range(i+1, len(t3)):
+            for k in range(j+1, len(t3)):
+                a, b, c = sorted((t3[i], t3[j], t3[k]))
+                if (a, b, c) in tp:
+                    p = _p3(pb, a, b, c)
+                    cands.append(("三連複", f"{a}-{b}-{c}", tp[(a, b, c)], p, p*tp[(a, b, c)]))
+
+    # エッジ閾値でフィルタ→エッジ順→フラクショナルKellyで配分
+    sel = [c for c in cands if c[4] >= EDGE_MIN.get(c[0], 1.5)*edge_scale]
+    sel.sort(key=lambda c: -c[4])
+    sel = sel[:max_bets]
+    picks, total = [], 0
+    for kind, lbl, o, p, ev in sel:
+        f = kelly*(ev - 1.0)/(o - 1.0) if o > 1 else 0
+        st = int(f*budget/unit)*unit
+        st = min(st, int(budget*0.25/unit)*unit)
+        if st < unit:
+            st = unit if ev >= EDGE_MIN.get(kind, 1.5)*edge_scale + 0.15 else 0
+        if st <= 0 or total + st > budget:
+            continue
+        picks.append((kind, lbl, o, st, p, ev))
+        total += st
+    dec = dict(mode="EV", axis=[order[0]] if order else [],
+               second=order[1] if len(order) > 1 else None,
+               core=[int(c[1]) for c in sel if c[0] == "単勝"][:2],
+               n_cand=len(cands), n_edge=len(sel), pb=pb,
+               note="Ver.100 較正ブレンド×エッジ購入(閾値未満は買わない)")
+    return picks, total, dec
+
+def print_buylist_ev(picks, total, dec, budget):
+    pb = dec.get("pb", {})
+    print("\n買い目（Ver.100 エッジ購入: ブレンド確率×オッズ≥閾値の点のみ／候補%d点中%d点が閾値超え）"
+          % (dec.get("n_cand", 0), dec.get("n_edge", 0)))
+    if not picks:
+        print("  エッジのある買い目なし → 見送り（市場に歪みが見つからないレース）")
+        return
+    print("  券種   買い目        オッズ   確率    エッジ   金額     期待利益")
+    for kind, lbl, o, st, p, ev in picks:
+        print("  %-4s %-10s %8.1f %6.1f%% %6.0f%% %6d円 %+8.0f円"
+              % (kind, lbl, o, p*100, ev*100, st, st*(ev-1)))
+    by = {}
+    for kind, lbl, o, st, p, ev in picks:
+        by.setdefault(kind, [0, 0])
+        by[kind][0] += 1
+        by[kind][1] += st
+    print("  ── 点数まとめ ──")
+    for kind, (n, amt) in by.items():
+        print(f"  {kind} {n}点 {amt}円")
+    edge = sum(st*p*o for _, _, o, st, p, _ in picks)/(total or 1)
+    print(f"  合計 {len(picks)}点 / {total}円 / ポートフォリオ期待エッジ {edge*100:.0f}%（較正済み確率ベース）")
 
 # ---------- 軸の決め方(7/5北九州記念の反省を反映) ----------
 def decide_axis(rows, two_axis=False):
@@ -625,6 +771,10 @@ def main():
     ap.add_argument("--box", type=int, nargs="+", default=None, help="3頭BOX指定")
     ap.add_argument("--two-axis", action="store_true", help="S2頭を2頭軸流しにする(既定は1頭軸流し)")
     ap.add_argument("--no-odds", action="store_true", help="ランキングだけ出す")
+    ap.add_argument("--floor-mode", action="store_true",
+                    help="旧floor保証モード(Ver.99)で買い目構築。既定はVer.100エッジ購入")
+    ap.add_argument("--edge-scale", type=float, default=1.0,
+                    help="エッジ閾値の倍率(Ver.100モード)。1.0=既定、上げるほど厳選")
     ap.add_argument("--full", action="store_true",
                     help="フルモード(三連複個別+三連単/馬単)。既定はシンプル(保証層+三連複ながし均一)")
     ap.add_argument("--cart", action="store_true",
@@ -677,24 +827,39 @@ def main():
                      second=next((r["num"] for r in order if r["num"] not in a.axis), None),
                      note="手動1頭軸流し")
 
-    picks, total, dec = build_buylist(res["rows"], odds, budget=a.budget,
-                                      floor=a.floor, unit=a.unit, force=force,
-                                      two_axis=a.two_axis, simple=not a.full)
-    # GO/NO-GO(単勝EVで簡易裁定)
-    order = sorted(res["rows"], key=lambda r: -r["pwin"])
-    tan = {int(k): v for k, v in odds.get("tan", {}).items() if v}
-    ev1 = (order[0]["pwin"]/100.0) * tan.get(order[0]["num"], 0)
-    ev2 = (order[1]["pwin"]/100.0) * tan.get(order[1]["num"], 0) if len(order) > 1 else 0
-    exp = sum(st*p*o for _, _, o, st, p, _ in picks) / (total or 1)
-    # GO: 核(Sランク軸)が機能し、想定決着の複合合算がfloor近辺以上、かつ portfolio EVプラス。
-    core_ok = dec.get("core_return", 0) >= a.floor * a.budget * 0.9
-    # BOX(S3頭混戦)は核returnを持たないので、BOX全体の期待回収がfloor以上ならGO扱い
-    box_ok = dec.get("mode") == "BOX" and exp >= a.floor
-    go = bool(picks and exp >= 1.2 and (core_ok or box_ok or ev1 >= 1.5 or ev2 >= 1.8))
-    print("\nEV裁定: %s（単勝EV1位=%.0f%% 2位=%.0f%% / 期待回収=%.0f%% / 核合算=%.0f%%）"
-          % ("GO ●" if go else "見送り ○", ev1*100, ev2*100, exp*100,
-             dec.get("core_return", 0)/a.budget*100))
-    print_buylist(picks, total, dec, a.budget, a.floor)
+    if a.floor_mode or force:
+        # ── 旧モード(Ver.99 floor保証)。手動--box/--axis指定時も旧ロジックを使う ──
+        picks, total, dec = build_buylist(res["rows"], odds, budget=a.budget,
+                                          floor=a.floor, unit=a.unit, force=force,
+                                          two_axis=a.two_axis, simple=not a.full)
+        order = sorted(res["rows"], key=lambda r: -r["pwin"])
+        tan = {int(k): v for k, v in odds.get("tan", {}).items() if v}
+        ev1 = (order[0]["pwin"]/100.0) * tan.get(order[0]["num"], 0)
+        ev2 = (order[1]["pwin"]/100.0) * tan.get(order[1]["num"], 0) if len(order) > 1 else 0
+        exp = sum(st*p*o for _, _, o, st, p, _ in picks) / (total or 1)
+        core_ok = dec.get("core_return", 0) >= a.floor * a.budget * 0.9
+        box_ok = dec.get("mode") == "BOX" and exp >= a.floor
+        go = bool(picks and exp >= 1.2 and (core_ok or box_ok or ev1 >= 1.5 or ev2 >= 1.8))
+        print("\nEV裁定: %s（単勝EV1位=%.0f%% 2位=%.0f%% / 期待回収=%.0f%% / 核合算=%.0f%%）"
+              % ("GO ●" if go else "見送り ○", ev1*100, ev2*100, exp*100,
+                 dec.get("core_return", 0)/a.budget*100))
+        print_buylist(picks, total, dec, a.budget, a.floor)
+    else:
+        # ── Ver.100 既定: 較正ブレンド×エッジ購入。エッジが無ければ買わない ──
+        picks, total, dec = build_buylist_ev(res["rows"], odds, budget=a.budget,
+                                             unit=a.unit, edge_scale=a.edge_scale)
+        edge = sum(st*p*o for _, _, o, st, p, _ in picks)/(total or 1)
+        go = bool(picks) and edge >= 1.10
+        pb = dec.get("pb", {})
+        bl = calc.load_params().get("blend", {})
+        print("\nEV裁定(Ver.100): %s（エッジ点数=%d / ポートフォリオ期待エッジ=%.0f%% / "
+              "ブレンドα=%.1f β=%.1f）"
+              % ("GO ●" if go else "見送り ○", len(picks), edge*100,
+                 bl.get("alpha", 0), bl.get("beta", 1)))
+        if pb:
+            tops = sorted(pb, key=lambda h: -pb[h])[:5]
+            print("  ブレンド確率上位: " + " ".join(f"{h}={pb[h]*100:.1f}%" for h in tops))
+        print_buylist_ev(picks, total, dec, a.budget)
     print_ipat(race, race_id, picks, total)
     if a.mobile:
         hint = {h: 2 for h in dec.get("axis", [])}

@@ -31,10 +31,16 @@ def get_result(rid):
         rank = re.search(r'class="Rank">([^<]*)<', tr)
         num = re.search(r'class="Num Txt_C">\s*<div>(\d+)</div>', tr)
         name = re.search(r'class="HorseNameSpan">([^<]+)<', tr)
+        ninki = re.search(r'class="Odds[^"]*Txt_C"[^>]*>\s*(?:<[^>]+>)*\s*(\d+)', tr)
+        odds = re.search(r'class="Odds Txt_R"[^>]*>\s*(?:<[^>]+>)*\s*([\d.]+)', tr)
+        wt = re.search(r'class="Weight"[^>]*>\s*(\d{3})', tr)
         if num:
             order.append({"rank": (rank.group(1).strip() if rank else ""),
                           "num": int(num.group(1)),
-                          "name": (name.group(1).strip() if name else "")})
+                          "name": (name.group(1).strip() if name else ""),
+                          "ninki": int(ninki.group(1)) if ninki else None,
+                          "odds": float(odds.group(1)) if odds else None,
+                          "weight": int(wt.group(1)) if wt else None})
     out["order"] = order
     out["top3"] = [o["num"] for o in order if o["rank"] in ("1", "2", "3")][:3]
     # 払戻
