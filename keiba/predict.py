@@ -166,13 +166,16 @@ def market_probs(tan):
     s = sum(inv.values())
     return {h: v/s for h, v in inv.items()} if s else {}
 
-def blend_probs(rows, tan):
+def blend_probs(rows, tan, kind="win"):
     """較正済みモデル確率と市場確率の対数線形ブレンド(params.jsonのα,β)。
+       kind="place"なら複合券用(3着内の並びでフィットしたα_place,β_place=得点システムの活き場所)。
        params未フィット/オッズ欠損時はモデル単体にフォールバック。"""
     pm = {r["num"]: max(r["pwin"], 0.05)/100.0 for r in rows}
     s = sum(pm.values())
     pm = {n: v/s for n, v in pm.items()}
-    bl = calc.load_params().get("blend")
+    P = calc.load_params()
+    bl = P.get("blend_place") if kind == "place" else P.get("blend")
+    bl = bl or P.get("blend")
     if not bl or not tan:
         return pm
     q = market_probs({int(k): v for k, v in tan.items()})
@@ -218,26 +221,27 @@ def build_buylist_ev(rows, odds, budget=10000, unit=100, kelly=0.25,
     um = {tuple(sorted(map(int, k.split("-")))): v for k, v in odds.get("umaren", {}).items() if v}
     wd = {tuple(sorted(map(int, k.split("-")))): v for k, v in odds.get("wide", {}).items() if v}
     tp = {tuple(sorted(map(int, k.split("-")))): v for k, v in odds.get("sanrenpuku", {}).items() if v}
-    pb = blend_probs(rows, odds.get("tan", {}))
+    pb = blend_probs(rows, odds.get("tan", {}))              # 単勝用(勝者フィット)
+    pp = blend_probs(rows, odds.get("tan", {}), kind="place")  # 複合券用(3着内フィット=得点の活き場所)
     order = sorted(pb, key=lambda h: -pb[h])
-    top = order[:topk]
+    top = sorted(pp, key=lambda h: -pp[h])[:topk]
 
     cands = []   # (kind, lbl, o, p, edge)
     for h, o in tan.items():
         if h in pb:
             cands.append(("単勝", str(h), o, pb[h], pb[h]*o))
     for h, o in fuku.items():
-        if h in pb:
-            p = p_place3(pb, h)
+        if h in pp:
+            p = p_place3(pp, h)
             cands.append(("複勝", str(h), o, p, p*o))   # oは下限=保守的
     for i in range(len(top)):
         for j in range(i+1, len(top)):
             a, b = sorted((top[i], top[j]))
             if (a, b) in um:
-                p = _um(pb, a, b)
+                p = _um(pp, a, b)
                 cands.append(("馬連", f"{a}-{b}", um[(a, b)], p, p*um[(a, b)]))
             if (a, b) in wd:
-                p = _wide2(pb, a, b)
+                p = _wide2(pp, a, b)
                 cands.append(("ワイド", f"{a}-{b}", wd[(a, b)], p, p*wd[(a, b)]))
     t3 = top[:7]
     for i in range(len(t3)):
@@ -245,7 +249,7 @@ def build_buylist_ev(rows, odds, budget=10000, unit=100, kelly=0.25,
             for k in range(j+1, len(t3)):
                 a, b, c = sorted((t3[i], t3[j], t3[k]))
                 if (a, b, c) in tp:
-                    p = _p3(pb, a, b, c)
+                    p = _p3(pp, a, b, c)
                     cands.append(("三連複", f"{a}-{b}-{c}", tp[(a, b, c)], p, p*tp[(a, b, c)]))
 
     # エッジ閾値でフィルタ→エッジ順→フラクショナルKellyで配分

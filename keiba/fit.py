@@ -86,6 +86,36 @@ def nll(ds, prob_fn):
     return tot/n if n else float("inf"), n
 
 
+def nll_top3(ds, prob_fn):
+    """3着内の並び(Harville逐次尤度)のNLL: 得点システムが「形」に効くかを測る"""
+    tot = n = 0
+    for r in ds:
+        if len(r["top3"]) < 3:
+            continue
+        p = prob_fn(r)
+        a, b, c = r["top3"][:3]
+        if not all(x in p for x in (a, b, c)):
+            continue
+        pa = max(p[a], 1e-9)
+        pb_ = max(p[b]/(1-p[a]) if p[a] < 1 else 1e-9, 1e-9)
+        pc = max(p[c]/(1-p[a]-p[b]) if p[a]+p[b] < 1 else 1e-9, 1e-9)
+        tot += -(math.log(pa) + math.log(min(pb_, 1.0)) + math.log(min(pc, 1.0)))
+        n += 1
+    return tot/n if n else float("inf"), n
+
+
+def fit_place(train, T, ks):
+    """複合券用ブレンド(α_place, β_place)を3着内の並びの尤度でフィット"""
+    best = (float("inf"), 0.0, 1.0)
+    for a in [0.0, 0.03, 0.05, 0.08, 0.1, 0.15, 0.2, 0.3, 0.4, 0.5]:
+        for b in [0.4, 0.6, 0.8, 0.9, 1.0, 1.1, 1.2, 1.3]:
+            v, _ = nll_top3(train, lambda r, a=a, b=b:
+                            p_blend(p_model(r, T, ks), p_market(r), a, b))
+            if v < best[0]:
+                best = (v, a, b)
+    return best[1], best[2]
+
+
 def fit(train):
     # ① 温度T × 展開スケールks（モデル単体の勝者NLL最小化）
     best = (float("inf"), 14.0, 1.0)
@@ -151,7 +181,21 @@ def main():
         return
 
     T, ks, alpha, beta = fit(train)
+    a_pl, b_pl = fit_place(train, T, ks)
     print(f"\nフィット結果: 温度T={T} 展開スケールks={ks} ブレンド α(モデル)={alpha} β(市場)={beta}")
+    print(f"複合券用(3着内の並び): α_place={a_pl} β_place={b_pl}")
+    for name, dset in (("train", train), ("test", test)):
+        if not dset:
+            continue
+        rows3 = [
+            ("市場のみ", lambda r: p_market(r)),
+            (f"placeブレンド(α={a_pl},β={b_pl})",
+             lambda r: p_blend(p_model(r, T, ks), p_market(r), a_pl, b_pl)),
+        ]
+        print(f"── 3着内の並びNLL ({name}) ──")
+        for nm, fn in rows3:
+            v, n = nll_top3(dset, fn)
+            print(f"  {nm:28s} {v:.4f} (n={n})")
 
     for name, dset in (("train", train), ("test", test)):
         if not dset:
@@ -195,6 +239,7 @@ def main():
     if a.write:
         params = dict(temp=T, kankai_scale=ks, cap=30.0,
                       blend=dict(alpha=alpha, beta=beta),
+                      blend_place=dict(alpha=a_pl, beta=b_pl),
                       fitted_on=len(train), note="fit.py Ver.100")
         json.dump(params, open("params.json", "w", encoding="utf-8"),
                   ensure_ascii=False, indent=1)
