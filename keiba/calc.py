@@ -412,12 +412,21 @@ def run(race):
         f_hcs = hcs(h)
         f_csi = h.get("csi", 0)
         f_nrja = nrja(h["last_race_days"])
-        s2 = (tsi_score[i] + lts_final[i] + f_fsi + f_bonus + f_dsi + f_csi
-              + f_nsi + f_was + f_tas + f_hcs + f_nrja)
         mult = KANKAI[h["style"]][stage]
-        # 展開乗数のダンプニング(Ver.100): 未検証レバーの効きを実測フィット値に縮める
-        ks = load_params().get("kankai_scale", 1.0)
-        wavg = s2*(1.0 + (mult - 1.0)*ks)
+        SW = load_params().get("score_weights")
+        if SW:
+            # Ver.100.1: 構成要素の重みを実測学習(fit_score.py)。展開も加点式で重み込み。
+            comp = dict(tsi=tsi_score[i], lts=lts_final[i], fsi=f_fsi, bonus=f_bonus,
+                        dsi=f_dsi, csi=f_csi, nsi=f_nsi, was=f_was, tas=f_tas,
+                        hcs=f_hcs, nrja=f_nrja)
+            s2 = sum(v*SW.get(k, 1.0) for k, v in comp.items())
+            wavg = s2 + (mult - 1.0)*100.0*SW.get("kankai", 1.0)
+        else:
+            s2 = (tsi_score[i] + lts_final[i] + f_fsi + f_bonus + f_dsi + f_csi
+                  + f_nsi + f_was + f_tas + f_hcs + f_nrja)
+            # 展開乗数のダンプニング(Ver.100): 未検証レバーの効きを実測フィット値に縮める
+            ks = load_params().get("kankai_scale", 1.0)
+            wavg = s2*(1.0 + (mult - 1.0)*ks)
         rows.append(dict(num=h["num"], name=h["name"], style=h["style"],
             band=band, ltsrank=h["_lts_rank"], tsi=tsi_score[i], lts=lts_final[i],
             fsi=f_fsi, bonus=f_bonus, dsi=f_dsi, dsi_g=dsi_g, nsi=f_nsi, nsi_g=nsi_g,

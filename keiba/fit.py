@@ -37,23 +37,23 @@ def load_dataset(histdir):
         except Exception as e:
             print(f"  skip {os.path.basename(f)}: {e}", file=sys.stderr)
             continue
-        s2 = {r["num"]: r["s2"] for r in res["rows"]}
-        mult = {r["num"]: r["mult"] for r in res["rows"]}
+        wavg = {r["num"]: r["wavg"] for r in res["rows"]}  # score_weights込みの最終得点
         odds = {o["num"]: o["odds"] for o in result.get("order", [])
-                if o.get("odds") and o["num"] in s2}
+                if o.get("odds") and o["num"] in wavg}
         top3 = [o["num"] for o in result.get("order", [])
                 if o.get("rank") in ("1", "2", "3")]
         winner = next((o["num"] for o in result.get("order", [])
                        if o.get("rank") == "1"), None)
-        if winner is None or winner not in s2 or len(odds) < len(s2)*0.8:
+        if winner is None or winner not in wavg or len(odds) < len(wavg)*0.8:
             continue
-        ds.append(dict(s2=s2, mult=mult, odds=odds, winner=winner,
+        ds.append(dict(wavg=wavg, odds=odds, winner=winner,
                        top3=top3, date=d.get("date", ""), rid=race.get("race_id", "")))
     return ds
 
 
-def p_model(r, T, ks, cap=0.30):
-    w = {n: r["s2"][n]*(1.0 + (r["mult"][n] - 1.0)*ks) for n in r["s2"]}
+def p_model(r, T, ks=None, cap=0.30):
+    """wavg(score_weights適用済み)→softmax。ksは旧互換の飾り(wavgに織込み済み)"""
+    w = r["wavg"]
     mx = max(w.values())
     e = {n: math.exp((w[n]-mx)/T) for n in w}
     s = sum(e.values())
