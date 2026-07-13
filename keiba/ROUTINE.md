@@ -15,8 +15,10 @@ keiba/RULES.md §0(Ver.100体制)を読んでから、以下を順に実行:
 4. 収穫完了済みなら月1回程度の再学習: python fit_score.py --l2 0.05 --write &&
    python fit_score.py --surface 芝 --l2 0.08 --write && python fit_score.py --surface ダ --l2 0.08 --write &&
    python fit.py --test <直近2週末の日付8桁カンマ区切り> --write
-5. paper.py stats の結果と、GOになったレースの買い目(オッズ→払戻付き)をまとめmdにして SendUserFile で送る
-6. 変更を commit & push（ブランチ claude/stoic-ride-p35k9n）
+5. 日曜のみ: python win5.py --dry でWIN5のキャリーオーバーを確認。繰越ありなら
+   python win5.py --budget 5000 でフォーメーション案を作り報告に含める（繰越なし=見送りの一言でOK）
+6. paper.py stats の結果と、GOになったレースの買い目(オッズ→払戻付き)をまとめmdにして SendUserFile で送る
+7. 変更を commit & push（ブランチ claude/stoic-ride-p35k9n）
 ※実弾なし=紙上のみ。判定ライン: 精算150Rで回収90%超→少額実弾の相談／70%未満→設計見直し。
 ※認証情報は扱わない・netkeibaにログインしない・購入しない。
 ```
