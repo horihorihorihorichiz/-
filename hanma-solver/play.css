@@ -148,6 +148,9 @@ body.betaori .hand { border-color: #1e7d8c; background: linear-gradient(#0e3a42,
 .rvd-river { font-size: .8rem; line-height: 1.55; margin-top: 8px; color: #e7dcc4; background: rgba(251,191,36,.07); border: 1px solid rgba(251,191,36,.3); border-radius: 8px; padding: 8px 10px; }
 .rvd-river b { color: var(--gold); }
 .rvd-river ul { margin: 4px 0 0; padding-left: 1.1em; } .rvd-river li { margin: 3px 0; }
+.rvd-shape { font-size: .8rem; line-height: 1.55; margin-top: 8px; color: #d6f0dd; background: rgba(74,222,128,.07); border: 1px solid rgba(74,222,128,.3); border-radius: 8px; padding: 8px 10px; }
+.rvd-shape b { color: #b6f0cf; }
+.rvd-shape ul { margin: 4px 0 0; padding-left: 1.1em; } .rvd-shape li { margin: 3px 0; }
 .reason-card { border-radius: 8px; padding: 8px 10px; margin-top: 8px; font-size: .82rem; }
 .reason-card.risk { background: rgba(224,83,83,.1); border: 1px solid rgba(224,83,83,.35); }
 .reason-card.safe { background: rgba(74,222,128,.08); border: 1px solid rgba(74,222,128,.3); }

@@ -252,6 +252,9 @@ body.betaori .hand { border-color: #1e7d8c; background: linear-gradient(#0e3a42,
 .rvd-river { font-size: .8rem; line-height: 1.55; margin-top: 8px; color: #e7dcc4; background: rgba(251,191,36,.07); border: 1px solid rgba(251,191,36,.3); border-radius: 8px; padding: 8px 10px; }
 .rvd-river b { color: var(--gold); }
 .rvd-river ul { margin: 4px 0 0; padding-left: 1.1em; } .rvd-river li { margin: 3px 0; }
+.rvd-shape { font-size: .8rem; line-height: 1.55; margin-top: 8px; color: #d6f0dd; background: rgba(74,222,128,.07); border: 1px solid rgba(74,222,128,.3); border-radius: 8px; padding: 8px 10px; }
+.rvd-shape b { color: #b6f0cf; }
+.rvd-shape ul { margin: 4px 0 0; padding-left: 1.1em; } .rvd-shape li { margin: 3px 0; }
 .reason-card { border-radius: 8px; padding: 8px 10px; margin-top: 8px; font-size: .82rem; }
 .reason-card.risk { background: rgba(224,83,83,.1); border: 1px solid rgba(224,83,83,.35); }
 .reason-card.safe { background: rgba(74,222,128,.08); border: 1px solid rgba(74,222,128,.3); }
@@ -1904,6 +1907,12 @@ function renderReview() {
         `<div class="rvd-head">🎯 ${l.turn}手目：なぜ <b>${tileName(l.bestTile)}</b> が推奨か（あなたは ${tileName(l.chosenTile)}）</div>` +
         `<div class="reason-card safe"><div class="rc-head">推奨 ${tileName(l.bestTile)} 切りの利点</div><ul>${pros.join('')}</ul></div>` +
         `<div class="rvd-logic">▶ ロジック：向聴（アガリまでの近さ）を最優先に、同じ向聴なら<b>受け入れの広さ＋打点（ドラ）</b>を放銃リスクで割り引いた総合期待値で比較。${tileName(l.bestTile)} 切りがこの局面で最も期待値が高い。</div>` +
+        `<div class="rvd-shape">📐 <b>牌効率の考え方（かぶり形の捌き）</b><ul>` +
+        `<li>手牌を「面子＋ターツ＋浮き牌」に分解し、<b>5ブロック</b>（4面子＋雀頭）を意識する。</li>` +
+        `<li><b>弱いターツ（ペンチャン89・カンチャン46）や余った重複</b>から先に払い、<b>両面や複合形</b>を残すのがコツ。</li>` +
+        `<li>複合形＝<b>1枚で2役</b>の形は受けが広く強い。例：<b>44556</b>（面子＋両面）、<b>3455</b>（面子＋雀頭）、<b>357</b>（リャンカン＝4・6両受け）。</li>` +
+        `<li>韓麻は<b>5が全部赤ドラ</b>。5絡みの形（455・556など）は同じ広さなら優先。</li>` +
+        `</ul></div>` +
         `</div>`;
     }
   }

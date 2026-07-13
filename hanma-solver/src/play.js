@@ -469,6 +469,12 @@ function renderReview() {
         `<div class="rvd-head">🎯 ${l.turn}手目：なぜ <b>${tileName(l.bestTile)}</b> が推奨か（あなたは ${tileName(l.chosenTile)}）</div>` +
         `<div class="reason-card safe"><div class="rc-head">推奨 ${tileName(l.bestTile)} 切りの利点</div><ul>${pros.join('')}</ul></div>` +
         `<div class="rvd-logic">▶ ロジック：向聴（アガリまでの近さ）を最優先に、同じ向聴なら<b>受け入れの広さ＋打点（ドラ）</b>を放銃リスクで割り引いた総合期待値で比較。${tileName(l.bestTile)} 切りがこの局面で最も期待値が高い。</div>` +
+        `<div class="rvd-shape">📐 <b>牌効率の考え方（かぶり形の捌き）</b><ul>` +
+        `<li>手牌を「面子＋ターツ＋浮き牌」に分解し、<b>5ブロック</b>（4面子＋雀頭）を意識する。</li>` +
+        `<li><b>弱いターツ（ペンチャン89・カンチャン46）や余った重複</b>から先に払い、<b>両面や複合形</b>を残すのがコツ。</li>` +
+        `<li>複合形＝<b>1枚で2役</b>の形は受けが広く強い。例：<b>44556</b>（面子＋両面）、<b>3455</b>（面子＋雀頭）、<b>357</b>（リャンカン＝4・6両受け）。</li>` +
+        `<li>韓麻は<b>5が全部赤ドラ</b>。5絡みの形（455・556など）は同じ広さなら優先。</li>` +
+        `</ul></div>` +
         `</div>`;
     }
   }
