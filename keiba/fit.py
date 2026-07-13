@@ -217,6 +217,38 @@ def main():
                 test, lambda r: p_blend(p_model(r, T, ks), p_market(r), alpha, beta)):
             print(f"  {label:8s} n={n:4d} 予測{pred:5.1f}% 実際{act:5.1f}%")
 
+    # ── 選定エッジ診断: 「システム評価が期待値を超える」兆候の監視(7/12ユーザー指示) ──
+    # (1) α感度: NLLがαにどれだけ敏感か。α=0.1でも僅差なら「エッジ有り」をデータが否定できていない
+    print("\n── 選定エッジ診断 ──")
+    for name, dset in (("train", train), ("test", test)):
+        if not dset:
+            continue
+        vals = []
+        for a_try in (0.0, 0.05, 0.1, 0.2):
+            v, _ = nll(dset, lambda r, a2=a_try: p_blend(p_model(r, T, ks), p_market(r), a2, beta or 1.0))
+            vals.append(f"α={a_try}:{v:.4f}")
+        print(f"  勝者NLLのα感度({name}): " + "  ".join(vals))
+    # (2) 乖離バケット: モデル1位が市場4番人気以下のレース＝モデルの独自主張が最も強い所。
+    #     ここでモデル1位の単勝フラットROIが100%を超え始めたら「システムがEVを超えた」サイン。
+    for name, dset in (("train", train), ("test", test)):
+        if not dset:
+            continue
+        n = wins = 0
+        stake = ret = 0.0
+        for r in dset:
+            pm = p_model(r, T, ks)
+            top = max(pm, key=pm.get)
+            mkt_rank = sorted(r["odds"], key=lambda h: r["odds"][h]).index(top) + 1 if top in r["odds"] else 99
+            if mkt_rank >= 4:
+                n += 1
+                stake += 1
+                if top == r["winner"]:
+                    wins += 1
+                    ret += r["odds"][top]
+        if n:
+            print(f"  乖離バケット({name}): モデル1位が4番人気以下={n}R "
+                  f"勝ち{wins} 単勝フラットROI {ret/stake*100:.0f}%  ←100%超が続けば選定エッジ")
+
     # 3着内(複勝)の較正も確認: ブレンド確率のHarville P(top3) vs 実際
     if test:
         import predict as PRD
