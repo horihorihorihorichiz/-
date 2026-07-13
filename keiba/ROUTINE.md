@@ -1,4 +1,29 @@
-# 毎週土日 自動レース選定 ── Routine（定期実行）設定手順
+# 週末ルーチン設定手順（Ver.100=紙上運用が本線／旧・レース選定も残置）
+
+## ★Ver.100 紙上運用ルーチン（2026-07-12〜の本線。こちらを登録推奨）
+登録: claude.ai/code/routines → New routine
+- 名前: `競馬・週末紙上運用(Ver.100)`
+- cron: `3 9 * * 6,0`（土日 9:03 JST）
+- リポジトリ: `horihorihorihorichiz/-`（環境のAllowed domainsは下記・旧手順のnetkeiba系と同じ）
+- プロンプト（そのまま貼る）:
+```
+keiba/RULES.md §0(Ver.100体制)を読んでから、以下を順に実行:
+1. cd keiba && python paper.py settle && python paper.py stats   # 前回分の精算と成績
+2. python paper.py run <今日のYYYYMMDD>                          # 今日の全JRAレースを紙上運用
+3. もし harvest_year.py の収穫が未完了(harvest_year.stateのdoneに20260705が無い)なら
+   nohup python3 harvest_year.py >> harvest_year.log 2>&1 & で収穫を再開して先へ進む
+4. 収穫完了済みなら月1回程度の再学習: python fit_score.py --l2 0.05 --write &&
+   python fit_score.py --surface 芝 --l2 0.08 --write && python fit_score.py --surface ダ --l2 0.08 --write &&
+   python fit.py --test <直近2週末の日付8桁カンマ区切り> --write
+5. paper.py stats の結果と、GOになったレースの買い目(オッズ→払戻付き)をまとめmdにして SendUserFile で送る
+6. 変更を commit & push（ブランチ claude/stoic-ride-p35k9n）
+※実弾なし=紙上のみ。判定ライン: 精算150Rで回収90%超→少額実弾の相談／70%未満→設計見直し。
+※認証情報は扱わない・netkeibaにログインしない・購入しない。
+```
+
+---
+
+# （旧）毎週土日 自動レース選定 ── Routine（定期実行）設定手順
 
 「毎週土日になったら自動でレースを選ぶ」を Claude Code の **Routines** で実現する。
 ルーチンはクラウドで動くので PC を閉じていても週末に自動実行される。
