@@ -413,7 +413,10 @@ def run(race):
         f_csi = h.get("csi", 0)
         f_nrja = nrja(h["last_race_days"])
         mult = KANKAI[h["style"]][stage]
-        SW = load_params().get("score_weights")
+        # コース別重み(Ver.100.2): 芝/ダ専用があれば優先、無ければ全体学習重み
+        _P = load_params()
+        SW = (_P.get("score_weights_by_surface", {}).get(race.get("surface", ""))
+              or _P.get("score_weights"))
         if SW:
             # Ver.100.1: 構成要素の重みを実測学習(fit_score.py)。展開も加点式で重み込み。
             comp = dict(tsi=tsi_score[i], lts=lts_final[i], fsi=f_fsi, bonus=f_bonus,

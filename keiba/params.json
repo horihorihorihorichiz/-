@@ -11,5 +11,35 @@
   "beta": 0.8
  },
  "fitted_on": 252,
- "note": "fit.py Ver.100"
+ "note": "fit.py Ver.100",
+ "score_weights": {
+  "tsi": 1.0,
+  "lts": 1.0626,
+  "fsi": 0.7223,
+  "bonus": 1.0002,
+  "dsi": 1.0872,
+  "nsi": 0.7833,
+  "csi": 0.9684,
+  "was": 0.949,
+  "tas": 0.9881,
+  "hcs": 0.9093,
+  "nrja": 1.0023,
+  "kankai": 0.7605
+ },
+ "score_weights_by_surface": {
+  "芝": {
+   "tsi": 1.0,
+   "lts": 0.999,
+   "fsi": 0.7004,
+   "bonus": 0.9872,
+   "dsi": 1.0209,
+   "nsi": 0.8472,
+   "csi": 0.9926,
+   "was": 0.996,
+   "tas": 1.0169,
+   "hcs": 0.8831,
+   "nrja": 1.0004,
+   "kankai": 0.8158
+  }
+ }
 }

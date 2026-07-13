@@ -237,10 +237,15 @@ def main():
                       f"予測{sp/n_*100:5.1f}% 実際{w/n_*100:5.1f}%")
 
     if a.write:
-        params = dict(temp=T, kankai_scale=ks, cap=30.0,
-                      blend=dict(alpha=alpha, beta=beta),
-                      blend_place=dict(alpha=a_pl, beta=b_pl),
-                      fitted_on=len(train), note="fit.py Ver.100")
+        # 既存params(score_weights等)を保持したままフィット結果だけ更新する
+        try:
+            params = json.load(open("params.json", encoding="utf-8"))
+        except Exception:
+            params = {}
+        params.update(dict(temp=T, kankai_scale=ks, cap=30.0,
+                           blend=dict(alpha=alpha, beta=beta),
+                           blend_place=dict(alpha=a_pl, beta=b_pl),
+                           fitted_on=len(train), note="fit.py Ver.100"))
         json.dump(params, open("params.json", "w", encoding="utf-8"),
                   ensure_ascii=False, indent=1)
         print("\nparams.json に保存した（calc/predictが次回から使う）")

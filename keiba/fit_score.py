@@ -13,11 +13,13 @@ FEATS = ["tsi", "lts", "fsi", "bonus", "dsi", "nsi", "csi",
          "was", "tas", "hcs", "nrja", "kankai"]
 
 
-def load_dataset(histdir):
+def load_dataset(histdir, surface=None):
     ds = []
     for f in sorted(glob.glob(os.path.join(histdir, "*.json"))):
         try:
             d = json.load(open(f, encoding="utf-8"))
+            if surface and d["race"].get("surface") != surface:
+                continue
             res = calc.run(d["race"])
         except Exception:
             continue
@@ -100,11 +102,12 @@ def main():
     ap.add_argument("--histdir", default="hist")
     ap.add_argument("--test", default="20260711,20260712")
     ap.add_argument("--l2", type=float, default=0.3)
+    ap.add_argument("--surface", choices=["芝", "ダ"], help="芝/ダート別に学習")
     ap.add_argument("--write", action="store_true")
     a = ap.parse_args()
 
     T = calc.load_params().get("temp", 20.0)
-    ds = load_dataset(a.histdir)
+    ds = load_dataset(a.histdir, surface=a.surface)
     test_days = set(a.test.split(","))
     train = [r for r in ds if r["date"] not in test_days]
     test = [r for r in ds if r["date"] in test_days]
@@ -131,11 +134,19 @@ def main():
         if test and v1 >= v0:
             print("\n⚠️ ホールドアウトで改善しなかったため params.json には書かない（現状維持）。")
             return
-        p = calc.load_params()
-        p["score_weights"] = {k: round(v, 4) for k, v in zip(FEATS, w)}
+        try:
+            p = json.load(open("params.json", encoding="utf-8"))
+        except Exception:
+            p = {}
+        wd = {k: round(v, 4) for k, v in zip(FEATS, w)}
+        if a.surface:
+            p.setdefault("score_weights_by_surface", {})[a.surface] = wd
+            print(f"\nparams.json に score_weights_by_surface[{a.surface}] を保存した。")
+        else:
+            p["score_weights"] = wd
+            print("\nparams.json に score_weights を保存した。")
         json.dump(p, open("params.json", "w", encoding="utf-8"),
                   ensure_ascii=False, indent=1)
-        print("\nparams.json に score_weights を保存した。")
 
 
 if __name__ == "__main__":
