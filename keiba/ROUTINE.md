@@ -8,6 +8,7 @@
 - プロンプト（そのまま貼る）:
 ```
 keiba/RULES.md §0(Ver.100体制)を読んでから、以下を順に実行:
+0. pip install -q numpy lightgbm  # Ver.3モデル用(新環境では毎回必要)
 1. cd keiba && python paper.py settle && python paper.py stats   # 前回分の精算と成績
 2. python paper.py run <今日のYYYYMMDD>                          # 今日の全JRAレースを紙上運用
 3. もし harvest_year.py の収穫が未完了(harvest_year.stateのdoneに20260705が無い)なら

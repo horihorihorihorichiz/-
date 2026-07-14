@@ -40,8 +40,26 @@ def rescore(race, rows):
     if len(raw) < 5 or n_hist < len(raw)*0.6:
         return None
     X = {k: V2.z_in_race({n: raw[n].get(k) for n in raw}) for k in V2.FEATS}
-    w = pv["weights_win"]
-    s = {n: sum(w[i]*X[k][n] for i, k in enumerate(V2.FEATS)) for n in raw}
+    engine = "Ver.2-WIN(U2)"
+    s = None
+    # V3(LambdaRank)があれば優先。lightgbm不在/モデル無しは自動でU2線形にフォールバック
+    try:
+        import lightgbm as lgb
+        mpath = os.path.join(_DIR, "model_v3.txt")
+        if os.path.exists(mpath):
+            booster = lgb.Booster(model_file=mpath)
+            ns = list(raw.keys())
+            import numpy as np
+            M = np.array([[X[k][n] for k in V2.FEATS] + [len(ns)] for n in ns],
+                         dtype=np.float32)
+            pred = booster.predict(M)
+            s = {n: float(v) for n, v in zip(ns, pred)}
+            engine = "Ver.3(LambdaRank)"
+    except Exception:
+        s = None
+    if s is None:
+        w = pv["weights_win"]
+        s = {n: sum(w[i]*X[k][n] for i, k in enumerate(V2.FEATS)) for n in raw}
     # pwin: softmax→30%クリップ+再正規化(calcと同じ流儀)
     mx = max(s.values())
     e = {n: math.exp(s[n]-mx) for n in s}
@@ -70,5 +88,5 @@ def rescore(race, rows):
         r["rank"] = ("S" if gr <= 0.03 else "A" if gr <= 0.08 else
                      "B" if gr <= 0.14 else "C" if gr <= 0.30 else "D")
     rows.sort(key=lambda r: -r["wavg"])
-    return dict(engine="Ver.2-WIN", n=len(raw),
+    return dict(engine=engine, n=len(raw),
                 jockey_used=sum(1 for n in raw if raw[n]["j_top3"] is not None))

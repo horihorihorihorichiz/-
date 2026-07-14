@@ -829,7 +829,7 @@ def main():
     print("=" * 60)
     print(race.get("name", a.race_json), " 馬場:", race.get("baba", "?"))
     if v2info:
-        print(f"[得点=Ver.2-WIN(勝ち馬照準・市場情報不使用) 騎手反映{v2info['jockey_used']}/{v2info['n']}頭]")
+        print(f"[得点={v2info['engine']}(勝ち馬照準・市場情報不使用) 騎手反映{v2info['jockey_used']}/{v2info['n']}頭]")
     print("=" * 60)
     if a.no_odds:
         print_ranking(res)
