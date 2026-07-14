@@ -27,5 +27,9 @@
   0.0284,
   0.0356
  ],
- "note": "fit_v2 Ver.101 B1"
+ "note": "fit_v2 Ver.101 B1",
+ "blend_place_v2": {
+  "alpha": 0.03,
+  "beta": 0.85
+ }
 }

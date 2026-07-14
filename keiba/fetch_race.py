@@ -207,6 +207,14 @@ def derive_off(races):
     return [r["finish"] for r in races
             if r.get("_baba") in ("稍", "重", "不") and r.get("days", 9999) <= 365]
 
+# Ver.101: 自前スピード指数DB（speedidx.py build が生成。無ければ空=従来動作）
+try:
+    _SPEEDIDX = json.load(open(os.path.join(
+        os.path.dirname(os.path.abspath(__file__)), "speedidx.json"), encoding="utf-8"))
+except Exception:
+    _SPEEDIDX = {}
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("race_id")
@@ -293,6 +301,15 @@ def main():
         for j, r in enumerate(races):
             if j < len(tl) and tl[j] is not None:
                 r["tsi"] = tl[j]
+        # Ver.101: 自前スピード指数DB(speedidx.json)からtsi=Noneの走を自動補完（馬名+走破日キー）
+        if _SPEEDIDX:
+            for r in races:
+                if r.get("tsi") is None and r.get("days"):
+                    d = (race_date - datetime.timedelta(days=r["days"])).strftime("%Y%m%d")
+                    v = _SPEEDIDX.get(f"{hs['name']}|{d}")
+                    if v is not None:
+                        r["tsi"] = v
+                        r["tsi_src"] = "own"
         for r in races:
             r.pop("_baba", None)
             r.pop("_venue", None)

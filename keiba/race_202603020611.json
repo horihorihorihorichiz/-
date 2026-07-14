@@ -15,17 +15,35 @@
     {
       "num": 1,
       "name": "ボーンディスウェイ",
-      "paper_style": "追",
+      "paper_style": "差",
+      "jockey_id": "01127",
       "kinryo": 56.0,
-      "weight": 0,
-      "weight_change": 0,
+      "weight": 494,
+      "weight_change": -2,
       "boost": 0,
-      "last_race_days": 41,
+      "last_race_days": 2,
       "csi": 5,
       "offtrack_finishes": [
+        5,
         9
       ],
       "races": [
+        {
+          "surface": "芝",
+          "dist": 2000,
+          "finish": 5,
+          "field": 16,
+          "umaban": 1,
+          "corner4": 7,
+          "agari": 35.8,
+          "vg": 2,
+          "tier": 8,
+          "days": 2,
+          "pace": "H",
+          "baba_idx": null,
+          "tsi": 88.0,
+          "tsi_src": "own"
+        },
         {
           "surface": "芝",
           "dist": 2500,
@@ -36,10 +54,11 @@
           "agari": 33.7,
           "vg": 2,
           "tier": 8,
-          "days": 41,
+          "days": 44,
           "pace": "H",
           "baba_idx": null,
-          "tsi": 98.0
+          "tsi": 78.9,
+          "tsi_src": "own"
         },
         {
           "surface": "芝",
@@ -51,10 +70,11 @@
           "agari": 34.0,
           "vg": 2,
           "tier": 3,
-          "days": 91,
+          "days": 94,
           "pace": "S",
           "baba_idx": null,
-          "tsi": 97.0
+          "tsi": 82.7,
+          "tsi_src": "own"
         },
         {
           "surface": "芝",
@@ -66,10 +86,10 @@
           "agari": 35.2,
           "vg": 2,
           "tier": 3,
-          "days": 140,
+          "days": 143,
           "pace": "S",
           "baba_idx": null,
-          "tsi": 88.0
+          "tsi": null
         },
         {
           "surface": "芝",
@@ -81,10 +101,11 @@
           "agari": 34.1,
           "vg": 2,
           "tier": 8,
-          "days": 244,
+          "days": 247,
           "pace": "H",
           "baba_idx": null,
-          "tsi": 99.0
+          "tsi": 78.9,
+          "tsi_src": "own"
         },
         {
           "surface": "芝",
@@ -96,10 +117,11 @@
           "agari": 33.4,
           "vg": 2,
           "tier": 3,
-          "days": 271,
+          "days": 274,
           "pace": "S",
           "baba_idx": null,
-          "tsi": 100.0
+          "tsi": 86.0,
+          "tsi_src": "own"
         },
         {
           "surface": "芝",
@@ -111,10 +133,11 @@
           "agari": 36.7,
           "vg": 2,
           "tier": 8,
-          "days": 328,
+          "days": 331,
           "pace": "H",
           "baba_idx": null,
-          "tsi": null
+          "tsi": 74.4,
+          "tsi_src": "own"
         },
         {
           "surface": "芝",
@@ -126,7 +149,7 @@
           "agari": 36.3,
           "vg": 2,
           "tier": 8,
-          "days": 377,
+          "days": 380,
           "pace": "H",
           "baba_idx": null,
           "tsi": null
@@ -141,22 +164,7 @@
           "agari": 34.7,
           "vg": 2,
           "tier": 8,
-          "days": 420,
-          "pace": "S",
-          "baba_idx": null,
-          "tsi": null
-        },
-        {
-          "surface": "芝",
-          "dist": 1800,
-          "finish": 8,
-          "field": 16,
-          "umaban": 3,
-          "corner4": 5,
-          "agari": 34.8,
-          "vg": 2,
-          "tier": 8,
-          "days": 496,
+          "days": 423,
           "pace": "S",
           "baba_idx": null,
           "tsi": null
@@ -167,16 +175,34 @@
       "num": 2,
       "name": "コントラポスト",
       "paper_style": "先",
+      "jockey_id": "01161",
       "kinryo": 56.0,
-      "weight": 0,
-      "weight_change": 0,
+      "weight": 466,
+      "weight_change": -4,
       "boost": 0,
-      "last_race_days": 28,
+      "last_race_days": 2,
       "csi": 2.5,
       "offtrack_finishes": [
+        9,
         5
       ],
       "races": [
+        {
+          "surface": "芝",
+          "dist": 2000,
+          "finish": 9,
+          "field": 16,
+          "umaban": 2,
+          "corner4": 4,
+          "agari": 37.3,
+          "vg": 2,
+          "tier": 8,
+          "days": 2,
+          "pace": "H",
+          "baba_idx": null,
+          "tsi": 81.5,
+          "tsi_src": "own"
+        },
         {
           "surface": "芝",
           "dist": 1800,
@@ -187,10 +213,11 @@
           "agari": 34.2,
           "vg": 2,
           "tier": 3,
-          "days": 28,
+          "days": 31,
           "pace": "S",
           "baba_idx": null,
-          "tsi": 89.0
+          "tsi": 74.9,
+          "tsi_src": "own"
         },
         {
           "surface": "芝",
@@ -202,10 +229,11 @@
           "agari": 35.2,
           "vg": 2,
           "tier": 3,
-          "days": 202,
+          "days": 205,
           "pace": "S",
           "baba_idx": null,
-          "tsi": 94.0
+          "tsi": 86.0,
+          "tsi_src": "own"
         },
         {
           "surface": "芝",
@@ -217,10 +245,11 @@
           "agari": 33.6,
           "vg": 2,
           "tier": 8,
-          "days": 308,
+          "days": 311,
           "pace": "S",
           "baba_idx": null,
-          "tsi": 108.0
+          "tsi": 92.2,
+          "tsi_src": "own"
         },
         {
           "surface": "芝",
@@ -232,10 +261,11 @@
           "agari": 34.3,
           "vg": 2,
           "tier": 3,
-          "days": 363,
+          "days": 366,
           "pace": "H",
           "baba_idx": null,
-          "tsi": 110.0
+          "tsi": 90.0,
+          "tsi_src": "own"
         },
         {
           "surface": "芝",
@@ -247,10 +277,10 @@
           "agari": 34.9,
           "vg": 2,
           "tier": 8,
-          "days": 427,
+          "days": 430,
           "pace": "H",
           "baba_idx": null,
-          "tsi": 107.0
+          "tsi": null
         },
         {
           "surface": "芝",
@@ -262,7 +292,7 @@
           "agari": 34.1,
           "vg": 2,
           "tier": 8,
-          "days": 462,
+          "days": 465,
           "pace": "M",
           "baba_idx": null,
           "tsi": null
@@ -277,7 +307,7 @@
           "agari": 34.4,
           "vg": 2,
           "tier": 3,
-          "days": 511,
+          "days": 514,
           "pace": "M",
           "baba_idx": null,
           "tsi": null
@@ -292,23 +322,8 @@
           "agari": 34.6,
           "vg": 2,
           "tier": 3,
-          "days": 573,
+          "days": 576,
           "pace": "S",
-          "baba_idx": null,
-          "tsi": null
-        },
-        {
-          "surface": "芝",
-          "dist": 1800,
-          "finish": 1,
-          "field": 10,
-          "umaban": 1,
-          "corner4": 3,
-          "agari": 35.5,
-          "vg": 2,
-          "tier": 4,
-          "days": 616,
-          "pace": "H",
           "baba_idx": null,
           "tsi": null
         }
@@ -318,16 +333,34 @@
       "num": 3,
       "name": "ショウナンマグマ",
       "paper_style": "先",
+      "jockey_id": "01122",
       "kinryo": 55.0,
-      "weight": 0,
-      "weight_change": 0,
+      "weight": 500,
+      "weight_change": -10,
       "boost": 0,
-      "last_race_days": 48,
+      "last_race_days": 2,
       "csi": 5,
       "offtrack_finishes": [
+        14,
         4
       ],
       "races": [
+        {
+          "surface": "芝",
+          "dist": 2000,
+          "finish": 14,
+          "field": 16,
+          "umaban": 3,
+          "corner4": 2,
+          "agari": 39.5,
+          "vg": 2,
+          "tier": 8,
+          "days": 2,
+          "pace": "H",
+          "baba_idx": null,
+          "tsi": 70.8,
+          "tsi_src": "own"
+        },
         {
           "surface": "芝",
           "dist": 1800,
@@ -338,10 +371,11 @@
           "agari": 36.2,
           "vg": 2,
           "tier": 3,
-          "days": 48,
+          "days": 51,
           "pace": "M",
           "baba_idx": null,
-          "tsi": 101.0
+          "tsi": 84.0,
+          "tsi_src": "own"
         },
         {
           "surface": "芝",
@@ -353,10 +387,11 @@
           "agari": 37.0,
           "vg": 2,
           "tier": 3,
-          "days": 125,
+          "days": 128,
           "pace": "M",
           "baba_idx": null,
-          "tsi": 84.0
+          "tsi": 66.8,
+          "tsi_src": "own"
         },
         {
           "surface": "芝",
@@ -368,10 +403,11 @@
           "agari": 34.0,
           "vg": 2,
           "tier": 8,
-          "days": 132,
+          "days": 135,
           "pace": "S",
           "baba_idx": null,
-          "tsi": 98.0
+          "tsi": 88.4,
+          "tsi_src": "own"
         },
         {
           "surface": "芝",
@@ -383,10 +419,11 @@
           "agari": 35.3,
           "vg": 2,
           "tier": 3,
-          "days": 202,
+          "days": 205,
           "pace": "S",
           "baba_idx": null,
-          "tsi": 95.0
+          "tsi": 86.8,
+          "tsi_src": "own"
         },
         {
           "surface": "芝",
@@ -398,10 +435,11 @@
           "agari": 36.1,
           "vg": 2,
           "tier": 8,
-          "days": 217,
+          "days": 220,
           "pace": "H",
           "baba_idx": null,
-          "tsi": 95.0
+          "tsi": 77.9,
+          "tsi_src": "own"
         },
         {
           "surface": "芝",
@@ -413,10 +451,11 @@
           "agari": 35.5,
           "vg": 2,
           "tier": 3,
-          "days": 259,
+          "days": 262,
           "pace": "M",
           "baba_idx": null,
-          "tsi": null
+          "tsi": 83.2,
+          "tsi_src": "own"
         },
         {
           "surface": "芝",
@@ -428,10 +467,11 @@
           "agari": 38.3,
           "vg": 2,
           "tier": 8,
-          "days": 301,
+          "days": 304,
           "pace": "M",
           "baba_idx": null,
-          "tsi": null
+          "tsi": 70.3,
+          "tsi_src": "own"
         },
         {
           "surface": "芝",
@@ -443,25 +483,11 @@
           "agari": 37.6,
           "vg": 2,
           "tier": 8,
-          "days": 363,
+          "days": 366,
           "pace": "H",
           "baba_idx": null,
-          "tsi": null
-        },
-        {
-          "surface": "芝",
-          "dist": 1800,
-          "finish": 9,
-          "field": 17,
-          "umaban": 5,
-          "corner4": 3,
-          "agari": 37.2,
-          "vg": 2,
-          "tier": 3,
-          "days": 412,
-          "pace": "H",
-          "baba_idx": null,
-          "tsi": null
+          "tsi": 55.3,
+          "tsi_src": "own"
         }
       ]
     },
@@ -469,16 +495,34 @@
       "num": 4,
       "name": "カラマティアノス",
       "paper_style": "先",
+      "jockey_id": "05203",
       "kinryo": 58.0,
-      "weight": 0,
-      "weight_change": 0,
+      "weight": 472,
+      "weight_change": -2,
       "boost": 0,
-      "last_race_days": 63,
+      "last_race_days": 2,
       "csi": 5,
       "offtrack_finishes": [
+        7,
         12
       ],
       "races": [
+        {
+          "surface": "芝",
+          "dist": 2000,
+          "finish": 7,
+          "field": 16,
+          "umaban": 4,
+          "corner4": 10,
+          "agari": 36.5,
+          "vg": 2,
+          "tier": 8,
+          "days": 2,
+          "pace": "H",
+          "baba_idx": null,
+          "tsi": 85.1,
+          "tsi_src": "own"
+        },
         {
           "surface": "芝",
           "dist": 1800,
@@ -489,10 +533,11 @@
           "agari": 33.7,
           "vg": 2,
           "tier": 8,
-          "days": 63,
+          "days": 66,
           "pace": "S",
           "baba_idx": null,
-          "tsi": 96.0
+          "tsi": 81.2,
+          "tsi_src": "own"
         },
         {
           "surface": "芝",
@@ -504,10 +549,11 @@
           "agari": 34.0,
           "vg": 2,
           "tier": 8,
-          "days": 132,
+          "days": 135,
           "pace": "S",
           "baba_idx": null,
-          "tsi": 104.0
+          "tsi": 93.1,
+          "tsi_src": "own"
         },
         {
           "surface": "芝",
@@ -519,10 +565,11 @@
           "agari": 34.4,
           "vg": 2,
           "tier": 8,
-          "days": 188,
+          "days": 191,
           "pace": "S",
           "baba_idx": null,
-          "tsi": 96.0
+          "tsi": 74.6,
+          "tsi_src": "own"
         },
         {
           "surface": "ダ",
@@ -534,10 +581,11 @@
           "agari": 37.8,
           "vg": 2,
           "tier": 3,
-          "days": 252,
+          "days": 255,
           "pace": "H",
           "baba_idx": null,
-          "tsi": 95.0
+          "tsi": 86.0,
+          "tsi_src": "own"
         },
         {
           "surface": "芝",
@@ -549,10 +597,11 @@
           "agari": 33.3,
           "vg": 2,
           "tier": 8,
-          "days": 308,
+          "days": 311,
           "pace": "S",
           "baba_idx": null,
-          "tsi": 105.0
+          "tsi": 88.7,
+          "tsi_src": "own"
         },
         {
           "surface": "芝",
@@ -564,7 +613,7 @@
           "agari": 34.7,
           "vg": 2,
           "tier": 8,
-          "days": 405,
+          "days": 408,
           "pace": "S",
           "baba_idx": null,
           "tsi": null
@@ -579,7 +628,7 @@
           "agari": 34.6,
           "vg": 2,
           "tier": 8,
-          "days": 447,
+          "days": 450,
           "pace": "M",
           "baba_idx": null,
           "tsi": null
@@ -594,22 +643,7 @@
           "agari": 33.4,
           "vg": 2,
           "tier": 8,
-          "days": 510,
-          "pace": "S",
-          "baba_idx": null,
-          "tsi": null
-        },
-        {
-          "surface": "芝",
-          "dist": 1600,
-          "finish": 1,
-          "field": 7,
-          "umaban": 4,
-          "corner4": 4,
-          "agari": 34.2,
-          "vg": 2,
-          "tier": 6,
-          "days": 587,
+          "days": 513,
           "pace": "S",
           "baba_idx": null,
           "tsi": null
@@ -620,16 +654,34 @@
       "num": 5,
       "name": "オーロラエックス",
       "paper_style": "追",
+      "jockey_id": "01163",
       "kinryo": 55.0,
-      "weight": 0,
-      "weight_change": 0,
+      "weight": 484,
+      "weight_change": -10,
       "boost": 0,
-      "last_race_days": 48,
+      "last_race_days": 2,
       "csi": 5,
       "offtrack_finishes": [
+        8,
         10
       ],
       "races": [
+        {
+          "surface": "芝",
+          "dist": 2000,
+          "finish": 8,
+          "field": 16,
+          "umaban": 5,
+          "corner4": 14,
+          "agari": 36.4,
+          "vg": 2,
+          "tier": 8,
+          "days": 2,
+          "pace": "H",
+          "baba_idx": null,
+          "tsi": 82.2,
+          "tsi_src": "own"
+        },
         {
           "surface": "芝",
           "dist": 1800,
@@ -640,10 +692,11 @@
           "agari": 34.8,
           "vg": 2,
           "tier": 3,
-          "days": 48,
+          "days": 51,
           "pace": "M",
           "baba_idx": null,
-          "tsi": 110.0
+          "tsi": 91.9,
+          "tsi_src": "own"
         },
         {
           "surface": "芝",
@@ -655,10 +708,11 @@
           "agari": 34.0,
           "vg": 2,
           "tier": 3,
-          "days": 161,
+          "days": 164,
           "pace": "S",
           "baba_idx": null,
-          "tsi": 96.0
+          "tsi": 78.9,
+          "tsi_src": "own"
         },
         {
           "surface": "芝",
@@ -670,10 +724,11 @@
           "agari": 35.9,
           "vg": 2,
           "tier": 8,
-          "days": 237,
+          "days": 240,
           "pace": "M",
           "baba_idx": null,
-          "tsi": 93.0
+          "tsi": 73.7,
+          "tsi_src": "own"
         },
         {
           "surface": "芝",
@@ -685,10 +740,11 @@
           "agari": 33.7,
           "vg": 2,
           "tier": 3,
-          "days": 259,
+          "days": 262,
           "pace": "M",
           "baba_idx": null,
-          "tsi": 102.0
+          "tsi": 84.0,
+          "tsi_src": "own"
         },
         {
           "surface": "芝",
@@ -700,10 +756,11 @@
           "agari": 33.6,
           "vg": 2,
           "tier": 4,
-          "days": 308,
+          "days": 311,
           "pace": "M",
           "baba_idx": null,
-          "tsi": 100.0
+          "tsi": 85.0,
+          "tsi_src": "own"
         },
         {
           "surface": "芝",
@@ -715,10 +772,11 @@
           "agari": 34.0,
           "vg": 2,
           "tier": 4,
-          "days": 335,
+          "days": 338,
           "pace": "S",
           "baba_idx": null,
-          "tsi": null
+          "tsi": 70.1,
+          "tsi_src": "own"
         },
         {
           "surface": "芝",
@@ -730,7 +788,7 @@
           "agari": 35.3,
           "vg": 2,
           "tier": 4,
-          "days": 385,
+          "days": 388,
           "pace": "M",
           "baba_idx": null,
           "tsi": null
@@ -745,22 +803,7 @@
           "agari": 33.8,
           "vg": 2,
           "tier": 4,
-          "days": 413,
-          "pace": "S",
-          "baba_idx": null,
-          "tsi": null
-        },
-        {
-          "surface": "芝",
-          "dist": 2400,
-          "finish": 12,
-          "field": 12,
-          "umaban": 1,
-          "corner4": 8,
-          "agari": 35.5,
-          "vg": 2,
-          "tier": 4,
-          "days": 468,
+          "days": 416,
           "pace": "S",
           "baba_idx": null,
           "tsi": null
@@ -771,14 +814,33 @@
       "num": 6,
       "name": "マイネルモーント",
       "paper_style": "差",
+      "jockey_id": "01150",
       "kinryo": 56.0,
-      "weight": 0,
+      "weight": 464,
       "weight_change": 0,
       "boost": 0,
-      "last_race_days": 63,
+      "last_race_days": 2,
       "csi": 5,
-      "offtrack_finishes": [],
+      "offtrack_finishes": [
+        2
+      ],
       "races": [
+        {
+          "surface": "芝",
+          "dist": 2000,
+          "finish": 2,
+          "field": 16,
+          "umaban": 6,
+          "corner4": 5,
+          "agari": 35.7,
+          "vg": 2,
+          "tier": 8,
+          "days": 2,
+          "pace": "H",
+          "baba_idx": null,
+          "tsi": 90.8,
+          "tsi_src": "own"
+        },
         {
           "surface": "芝",
           "dist": 1800,
@@ -789,10 +851,11 @@
           "agari": 33.2,
           "vg": 2,
           "tier": 8,
-          "days": 63,
+          "days": 66,
           "pace": "S",
           "baba_idx": null,
-          "tsi": 93.0
+          "tsi": 78.1,
+          "tsi_src": "own"
         },
         {
           "surface": "芝",
@@ -804,10 +867,11 @@
           "agari": 34.9,
           "vg": 2,
           "tier": 3,
-          "days": 90,
+          "days": 93,
           "pace": "H",
           "baba_idx": null,
-          "tsi": 92.0
+          "tsi": 80.3,
+          "tsi_src": "own"
         },
         {
           "surface": "芝",
@@ -819,10 +883,11 @@
           "agari": 33.9,
           "vg": 2,
           "tier": 8,
-          "days": 132,
+          "days": 135,
           "pace": "S",
           "baba_idx": null,
-          "tsi": 103.0
+          "tsi": 92.3,
+          "tsi_src": "own"
         },
         {
           "surface": "芝",
@@ -834,10 +899,11 @@
           "agari": 35.2,
           "vg": 2,
           "tier": 3,
-          "days": 161,
+          "days": 164,
           "pace": "S",
           "baba_idx": null,
-          "tsi": 99.0
+          "tsi": 81.0,
+          "tsi_src": "own"
         },
         {
           "surface": "芝",
@@ -849,10 +915,11 @@
           "agari": 34.7,
           "vg": 2,
           "tier": 8,
-          "days": 188,
+          "days": 191,
           "pace": "S",
           "baba_idx": null,
-          "tsi": 92.0
+          "tsi": 71.7,
+          "tsi_src": "own"
         },
         {
           "surface": "芝",
@@ -864,10 +931,11 @@
           "agari": 34.1,
           "vg": 2,
           "tier": 8,
-          "days": 210,
+          "days": 213,
           "pace": "S",
           "baba_idx": null,
-          "tsi": null
+          "tsi": 85.3,
+          "tsi_src": "own"
         },
         {
           "surface": "芝",
@@ -879,10 +947,11 @@
           "agari": 34.4,
           "vg": 2,
           "tier": 3,
-          "days": 271,
+          "days": 274,
           "pace": "S",
           "baba_idx": null,
-          "tsi": null
+          "tsi": 84.6,
+          "tsi_src": "own"
         },
         {
           "surface": "芝",
@@ -894,22 +963,7 @@
           "agari": 36.5,
           "vg": 2,
           "tier": 8,
-          "days": 377,
-          "pace": "H",
-          "baba_idx": null,
-          "tsi": null
-        },
-        {
-          "surface": "芝",
-          "dist": 2000,
-          "finish": 7,
-          "field": 10,
-          "umaban": 10,
-          "corner4": 7,
-          "agari": 37.1,
-          "vg": 2,
-          "tier": 8,
-          "days": 482,
+          "days": 380,
           "pace": "H",
           "baba_idx": null,
           "tsi": null
@@ -919,15 +973,34 @@
     {
       "num": 7,
       "name": "メリオーレム",
-      "paper_style": "差",
+      "paper_style": "追",
+      "jockey_id": "05212",
       "kinryo": 55.0,
-      "weight": 0,
-      "weight_change": 0,
+      "weight": 498,
+      "weight_change": 2,
       "boost": 0,
-      "last_race_days": 28,
+      "last_race_days": 2,
       "csi": 5,
-      "offtrack_finishes": [],
+      "offtrack_finishes": [
+        16
+      ],
       "races": [
+        {
+          "surface": "芝",
+          "dist": 2000,
+          "finish": 16,
+          "field": 16,
+          "umaban": 7,
+          "corner4": 16,
+          "agari": 45.3,
+          "vg": 2,
+          "tier": 8,
+          "days": 2,
+          "pace": "H",
+          "baba_idx": null,
+          "tsi": 10.9,
+          "tsi_src": "own"
+        },
         {
           "surface": "芝",
           "dist": 1800,
@@ -938,10 +1011,11 @@
           "agari": 33.9,
           "vg": 2,
           "tier": 3,
-          "days": 28,
+          "days": 31,
           "pace": "S",
           "baba_idx": null,
-          "tsi": 87.0
+          "tsi": 72.5,
+          "tsi_src": "own"
         },
         {
           "surface": "芝",
@@ -953,10 +1027,11 @@
           "agari": 34.2,
           "vg": 2,
           "tier": 3,
-          "days": 48,
+          "days": 51,
           "pace": "M",
           "baba_idx": null,
-          "tsi": 110.0
+          "tsi": 91.9,
+          "tsi_src": "own"
         },
         {
           "surface": "芝",
@@ -968,10 +1043,11 @@
           "agari": 33.2,
           "vg": 2,
           "tier": 8,
-          "days": 210,
+          "days": 213,
           "pace": "S",
           "baba_idx": null,
-          "tsi": 103.0
+          "tsi": 86.7,
+          "tsi_src": "own"
         },
         {
           "surface": "芝",
@@ -983,10 +1059,11 @@
           "agari": 34.9,
           "vg": 2,
           "tier": 3,
-          "days": 271,
+          "days": 274,
           "pace": "S",
           "baba_idx": null,
-          "tsi": 95.0
+          "tsi": 81.7,
+          "tsi_src": "own"
         },
         {
           "surface": "芝",
@@ -998,10 +1075,11 @@
           "agari": 36.1,
           "vg": 2,
           "tier": 8,
-          "days": 356,
+          "days": 359,
           "pace": "H",
           "baba_idx": null,
-          "tsi": 100.0
+          "tsi": 71.4,
+          "tsi_src": "own"
         },
         {
           "surface": "芝",
@@ -1013,7 +1091,7 @@
           "agari": 34.7,
           "vg": 2,
           "tier": 4,
-          "days": 405,
+          "days": 408,
           "pace": "H",
           "baba_idx": null,
           "tsi": null
@@ -1028,7 +1106,7 @@
           "agari": 33.9,
           "vg": 2,
           "tier": 4,
-          "days": 433,
+          "days": 436,
           "pace": "S",
           "baba_idx": null,
           "tsi": null
@@ -1043,22 +1121,7 @@
           "agari": 35.4,
           "vg": 2,
           "tier": 4,
-          "days": 455,
-          "pace": "S",
-          "baba_idx": null,
-          "tsi": null
-        },
-        {
-          "surface": "芝",
-          "dist": 2400,
-          "finish": 4,
-          "field": 14,
-          "umaban": 1,
-          "corner4": 6,
-          "agari": 34.9,
-          "vg": 2,
-          "tier": 4,
-          "days": 518,
+          "days": 458,
           "pace": "S",
           "baba_idx": null,
           "tsi": null
@@ -1069,14 +1132,33 @@
       "num": 8,
       "name": "クリスマスパレード",
       "paper_style": "追",
+      "jockey_id": "01135",
       "kinryo": 55.0,
-      "weight": 0,
-      "weight_change": 0,
+      "weight": 472,
+      "weight_change": 10,
       "boost": 0,
-      "last_race_days": 105,
+      "last_race_days": 2,
       "csi": 5,
-      "offtrack_finishes": [],
+      "offtrack_finishes": [
+        11
+      ],
       "races": [
+        {
+          "surface": "芝",
+          "dist": 2000,
+          "finish": 11,
+          "field": 16,
+          "umaban": 8,
+          "corner4": 12,
+          "agari": 36.9,
+          "vg": 2,
+          "tier": 8,
+          "days": 2,
+          "pace": "H",
+          "baba_idx": null,
+          "tsi": 79.4,
+          "tsi_src": "own"
+        },
         {
           "surface": "芝",
           "dist": 2500,
@@ -1087,10 +1169,11 @@
           "agari": 40.0,
           "vg": 2,
           "tier": 8,
-          "days": 105,
+          "days": 108,
           "pace": "H",
           "baba_idx": null,
-          "tsi": 80.0
+          "tsi": 65.2,
+          "tsi_src": "own"
         },
         {
           "surface": "芝",
@@ -1102,10 +1185,11 @@
           "agari": 35.1,
           "vg": 2,
           "tier": 3,
-          "days": 168,
+          "days": 171,
           "pace": "M",
           "baba_idx": null,
-          "tsi": 87.0
+          "tsi": 78.5,
+          "tsi_src": "own"
         },
         {
           "surface": "芝",
@@ -1117,10 +1201,11 @@
           "agari": 34.3,
           "vg": 2,
           "tier": 8,
-          "days": 231,
+          "days": 234,
           "pace": "S",
           "baba_idx": null,
-          "tsi": 93.0
+          "tsi": 68.9,
+          "tsi_src": "own"
         },
         {
           "surface": "芝",
@@ -1132,10 +1217,11 @@
           "agari": 35.1,
           "vg": 2,
           "tier": 3,
-          "days": 342,
+          "days": 345,
           "pace": "H",
           "baba_idx": null,
-          "tsi": 96.0
+          "tsi": 88.0,
+          "tsi_src": "own"
         },
         {
           "surface": "芝",
@@ -1147,10 +1233,10 @@
           "agari": 34.0,
           "vg": 2,
           "tier": 8,
-          "days": 419,
+          "days": 422,
           "pace": "H",
           "baba_idx": null,
-          "tsi": 102.0
+          "tsi": null
         },
         {
           "surface": "芝",
@@ -1162,7 +1248,7 @@
           "agari": 35.3,
           "vg": 2,
           "tier": 3,
-          "days": 490,
+          "days": 493,
           "pace": "S",
           "baba_idx": null,
           "tsi": null
@@ -1177,7 +1263,7 @@
           "agari": 36.1,
           "vg": 2,
           "tier": 8,
-          "days": 552,
+          "days": 555,
           "pace": "H",
           "baba_idx": null,
           "tsi": null
@@ -1192,23 +1278,8 @@
           "agari": 35.8,
           "vg": 2,
           "tier": 8,
-          "days": 636,
+          "days": 639,
           "pace": "H",
-          "baba_idx": null,
-          "tsi": null
-        },
-        {
-          "surface": "芝",
-          "dist": 2000,
-          "finish": 1,
-          "field": 13,
-          "umaban": 6,
-          "corner4": 2,
-          "agari": 33.9,
-          "vg": 2,
-          "tier": 3,
-          "days": 672,
-          "pace": "S",
           "baba_idx": null,
           "tsi": null
         }
@@ -1217,15 +1288,34 @@
     {
       "num": 9,
       "name": "オニャンコポン",
-      "paper_style": "差",
+      "paper_style": "追",
+      "jockey_id": "00733",
       "kinryo": 54.0,
-      "weight": 0,
-      "weight_change": 0,
+      "weight": 468,
+      "weight_change": -8,
       "boost": 0,
-      "last_race_days": 13,
+      "last_race_days": 2,
       "csi": 5,
-      "offtrack_finishes": [],
+      "offtrack_finishes": [
+        3
+      ],
       "races": [
+        {
+          "surface": "芝",
+          "dist": 2000,
+          "finish": 3,
+          "field": 16,
+          "umaban": 9,
+          "corner4": 7,
+          "agari": 35.4,
+          "vg": 2,
+          "tier": 8,
+          "days": 2,
+          "pace": "H",
+          "baba_idx": null,
+          "tsi": 89.4,
+          "tsi_src": "own"
+        },
         {
           "surface": "芝",
           "dist": 2000,
@@ -1236,10 +1326,11 @@
           "agari": 35.0,
           "vg": 2,
           "tier": 8,
-          "days": 13,
+          "days": 16,
           "pace": "H",
           "baba_idx": null,
-          "tsi": 104.0
+          "tsi": 79.9,
+          "tsi_src": "own"
         },
         {
           "surface": "芝",
@@ -1251,10 +1342,11 @@
           "agari": 33.8,
           "vg": 2,
           "tier": 8,
-          "days": 63,
+          "days": 66,
           "pace": "S",
           "baba_idx": null,
-          "tsi": 90.0
+          "tsi": 75.7,
+          "tsi_src": "own"
         },
         {
           "surface": "芝",
@@ -1266,10 +1358,11 @@
           "agari": 34.9,
           "vg": 2,
           "tier": 3,
-          "days": 104,
+          "days": 107,
           "pace": "M",
           "baba_idx": null,
-          "tsi": 94.0
+          "tsi": 75.3,
+          "tsi_src": "own"
         },
         {
           "surface": "芝",
@@ -1281,10 +1374,11 @@
           "agari": 34.9,
           "vg": 2,
           "tier": 8,
-          "days": 132,
+          "days": 135,
           "pace": "S",
           "baba_idx": null,
-          "tsi": 99.0
+          "tsi": 89.2,
+          "tsi_src": "own"
         },
         {
           "surface": "芝",
@@ -1296,10 +1390,11 @@
           "agari": 34.0,
           "vg": 2,
           "tier": 3,
-          "days": 180,
+          "days": 183,
           "pace": "M",
           "baba_idx": null,
-          "tsi": 100.0
+          "tsi": 79.8,
+          "tsi_src": "own"
         },
         {
           "surface": "芝",
@@ -1311,10 +1406,11 @@
           "agari": 33.9,
           "vg": 2,
           "tier": 8,
-          "days": 210,
+          "days": 213,
           "pace": "S",
           "baba_idx": null,
-          "tsi": null
+          "tsi": 85.3,
+          "tsi_src": "own"
         },
         {
           "surface": "芝",
@@ -1326,10 +1422,11 @@
           "agari": 34.3,
           "vg": 2,
           "tier": 8,
-          "days": 217,
+          "days": 220,
           "pace": "H",
           "baba_idx": null,
-          "tsi": null
+          "tsi": 81.8,
+          "tsi_src": "own"
         },
         {
           "surface": "芝",
@@ -1341,25 +1438,11 @@
           "agari": 34.6,
           "vg": 2,
           "tier": 8,
-          "days": 301,
+          "days": 304,
           "pace": "M",
           "baba_idx": null,
-          "tsi": null
-        },
-        {
-          "surface": "芝",
-          "dist": 2000,
-          "finish": 3,
-          "field": 15,
-          "umaban": 7,
-          "corner4": 8,
-          "agari": 35.7,
-          "vg": 2,
-          "tier": 8,
-          "days": 363,
-          "pace": "H",
-          "baba_idx": null,
-          "tsi": null
+          "tsi": 87.4,
+          "tsi_src": "own"
         }
       ]
     },
@@ -1367,14 +1450,33 @@
       "num": 10,
       "name": "センツブラッド",
       "paper_style": "先",
+      "jockey_id": "01184",
       "kinryo": 56.0,
-      "weight": 0,
+      "weight": 470,
       "weight_change": 0,
       "boost": 0,
-      "last_race_days": 63,
+      "last_race_days": 2,
       "csi": 5,
-      "offtrack_finishes": [],
+      "offtrack_finishes": [
+        4
+      ],
       "races": [
+        {
+          "surface": "芝",
+          "dist": 2000,
+          "finish": 4,
+          "field": 16,
+          "umaban": 10,
+          "corner4": 3,
+          "agari": 36.3,
+          "vg": 2,
+          "tier": 8,
+          "days": 2,
+          "pace": "H",
+          "baba_idx": null,
+          "tsi": 88.7,
+          "tsi_src": "own"
+        },
         {
           "surface": "芝",
           "dist": 1800,
@@ -1385,10 +1487,11 @@
           "agari": 34.2,
           "vg": 2,
           "tier": 8,
-          "days": 63,
+          "days": 66,
           "pace": "S",
           "baba_idx": null,
-          "tsi": 93.0
+          "tsi": 78.9,
+          "tsi_src": "own"
         },
         {
           "surface": "芝",
@@ -1400,10 +1503,11 @@
           "agari": 36.1,
           "vg": 2,
           "tier": 8,
-          "days": 139,
+          "days": 142,
           "pace": "M",
           "baba_idx": null,
-          "tsi": 95.0
+          "tsi": 80.4,
+          "tsi_src": "own"
         },
         {
           "surface": "芝",
@@ -1415,10 +1519,11 @@
           "agari": 34.1,
           "vg": 2,
           "tier": 8,
-          "days": 217,
+          "days": 220,
           "pace": "H",
           "baba_idx": null,
-          "tsi": 105.0
+          "tsi": 86.6,
+          "tsi_src": "own"
         },
         {
           "surface": "芝",
@@ -1430,10 +1535,11 @@
           "agari": 34.4,
           "vg": 2,
           "tier": 3,
-          "days": 259,
+          "days": 262,
           "pace": "M",
           "baba_idx": null,
-          "tsi": 98.0
+          "tsi": 80.0,
+          "tsi_src": "own"
         },
         {
           "surface": "芝",
@@ -1445,10 +1551,10 @@
           "agari": 35.2,
           "vg": 2,
           "tier": 8,
-          "days": 377,
+          "days": 380,
           "pace": "M",
           "baba_idx": null,
-          "tsi": 95.0
+          "tsi": null
         },
         {
           "surface": "芝",
@@ -1460,7 +1566,7 @@
           "agari": 34.9,
           "vg": 2,
           "tier": 3,
-          "days": 405,
+          "days": 408,
           "pace": "H",
           "baba_idx": null,
           "tsi": null
@@ -1475,7 +1581,7 @@
           "agari": 36.2,
           "vg": 2,
           "tier": 6,
-          "days": 469,
+          "days": 472,
           "pace": "M",
           "baba_idx": null,
           "tsi": null
@@ -1490,22 +1596,7 @@
           "agari": 37.0,
           "vg": 2,
           "tier": 8,
-          "days": 538,
-          "pace": "H",
-          "baba_idx": null,
-          "tsi": null
-        },
-        {
-          "surface": "芝",
-          "dist": 2000,
-          "finish": 1,
-          "field": 9,
-          "umaban": 1,
-          "corner4": 2,
-          "agari": 35.4,
-          "vg": 2,
-          "tier": 10,
-          "days": 636,
+          "days": 541,
           "pace": "H",
           "baba_idx": null,
           "tsi": null
@@ -1516,14 +1607,33 @@
       "num": 11,
       "name": "アスクナイスショー",
       "paper_style": "逃",
+      "jockey_id": "01075",
       "kinryo": 55.0,
-      "weight": 0,
-      "weight_change": 0,
+      "weight": 496,
+      "weight_change": -6,
       "boost": 0,
-      "last_race_days": 105,
+      "last_race_days": 2,
       "csi": 5,
-      "offtrack_finishes": [],
+      "offtrack_finishes": [
+        1
+      ],
       "races": [
+        {
+          "surface": "芝",
+          "dist": 2000,
+          "finish": 1,
+          "field": 16,
+          "umaban": 11,
+          "corner4": 1,
+          "agari": 35.8,
+          "vg": 2,
+          "tier": 8,
+          "days": 2,
+          "pace": "H",
+          "baba_idx": null,
+          "tsi": 93.7,
+          "tsi_src": "own"
+        },
         {
           "surface": "芝",
           "dist": 2500,
@@ -1534,10 +1644,11 @@
           "agari": 37.5,
           "vg": 2,
           "tier": 8,
-          "days": 105,
+          "days": 108,
           "pace": "H",
           "baba_idx": null,
-          "tsi": 99.0
+          "tsi": 82.3,
+          "tsi_src": "own"
         },
         {
           "surface": "芝",
@@ -1549,10 +1660,11 @@
           "agari": 34.6,
           "vg": 2,
           "tier": 4,
-          "days": 182,
+          "days": 185,
           "pace": "M",
           "baba_idx": null,
-          "tsi": 107.0
+          "tsi": 88.9,
+          "tsi_src": "own"
         },
         {
           "surface": "芝",
@@ -1564,10 +1676,11 @@
           "agari": 34.4,
           "vg": 2,
           "tier": 4,
-          "days": 259,
+          "days": 262,
           "pace": "S",
           "baba_idx": null,
-          "tsi": 96.0
+          "tsi": 84.2,
+          "tsi_src": "own"
         },
         {
           "surface": "芝",
@@ -1579,10 +1692,11 @@
           "agari": 34.4,
           "vg": 2,
           "tier": 4,
-          "days": 300,
+          "days": 303,
           "pace": "S",
           "baba_idx": null,
-          "tsi": 95.0
+          "tsi": 83.1,
+          "tsi_src": "own"
         },
         {
           "surface": "芝",
@@ -1594,10 +1708,10 @@
           "agari": 36.1,
           "vg": 2,
           "tier": 4,
-          "days": 378,
+          "days": 381,
           "pace": "H",
           "baba_idx": null,
-          "tsi": 93.0
+          "tsi": null
         },
         {
           "surface": "芝",
@@ -1609,7 +1723,7 @@
           "agari": 35.5,
           "vg": 2,
           "tier": 4,
-          "days": 455,
+          "days": 458,
           "pace": "S",
           "baba_idx": null,
           "tsi": null
@@ -1624,7 +1738,7 @@
           "agari": 36.0,
           "vg": 2,
           "tier": 5,
-          "days": 551,
+          "days": 554,
           "pace": "M",
           "baba_idx": null,
           "tsi": null
@@ -1639,22 +1753,7 @@
           "agari": 35.4,
           "vg": 2,
           "tier": 5,
-          "days": 630,
-          "pace": "M",
-          "baba_idx": null,
-          "tsi": null
-        },
-        {
-          "surface": "芝",
-          "dist": 2200,
-          "finish": 4,
-          "field": 13,
-          "umaban": 5,
-          "corner4": 2,
-          "agari": 35.2,
-          "vg": 2,
-          "tier": 5,
-          "days": 692,
+          "days": 633,
           "pace": "M",
           "baba_idx": null,
           "tsi": null
@@ -1665,14 +1764,33 @@
       "num": 12,
       "name": "リカンカブール",
       "paper_style": "差",
+      "jockey_id": "01160",
       "kinryo": 57.0,
-      "weight": 0,
-      "weight_change": 0,
+      "weight": 496,
+      "weight_change": 10,
       "boost": 0,
-      "last_race_days": 139,
+      "last_race_days": 2,
       "csi": 5,
-      "offtrack_finishes": [],
+      "offtrack_finishes": [
+        13
+      ],
       "races": [
+        {
+          "surface": "芝",
+          "dist": 2000,
+          "finish": 13,
+          "field": 16,
+          "umaban": 12,
+          "corner4": 14,
+          "agari": 37.4,
+          "vg": 2,
+          "tier": 8,
+          "days": 2,
+          "pace": "H",
+          "baba_idx": null,
+          "tsi": 73.0,
+          "tsi_src": "own"
+        },
         {
           "surface": "芝",
           "dist": 1800,
@@ -1683,10 +1801,11 @@
           "agari": 35.3,
           "vg": 2,
           "tier": 8,
-          "days": 139,
+          "days": 142,
           "pace": "M",
           "baba_idx": null,
-          "tsi": 102.0
+          "tsi": 87.6,
+          "tsi_src": "own"
         },
         {
           "surface": "芝",
@@ -1698,10 +1817,11 @@
           "agari": 34.9,
           "vg": 2,
           "tier": 8,
-          "days": 188,
+          "days": 191,
           "pace": "S",
           "baba_idx": null,
-          "tsi": 93.0
+          "tsi": 72.4,
+          "tsi_src": "own"
         },
         {
           "surface": "芝",
@@ -1713,10 +1833,11 @@
           "agari": 34.3,
           "vg": 2,
           "tier": 8,
-          "days": 231,
+          "days": 234,
           "pace": "S",
           "baba_idx": null,
-          "tsi": 92.0
+          "tsi": 68.2,
+          "tsi_src": "own"
         },
         {
           "surface": "芝",
@@ -1728,10 +1849,11 @@
           "agari": 34.5,
           "vg": 2,
           "tier": 8,
-          "days": 293,
+          "days": 296,
           "pace": "S",
           "baba_idx": null,
-          "tsi": 103.0
+          "tsi": 85.0,
+          "tsi_src": "own"
         },
         {
           "surface": "芝",
@@ -1743,10 +1865,11 @@
           "agari": 36.8,
           "vg": 2,
           "tier": 8,
-          "days": 356,
+          "days": 359,
           "pace": "H",
           "baba_idx": null,
-          "tsi": 99.0
+          "tsi": 70.7,
+          "tsi_src": "own"
         },
         {
           "surface": "芝",
@@ -1758,7 +1881,7 @@
           "agari": 36.3,
           "vg": 2,
           "tier": 3,
-          "days": 517,
+          "days": 520,
           "pace": "S",
           "baba_idx": null,
           "tsi": null
@@ -1773,7 +1896,7 @@
           "agari": 35.5,
           "vg": 2,
           "tier": 8,
-          "days": 552,
+          "days": 555,
           "pace": "H",
           "baba_idx": null,
           "tsi": null
@@ -1788,23 +1911,8 @@
           "agari": 34.6,
           "vg": 2,
           "tier": 8,
-          "days": 657,
+          "days": 660,
           "pace": "S",
-          "baba_idx": null,
-          "tsi": null
-        },
-        {
-          "surface": "芝",
-          "dist": 2000,
-          "finish": 8,
-          "field": 16,
-          "umaban": 6,
-          "corner4": 5,
-          "agari": 35.8,
-          "vg": 2,
-          "tier": 8,
-          "days": 727,
-          "pace": "M",
           "baba_idx": null,
           "tsi": null
         }
@@ -1813,15 +1921,34 @@
     {
       "num": 13,
       "name": "バトルボーン",
-      "paper_style": "逃",
+      "paper_style": "先",
+      "jockey_id": "05386",
       "kinryo": 57.0,
-      "weight": 0,
+      "weight": 506,
       "weight_change": 0,
       "boost": 0,
-      "last_race_days": 62,
+      "last_race_days": 2,
       "csi": 5,
-      "offtrack_finishes": [],
+      "offtrack_finishes": [
+        12
+      ],
       "races": [
+        {
+          "surface": "芝",
+          "dist": 2000,
+          "finish": 12,
+          "field": 16,
+          "umaban": 13,
+          "corner4": 10,
+          "agari": 38.3,
+          "vg": 2,
+          "tier": 8,
+          "days": 2,
+          "pace": "H",
+          "baba_idx": null,
+          "tsi": 74.4,
+          "tsi_src": "own"
+        },
         {
           "surface": "芝",
           "dist": 2400,
@@ -1832,10 +1959,11 @@
           "agari": 34.3,
           "vg": 2,
           "tier": 3,
-          "days": 62,
+          "days": 65,
           "pace": "S",
           "baba_idx": null,
-          "tsi": 103.0
+          "tsi": 84.8,
+          "tsi_src": "own"
         },
         {
           "surface": "芝",
@@ -1847,10 +1975,11 @@
           "agari": 35.3,
           "vg": 2,
           "tier": 3,
-          "days": 153,
+          "days": 156,
           "pace": "S",
           "baba_idx": null,
-          "tsi": 93.0
+          "tsi": 77.8,
+          "tsi_src": "own"
         },
         {
           "surface": "芝",
@@ -1862,10 +1991,10 @@
           "agari": 37.1,
           "vg": 2,
           "tier": 8,
-          "days": 538,
+          "days": 541,
           "pace": "H",
           "baba_idx": null,
-          "tsi": 109.0
+          "tsi": null
         },
         {
           "surface": "芝",
@@ -1877,10 +2006,10 @@
           "agari": 34.1,
           "vg": 2,
           "tier": 3,
-          "days": 798,
+          "days": 801,
           "pace": "S",
           "baba_idx": null,
-          "tsi": 105.0
+          "tsi": null
         },
         {
           "surface": "芝",
@@ -1892,10 +2021,10 @@
           "agari": 33.9,
           "vg": 2,
           "tier": 3,
-          "days": 896,
+          "days": 899,
           "pace": "S",
           "baba_idx": null,
-          "tsi": 106.0
+          "tsi": null
         },
         {
           "surface": "芝",
@@ -1907,7 +2036,7 @@
           "agari": 35.3,
           "vg": 2,
           "tier": 8,
-          "days": 1098,
+          "days": 1101,
           "pace": "M",
           "baba_idx": null,
           "tsi": null
@@ -1922,7 +2051,7 @@
           "agari": 34.5,
           "vg": 2,
           "tier": 4,
-          "days": 1322,
+          "days": 1325,
           "pace": "S",
           "baba_idx": null,
           "tsi": null
@@ -1937,23 +2066,8 @@
           "agari": 35.2,
           "vg": 2,
           "tier": 5,
-          "days": 1391,
+          "days": 1394,
           "pace": "S",
-          "baba_idx": null,
-          "tsi": null
-        },
-        {
-          "surface": "芝",
-          "dist": 2000,
-          "finish": 1,
-          "field": 8,
-          "umaban": 8,
-          "corner4": 2,
-          "agari": 35.1,
-          "vg": 2,
-          "tier": 6,
-          "days": 1491,
-          "pace": "M",
           "baba_idx": null,
           "tsi": null
         }
@@ -1963,14 +2077,33 @@
       "num": 14,
       "name": "オールナット",
       "paper_style": "差",
+      "jockey_id": "01171",
       "kinryo": 57.5,
-      "weight": 0,
-      "weight_change": 0,
+      "weight": 530,
+      "weight_change": -2,
       "boost": 0,
-      "last_race_days": 174,
+      "last_race_days": 2,
       "csi": 5,
-      "offtrack_finishes": [],
+      "offtrack_finishes": [
+        15
+      ],
       "races": [
+        {
+          "surface": "芝",
+          "dist": 2000,
+          "finish": 15,
+          "field": 16,
+          "umaban": 14,
+          "corner4": 12,
+          "agari": 38.1,
+          "vg": 2,
+          "tier": 8,
+          "days": 2,
+          "pace": "H",
+          "baba_idx": null,
+          "tsi": 70.8,
+          "tsi_src": "own"
+        },
         {
           "surface": "芝",
           "dist": 2400,
@@ -1981,10 +2114,11 @@
           "agari": 34.9,
           "vg": 2,
           "tier": 8,
-          "days": 174,
+          "days": 177,
           "pace": "S",
           "baba_idx": null,
-          "tsi": 87.0
+          "tsi": 65.8,
+          "tsi_src": "own"
         },
         {
           "surface": "芝",
@@ -1996,10 +2130,11 @@
           "agari": 34.6,
           "vg": 2,
           "tier": 8,
-          "days": 217,
+          "days": 220,
           "pace": "H",
           "baba_idx": null,
-          "tsi": 99.0
+          "tsi": 81.0,
+          "tsi_src": "own"
         },
         {
           "surface": "芝",
@@ -2011,10 +2146,11 @@
           "agari": 34.5,
           "vg": 2,
           "tier": 8,
-          "days": 301,
+          "days": 304,
           "pace": "M",
           "baba_idx": null,
-          "tsi": 99.0
+          "tsi": 89.6,
+          "tsi_src": "own"
         },
         {
           "surface": "芝",
@@ -2026,10 +2162,10 @@
           "agari": 34.9,
           "vg": 2,
           "tier": 8,
-          "days": 420,
+          "days": 423,
           "pace": "S",
           "baba_idx": null,
-          "tsi": 104.0
+          "tsi": null
         },
         {
           "surface": "芝",
@@ -2041,10 +2177,10 @@
           "agari": 33.5,
           "vg": 2,
           "tier": 3,
-          "days": 489,
+          "days": 492,
           "pace": "S",
           "baba_idx": null,
-          "tsi": 102.0
+          "tsi": null
         },
         {
           "surface": "芝",
@@ -2056,7 +2192,7 @@
           "agari": 34.4,
           "vg": 2,
           "tier": 8,
-          "days": 517,
+          "days": 520,
           "pace": "M",
           "baba_idx": null,
           "tsi": null
@@ -2071,7 +2207,7 @@
           "agari": 33.4,
           "vg": 2,
           "tier": 4,
-          "days": 587,
+          "days": 590,
           "pace": "S",
           "baba_idx": null,
           "tsi": null
@@ -2086,22 +2222,7 @@
           "agari": 33.7,
           "vg": 2,
           "tier": 5,
-          "days": 636,
-          "pace": "S",
-          "baba_idx": null,
-          "tsi": null
-        },
-        {
-          "surface": "芝",
-          "dist": 2600,
-          "finish": 4,
-          "field": 10,
-          "umaban": 2,
-          "corner4": 4,
-          "agari": 37.2,
-          "vg": 2,
-          "tier": 5,
-          "days": 734,
+          "days": 639,
           "pace": "S",
           "baba_idx": null,
           "tsi": null
@@ -2112,16 +2233,34 @@
       "num": 15,
       "name": "ヤマニンブークリエ",
       "paper_style": "先",
+      "jockey_id": "00660",
       "kinryo": 56.0,
-      "weight": 0,
-      "weight_change": 0,
+      "weight": 514,
+      "weight_change": -4,
       "boost": 0,
-      "last_race_days": 56,
+      "last_race_days": 2,
       "csi": 5,
       "offtrack_finishes": [
+        6,
         16
       ],
       "races": [
+        {
+          "surface": "芝",
+          "dist": 2000,
+          "finish": 6,
+          "field": 16,
+          "umaban": 15,
+          "corner4": 5,
+          "agari": 36.4,
+          "vg": 2,
+          "tier": 8,
+          "days": 2,
+          "pace": "H",
+          "baba_idx": null,
+          "tsi": 85.1,
+          "tsi_src": "own"
+        },
         {
           "surface": "芝",
           "dist": 2000,
@@ -2132,10 +2271,11 @@
           "agari": 34.3,
           "vg": 2,
           "tier": 8,
-          "days": 56,
+          "days": 59,
           "pace": "S",
           "baba_idx": null,
-          "tsi": 92.0
+          "tsi": 82.1,
+          "tsi_src": "own"
         },
         {
           "surface": "芝",
@@ -2147,7 +2287,7 @@
           "agari": 40.0,
           "vg": 2,
           "tier": 8,
-          "days": 146,
+          "days": 149,
           "pace": null,
           "baba_idx": null,
           "tsi": null
@@ -2162,10 +2302,11 @@
           "agari": 34.6,
           "vg": 2,
           "tier": 8,
-          "days": 174,
+          "days": 177,
           "pace": "S",
           "baba_idx": null,
-          "tsi": 92.0
+          "tsi": 69.9,
+          "tsi_src": "own"
         },
         {
           "surface": "芝",
@@ -2177,10 +2318,11 @@
           "agari": 37.3,
           "vg": 2,
           "tier": 8,
-          "days": 258,
+          "days": 261,
           "pace": "S",
           "baba_idx": null,
-          "tsi": 100.0
+          "tsi": 75.1,
+          "tsi_src": "own"
         },
         {
           "surface": "芝",
@@ -2192,10 +2334,11 @@
           "agari": 34.4,
           "vg": 2,
           "tier": 8,
-          "days": 299,
+          "days": 302,
           "pace": "S",
           "baba_idx": null,
-          "tsi": 105.0
+          "tsi": 85.7,
+          "tsi_src": "own"
         },
         {
           "surface": "芝",
@@ -2207,7 +2350,7 @@
           "agari": 34.8,
           "vg": 2,
           "tier": 5,
-          "days": 385,
+          "days": 388,
           "pace": "S",
           "baba_idx": null,
           "tsi": null
@@ -2222,7 +2365,7 @@
           "agari": 34.3,
           "vg": 2,
           "tier": 8,
-          "days": 441,
+          "days": 444,
           "pace": "S",
           "baba_idx": null,
           "tsi": null
@@ -2237,23 +2380,8 @@
           "agari": 38.3,
           "vg": 2,
           "tier": 6,
-          "days": 475,
+          "days": 478,
           "pace": "H",
-          "baba_idx": null,
-          "tsi": null
-        },
-        {
-          "surface": "芝",
-          "dist": 2200,
-          "finish": 4,
-          "field": 8,
-          "umaban": 2,
-          "corner4": 5,
-          "agari": 35.6,
-          "vg": 2,
-          "tier": 3,
-          "days": 497,
-          "pace": "M",
           "baba_idx": null,
           "tsi": null
         }
@@ -2263,14 +2391,33 @@
       "num": 16,
       "name": "サヴォーナ",
       "paper_style": "先",
+      "jockey_id": "01032",
       "kinryo": 58.0,
-      "weight": 0,
-      "weight_change": 0,
+      "weight": 536,
+      "weight_change": 2,
       "boost": 0,
-      "last_race_days": 90,
+      "last_race_days": 2,
       "csi": 5,
-      "offtrack_finishes": [],
+      "offtrack_finishes": [
+        10
+      ],
       "races": [
+        {
+          "surface": "芝",
+          "dist": 2000,
+          "finish": 10,
+          "field": 16,
+          "umaban": 16,
+          "corner4": 7,
+          "agari": 37.2,
+          "vg": 2,
+          "tier": 8,
+          "days": 2,
+          "pace": "H",
+          "baba_idx": null,
+          "tsi": 80.8,
+          "tsi_src": "own"
+        },
         {
           "surface": "芝",
           "dist": 2000,
@@ -2281,10 +2428,11 @@
           "agari": 35.1,
           "vg": 2,
           "tier": 3,
-          "days": 90,
+          "days": 93,
           "pace": "H",
           "baba_idx": null,
-          "tsi": 96.0
+          "tsi": 83.1,
+          "tsi_src": "own"
         },
         {
           "surface": "芝",
@@ -2296,10 +2444,10 @@
           "agari": 36.3,
           "vg": 2,
           "tier": 8,
-          "days": 615,
+          "days": 618,
           "pace": "H",
           "baba_idx": null,
-          "tsi": 107.0
+          "tsi": null
         },
         {
           "surface": "芝",
@@ -2311,10 +2459,10 @@
           "agari": 34.6,
           "vg": 2,
           "tier": 8,
-          "days": 657,
+          "days": 660,
           "pace": "S",
           "baba_idx": null,
-          "tsi": 99.0
+          "tsi": null
         },
         {
           "surface": "芝",
@@ -2326,10 +2474,10 @@
           "agari": 35.2,
           "vg": 2,
           "tier": 8,
-          "days": 727,
+          "days": 730,
           "pace": "M",
           "baba_idx": null,
-          "tsi": 102.0
+          "tsi": null
         },
         {
           "surface": "芝",
@@ -2341,10 +2489,10 @@
           "agari": 35.8,
           "vg": 2,
           "tier": 8,
-          "days": 804,
+          "days": 807,
           "pace": "S",
           "baba_idx": null,
-          "tsi": 112.0
+          "tsi": null
         },
         {
           "surface": "芝",
@@ -2356,7 +2504,7 @@
           "agari": 35.6,
           "vg": 2,
           "tier": 8,
-          "days": 846,
+          "days": 849,
           "pace": "S",
           "baba_idx": null,
           "tsi": null
@@ -2371,7 +2519,7 @@
           "agari": 36.3,
           "vg": 2,
           "tier": 8,
-          "days": 909,
+          "days": 912,
           "pace": "H",
           "baba_idx": null,
           "tsi": null
@@ -2386,22 +2534,7 @@
           "agari": 35.6,
           "vg": 2,
           "tier": 8,
-          "days": 993,
-          "pace": "S",
-          "baba_idx": null,
-          "tsi": null
-        },
-        {
-          "surface": "芝",
-          "dist": 2400,
-          "finish": 2,
-          "field": 13,
-          "umaban": 6,
-          "corner4": 4,
-          "agari": 33.4,
-          "vg": 2,
-          "tier": 8,
-          "days": 1021,
+          "days": 996,
           "pace": "S",
           "baba_idx": null,
           "tsi": null
