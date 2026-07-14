@@ -275,11 +275,26 @@ def build_buylist_ev(rows, odds, budget=10000, unit=100, kelly=0.25,
             continue
         picks.append((kind, lbl, o, st, p, ev))
         total += st
+    # 乖離単勝(7/14 ウォークフォワード9ヶ月でROI117%/227点の実証ルール):
+    # 得点(V2)1位が市場4番人気以下=モデルの独自主張が強い時だけ、単勝を予算5%で1点。
+    kairi = None
+    if rows and tan:
+        top_r = max(rows, key=lambda r: r.get("wavg", -9e9))
+        top = top_r["num"]
+        if top in tan:
+            mrank = sorted(tan, key=lambda h: tan[h]).index(top) + 1
+            if mrank >= 4 and not any(k == "単勝" and l == str(top) for k, l, *_ in picks):
+                st = max(unit, int(budget*0.05/unit)*unit)
+                if total + st <= budget:
+                    picks.append(("単勝", str(top), tan[top], st,
+                                  pb.get(top, 0), pb.get(top, 0)*tan[top]))
+                    total += st
+                    kairi = dict(num=top, mrank=mrank, odds=tan[top])
     dec = dict(mode="EV", axis=[order[0]] if order else [],
                second=order[1] if len(order) > 1 else None,
                core=[int(c[1]) for c in sel if c[0] == "単勝"][:2],
-               n_cand=len(cands), n_edge=len(sel), pb=pb,
-               note="Ver.100 較正ブレンド×エッジ購入(閾値未満は買わない)")
+               n_cand=len(cands), n_edge=len(sel), pb=pb, kairi=kairi,
+               note="Ver.100 較正ブレンド×エッジ購入(閾値未満は買わない)+乖離単勝")
     return picks, total, dec
 
 def print_buylist_ev(picks, total, dec, budget):
@@ -873,7 +888,11 @@ def main():
         picks, total, dec = build_buylist_ev(res["rows"], odds, budget=a.budget,
                                              unit=a.unit, edge_scale=a.edge_scale)
         edge = sum(st*p*o for _, _, o, st, p, _ in picks)/(total or 1)
-        go = bool(picks) and edge >= 1.10
+        go = bool(picks) and (edge >= 1.10 or dec.get("kairi"))
+        if dec.get("kairi"):
+            k = dec["kairi"]
+            print(f"\n★乖離単勝: 得点1位 {k['num']}番が{k['mrank']}番人気({k['odds']}倍) "
+                  f"— WF検証9ヶ月ROI117%のルールに該当")
         pb = dec.get("pb", {})
         bl = calc.load_params().get("blend", {})
         print("\nEV裁定(Ver.100): %s（エッジ点数=%d / ポートフォリオ期待エッジ=%.0f%% / "

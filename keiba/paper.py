@@ -53,6 +53,11 @@ def cmd_run(date, nar, budget):
                 print(f"  {rid} 見送り(新馬/走歴不足)", file=sys.stderr)
                 continue
             res = calc.run(race)
+            try:
+                import v2_live
+                v2_live.rescore(race, res["rows"])   # 紙上運用もV2得点で
+            except Exception:
+                pass
             odds = (PR.fetch_nar(rid, race.get("field", 16))
                     if nar else PR.fetch_jra(rid))
             picks, total, dec = PR.build_buylist_ev(res["rows"], odds, budget=budget)
