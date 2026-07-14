@@ -13,9 +13,9 @@ import glob, json, math, os, sys
 import fit_v2 as V2
 
 TEST_DAYS = {"20260704", "20260705", "20260711", "20260712"}
-# 現行チャンピオン(Ver.2-WIN R3)の実測値: これを超えたら勝ち
-BASELINE_TRAIN = 67.3
-BASELINE_TEST = 66.6
+# 現行チャンピオン(U2統合 7/14)の実測値: これを超えたら勝ち
+BASELINE_TRAIN = 68.7
+BASELINE_TEST = 70.6
 
 
 def load_base(histdir="hist", featdir="hist_feat"):
