@@ -785,6 +785,8 @@ def main():
     ap.add_argument("--no-odds", action="store_true", help="ランキングだけ出す")
     ap.add_argument("--floor-mode", action="store_true",
                     help="旧floor保証モード(Ver.99)で買い目構築。既定はVer.100エッジ購入")
+    ap.add_argument("--no-v2", action="store_true",
+                    help="Ver.2-WIN再採点を使わず従来のWAvg得点のみで出す")
     ap.add_argument("--edge-scale", type=float, default=1.0,
                     help="エッジ閾値の倍率(Ver.100モード)。1.0=既定、上げるほど厳選")
     ap.add_argument("--full", action="store_true",
@@ -801,8 +803,18 @@ def main():
 
     race = json.load(open(a.race_json, encoding="utf-8"))
     res = calc.run(race)
+    # Ver.2-WIN 再採点(7/14ユーザー指示: 送られた情報だけで勝つ馬の得点を高く)
+    v2info = None
+    if not a.no_v2:
+        try:
+            import v2_live
+            v2info = v2_live.rescore(race, res["rows"])
+        except Exception as e:
+            print(f"[Ver.2再採点スキップ: {e}]")
     print("=" * 60)
     print(race.get("name", a.race_json), " 馬場:", race.get("baba", "?"))
+    if v2info:
+        print(f"[得点=Ver.2-WIN(勝ち馬照準・市場情報不使用) 騎手反映{v2info['jockey_used']}/{v2info['n']}頭]")
     print("=" * 60)
     if a.no_odds:
         print_ranking(res)
