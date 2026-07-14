@@ -1,3 +1,452 @@
 === Ver.101 自前指数込み再学習 Tue Jul 14 03:44:55 UTC 2026 ===
 データ: 全3081R (train 3017 / test 64) T=20 L2=0.05
   iter0: PL-NLL=2.3187
+  iter100: PL-NLL=2.3071
+  iter200: PL-NLL=2.3071
+  iter300: PL-NLL=2.3071
+
+学習した重み（1.0=現行の等重み）:
+  tsi      +0.983
+  lts      +1.005
+  fsi      +0.859
+  bonus    +0.945
+  dsi      +1.076
+  nsi      +0.954
+  csi      +0.993
+  was      +0.824
+  tas      +0.943
+  hcs      +0.869
+  nrja     +0.958
+  kankai   +0.709
+
+── 3着内の並びPL-NLL（学習スコア vs 現行等重み, 小さいほど良い）──
+  train: 現行 2.3187 → 学習後 2.2986 （改善）
+  test: 現行 2.2423 → 学習後 2.2362 （改善）
+
+params.json に score_weights を保存した。
+データ: 全1506R (train 1470 / test 36) T=20 L2=0.08
+  iter0: PL-NLL=2.3523
+  iter100: PL-NLL=2.3410
+  iter200: PL-NLL=2.3410
+  iter300: PL-NLL=2.3410
+
+学習した重み（1.0=現行の等重み）:
+  tsi      +0.907
+  lts      +0.979
+  fsi      +0.854
+  bonus    +0.953
+  dsi      +1.056
+  nsi      +0.953
+  csi      +0.999
+  was      +0.886
+  tas      +0.990
+  hcs      +0.898
+  nrja     +0.956
+  kankai   +0.782
+
+── 3着内の並びPL-NLL（学習スコア vs 現行等重み, 小さいほど良い）──
+  train: 現行 2.3523 → 学習後 2.3321 （改善）
+  test: 現行 2.3537 → 学習後 2.3397 （改善）
+
+params.json に score_weights_by_surface[芝] を保存した。
+データ: 全1575R (train 1547 / test 28) T=20 L2=0.08
+  iter0: PL-NLL=2.2866
+  iter100: PL-NLL=2.2795
+  iter200: PL-NLL=2.2795
+  iter300: PL-NLL=2.2795
+
+学習した重み（1.0=現行の等重み）:
+  tsi      +1.062
+  lts      +1.027
+  fsi      +0.951
+  bonus    +0.961
+  dsi      +1.036
+  nsi      +0.970
+  csi      +0.991
+  was      +0.883
+  tas      +0.936
+  hcs      +0.927
+  nrja     +0.990
+  kankai   +0.802
+
+── 3着内の並びPL-NLL（学習スコア vs 現行等重み, 小さいほど良い）──
+  train: 現行 2.2866 → 学習後 2.2737 （改善）
+  test: 現行 2.0991 → 学習後 2.1025 （改善なし）
+
+⚠️ ホールドアウトで改善しなかったため params.json には書かない（現状維持）。
+  skip 202501010105.json: max() arg is an empty sequence
+  skip 202501010205.json: max() arg is an empty sequence
+  skip 202501010305.json: max() arg is an empty sequence
+  skip 202501010405.json: max() arg is an empty sequence
+  skip 202501010505.json: max() arg is an empty sequence
+  skip 202501010605.json: max() arg is an empty sequence
+  skip 202501010705.json: max() arg is an empty sequence
+  skip 202501010805.json: max() arg is an empty sequence
+  skip 202501020105.json: max() arg is an empty sequence
+  skip 202501020205.json: max() arg is an empty sequence
+  skip 202501020305.json: max() arg is an empty sequence
+  skip 202501020405.json: max() arg is an empty sequence
+  skip 202501020505.json: max() arg is an empty sequence
+  skip 202502011005.json: max() arg is an empty sequence
+  skip 202502011205.json: max() arg is an empty sequence
+  skip 202503020605.json: max() arg is an empty sequence
+  skip 202503020704.json: max() arg is an empty sequence
+  skip 202503020705.json: max() arg is an empty sequence
+  skip 202503020805.json: max() arg is an empty sequence
+  skip 202503030105.json: max() arg is an empty sequence
+  skip 202503030206.json: max() arg is an empty sequence
+  skip 202503030305.json: max() arg is an empty sequence
+  skip 202503030406.json: max() arg is an empty sequence
+  skip 202503030605.json: max() arg is an empty sequence
+  skip 202504020102.json: max() arg is an empty sequence
+  skip 202504020103.json: max() arg is an empty sequence
+  skip 202504020203.json: max() arg is an empty sequence
+  skip 202504020304.json: max() arg is an empty sequence
+  skip 202504020402.json: max() arg is an empty sequence
+  skip 202504020404.json: max() arg is an empty sequence
+  skip 202504020503.json: max() arg is an empty sequence
+  skip 202504020602.json: max() arg is an empty sequence
+  skip 202504020603.json: max() arg is an empty sequence
+  skip 202504020704.json: max() arg is an empty sequence
+  skip 202504020705.json: max() arg is an empty sequence
+  skip 202504020804.json: max() arg is an empty sequence
+  skip 202504030105.json: max() arg is an empty sequence
+  skip 202504030205.json: max() arg is an empty sequence
+  skip 202504030206.json: max() arg is an empty sequence
+  skip 202504030305.json: max() arg is an empty sequence
+  skip 202504030405.json: max() arg is an empty sequence
+  skip 202504030406.json: max() arg is an empty sequence
+  skip 202504040105.json: max() arg is an empty sequence
+  skip 202504040205.json: max() arg is an empty sequence
+  skip 202504040405.json: max() arg is an empty sequence
+  skip 202505040103.json: max() arg is an empty sequence
+  skip 202505040105.json: max() arg is an empty sequence
+  skip 202505040205.json: max() arg is an empty sequence
+  skip 202505040206.json: max() arg is an empty sequence
+  skip 202505040304.json: max() arg is an empty sequence
+  skip 202505040305.json: max() arg is an empty sequence
+  skip 202505040306.json: max() arg is an empty sequence
+  skip 202505040404.json: max() arg is an empty sequence
+  skip 202505040405.json: max() arg is an empty sequence
+  skip 202505040505.json: max() arg is an empty sequence
+  skip 202505040506.json: max() arg is an empty sequence
+  skip 202505040604.json: max() arg is an empty sequence
+  skip 202505040605.json: max() arg is an empty sequence
+  skip 202505040704.json: max() arg is an empty sequence
+  skip 202505040705.json: max() arg is an empty sequence
+  skip 202505040804.json: max() arg is an empty sequence
+  skip 202505040805.json: max() arg is an empty sequence
+  skip 202505040806.json: max() arg is an empty sequence
+  skip 202505040905.json: max() arg is an empty sequence
+  skip 202505040906.json: max() arg is an empty sequence
+  skip 202505041004.json: max() arg is an empty sequence
+  skip 202505041005.json: max() arg is an empty sequence
+  skip 202505041104.json: max() arg is an empty sequence
+  skip 202505041105.json: max() arg is an empty sequence
+  skip 202505050104.json: max() arg is an empty sequence
+  skip 202505050105.json: max() arg is an empty sequence
+  skip 202505050106.json: max() arg is an empty sequence
+  skip 202505050205.json: max() arg is an empty sequence
+  skip 202505050206.json: max() arg is an empty sequence
+  skip 202505050305.json: max() arg is an empty sequence
+  skip 202505050306.json: max() arg is an empty sequence
+  skip 202505050404.json: max() arg is an empty sequence
+  skip 202505050405.json: max() arg is an empty sequence
+  skip 202505050504.json: max() arg is an empty sequence
+  skip 202505050505.json: max() arg is an empty sequence
+  skip 202505050606.json: max() arg is an empty sequence
+  skip 202505050607.json: max() arg is an empty sequence
+  skip 202505050704.json: max() arg is an empty sequence
+  skip 202505050705.json: max() arg is an empty sequence
+  skip 202505050805.json: max() arg is an empty sequence
+  skip 202505050806.json: max() arg is an empty sequence
+  skip 202506040105.json: max() arg is an empty sequence
+  skip 202506040106.json: max() arg is an empty sequence
+  skip 202506040205.json: max() arg is an empty sequence
+  skip 202506040206.json: max() arg is an empty sequence
+  skip 202506040305.json: max() arg is an empty sequence
+  skip 202506040306.json: max() arg is an empty sequence
+  skip 202506040405.json: max() arg is an empty sequence
+  skip 202506040505.json: max() arg is an empty sequence
+  skip 202506040506.json: max() arg is an empty sequence
+  skip 202506040604.json: max() arg is an empty sequence
+  skip 202506040605.json: max() arg is an empty sequence
+  skip 202506040704.json: max() arg is an empty sequence
+  skip 202506040705.json: max() arg is an empty sequence
+  skip 202506040804.json: max() arg is an empty sequence
+  skip 202506040805.json: max() arg is an empty sequence
+  skip 202506040904.json: max() arg is an empty sequence
+  skip 202506040905.json: max() arg is an empty sequence
+  skip 202506050105.json: max() arg is an empty sequence
+  skip 202506050106.json: max() arg is an empty sequence
+  skip 202506050203.json: max() arg is an empty sequence
+  skip 202506050205.json: max() arg is an empty sequence
+  skip 202506050305.json: max() arg is an empty sequence
+  skip 202506050306.json: max() arg is an empty sequence
+  skip 202506050405.json: max() arg is an empty sequence
+  skip 202506050406.json: max() arg is an empty sequence
+  skip 202506050504.json: max() arg is an empty sequence
+  skip 202506050505.json: max() arg is an empty sequence
+  skip 202506050506.json: max() arg is an empty sequence
+  skip 202506050605.json: max() arg is an empty sequence
+  skip 202506050606.json: max() arg is an empty sequence
+  skip 202506050705.json: max() arg is an empty sequence
+  skip 202506050706.json: max() arg is an empty sequence
+  skip 202506050805.json: max() arg is an empty sequence
+  skip 202506050806.json: max() arg is an empty sequence
+  skip 202507030104.json: max() arg is an empty sequence
+  skip 202507030203.json: max() arg is an empty sequence
+  skip 202507030302.json: max() arg is an empty sequence
+  skip 202507030402.json: max() arg is an empty sequence
+  skip 202507030403.json: max() arg is an empty sequence
+  skip 202507030504.json: max() arg is an empty sequence
+  skip 202507030604.json: max() arg is an empty sequence
+  skip 202507030702.json: max() arg is an empty sequence
+  skip 202507030802.json: max() arg is an empty sequence
+  skip 202507030803.json: max() arg is an empty sequence
+  skip 202507040105.json: max() arg is an empty sequence
+  skip 202507040106.json: max() arg is an empty sequence
+  skip 202507040205.json: max() arg is an empty sequence
+  skip 202507040305.json: max() arg is an empty sequence
+  skip 202507040405.json: max() arg is an empty sequence
+  skip 202507040406.json: max() arg is an empty sequence
+  skip 202507050205.json: max() arg is an empty sequence
+  skip 202507050305.json: max() arg is an empty sequence
+  skip 202507050405.json: max() arg is an empty sequence
+  skip 202507050605.json: max() arg is an empty sequence
+  skip 202508030103.json: max() arg is an empty sequence
+  skip 202508030105.json: max() arg is an empty sequence
+  skip 202508030203.json: max() arg is an empty sequence
+  skip 202508030204.json: max() arg is an empty sequence
+  skip 202508030205.json: max() arg is an empty sequence
+  skip 202508030305.json: max() arg is an empty sequence
+  skip 202508030306.json: max() arg is an empty sequence
+  skip 202508030405.json: max() arg is an empty sequence
+  skip 202508030406.json: max() arg is an empty sequence
+  skip 202508030505.json: max() arg is an empty sequence
+  skip 202508030506.json: max() arg is an empty sequence
+  skip 202508030605.json: max() arg is an empty sequence
+  skip 202508030606.json: max() arg is an empty sequence
+  skip 202508030704.json: max() arg is an empty sequence
+  skip 202508030705.json: max() arg is an empty sequence
+  skip 202508030805.json: max() arg is an empty sequence
+  skip 202508030806.json: max() arg is an empty sequence
+  skip 202508030904.json: max() arg is an empty sequence
+  skip 202508030905.json: max() arg is an empty sequence
+  skip 202508031005.json: max() arg is an empty sequence
+  skip 202508031006.json: max() arg is an empty sequence
+  skip 202508031103.json: max() arg is an empty sequence
+  skip 202508031105.json: max() arg is an empty sequence
+  skip 202508040105.json: max() arg is an empty sequence
+  skip 202508040106.json: max() arg is an empty sequence
+  skip 202508040204.json: max() arg is an empty sequence
+  skip 202508040205.json: max() arg is an empty sequence
+  skip 202508040305.json: max() arg is an empty sequence
+  skip 202508040306.json: max() arg is an empty sequence
+  skip 202508040404.json: max() arg is an empty sequence
+  skip 202508040405.json: max() arg is an empty sequence
+  skip 202508040505.json: max() arg is an empty sequence
+  skip 202508040506.json: max() arg is an empty sequence
+  skip 202508040604.json: max() arg is an empty sequence
+  skip 202508040605.json: max() arg is an empty sequence
+  skip 202508040705.json: max() arg is an empty sequence
+  skip 202508040706.json: max() arg is an empty sequence
+  skip 202508040803.json: max() arg is an empty sequence
+  skip 202508040806.json: max() arg is an empty sequence
+  skip 202509040105.json: max() arg is an empty sequence
+  skip 202509040106.json: max() arg is an empty sequence
+  skip 202509040205.json: max() arg is an empty sequence
+  skip 202509040305.json: max() arg is an empty sequence
+  skip 202509040306.json: max() arg is an empty sequence
+  skip 202509040405.json: max() arg is an empty sequence
+  skip 202509040406.json: max() arg is an empty sequence
+  skip 202509040505.json: max() arg is an empty sequence
+  skip 202509040603.json: max() arg is an empty sequence
+  skip 202509040605.json: max() arg is an empty sequence
+  skip 202509040705.json: max() arg is an empty sequence
+  skip 202509040706.json: max() arg is an empty sequence
+  skip 202509040804.json: max() arg is an empty sequence
+  skip 202509040805.json: max() arg is an empty sequence
+  skip 202509040904.json: max() arg is an empty sequence
+  skip 202509040905.json: max() arg is an empty sequence
+  skip 202509050105.json: max() arg is an empty sequence
+  skip 202509050106.json: max() arg is an empty sequence
+  skip 202509050205.json: max() arg is an empty sequence
+  skip 202509050206.json: max() arg is an empty sequence
+  skip 202509050305.json: max() arg is an empty sequence
+  skip 202509050306.json: max() arg is an empty sequence
+  skip 202509050404.json: max() arg is an empty sequence
+  skip 202509050405.json: max() arg is an empty sequence
+  skip 202509050505.json: max() arg is an empty sequence
+  skip 202509050506.json: max() arg is an empty sequence
+  skip 202509050605.json: max() arg is an empty sequence
+  skip 202509050606.json: max() arg is an empty sequence
+  skip 202509050705.json: max() arg is an empty sequence
+  skip 202509050706.json: max() arg is an empty sequence
+  skip 202509050804.json: max() arg is an empty sequence
+  skip 202509050806.json: max() arg is an empty sequence
+  skip 202510020605.json: max() arg is an empty sequence
+  skip 202510020606.json: max() arg is an empty sequence
+  skip 202510020705.json: max() arg is an empty sequence
+  skip 202510020805.json: max() arg is an empty sequence
+  skip 202602010105.json: max() arg is an empty sequence
+  skip 202602010205.json: max() arg is an empty sequence
+  skip 202602010305.json: max() arg is an empty sequence
+  skip 202602010306.json: max() arg is an empty sequence
+  skip 202602010405.json: max() arg is an empty sequence
+  skip 202602010505.json: max() arg is an empty sequence
+  skip 202602010605.json: max() arg is an empty sequence
+  skip 202602010705.json: max() arg is an empty sequence
+  skip 202602010805.json: max() arg is an empty sequence
+  skip 202602010905.json: max() arg is an empty sequence
+  skip 202602011005.json: max() arg is an empty sequence
+  skip 202603020105.json: max() arg is an empty sequence
+  skip 202603020106.json: max() arg is an empty sequence
+  skip 202603020204.json: max() arg is an empty sequence
+  skip 202603020205.json: max() arg is an empty sequence
+  skip 202603020305.json: max() arg is an empty sequence
+  skip 202603020306.json: max() arg is an empty sequence
+  skip 202603020405.json: max() arg is an empty sequence
+  skip 202603020406.json: max() arg is an empty sequence
+  skip 202603020505.json: max() arg is an empty sequence
+  skip 202603020604.json: max() arg is an empty sequence
+  skip 202603020605.json: max() arg is an empty sequence
+  skip 202605010104.json: max() arg is an empty sequence
+  skip 202605010105.json: max() arg is an empty sequence
+  skip 202605010205.json: max() arg is an empty sequence
+  skip 202605010305.json: max() arg is an empty sequence
+  skip 202605010404.json: max() arg is an empty sequence
+  skip 202605010405.json: max() arg is an empty sequence
+  skip 202605010504.json: max() arg is an empty sequence
+  skip 202605010603.json: max() arg is an empty sequence
+  skip 202605010704.json: max() arg is an empty sequence
+  skip 202605010803.json: max() arg is an empty sequence
+  skip 202605030104.json: max() arg is an empty sequence
+  skip 202605030105.json: max() arg is an empty sequence
+  skip 202605030205.json: max() arg is an empty sequence
+  skip 202605030305.json: max() arg is an empty sequence
+  skip 202605030306.json: max() arg is an empty sequence
+  skip 202605030404.json: max() arg is an empty sequence
+  skip 202605030405.json: max() arg is an empty sequence
+  skip 202605030504.json: max() arg is an empty sequence
+  skip 202605030505.json: max() arg is an empty sequence
+  skip 202605030604.json: max() arg is an empty sequence
+  skip 202605030605.json: max() arg is an empty sequence
+  skip 202606010103.json: max() arg is an empty sequence
+  skip 202606010106.json: max() arg is an empty sequence
+  skip 202606010205.json: max() arg is an empty sequence
+  skip 202606010304.json: max() arg is an empty sequence
+  skip 202606010305.json: max() arg is an empty sequence
+  skip 202606010405.json: max() arg is an empty sequence
+  skip 202606010505.json: max() arg is an empty sequence
+  skip 202606010603.json: max() arg is an empty sequence
+  skip 202606010705.json: max() arg is an empty sequence
+  skip 202606010803.json: max() arg is an empty sequence
+  skip 202606010904.json: max() arg is an empty sequence
+  skip 202606010905.json: max() arg is an empty sequence
+  skip 202608010104.json: max() arg is an empty sequence
+  skip 202608010105.json: max() arg is an empty sequence
+  skip 202608010203.json: max() arg is an empty sequence
+  skip 202608010303.json: max() arg is an empty sequence
+  skip 202608010402.json: max() arg is an empty sequence
+  skip 202608010504.json: max() arg is an empty sequence
+  skip 202608010505.json: max() arg is an empty sequence
+  skip 202608010604.json: max() arg is an empty sequence
+  skip 202608010705.json: max() arg is an empty sequence
+  skip 202608010803.json: max() arg is an empty sequence
+  skip 202608010905.json: max() arg is an empty sequence
+  skip 202608020105.json: max() arg is an empty sequence
+  skip 202608020204.json: max() arg is an empty sequence
+  skip 202608020304.json: max() arg is an empty sequence
+  skip 202608020405.json: max() arg is an empty sequence
+  skip 202608020505.json: max() arg is an empty sequence
+  skip 202608020602.json: max() arg is an empty sequence
+  skip 202609010104.json: max() arg is an empty sequence
+  skip 202609010204.json: max() arg is an empty sequence
+  skip 202609030105.json: max() arg is an empty sequence
+  skip 202609030205.json: max() arg is an empty sequence
+  skip 202609030305.json: max() arg is an empty sequence
+  skip 202609030306.json: max() arg is an empty sequence
+  skip 202609030405.json: max() arg is an empty sequence
+  skip 202609030505.json: max() arg is an empty sequence
+  skip 202609030605.json: max() arg is an empty sequence
+  skip 202610010106.json: max() arg is an empty sequence
+  skip 202610010205.json: max() arg is an empty sequence
+  skip 202610010405.json: max() arg is an empty sequence
+  skip 202610010605.json: max() arg is an empty sequence
+  skip 202610020105.json: max() arg is an empty sequence
+  skip 202610020205.json: max() arg is an empty sequence
+  skip 202610020206.json: max() arg is an empty sequence
+  skip 202610020305.json: max() arg is an empty sequence
+  skip 202610020405.json: max() arg is an empty sequence
+  skip 202610020406.json: max() arg is an empty sequence
+  skip 202610020505.json: max() arg is an empty sequence
+  skip 202610020605.json: max() arg is an empty sequence
+  skip 202610020606.json: max() arg is an empty sequence
+データ: 全3081R (train 2954 / test 127)
+
+フィット結果: 温度T=21 展開スケールks=0.0 ブレンド α(モデル)=0.0 β(市場)=1.0
+複合券用(3着内の並び): α_place=0.03 β_place=0.9
+── 3着内の並びNLL (train) ──
+  市場のみ                         6.0036 (n=2954)
+  placeブレンド(α=0.03,β=0.9)      5.9825 (n=2954)
+── 3着内の並びNLL (test) ──
+  市場のみ                         6.1463 (n=127)
+  placeブレンド(α=0.03,β=0.9)      6.1086 (n=127)
+
+── 勝者NLL (train, 小さいほど良い) ──
+  市場のみ(最終単勝)                   1.9363 (n=2954)
+  旧モデル(T=14,ks=1)              2.3788 (n=2954)
+  新モデル(T=21,ks=0.0)            2.3398 (n=2954)
+  ブレンド(α=0.0,β=1.0)            1.9363 (n=2954)
+
+── 勝者NLL (test, 小さいほど良い) ──
+  市場のみ(最終単勝)                   1.8458 (n=127)
+  旧モデル(T=14,ks=1)              2.1428 (n=127)
+  新モデル(T=21,ks=0.0)            2.1621 (n=127)
+  ブレンド(α=0.0,β=1.0)            1.8458 (n=127)
+
+── ブレンドのキャリブレーション (test) ──
+  0-3%     n= 765 予測  1.1% 実際  0.4%
+  3-6%     n= 294 予測  4.4% 実際  3.7%
+  6-12%    n= 278 予測  8.7% 実際  8.6%
+  12-20%   n= 189 予測 15.5% 実際 19.6%
+  20-101%  n= 166 予測 31.3% 実際 31.3%
+
+── 選定エッジ診断 ──
+  勝者NLLのα感度(train): α=0.0:1.9363  α=0.05:1.9369  α=0.1:1.9386  α=0.2:1.9449
+  勝者NLLのα感度(test): α=0.0:1.8458  α=0.05:1.8404  α=0.1:1.8362  α=0.2:1.8313
+  乖離バケット(train): モデル1位が4番人気以下=929R 勝ち82 単勝フラットROI 99%  ←100%超が続けば選定エッジ
+  乖離バケット(test): モデル1位が4番人気以下=34R 勝ち6 単勝フラットROI 207%  ←100%超が続けば選定エッジ
+
+── 3着内確率(Harville)のキャリブレーション (test) ──
+  0-15%: n= 862 予測  5.4% 実際  7.1%
+  15-30%: n= 336 予測 21.3% 実際 25.6%
+  30-50%: n= 256 予測 39.7% 実際 40.6%
+  50-101%: n= 238 予測 67.7% 実際 55.5%
+
+params.json に保存した（calc/predictが次回から使う）
+train 3246R / test 144R
+
+== scale=0.9 (train) == GO 585/3246R 投188000円 戻167050円 ROI 88.9%
+   ワイド: 666点 的中54 投79000 戻65150 ROI 82%
+   複勝: 249点 的中93 投109000 戻101900 ROI 93%
+
+== scale=1.0 (train) == GO 288/3246R 投70700円 戻59150円 ROI 83.7%
+   ワイド: 291点 的中19 投35400 戻25840 ROI 73%
+   複勝: 100点 的中25 投35300 戻33310 ROI 94%
+
+== scale=1.1 (train) == GO 143/3246R 投33800円 戻17840円 ROI 52.8%
+   ワイド: 140点 的中4 投16800 戻7030 ROI 42%
+   複勝: 50点 的中8 投17000 戻10810 ROI 64%
+
+──── ホールドアウト(test) ────
+== scale=0.9 (test) == GO 26/144R 投4400円 戻5920円 ROI 134.5%
+   ワイド: 27点 的中4 投3900 戻5750 ROI 147%
+   複勝: 3点 的中1 投500 戻170 ROI 34%
+== scale=1.0 (test) == GO 15/144R 投2300円 戻3300円 ROI 143.5%
+   ワイド: 15点 的中2 投2100 戻3300 ROI 157%
+   複勝: 1点 的中0 投200 戻0 ROI 0%
+== scale=1.1 (test) == GO 4/144R 投500円 戻1740円 ROI 348.0%
+   ワイド: 4点 的中1 投500 戻1740 ROI 348%
+=== DONE Tue Jul 14 03:49:49 UTC 2026 ===
