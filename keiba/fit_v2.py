@@ -11,8 +11,9 @@
 import argparse, glob, json, math, os, sys
 import calc
 
-FEATS = ["idx_mean3", "idx_last", "wavg", "j_top3", "fin_frac", "agari_best",
-         "days_log", "kinryo", "wchg", "corner_frac", "dist_chg", "csi"]
+FEATS = ["idx_mean3", "idx_last", "idx_best", "wavg", "j_top3", "t_top3",
+         "fin_frac", "agari_best", "days_log", "kinryo", "wchg",
+         "corner_frac", "dist_chg", "csi", "n_runs"]
 
 
 def z_in_race(vals):
@@ -32,6 +33,8 @@ def horse_feats(h, race):
     f = {}
     f["idx_mean3"] = sum(tsis_sorted[:3])/len(tsis_sorted[:3]) if tsis_sorted else None
     f["idx_last"] = rs[0].get("tsi") if rs else None
+    f["idx_best"] = tsis_sorted[0] if tsis_sorted else None
+    f["n_runs"] = min(len(rs), 9)
     f["fin_frac"] = -(rs[0]["finish"]/max(rs[0]["field"], 1)) if rs else None
     ag = [r.get("agari") for r in rs[:3] if r.get("agari")]
     f["agari_best"] = -min(ag) if ag else None
@@ -59,10 +62,12 @@ def load_dataset(histdir, featdir):
         if len(top3) < 3:
             continue
         wavg = {r["num"]: r["wavg"] for r in res["rows"]}
-        jf = {}
+        jf, tf = {}, {}
         fp = os.path.join(featdir, f"{rid}.json")
         if os.path.exists(fp):
-            jf = json.load(open(fp, encoding="utf-8")).get("jockey", {})
+            fd = json.load(open(fp, encoding="utf-8"))
+            jf = fd.get("jockey", {})
+            tf = fd.get("trainer", {})
         odds = {o["num"]: o["odds"] for o in d["result"].get("order", []) if o.get("odds")}
         raw = {}
         for h in d["race"]["horses"]:
@@ -70,6 +75,8 @@ def load_dataset(histdir, featdir):
             ff["wavg"] = wavg.get(h["num"])
             j = jf.get(str(h["num"]))
             ff["j_top3"] = j["j_top3"] if j else None
+            t = tf.get(str(h["num"]))
+            ff["t_top3"] = t["t_top3"] if t else None
             raw[h["num"]] = ff
         if any(t not in raw for t in top3) or len(raw) < 5:
             continue

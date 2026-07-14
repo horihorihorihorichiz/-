@@ -118,7 +118,7 @@ def main():
 
     # 既存比較: 現行得点(wavg) / Ver.2(3着内フィット) / Ver.2-WIN
     pv = json.load(open("params_v2.json", encoding="utf-8"))
-    w_place = pv["weights"]
+    w_place = (pv["weights"] + [0.0]*len(FEATS))[:len(FEATS)]   # 特徴量追加後も比較可能に
     for name, dset in (("train", train), ("test", test)):
         if not dset:
             continue

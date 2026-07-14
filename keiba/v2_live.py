@@ -32,6 +32,8 @@ def rescore(race, rows):
         ff["wavg"] = wavg.get(h["num"])
         jid = h.get("jockey_id")
         ff["j_top3"] = jmap.get(jid, {}).get("top3") if jid else None
+        tid = h.get("trainer_id")
+        ff["t_top3"] = js.get("trainers", {}).get(tid, {}).get("top3") if tid else None
         raw[h["num"]] = ff
         if h.get("races"):
             n_hist += 1

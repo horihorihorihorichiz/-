@@ -108,11 +108,13 @@ def fetch_shutuba(race_id, nar=True):
         weight = int(mw.group(1)) if mw else 0
         change = int(mw.group(2)) if mw else 0
         jk = re.search(r"jockey/result/recent/(\d+)", r)  # 騎手ID(Ver.101: 騎手ファクター用)
+        tr_ = re.search(r"trainer/result/recent/(\d+)", r)
         horses.append({
             "num": int(um.group(1)) if um else 0,
             "name": nm.group(1).strip() if nm else "",
             "horse_id": hid[0],
             "jockey_id": jk.group(1) if jk else None,
+            "trainer_id": tr_.group(1) if tr_ else None,
             "kin": float(kin.group(1)) if kin else 56.0,
             "weight": weight, "change": change,
         })
@@ -317,6 +319,7 @@ def main():
             "num": hs["num"], "name": hs["name"],
             "paper_style": derive_style(races),
             "jockey_id": hs.get("jockey_id"),
+            "trainer_id": hs.get("trainer_id"),
             "kinryo": hs["kin"], "weight": hs["weight"], "weight_change": hs["change"],
             "boost": 0,
             "last_race_days": races[0]["days"] if races else 30,
