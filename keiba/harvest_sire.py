@@ -10,10 +10,10 @@ OUT = "sire_map.json"
 
 
 def fetch_sire(hid):
-    req = urllib.request.Request(f"https://db.netkeiba.com/horse/{hid}/", headers=UA)
+    req = urllib.request.Request(f"https://db.netkeiba.com/horse/ped/{hid}/", headers=UA)
     h = urllib.request.urlopen(req, timeout=30).read().decode("euc-jp", errors="replace")
-    m = re.search(r'blood_table.*?<td[^>]*>\s*<a[^>]*>([^<]+)</a>', h, re.S)
-    return m.group(1).strip() if m else None
+    m = re.search(r'rowspan="16"[^>]*>\s*<a[^>]*href="https://db\.netkeiba\.com/horse/(\w+)/"[^>]*>\s*([^<\r\n]+)', h)
+    return f"{m.group(2).strip()}|{m.group(1)}" if m else None
 
 
 def main():
