@@ -1,2 +1,25 @@
 dataset: 3081R
 features added
+[A_pace] train: 捕捉5=67.4% 全3頭=28.6% 勝1位=25.1% ROI=77% 乖離ROI=106%(n=395)
+[A_pace] test: 捕捉5=67.5% 全3頭=24.4% 勝1位=26.0% ROI=75% 乖離ROI=186%(n=11)
+[A_pace] ゲート: 勝ち (基準 train>67.3 test>66.6)
+    weight[pace_adv] = -0.0630
+    weight[pace_adv_s] = -0.0034
+    weight[lone_esc] = -0.0397
+[B_draw] train: 捕捉5=67.5% 全3頭=28.8% 勝1位=25.6% ROI=78% 乖離ROI=106%(n=388)
+[B_draw] test: 捕捉5=67.5% 全3頭=23.6% 勝1位=26.8% ROI=76% 乖離ROI=186%(n=11)
+[B_draw] ゲート: 勝ち (基準 train>67.3 test>66.6)
+    weight[post_frac] = -0.0081
+    weight[post_x_dist] = -0.0175
+    weight[post_x_front] = -0.0093
+
+C候補（|w|>=0.04）: ['pace_adv']
+[C_combo] train: 捕捉5=67.4% 全3頭=28.9% 勝1位=25.2% ROI=77% 乖離ROI=102%(n=395)
+[C_combo] test: 捕捉5=67.2% 全3頭=24.4% 勝1位=26.0% ROI=75% 乖離ROI=186%(n=11)
+[C_combo] ゲート: 勝ち (基準 train>67.3 test>66.6)
+    weight[pace_adv] = -0.0600
+
+==== SUMMARY ====
+A_pace: train捕捉5=67.4% test捕捉5=67.5% gate=WIN
+B_draw: train捕捉5=67.5% test捕捉5=67.5% gate=WIN
+C_combo: train捕捉5=67.4% test捕捉5=67.2% gate=WIN

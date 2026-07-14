@@ -1,2 +1,34 @@
 dataset: 3081R
 features added
+[A_trend] train: 捕捉5=67.8% 全3頭=29.5% 勝1位=25.6% ROI=79% 乖離ROI=122%(n=367)
+[A_trend] test: 捕捉5=67.2% 全3頭=22.0% 勝1位=25.2% ROI=74% 乖離ROI=186%(n=11)
+[A_trend] ゲート: 勝ち (基準 train>67.3 test>66.6)
+    weight[fin_trend3] = +0.0040
+    weight[fin_mean3] = +0.1949
+    weight[tsi_trend3] = -0.0118
+[B_streak_rebound] train: 捕捉5=67.5% 全3頭=29.0% 勝1位=25.6% ROI=77% 乖離ROI=95%(n=390)
+[B_streak_rebound] test: 捕捉5=67.7% 全3頭=24.4% 勝1位=26.8% ROI=88% 乖離ROI=209%(n=16)
+[B_streak_rebound] ゲート: 勝ち (基準 train>67.3 test>66.6)
+    weight[streak_top3] = +0.0371
+    weight[rebound_flag] = +0.0450
+    weight[rebound_hist] = +0.0386
+[C_2back_layoff] train: 捕捉5=67.4% 全3頭=28.8% 勝1位=25.7% ROI=80% 乖離ROI=115%(n=388)
+[C_2back_layoff] test: 捕捉5=68.2% 全3頭=25.2% 勝1位=26.8% ROI=79% 乖離ROI=146%(n=14)
+[C_2back_layoff] ゲート: 勝ち (基準 train>67.3 test>66.6)
+    weight[fin_best2] = +0.1349
+    weight[layoff_lastfin] = +0.0813
+
+D候補（|w|>=0.04）: ['fin_mean3', 'rebound_flag', 'fin_best2', 'layoff_lastfin']
+[D_combo] train: 捕捉5=67.6% 全3頭=28.9% 勝1位=25.7% ROI=79% 乖離ROI=114%(n=378)
+[D_combo] test: 捕捉5=68.2% 全3頭=24.4% 勝1位=26.8% ROI=80% 乖離ROI=186%(n=11)
+[D_combo] ゲート: 勝ち (基準 train>67.3 test>66.6)
+    weight[fin_mean3] = +0.1579
+    weight[rebound_flag] = +0.0282
+    weight[fin_best2] = +0.0696
+    weight[layoff_lastfin] = +0.0618
+
+==== SUMMARY ====
+A_trend: train捕捉5=67.8% test捕捉5=67.2% gate=WIN
+B_streak_rebound: train捕捉5=67.5% test捕捉5=67.7% gate=WIN
+C_2back_layoff: train捕捉5=67.4% test捕捉5=68.2% gate=WIN
+D_combo: train捕捉5=67.6% test捕捉5=68.2% gate=WIN

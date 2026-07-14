@@ -1,2 +1,35 @@
 dataset: 3081R
 features added
+[A_updown] train: 捕捉5=67.6% 全3頭=29.0% 勝1位=25.7% ROI=77% 乖離ROI=96%(n=387)
+[A_updown] test: 捕捉5=67.2% 全3頭=22.8% 勝1位=27.6% ROI=80% 乖離ROI=186%(n=11)
+[A_updown] ゲート: 勝ち (基準 train>67.3 test>66.6)
+    weight[class_up] = -0.0803
+    weight[class_down] = +0.0507
+    weight[tier_gap_mean3] = -0.0453
+[B_experience] train: 捕捉5=67.9% 全3頭=29.7% 勝1位=25.3% ROI=75% 乖離ROI=101%(n=350)
+[B_experience] test: 捕捉5=67.7% 全3頭=25.2% 勝1位=26.0% ROI=81% 乖離ROI=158%(n=13)
+[B_experience] ゲート: 勝ち (基準 train>67.3 test>66.6)
+    weight[same_class_place] = +0.1380
+    weight[exp_at_class] = +0.0994
+[C_interact] train: 捕捉5=67.9% 全3頭=29.3% 勝1位=25.7% ROI=77% 乖離ROI=100%(n=375)
+[C_interact] test: 捕捉5=67.7% 全3頭=22.8% 勝1位=26.8% ROI=82% 乖離ROI=171%(n=12)
+[C_interact] ゲート: 勝ち (基準 train>67.3 test>66.6)
+    weight[classup_lastgood] = -0.1299
+    weight[field_chg] = -0.0264
+
+D候補（|w|>=0.04）: ['class_up', 'class_down', 'tier_gap_mean3', 'same_class_place', 'exp_at_class', 'classup_lastgood']
+[D_combo] train: 捕捉5=67.9% 全3頭=29.4% 勝1位=25.2% ROI=74% 乖離ROI=104%(n=357)
+[D_combo] test: 捕捉5=68.0% 全3頭=24.4% 勝1位=26.8% ROI=82% 乖離ROI=171%(n=12)
+[D_combo] ゲート: 勝ち (基準 train>67.3 test>66.6)
+    weight[class_up] = -0.0065
+    weight[class_down] = +0.0595
+    weight[tier_gap_mean3] = -0.0043
+    weight[same_class_place] = +0.1280
+    weight[exp_at_class] = +0.0763
+    weight[classup_lastgood] = -0.0560
+
+==== SUMMARY ====
+A_updown: train捕捉5=67.6% test捕捉5=67.2% gate=WIN
+B_experience: train捕捉5=67.9% test捕捉5=67.7% gate=WIN
+C_interact: train捕捉5=67.9% test捕捉5=67.7% gate=WIN
+D_combo: train捕捉5=67.9% test捕捉5=68.0% gate=WIN

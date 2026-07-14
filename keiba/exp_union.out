@@ -1,0 +1,13 @@
+dataset: 3081R
+feat + cond_perf
+feat + db_best
+feat + exact_dist_place
+feat + surf_switch
+feat + wet_apt
+feat + fin_best2
+feat + layoff_lastfin
+feat + classup_lastgood
+feat + field_chg
+feat + agari_dist_match
+feat + agari_mean3_rel
+feat + agari_close_q

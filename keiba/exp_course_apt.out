@@ -1,0 +1,12 @@
+[course_apt_A] train: 捕捉5=68.4% 全3頭=30.2% 勝1位=26.0% ROI=77% 乖離ROI=95%(n=358)
+[course_apt_A] test: 捕捉5=69.0% 全3頭=27.6% 勝1位=26.0% ROI=77% 乖離ROI=171%(n=12)
+[course_apt_A] ゲート: 勝ち (基準 train>67.3 test>66.6)
+  weights(A): surf_perf=+0.155, db_perf=+0.072, cond_perf=+0.089, db_best=+0.070, exact_dist_place=+0.040, surf_diff=-0.010, db_diff=-0.033, surf_switch=-0.044, wet_apt=+0.006
+[course_apt_B] train: 捕捉5=68.2% 全3頭=30.2% 勝1位=25.5% ROI=75% 乖離ROI=90%(n=356)
+[course_apt_B] test: 捕捉5=69.8% 全3頭=29.9% 勝1位=29.1% ROI=89% 乖離ROI=186%(n=11)
+[course_apt_B] ゲート: 勝ち (基準 train>67.3 test>66.6)
+  weights(B): cond_perf=+0.207, db_best=+0.087, exact_dist_place=+0.049, surf_switch=-0.047, wet_apt=+0.020
+[course_apt_C] train: 捕捉5=67.9% 全3頭=29.2% 勝1位=26.0% ROI=79% 乖離ROI=101%(n=386)
+[course_apt_C] test: 捕捉5=69.0% 全3頭=25.2% 勝1位=26.0% ROI=84% 乖離ROI=257%(n=13)
+[course_apt_C] ゲート: 勝ち (基準 train>67.3 test>66.6)
+  weights(C): surf_diff=+0.017, db_diff=-0.017, db_best=+0.162, surf_switch=-0.051, wet_apt=+0.038
