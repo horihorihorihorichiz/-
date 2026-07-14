@@ -64,6 +64,8 @@ def cmd_run(date, nar, budget):
                        edge=round(edge, 3), total=total,
                        picks=[[k, l, o, st, round(p, 4), round(ev, 3)]
                               for k, l, o, st, p, ev in picks],
+                       # オッズドリフト研究用: 実行時点の単勝スナップショット(最終オッズとの差=スマートマネー)
+                       odds_snap=odds.get("tan", {}),
                        settled=False, returned=None)
             logs.append(rec)
             save_log(logs)

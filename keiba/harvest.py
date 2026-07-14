@@ -34,6 +34,7 @@ def build_race_json(rid, su, race_date, workers):
         return {
             "num": hs["num"], "name": hs["name"],
             "paper_style": FR.derive_style(races),
+            "jockey_id": hs.get("jockey_id"),
             "kinryo": hs["kin"], "weight": hs["weight"], "weight_change": hs["change"],
             "boost": 0,
             "last_race_days": races[0]["days"] if races else 30,
