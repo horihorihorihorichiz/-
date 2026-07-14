@@ -1,0 +1,31 @@
+{
+ "feats": [
+  "idx_mean3",
+  "idx_last",
+  "wavg",
+  "j_top3",
+  "fin_frac",
+  "agari_best",
+  "days_log",
+  "kinryo",
+  "wchg",
+  "corner_frac",
+  "dist_chg",
+  "csi"
+ ],
+ "weights": [
+  0.1032,
+  0.0638,
+  0.326,
+  0.2599,
+  0.2837,
+  0.0997,
+  0.0854,
+  0.0655,
+  0.014,
+  0.1213,
+  0.0284,
+  0.0356
+ ],
+ "note": "fit_v2 Ver.101 B1"
+}

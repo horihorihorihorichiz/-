@@ -216,16 +216,21 @@ EDGE_MIN = {"単勝": 1.30, "複勝": 1.15, "ワイド": 1.40,
             "三連複": 99.0, "馬連": 99.0, "馬単": 99.0, "三連単": 99.0}
 
 def build_buylist_ev(rows, odds, budget=10000, unit=100, kelly=0.25,
-                     max_bets=12, edge_scale=1.0, topk=8):
+                     max_bets=12, edge_scale=1.0, topk=8, pb_override=None):
     """新既定モード: 較正ブレンド確率で全券種のエッジ(p×オッズ)を計算し、
-       閾値を超えた点だけをフラクショナルKellyで購入。エッジが無ければ買わない。"""
+       閾値を超えた点だけをフラクショナルKellyで購入。エッジが無ければ買わない。
+       pb_override={'win':{num:p},'place':{num:p}} でVer.2等の外部確率を注入できる。"""
     tan = {int(k): v for k, v in odds.get("tan", {}).items() if v}
     fuku = {int(k): v for k, v in odds.get("fuku", {}).items() if v}
     um = {tuple(sorted(map(int, k.split("-")))): v for k, v in odds.get("umaren", {}).items() if v}
     wd = {tuple(sorted(map(int, k.split("-")))): v for k, v in odds.get("wide", {}).items() if v}
     tp = {tuple(sorted(map(int, k.split("-")))): v for k, v in odds.get("sanrenpuku", {}).items() if v}
-    pb = blend_probs(rows, odds.get("tan", {}))              # 単勝用(勝者フィット)
-    pp = blend_probs(rows, odds.get("tan", {}), kind="place")  # 複合券用(3着内フィット=得点の活き場所)
+    if pb_override:
+        pb = pb_override["win"]
+        pp = pb_override["place"]
+    else:
+        pb = blend_probs(rows, odds.get("tan", {}))              # 単勝用(勝者フィット)
+        pp = blend_probs(rows, odds.get("tan", {}), kind="place")  # 複合券用(3着内フィット)
     order = sorted(pb, key=lambda h: -pb[h])
     top = sorted(pp, key=lambda h: -pp[h])[:topk]
 
