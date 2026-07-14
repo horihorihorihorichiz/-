@@ -11,3 +11,18 @@ feat + field_chg
 feat + agari_dist_match
 feat + agari_mean3_rel
 feat + agari_close_q
+[U1_全部盛り] train: 捕捉5=68.8% 全3頭=30.4% 勝1位=25.9% ROI=74% 乖離ROI=89%(n=299)
+[U1_全部盛り] test: 捕捉5=69.8% 全3頭=28.3% 勝1位=26.8% ROI=80% 乖離ROI=169%(n=11)
+[U1_全部盛り] ゲート: 勝ち (基準 train>67.3 test>66.6)
+[U2_L2強め] train: 捕捉5=68.7% 全3頭=30.5% 勝1位=26.0% ROI=74% 乖離ROI=94%(n=297)
+[U2_L2強め] test: 捕捉5=70.6% 全3頭=29.1% 勝1位=26.8% ROI=80% 乖離ROI=207%(n=9)
+[U2_L2強め] ゲート: 勝ち (基準 train>67.3 test>66.6)
+[U3_絞り込み] train: 捕捉5=68.5% 全3頭=30.5% 勝1位=26.1% ROI=75% 乖離ROI=82%(n=318)
+[U3_絞り込み] test: 捕捉5=69.8% 全3頭=29.1% 勝1位=28.3% ROI=86% 乖離ROI=158%(n=13)
+[U3_絞り込み] ゲート: 勝ち (基準 train>67.3 test>66.6)
+
+==== summary ====
+U1_全部盛り: train=68.8 test=69.8 全3頭=30.4/28.3 gate=True
+U2_L2強め: train=68.7 test=70.6 全3頭=30.5/29.1 gate=True
+U3_絞り込み: train=68.5 test=69.8 全3頭=30.5/29.1 gate=True
+best → U2_L2強め (exp_union_best.json)

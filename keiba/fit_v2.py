@@ -13,7 +13,11 @@ import calc
 
 FEATS = ["idx_mean3", "idx_last", "idx_best", "wavg", "j_top3", "t_top3",
          "fin_frac", "agari_best", "days_log", "kinryo", "wchg",
-         "corner_frac", "dist_chg", "csi", "n_runs"]
+         "corner_frac", "dist_chg", "csi", "n_runs",
+         # U2統合(7/14 エージェント実験の勝ち特徴12: features2.py経由)
+         "cond_perf", "db_best", "exact_dist_place", "surf_switch", "wet_apt",
+         "agari_dist_match", "agari_mean3_rel", "agari_close_q",
+         "fin_best2", "layoff_lastfin", "classup_lastgood", "field_chg"]
 
 
 def z_in_race(vals):
@@ -45,6 +49,8 @@ def horse_feats(h, race):
     f["corner_frac"] = -sum(cf)/len(cf) if cf else None
     f["dist_chg"] = -abs(race.get("distance", 1600) - rs[0]["dist"])/race.get("distance", 1600) if rs else None
     f["csi"] = h.get("csi", 0)
+    import features2   # 遅延import(循環回避)。U2統合の12特徴を合流
+    f.update(features2.extra_feats(h, race))
     return f
 
 
