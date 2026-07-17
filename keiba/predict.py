@@ -893,6 +893,14 @@ def main():
             k = dec["kairi"]
             print(f"\n★乖離単勝: 得点1位 {k['num']}番が{k['mrank']}番人気({k['odds']}倍) "
                   f"— WF検証9ヶ月ROI117%のルールに該当")
+        # 🎯パターン判定(pattern_stats.jsonのWF統計・7/14ユーザー指示の形式)
+        try:
+            import patterns
+            v2order = [r["num"] for r in res["rows"]]
+            tan_i = {int(k2): v for k2, v in odds.get("tan", {}).items() if v}
+            patterns.print_patterns(v2order, tan_i, race.get("field", len(v2order)))
+        except Exception as e:
+            print(f"[パターン判定スキップ: {e}]")
         pb = dec.get("pb", {})
         bl = calc.load_params().get("blend", {})
         print("\nEV裁定(Ver.100): %s（エッジ点数=%d / ポートフォリオ期待エッジ=%.0f%% / "
