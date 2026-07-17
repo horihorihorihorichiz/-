@@ -71,6 +71,14 @@ def classify(order, tan, field, surface=None, dist=None, tier=None, gap12=None):
             out.append((f"乖離単勝×{s2['cond']}", f"単勝 {t1} (強化条件該当)",
                         s2["roi"], "◎買い推奨",
                         f"発見{s2['dev']}→確認{s2['conf']} 通算{s2['n']}点"))
+        # ヴェルテンベルク型(7/14 lab4生存者): 中距離の乖離レースは三連複軸×市場上位3ながしも重ねる
+        if dist and 1401 <= dist <= 1900:
+            mtop = [n for n in sorted(tan, key=lambda h: tan[h]) if n != t1][:3]
+            if len(mtop) >= 3:
+                out.append(("三連複軸×市場上位3ながし×中距離",
+                            f"三連複 {t1}軸 - {sorted(mtop)} ながし(3点)",
+                            121.5, "◎買い推奨",
+                            "発見116.4%/89R→確認135.6%/32R 通算121R。軸が2-3着でも獲れる(ヴェルテンベルク型)"))
     else:
         add(f"単勝1位[{mrb}]", f"単勝 {t1}")
     add(f"複勝1位[{mrb}]", f"複勝 {t1}")
