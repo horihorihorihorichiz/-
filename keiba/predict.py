@@ -898,7 +898,12 @@ def main():
             import patterns
             v2order = [r["num"] for r in res["rows"]]
             tan_i = {int(k2): v for k2, v in odds.get("tan", {}).items() if v}
-            patterns.print_patterns(v2order, tan_i, race.get("field", len(v2order)))
+            gap12 = None
+            if len(res["rows"]) >= 2 and v2info:
+                gap12 = (res["rows"][0]["wavg"] - res["rows"][1]["wavg"]) / 12.0
+            patterns.print_patterns(v2order, tan_i, race.get("field", len(v2order)),
+                                    surface=race.get("surface"), dist=race.get("distance"),
+                                    tier=race.get("today_tier"), gap12=gap12)
         except Exception as e:
             print(f"[パターン判定スキップ: {e}]")
         pb = dec.get("pb", {})

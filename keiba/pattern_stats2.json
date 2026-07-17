@@ -1,0 +1,42 @@
+[
+ {
+  "bet": "単勝1位_乖離(4人気+)",
+  "cond": "中距離",
+  "dev_roi": 108.4,
+  "dev_n": 89,
+  "conf_roi": 191.9,
+  "conf_n": 32,
+  "total_roi": 130.5,
+  "total_n": 121
+ },
+ {
+  "bet": "単勝1位_乖離(4人気+)",
+  "cond": "上級(2勝+)",
+  "dev_roi": 137.5,
+  "dev_n": 105,
+  "conf_roi": 112.2,
+  "conf_n": 45,
+  "total_roi": 129.9,
+  "total_n": 150
+ },
+ {
+  "bet": "単勝1位_乖離(4人気+)",
+  "cond": "ダ",
+  "dev_roi": 109.7,
+  "dev_n": 96,
+  "conf_roi": 161.0,
+  "conf_n": 30,
+  "total_roi": 121.9,
+  "total_n": 126
+ },
+ {
+  "bet": "単勝1位_乖離(4人気+)",
+  "cond": "混戦(gap小)",
+  "dev_roi": 104.3,
+  "dev_n": 167,
+  "conf_roi": 109.4,
+  "conf_n": 69,
+  "total_roi": 105.8,
+  "total_n": 236
+ }
+]

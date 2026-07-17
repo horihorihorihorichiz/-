@@ -28,7 +28,16 @@ def verdict_of(roi):
     return "✕見送り推奨"
 
 
-def classify(order, tan, field):
+# 2段階採掘(pattern_lab.py 7/14)の生存者: 発見(202511-04)+確認(202605-07)両方プラスのみ
+SURVIVORS = [
+    dict(cond="中距離", roi=130.5, dev="108.4%/89点", conf="191.9%/32点", n=121),
+    dict(cond="上級(2勝+)", roi=129.9, dev="137.5%/105点", conf="112.2%/45点", n=150),
+    dict(cond="ダ", roi=121.9, dev="109.7%/96点", conf="161.0%/30点", n=126),
+    dict(cond="混戦(gap小)", roi=105.8, dev="104.3%/167点", conf="109.4%/69点", n=236),
+]
+
+
+def classify(order, tan, field, surface=None, dist=None, tier=None, gap12=None):
     """order=V3得点順の馬番リスト, tan={num:単勝オッズ}, field=頭数。
        返り値: [(パターン名, 買い目説明, ROI, 判定, note)]"""
     out = []
@@ -48,6 +57,20 @@ def classify(order, tan, field):
 
     if mr >= 4:
         add("乖離単勝(1位が4人気以下)", f"単勝 {t1}", KAIRI_NOTE)
+        # 条件付き強化版(2段階採掘の生存者)
+        hits = []
+        if dist and 1401 <= dist <= 1900:
+            hits.append(SURVIVORS[0])
+        if tier and tier >= 6:
+            hits.append(SURVIVORS[1])
+        if surface == "ダ":
+            hits.append(SURVIVORS[2])
+        if gap12 is not None and gap12 < 0.45:
+            hits.append(SURVIVORS[3])
+        for s2 in hits:
+            out.append((f"乖離単勝×{s2['cond']}", f"単勝 {t1} (強化条件該当)",
+                        s2["roi"], "◎買い推奨",
+                        f"発見{s2['dev']}→確認{s2['conf']} 通算{s2['n']}点"))
     else:
         add(f"単勝1位[{mrb}]", f"単勝 {t1}")
     add(f"複勝1位[{mrb}]", f"複勝 {t1}")
@@ -61,8 +84,8 @@ def classify(order, tan, field):
     return out
 
 
-def print_patterns(order, tan, field):
-    pats = classify(order, tan, field)
+def print_patterns(order, tan, field, surface=None, dist=None, tier=None, gap12=None):
+    pats = classify(order, tan, field, surface=surface, dist=dist, tier=tier, gap12=gap12)
     if not pats:
         return
     print("\n🎯 パターン判定（ウォークフォワード実測ROI・未来を知らない状態での過去統計）")
