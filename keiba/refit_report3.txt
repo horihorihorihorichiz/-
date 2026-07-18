@@ -726,3 +726,22 @@ params.json に score_weights_by_surface[芝] を保存した。
   50-101%: n= 120 予測 66.6% 実際 55.0%
 
 params.json に保存した（calc/predictが次回から使う）
+データ: train 5965R / test 127R / 特徴 28
+best_iteration: 42
+重要度top10: cond_perf=12655, wavg=10700, fin_best2=4986, fin_frac=4537, j_top3=3007, layoff_lastfin=2715, agari_mean3_rel=2084, n_runs=1543, corner_frac=1477, t_top3=843
+
+── train ──
+  Ver.3(LambdaRank)
+    ★3着内馬が5位以内率 67.3% / 3頭全員5位以内率 28.5%
+    勝ち馬=1位率 29.5% / 3位以内率 58.4% / 勝ち馬の平均順位 3.92
+    モデル1位の単勝フラット回収率 89.8% (n=5965)
+    乖離バケット(1位が4番人気以下 742R) 単勝回収率 117.0%
+
+── test ──
+  Ver.3(LambdaRank)
+    ★3着内馬が5位以内率 70.5% / 3頭全員5位以内率 32.3%
+    勝ち馬=1位率 27.6% / 3位以内率 62.2% / 勝ち馬の平均順位 3.54
+    モデル1位の単勝フラット回収率 78.7% (n=127)
+    乖離バケット(1位が4番人気以下 11R) 単勝回収率 90.9%
+model_v3.txt に保存した。
+=== DONE Sat Jul 18 08:02:36 UTC 2026 ===
