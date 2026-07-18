@@ -7,10 +7,10 @@
   "beta": 1.0
  },
  "blend_place": {
-  "alpha": 0.03,
-  "beta": 0.9
+  "alpha": 0.1,
+  "beta": 0.8
  },
- "fitted_on": 2954,
+ "fitted_on": 6028,
  "note": "fit.py Ver.100",
  "score_weights": {
   "tsi": 1.0013,
