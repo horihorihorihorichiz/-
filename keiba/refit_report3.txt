@@ -2,3 +2,30 @@
 データ: 全6092R (train 6028 / test 64) T=21 L2=0.05
   iter0: PL-NLL=2.3362
   iter100: PL-NLL=2.3272
+  iter200: PL-NLL=2.3272
+  iter300: PL-NLL=2.3272
+
+学習した重み（1.0=現行の等重み）:
+  tsi      +1.001
+  lts      +1.040
+  fsi      +0.878
+  bonus    +0.980
+  dsi      +1.096
+  nsi      +1.027
+  csi      +1.002
+  was      +0.817
+  tas      +0.955
+  hcs      +0.894
+  nrja     +0.975
+  kankai   +0.745
+
+── 3着内の並びPL-NLL（学習スコア vs 現行等重み, 小さいほど良い）──
+  train: 現行 2.3362 → 学習後 2.3202 （改善）
+  test: 現行 2.2365 → 学習後 2.2340 （改善）
+
+params.json に score_weights を保存した。
+データ: 全2938R (train 2902 / test 36) T=21 L2=0.08
+  iter0: PL-NLL=2.3508
+  iter100: PL-NLL=2.3431
+  iter200: PL-NLL=2.3431
+  iter300: PL-NLL=2.3431
