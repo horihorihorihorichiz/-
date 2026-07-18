@@ -34,10 +34,17 @@ def norm(s):
 
 
 def main():
+    import argparse
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--from", dest="dfrom", default="20250719")
+    ap.add_argument("--to", dest="dto", default="20260718")
+    a = ap.parse_args()
     os.makedirs(OUT, exist_ok=True)
-    # 2025/7〜2026/7 の日程を集める
+    y0, y1 = int(a.dfrom[:4]), int(a.dto[:4])
+    months = [(y, m) for y in range(y0, y1+1) for m in range(1, 13)
+              if a.dfrom[:6] <= f"{y}{m:02d}" <= a.dto[:6]]
     entries = []
-    for y, m in [(2025, mm) for mm in range(7, 13)] + [(2026, mm) for mm in range(1, 8)]:
+    for y, m in months:
         try:
             es = schedule(y, m)
             entries += es
@@ -45,7 +52,7 @@ def main():
         except Exception as e:
             print(f"{y}-{m} 失敗 {e}", file=sys.stderr)
         time.sleep(0.3)
-    entries = [e for e in entries if "20250719" <= e["date"] <= "20260718"]
+    entries = [e for e in entries if a.dfrom <= e["date"] <= a.dto]
     print(f"対象重賞: {len(entries)}件", file=sys.stderr)
 
     list_cache = {}
