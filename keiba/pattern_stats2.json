@@ -1,42 +1,92 @@
 [
  {
   "bet": "単勝1位_乖離(4人気+)",
-  "cond": "中距離",
-  "dev_roi": 108.4,
-  "dev_n": 89,
-  "conf_roi": 191.9,
-  "conf_n": 32,
-  "total_roi": 130.5,
-  "total_n": 121
+  "cond": "ダ",
+  "dev_roi": 175.2,
+  "dev_n": 80,
+  "conf_roi": 144.0,
+  "conf_n": 25,
+  "total_roi": 167.8,
+  "total_n": 105
  },
  {
   "bet": "単勝1位_乖離(4人気+)",
   "cond": "上級(2勝+)",
-  "dev_roi": 137.5,
-  "dev_n": 105,
-  "conf_roi": 112.2,
+  "dev_roi": 168.9,
+  "dev_n": 96,
+  "conf_roi": 158.7,
   "conf_n": 45,
-  "total_roi": 129.9,
-  "total_n": 150
+  "total_roi": 165.6,
+  "total_n": 141
  },
  {
   "bet": "単勝1位_乖離(4人気+)",
-  "cond": "ダ",
-  "dev_roi": 109.7,
-  "dev_n": 96,
-  "conf_roi": 161.0,
-  "conf_n": 30,
-  "total_roi": 121.9,
-  "total_n": 126
+  "cond": "中距離",
+  "dev_roi": 114.1,
+  "dev_n": 75,
+  "conf_roi": 248.6,
+  "conf_n": 28,
+  "total_roi": 150.7,
+  "total_n": 103
+ },
+ {
+  "bet": "単勝1位_乖離(4人気+)",
+  "cond": "多頭数",
+  "dev_roi": 151.9,
+  "dev_n": 137,
+  "conf_roi": 100.0,
+  "conf_n": 49,
+  "total_roi": 138.2,
+  "total_n": 186
+ },
+ {
+  "bet": "単勝1位_乖離(4人気+)",
+  "cond": "全レース",
+  "dev_roi": 128.1,
+  "dev_n": 167,
+  "conf_roi": 149.8,
+  "conf_n": 66,
+  "total_roi": 134.3,
+  "total_n": 233
+ },
+ {
+  "bet": "単勝1位_乖離(4人気+)",
+  "cond": "良馬場",
+  "dev_roi": 123.7,
+  "dev_n": 140,
+  "conf_roi": 164.7,
+  "conf_n": 47,
+  "total_roi": 134.0,
+  "total_n": 187
  },
  {
   "bet": "単勝1位_乖離(4人気+)",
   "cond": "混戦(gap小)",
-  "dev_roi": 104.3,
-  "dev_n": 167,
-  "conf_roi": 109.4,
-  "conf_n": 69,
-  "total_roi": 105.8,
-  "total_n": 236
+  "dev_roi": 126.3,
+  "dev_n": 150,
+  "conf_roi": 136.9,
+  "conf_n": 61,
+  "total_roi": 129.4,
+  "total_n": 211
+ },
+ {
+  "bet": "単勝1位_乖離(4人気+)",
+  "cond": "本命サイド薄(1人気3倍+)",
+  "dev_roi": 114.2,
+  "dev_n": 99,
+  "conf_roi": 150.2,
+  "conf_n": 45,
+  "total_roi": 125.5,
+  "total_n": 144
+ },
+ {
+  "bet": "馬連1-2位",
+  "cond": "1位オッズ5-15倍",
+  "dev_roi": 110.4,
+  "dev_n": 311,
+  "conf_roi": 102.3,
+  "conf_n": 111,
+  "total_roi": 108.3,
+  "total_n": 422
  }
 ]
