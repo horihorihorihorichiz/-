@@ -275,15 +275,15 @@ def build_buylist_ev(rows, odds, budget=10000, unit=100, kelly=0.25,
             continue
         picks.append((kind, lbl, o, st, p, ev))
         total += st
-    # 乖離単勝(7/14 ウォークフォワード9ヶ月でROI117%/227点の実証ルール):
-    # 得点(V2)1位が市場4番人気以下=モデルの独自主張が強い時だけ、単勝を予算5%で1点。
+    # 乖離単勝(7/19改定: 乖離の定義=「オッズ7倍以上・人気順位不問」。
+    # 2段階WFで旧定義(4人気以下)100.8%→新定義108.3%に改善。ユーザー指摘「人気でなくオッズで見る」による)
     kairi = None
     if rows and tan:
         top_r = max(rows, key=lambda r: r.get("wavg", -9e9))
         top = top_r["num"]
         if top in tan:
             mrank = sorted(tan, key=lambda h: tan[h]).index(top) + 1
-            if mrank >= 4 and not any(k == "単勝" and l == str(top) for k, l, *_ in picks):
+            if tan[top] >= 7.0 and not any(k == "単勝" and l == str(top) for k, l, *_ in picks):
                 st = max(unit, int(budget*0.05/unit)*unit)
                 if total + st <= budget:
                     picks.append(("単勝", str(top), tan[top], st,

@@ -16,8 +16,9 @@ def _load_stats():
 
 
 STATS = _load_stats()
-# 乖離単勝はモデル系列で101〜117%のレンジ(線形117.2%/227点, V3-WF111.1%/309点, 本採掘100.8%/255点)
-KAIRI_NOTE = "WF実測レンジ101〜117%(3系列)・現状唯一のプラス圏"
+# 乖離の定義(7/19改定): 得点1位のオッズ≥7倍(人気順位不問)。2段階WF 108.0%/109.0% 通算108.3%
+KAIRI_NOTE = "新定義(7倍+)WF 発見108.0%→確認109.0% 通算108.3%/236R"
+KAIRI_ODDS = 7.0
 
 
 def verdict_of(roi):
@@ -29,11 +30,11 @@ def verdict_of(roi):
 
 
 # 2段階採掘(pattern_lab.py 7/14)の生存者: 発見(202511-04)+確認(202605-07)両方プラスのみ
+# 7/19再採掘(新定義7倍+ベース)。混戦は新定義下で確認99.5%とボーダーのため降格(縁扱い)
 SURVIVORS = [
-    dict(cond="中距離", roi=130.5, dev="108.4%/89点", conf="191.9%/32点", n=121),
-    dict(cond="上級(2勝+)", roi=129.9, dev="137.5%/105点", conf="112.2%/45点", n=150),
-    dict(cond="ダ", roi=121.9, dev="109.7%/96点", conf="161.0%/30点", n=126),
-    dict(cond="混戦(gap小)", roi=105.8, dev="104.3%/167点", conf="109.4%/69点", n=236),
+    dict(cond="上級(2勝+)", roi=144.8, dev="141.1%/93点", conf="154.4%/36点", n=129),
+    dict(cond="ダ", roi=136.6, dev="139.4%/82点", conf="125.7%/21点", n=103),
+    dict(cond="中距離", roi=123.0, dev="122.1%/87点", conf="126.2%/26点", n=113),
 ]
 
 
@@ -55,18 +56,17 @@ def classify(order, tan, field, surface=None, dist=None, tier=None, gap12=None):
         roi = s["roi"]
         out.append((key, desc, roi, verdict_of(roi), note))
 
-    if mr >= 4:
+    if tan.get(t1, 0) >= KAIRI_ODDS:
         add("乖離単勝(1位が4人気以下)", f"単勝 {t1}", KAIRI_NOTE)
         # 条件付き強化版(2段階採掘の生存者)
         hits = []
-        if dist and 1401 <= dist <= 1900:
-            hits.append(SURVIVORS[0])
         if tier and tier >= 6:
-            hits.append(SURVIVORS[1])
+            hits.append(SURVIVORS[0])
         if surface == "ダ":
+            hits.append(SURVIVORS[1])
+        if dist and 1401 <= dist <= 1900:
             hits.append(SURVIVORS[2])
-        if gap12 is not None and gap12 < 0.45:
-            hits.append(SURVIVORS[3])
+        
         for s2 in hits:
             out.append((f"乖離単勝×{s2['cond']}", f"単勝 {t1} (強化条件該当)",
                         s2["roi"], "◎買い推奨",
@@ -77,8 +77,8 @@ def classify(order, tan, field, surface=None, dist=None, tier=None, gap12=None):
             if len(mtop) >= 3:
                 out.append(("三連複軸×市場上位3ながし×中距離",
                             f"三連複 {t1}軸 - {sorted(mtop)} ながし(3点)",
-                            121.5, "◎買い推奨",
-                            "発見116.4%/89R→確認135.6%/32R 通算121R。軸が2-3着でも獲れる(ヴェルテンベルク型)"))
+                            120.6, "◎買い推奨",
+                            "新定義(7倍+)WF 発見113.5%/87R→確認144.2%/26R。軸が2-3着でも獲れる(ヴェルテンベルク型)"))
     else:
         add(f"単勝1位[{mrb}]", f"単勝 {t1}")
     add(f"複勝1位[{mrb}]", f"複勝 {t1}")

@@ -47,7 +47,7 @@ def check_race(rid, it, date, logf):
         names = {h["num"]: h["name"] for h in race["horses"]}
         t1 = order[0]
         mr = sorted(tan, key=lambda h: tan[h]).index(t1)+1 if t1 in tan else 99
-        if fires and mr >= 4:
+        if fires and tan.get(t1, 0) >= 7.0:
             best = fires[0]
             line = (f"FIRE {it.get('venue')}{it.get('r')}R {race.get('name','')[:14]} "
                     f"軸{t1}{names.get(t1,'')[:8]}({tan.get(t1)}倍{mr}人気) "
