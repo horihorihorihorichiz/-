@@ -87,12 +87,16 @@ def classify(order, tan, field, surface=None, dist=None, tier=None, gap12=None, 
             if len(mtop) >= 3:
                 m5 = set(order[:5])
                 agree3 = all(p in m5 for p in mtop)
-                agnote = ("／紐3頭全員モデルtop5=一致◎(同条件の過去271%・n18R的中3)"
-                          if agree3 else "／紐にモデル圏外あり(一致度低)")
+                konsen = gap12 is not None and gap12 < 0.15
+                marks = ["紐一致◎(過去271%/18R)" if agree3 else "紐にモデル圏外あり"]
+                if konsen:
+                    marks.append("混戦◎(1-2位差薄/過去193%)")
+                if agree3 and konsen:
+                    marks.append("重複=最強帯(過去361%/11R)")
                 out.append(("三連複軸ながし×軸10-30倍",
                             f"三連複 {t1}軸 - {sorted(mtop)} ながし(3点)",
                             166.1, "◎買い推奨",
-                            "2年WF 発見108.5%/59R→確認307.8%/24R" + agnote))
+                            "2年WF 発見108.5%/59R→確認307.8%/24R／" + "・".join(marks)))
             if len(mtop4) >= 4:
                 f2, f3, f4 = mtop4[1], mtop4[2], mtop4[3]
                 ext = sorted([tuple(sorted(p)) for p in
