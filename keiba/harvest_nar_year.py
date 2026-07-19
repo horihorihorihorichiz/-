@@ -19,9 +19,10 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--start", default="20250719")
     ap.add_argument("--end", default="20260718")
-    ap.add_argument("--venues", default="大井,船橋,川崎,浦和")
+    ap.add_argument("--venues", default="大井,船橋,川崎,浦和",
+                    help="'ALL'で帯広ばんえい以外の全場")
     a = ap.parse_args()
-    venues = set(a.venues.split(","))
+    venues = None if a.venues == "ALL" else set(a.venues.split(","))
     os.makedirs(OUT, exist_ok=True)
     state_f = "harvest_nar_year.state"
     done = set()
@@ -40,7 +41,10 @@ def main():
         except Exception as e:
             print(f"[{date}] 一覧失敗 {e}", file=sys.stderr)
             continue
-        lst = [it for it in lst if it.get("venue") in venues]
+        if venues is None:
+            lst = [it for it in lst if "帯広" not in it.get("venue", "")]
+        else:
+            lst = [it for it in lst if it.get("venue") in venues]
         ok = 0
         for it in lst:
             rid = it["race_id"]
