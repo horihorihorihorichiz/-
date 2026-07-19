@@ -83,11 +83,20 @@ def classify(order, tan, field, surface=None, dist=None, tier=None, gap12=None, 
         # 三連複ながし完全版(7/19深掘り・2年WF): 軸10-30倍×非長距離が主戦場。相手=市場1-3固定
         if 10 <= o1 <= 30 and (not dist or dist <= 1900):
             mtop = [n for n in sorted(tan, key=lambda h: tan[h]) if n != t1][:3]
+            mtop4 = [n for n in sorted(tan, key=lambda h: tan[h]) if n != t1][:4]
             if len(mtop) >= 3:
                 out.append(("三連複軸ながし×軸10-30倍",
                             f"三連複 {t1}軸 - {sorted(mtop)} ながし(3点)",
                             166.1, "◎買い推奨",
                             "2年WF 発見108.5%/59R→確認307.8%/24R。単勝(同帯160%)との二段が主戦場"))
+            if len(mtop4) >= 4:
+                f2, f3, f4 = mtop4[1], mtop4[2], mtop4[3]
+                ext = sorted([tuple(sorted(p)) for p in
+                              [(f2, f4), (f3, f4)]])
+                out.append(("【検証中】三連複5点拡張(4人気込み)",
+                            f"三連複 {t1}軸 追加2点: {ext[0][0]}-{ext[0][1]} / {ext[1][0]}-{ext[1][1]} (現行3点+これで5点)",
+                            190.0, "○紙上検証枠",
+                            "trio_shape.py 7/19: dev173.6/conf233.3/最大的中除外148.2% n=69R。来週は紙上並走で検証"))
         elif o1 < 10:
             out.append(("三連複ながし(軸オッズ不足)", f"軸{o1}倍<10倍 → ながしは見送り・単勝のみ",
                         76.0, "✕見送り推奨", "軸7-10倍のながしはWF76%=配当が3点をカバーできない"))
