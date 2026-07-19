@@ -283,7 +283,9 @@ def build_buylist_ev(rows, odds, budget=10000, unit=100, kelly=0.25,
         top = top_r["num"]
         if top in tan:
             mrank = sorted(tan, key=lambda h: tan[h]).index(top) + 1
-            if tan[top] >= 7.0 and not any(k == "単勝" and l == str(top) for k, l, *_ in picks):
+            p1v = top_r.get("pwin", 0)/100.0
+            fire2 = tan[top] >= 7.0 or (tan[top] >= 6.0 and p1v*tan[top] >= 1.0)
+            if fire2 and not any(k == "単勝" and l == str(top) for k, l, *_ in picks):
                 st = max(unit, int(budget*0.05/unit)*unit)
                 if total + st <= budget:
                     picks.append(("単勝", str(top), tan[top], st,
@@ -903,7 +905,8 @@ def main():
                 gap12 = (res["rows"][0]["wavg"] - res["rows"][1]["wavg"]) / 12.0
             patterns.print_patterns(v2order, tan_i, race.get("field", len(v2order)),
                                     surface=race.get("surface"), dist=race.get("distance"),
-                                    tier=race.get("today_tier"), gap12=gap12)
+                                    tier=race.get("today_tier"), gap12=gap12,
+                                    p1=res["rows"][0].get("pwin", 0)/100.0)
         except Exception as e:
             print(f"[パターン判定スキップ: {e}]")
         pb = dec.get("pb", {})

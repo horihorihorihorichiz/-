@@ -40,14 +40,17 @@ def check_race(rid, it, date, logf):
             return
         order = [r["num"] for r in res["rows"]]
         gap12 = (res["rows"][0]["wavg"] - res["rows"][1]["wavg"])/12.0 if len(res["rows"]) > 1 else None
+        p1c = res["rows"][0].get("pwin", 0)/100.0
         pats = patterns.classify(order, tan, race.get("field", len(order)),
                                  surface=race.get("surface"), dist=race.get("distance"),
-                                 tier=race.get("today_tier"), gap12=gap12)
+                                 tier=race.get("today_tier"), gap12=gap12, p1=p1c)
         fires = [p for p in pats if p[3].startswith("◎") or p[3].startswith("△")]
         names = {h["num"]: h["name"] for h in race["horses"]}
         t1 = order[0]
         mr = sorted(tan, key=lambda h: tan[h]).index(t1)+1 if t1 in tan else 99
-        if fires and tan.get(t1, 0) >= 7.0:
+        o1w = tan.get(t1, 0)
+        p1w = res["rows"][0].get("pwin", 0)/100.0
+        if fires and (o1w >= 7.0 or (o1w >= 6.0 and p1w*o1w >= 1.0)):
             best = fires[0]
             line = (f"FIRE {it.get('venue')}{it.get('r')}R {race.get('name','')[:14]} "
                     f"軸{t1}{names.get(t1,'')[:8]}({tan.get(t1)}倍{mr}人気) "

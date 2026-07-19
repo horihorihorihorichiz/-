@@ -38,7 +38,7 @@ SURVIVORS = [
 ]
 
 
-def classify(order, tan, field, surface=None, dist=None, tier=None, gap12=None):
+def classify(order, tan, field, surface=None, dist=None, tier=None, gap12=None, p1=None):
     """order=V3得点順の馬番リスト, tan={num:単勝オッズ}, field=頭数。
        返り値: [(パターン名, 買い目説明, ROI, 判定, note)]"""
     out = []
@@ -56,7 +56,9 @@ def classify(order, tan, field, surface=None, dist=None, tier=None, gap12=None):
         roi = s["roi"]
         out.append((key, desc, roi, verdict_of(roi), note))
 
-    if tan.get(t1, 0) >= KAIRI_ODDS:
+    o1 = tan.get(t1, 0)
+    fire = o1 >= KAIRI_ODDS or (o1 >= 6.0 and p1 and p1*o1 >= 1.0)  # 第2条件(7/19): 6倍+×モデル価値1.0+ WF108.1%
+    if fire:
         add("乖離単勝(1位が4人気以下)", f"単勝 {t1}", KAIRI_NOTE)
         # 条件付き強化版(2段階採掘の生存者)
         hits = []
@@ -92,8 +94,8 @@ def classify(order, tan, field, surface=None, dist=None, tier=None, gap12=None):
     return out
 
 
-def print_patterns(order, tan, field, surface=None, dist=None, tier=None, gap12=None):
-    pats = classify(order, tan, field, surface=surface, dist=dist, tier=tier, gap12=gap12)
+def print_patterns(order, tan, field, surface=None, dist=None, tier=None, gap12=None, p1=None):
+    pats = classify(order, tan, field, surface=surface, dist=dist, tier=tier, gap12=gap12, p1=p1)
     if not pats:
         return
     print("\n🎯 パターン判定（ウォークフォワード実測ROI・未来を知らない状態での過去統計）")
