@@ -15,3 +15,4 @@ err 202602011205 max() arg is an empty sequence
 err 202603020805 max() arg is an empty sequence
 err 202610020805 max() arg is an empty sequence
 pass 函館6R 1位10マメーアップル=1人気 乖離なし
+err 202603020806 max() arg is an empty sequence
