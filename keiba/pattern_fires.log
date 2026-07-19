@@ -11,3 +11,5 @@ FIRE 小倉3R 3歳未勝利 ダ1700 軸14エレーデサンライ(8.7倍4人気)
 pass 函館4R 1位7ギオンバヤシ=1人気 乖離なし
 pass 福島4R 1位9ユニバーサルラヴ=3人気 乖離なし
 pass 小倉4R 1位11アラムシャピラス=1人気 乖離なし
+err 202602011205 max() arg is an empty sequence
+err 202603020805 max() arg is an empty sequence
