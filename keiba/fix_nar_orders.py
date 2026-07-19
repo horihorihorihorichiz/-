@@ -19,9 +19,20 @@ def parse_nar_result(rid):
         od = re.search(r'class="Odds[^"]*"[^>]*>\s*(?:<[^>]+>)*\s*([\d.]+)', tr)
         if len(nums) < 2:
             continue
+        # 走破タイム(NAR指数用) + 上り
+        tm = re.search(r'class="Time">\s*<span[^>]*>([\d:.]+)</span>', tr) or \
+             re.search(r'RaceTime">([\d:.]+)<', tr)
+        ag = re.search(r'>(3\d\.\d)<', tr)
+        t_sec = None
+        if tm:
+            mm2 = re.match(r"(?:(\d+):)?(\d+)\.(\d)", tm.group(1))
+            if mm2:
+                t_sec = int(mm2.group(1) or 0)*60 + int(mm2.group(2)) + int(mm2.group(3))/10.0
         out.append(dict(rank=rk.group(1), num=int(nums[1]),
                         name=(nm.group(1) if nm else ""),
-                        odds=(float(od.group(1)) if od else None)))
+                        odds=(float(od.group(1)) if od else None),
+                        time_sec=t_sec,
+                        agari=(float(ag.group(1)) if ag else None)))
     return out
 
 
