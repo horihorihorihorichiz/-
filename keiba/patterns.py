@@ -60,6 +60,13 @@ def classify(order, tan, field, surface=None, dist=None, tier=None, gap12=None, 
     fire = o1 >= KAIRI_ODDS or (o1 >= 6.0 and p1 and p1*o1 >= 1.0)  # 第2条件(7/19): 6倍+×モデル価値1.0+ WF108.1%
     if fire:
         add("乖離単勝(1位が4人気以下)", f"単勝 {t1}", KAIRI_NOTE)
+        # ★最強条件(7/19ユーザー発案の一致構造採掘): 1番人気をモデルが5位以下に酷評=群衆の錨が偽物
+        vrank_all = {n: i+1 for i, n in enumerate(order)}
+        fav = min(tan, key=lambda h: tan[h])
+        if vrank_all.get(fav, 99) >= 5:
+            out.append(("乖離単勝×1人気モデル売り", f"単勝 {t1} (1人気{fav}をモデル{vrank_all.get(fav)}位と酷評)",
+                        216.7, "◎◎最強",
+                        "WF 発見214.0%/53R→確認223.2%/22R 通算216.7%。厚張り候補"))
         # 条件付き強化版(2段階採掘の生存者)
         hits = []
         if tier and tier >= 6:
