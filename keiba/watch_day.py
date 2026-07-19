@@ -79,7 +79,7 @@ def main():
     logf = open("pattern_fires.log", "a", encoding="utf-8")
     print(f"WATCH開始 {a.date} 対象{len(sched)}R (発走{a.lead}分前判定)", file=logf, flush=True)
     for tmin, pt, it in sched:
-        now = datetime.datetime.now()
+        now = datetime.datetime.utcnow() + datetime.timedelta(hours=9)  # JST
         now_min = now.hour*60 + now.minute
         target = tmin - a.lead
         if now_min > tmin:
