@@ -80,21 +80,17 @@ def classify(order, tan, field, surface=None, dist=None, tier=None, gap12=None, 
             out.append((f"乖離単勝×{s2['cond']}", f"単勝 {t1} (強化条件該当)",
                         s2["roi"], "◎買い推奨",
                         f"発見{s2['dev']}→確認{s2['conf']} 通算{s2['n']}点"))
-        # ヴェルテンベルク型(7/14 lab4生存者): 中距離の乖離レースは三連複軸×市場上位3ながしも重ねる
-        if dist and 1401 <= dist <= 1900:
+        # 三連複ながし完全版(7/19深掘り・2年WF): 軸10-30倍×非長距離が主戦場。相手=市場1-3固定
+        if 10 <= o1 <= 30 and (not dist or dist <= 1900):
             mtop = [n for n in sorted(tan, key=lambda h: tan[h]) if n != t1][:3]
             if len(mtop) >= 3:
-                vrank = {n: i+1 for i, n in enumerate(order)}
-                n_top5 = sum(1 for n in mtop if vrank.get(n, 99) <= 5)
-                if n_top5 >= 2:   # 7/19ユーザー発案: 相手をシステムも裏書きする時だけ(WF139.0%)
-                    out.append(("三連複軸ながし×中距離×相手一致",
-                                f"三連複 {t1}軸 - {sorted(mtop)} ながし(3点)",
-                                139.0, "◎買い推奨",
-                                f"相手{n_top5}/3頭がモデル5位内。WF 発見130.0%/76R→確認170.5%/22R"))
-                else:
-                    out.append(("三連複ながし(相手不一致)",
-                                f"相手{sorted(mtop)}のうちモデル5位内が{n_top5}頭のみ",
-                                81.5, "✕見送り推奨", "相手とモデルが不一致=カオスレース(WF81.5%)"))
+                out.append(("三連複軸ながし×軸10-30倍",
+                            f"三連複 {t1}軸 - {sorted(mtop)} ながし(3点)",
+                            166.1, "◎買い推奨",
+                            "2年WF 発見108.5%/59R→確認307.8%/24R。単勝(同帯160%)との二段が主戦場"))
+        elif o1 < 10:
+            out.append(("三連複ながし(軸オッズ不足)", f"軸{o1}倍<10倍 → ながしは見送り・単勝のみ",
+                        76.0, "✕見送り推奨", "軸7-10倍のながしはWF76%=配当が3点をカバーできない"))
     else:
         add(f"単勝1位[{mrb}]", f"単勝 {t1}")
     add(f"複勝1位[{mrb}]", f"複勝 {t1}")
