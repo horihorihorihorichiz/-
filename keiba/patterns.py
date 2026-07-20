@@ -60,6 +60,17 @@ def classify(order, tan, field, surface=None, dist=None, tier=None, gap12=None, 
     fire = o1 >= KAIRI_ODDS or (o1 >= 6.0 and p1 and p1*o1 >= 1.0)  # 第2条件(7/19): 6倍+×モデル価値1.0+ WF108.1%
     if fire:
         add("乖離単勝(1位が4人気以下)", f"単勝 {t1}", KAIRI_NOTE)
+        # ★システム主軸フィルタ(7/20 20エージェント探索・両分割CONFIRMED): 乖離単勝の中の最上位シグナル
+        mval = p1 * o1 if p1 else 0
+        strong = []
+        if mval >= 1.6:
+            strong.append(f"モデル価値{mval:.1f}(WF186%)")
+        if field and field >= 15:
+            strong.append(f"多頭{field}頭(WF175%)")
+        if strong:
+            out.append(("◎◎乖離単勝×システム強化", f"単勝 {t1} [" + "・".join(strong) + "]",
+                        185.9 if mval >= 1.6 else 175.4, "◎◎最優先買い",
+                        "2年WF: モデル価値(確率×オッズ)1.6+=186%/多頭15+=175%。乖離単勝の中の最強フィルタ・厚張り候補"))
         # ★最強条件(7/19ユーザー発案の一致構造採掘): 1番人気をモデルが5位以下に酷評=群衆の錨が偽物
         vrank_all = {n: i+1 for i, n in enumerate(order)}
         fav = min(tan, key=lambda h: tan[h])
