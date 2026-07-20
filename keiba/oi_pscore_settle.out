@@ -1,0 +1,209 @@
+scored races used: 2171
+total cells: 206
+
+     単勝 thr2.0 tier6-8                  dev   91.8% (2414bet/ 473R) conf   60.5% (1025bet/184R) tot   82.5% hits 48
+     単勝 thr1.6 tier6-8                  dev   89.1% (2845bet/ 474R) conf   61.7% (1185bet/184R) tot   81.1% hits 67
+     単勝 thr1.3 tier6-8                  dev   85.5% (3267bet/ 474R) conf   59.7% (1318bet/184R) tot   78.1% hits 85
+     単勝 thr1.6 o7-15                    dev   61.6% ( 289bet/ 274R) conf  115.2% (118bet/109R) tot   77.1% hits 25
+     単勝 thr1.0 tier6-8                  dev   83.5% (3734bet/ 474R) conf   56.9% (1511bet/184R) tot   75.9% hits 117
+     単勝 thr1.6 pop1-3                   dev   77.6% (  99bet/  95R) conf   69.1% ( 46bet/ 43R) tot   74.9% hits 8
+     単勝 thr1.3 o3-7                     dev   43.2% (  38bet/  38R) conf  189.0% ( 10bet/ 10R) tot   73.5% hits 6
+     単勝 thr2.0 p.10-.20                 dev   75.8% ( 906bet/ 672R) conf   65.6% (342bet/256R) tot   73.0% hits 35
+     単勝 thr2.0 M1                       dev   78.7% ( 107bet/ 107R) conf   55.8% ( 40bet/ 40R) tot   72.4% hits 5
+     単勝 thr1.6 p.10-.20                 dev   71.7% (1234bet/ 867R) conf   73.4% (480bet/335R) tot   72.2% hits 59
+     単勝 thr1.3 o7-15                    dev   63.7% ( 681bet/ 583R) conf   92.5% (253bet/215R) tot   71.5% hits 56
+     複勝 thr1.0 o3-7                     dev   72.5% ( 183bet/ 173R) conf   67.7% ( 64bet/ 63R) tot   71.2% hits 113
+     複勝 thr1.0 o15-30                   dev   70.9% (2454bet/1297R) conf   69.8% (889bet/489R) tot   70.6% hits 674
+     単勝 thr1.3 p.10-.20                 dev   68.9% (1594bet/1041R) conf   73.0% (606bet/390R) tot   70.0% hits 87
+     複勝 thr2.0 o15-30                   dev   68.6% ( 798bet/ 644R) conf   70.7% (320bet/258R) tot   69.2% hits 223
+     複勝 thr1.0 o7-15                    dev   66.6% (1354bet/ 976R) conf   75.7% (533bet/385R) tot   69.2% hits 580
+     単勝 thr1.6 M1                       dev   70.1% ( 160bet/ 160R) conf   65.8% ( 55bet/ 55R) tot   69.0% hits 9
+     複勝 thr1.6 o15-30                   dev   68.3% (1443bet/1020R) conf   70.2% (555bet/374R) tot   68.8% hits 405
+     複勝 thr1.3 o3-7                     dev   64.7% (  38bet/  38R) conf   84.0% ( 10bet/ 10R) tot   68.8% hits 22
+     単勝 thr1.0 o7-15                    dev   64.1% (1354bet/ 976R) conf   79.6% (533bet/385R) tot   68.5% hits 114
+     単勝 thr1.0 o15-30                   dev   69.1% (2454bet/1297R) conf   65.2% (889bet/489R) tot   68.1% hits 108
+     単勝 thr1.6 tier<=5                  dev   29.1% ( 244bet/  52R) conf  140.9% (129bet/ 21R) tot   67.7% hits 5
+     複勝 thr1.3 o15-30                   dev   68.2% (1991bet/1198R) conf   66.1% (723bet/448R) tot   67.7% hits 538
+     複勝 thr1.0 Mtop3                    dev   65.3% (1406bet/1109R) conf   71.1% (568bet/434R) tot   67.0% hits 519
+     単勝 thr2.0 Mtop3                    dev   71.9% ( 594bet/ 528R) conf   55.4% (251bet/219R) tot   67.0% hits 22
+     複勝 thr1.0 p.10-.20                 dev   66.6% (2041bet/1231R) conf   67.5% (803bet/465R) tot   66.8% hits 728
+     単勝 thr1.0 p.10-.20                 dev   64.6% (2041bet/1231R) conf   71.6% (803bet/465R) tot   66.6% hits 128
+     複勝 thr2.0 M1                       dev   56.1% ( 107bet/ 107R) conf   94.5% ( 40bet/ 40R) tot   66.5% hits 32
+     複勝 thr1.6 M1                       dev   61.9% ( 160bet/ 160R) conf   79.5% ( 55bet/ 55R) tot   66.4% hits 53
+     単勝 thr1.3 M1                       dev   60.0% ( 219bet/ 219R) conf   84.0% ( 78bet/ 78R) tot   66.3% hits 16
+     複勝 thr1.6 p.10-.20                 dev   67.0% (1234bet/ 867R) conf   63.0% (480bet/335R) tot   65.9% hits 354
+     単勝 thr2.0 tier<=5                  dev   33.0% ( 215bet/  52R) conf  130.6% (108bet/ 21R) tot   65.7% hits 4
+     単勝 thr1.0 d1700+                   dev   68.8% (1367bet/ 183R) conf   59.2% (660bet/ 79R) tot   65.6% hits 44
+     複勝 thr2.0 Mtop3                    dev   66.3% ( 594bet/ 528R) conf   64.1% (251bet/219R) tot   65.6% hits 152
+     複勝 thr1.3 p.10-.20                 dev   65.4% (1594bet/1041R) conf   66.1% (606bet/390R) tot   65.6% hits 501
+     複勝 thr1.3 o7-15                    dev   62.5% ( 681bet/ 583R) conf   73.5% (253bet/215R) tot   65.5% hits 279
+     単勝 thr1.0 field<=10                dev   71.5% (2024bet/ 369R) conf   48.6% (758bet/126R) tot   65.2% hits 74
+     単勝 thr2.0 d1700+                   dev   70.1% ( 935bet/ 183R) conf   55.2% (456bet/ 79R) tot   65.2% hits 14
+     複勝 thr1.0 M1                       dev   62.7% ( 333bet/ 333R) conf   72.0% (121bet/121R) tot   65.2% hits 143
+     複勝 thr1.0 tier6-8                  dev   66.1% (3734bet/ 474R) conf   62.8% (1511bet/184R) tot   65.2% hits 648
+     複勝 thr1.6 Mtop3                    dev   64.1% ( 823bet/ 716R) conf   67.6% (350bet/294R) tot   65.1% hits 244
+     複勝 thr1.6 o7-15                    dev   62.5% ( 289bet/ 274R) conf   71.2% (118bet/109R) tot   65.0% hits 122
+     複勝 thr1.0 pop1-3                   dev   62.9% ( 472bet/ 425R) conf   69.2% (230bet/201R) tot   65.0% hits 281
+     複勝 thr2.0 p.10-.20                 dev   66.7% ( 906bet/ 672R) conf   59.9% (342bet/256R) tot   64.8% hits 225
+     複勝 thr1.3 M1                       dev   59.2% ( 219bet/ 219R) conf   80.4% ( 78bet/ 78R) tot   64.8% hits 81
+     複勝 thr1.3 tier6-8                  dev   66.1% (3267bet/ 474R) conf   61.6% (1318bet/184R) tot   64.8% hits 489
+     複勝 thr2.0 p>=.20                   dev   53.7% (  49bet/  49R) conf   86.4% ( 25bet/ 23R) tot   64.7% hits 22
+     複勝 thr1.0 pop4-6                   dev   64.4% (3046bet/1452R) conf   63.9% (1194bet/541R) tot   64.2% hits 953
+     複勝 thr1.3 Mtop3                    dev   62.8% (1086bet/ 906R) conf   67.6% (426bet/346R) tot   64.1% hits 343
+     単勝 thr2.0 o15-30                   dev   60.4% ( 798bet/ 644R) conf   73.2% (320bet/258R) tot   64.0% hits 32
+     単勝 thr2.0 pop1-3                   dev   64.6% (  39bet/  38R) conf   62.8% ( 18bet/ 18R) tot   64.0% hits 3
+     複勝 thr1.0 p.05-.10                 dev   63.0% (4798bet/1527R) conf   66.2% (1810bet/569R) tot   63.9% hits 923
+     単勝 thr1.6 field<=10                dev   69.1% (1536bet/ 369R) conf   48.1% (579bet/126R) tot   63.4% hits 37
+     単勝 thr1.3 tier<=5                  dev   32.6% ( 290bet/  52R) conf  124.5% (146bet/ 21R) tot   63.4% hits 7
+     複勝 thr1.6 o3-7                     dev   51.4% (   7bet/   7R) conf  105.0% (  2bet/  2R) tot   63.3% hits 4
+     単勝 thr1.0 pop4-6                   dev   62.7% (3046bet/1452R) conf   64.6% (1194bet/541R) tot   63.2% hits 166
+     複勝 thr1.0 p>=.20                   dev   59.3% ( 188bet/ 178R) conf   73.4% ( 67bet/ 63R) tot   63.0% hits 100
+     複勝 thr1.0 d1700+                   dev   67.7% (1367bet/ 183R) conf   53.0% (660bet/ 79R) tot   62.9% hits 244
+     複勝 thr1.6 tier6-8                  dev   64.3% (2845bet/ 474R) conf   59.1% (1185bet/184R) tot   62.7% hits 369
+     複勝 thr2.0 o7-15                    dev   60.4% (  98bet/  97R) conf   70.0% ( 30bet/ 30R) tot   62.7% hits 38
+     複勝 thr1.0 field<=10                dev   64.4% (2024bet/ 369R) conf   58.0% (758bet/126R) tot   62.6% hits 484
+     単勝 thr1.0 p.05-.10                 dev   70.3% (4798bet/1527R) conf   41.7% (1810bet/569R) tot   62.4% hits 145
+     単勝 thr1.6 Mtop3                    dev   63.6% ( 823bet/ 716R) conf   59.5% (350bet/294R) tot   62.4% hits 34
+     複勝 thr1.0 d1300-1600               dev   61.9% (6072bet/ 778R) conf   62.6% (2385bet/299R) tot   62.1% hits 1067
+     複勝 thr1.6 d1700+                   dev   67.7% (1064bet/ 183R) conf   50.7% (528bet/ 79R) tot   62.1% hits 147
+     単勝 thr1.3 field<=10                dev   66.4% (1748bet/ 369R) conf   50.6% (655bet/126R) tot   62.1% hits 50
+     単勝 thr1.6 d1700+                   dev   65.2% (1064bet/ 183R) conf   55.6% (528bet/ 79R) tot   62.0% hits 19
+     複勝 thr1.0 g12mid                   dev   64.4% (3304bet/ 407R) conf   55.7% (1295bet/155R) tot   62.0% hits 541
+     単勝 thr1.6 o15-30                   dev   56.3% (1443bet/1020R) conf   76.1% (555bet/374R) tot   61.8% hits 57
+     複勝 thr2.0 tier6-8                  dev   64.4% (2414bet/ 473R) conf   55.5% (1025bet/184R) tot   61.8% hits 265
+     単勝 thr1.3 o15-30                   dev   61.6% (1991bet/1198R) conf   61.2% (723bet/448R) tot   61.5% hits 77
+     複勝 thr1.3 p.05-.10                 dev   60.7% (4168bet/1496R) conf   63.6% (1577bet/555R) tot   61.5% hits 700
+     複勝 thr1.0 g12<0.15                 dev   61.4% (4079bet/ 505R) conf   61.5% (1376bet/164R) tot   61.5% hits 632
+     単勝 thr2.0 field<=10                dev   65.7% (1321bet/ 367R) conf   49.0% (486bet/126R) tot   61.2% hits 26
+     単勝 thr2.0 p>=.20                   dev   41.2% (  49bet/  49R) conf  100.0% ( 25bet/ 23R) tot   61.1% hits 4
+     複勝 thr1.3 field<=10                dev   62.6% (1748bet/ 369R) conf   56.8% (655bet/126R) tot   61.0% hits 350
+     複勝 thr1.0                          dev   61.1% (12759bet/1584R) conf   60.5% (4910bet/587R) tot   60.9% hits 2140
+     複勝 thr1.3 d1700+                   dev   65.5% (1198bet/ 183R) conf   51.4% (583bet/ 79R) tot   60.9% hits 178
+     複勝 thr1.3 pop4-6                   dev   61.6% (2256bet/1244R) conf   58.9% (893bet/457R) tot   60.9% hits 655
+     単勝 thr1.3 Mtop3                    dev   61.0% (1086bet/ 906R) conf   60.2% (426bet/346R) tot   60.8% hits 52
+     複勝 thr1.6 field<=10                dev   63.0% (1536bet/ 369R) conf   54.9% (579bet/126R) tot   60.8% hits 278
+     複勝 thr1.6 p.05-.10                 dev   59.3% (3610bet/1450R) conf   64.1% (1402bet/541R) tot   60.7% hits 559
+     複勝 thr1.0 field11+                 dev   60.5% (10735bet/1215R) conf   60.9% (4152bet/461R) tot   60.6% hits 1656
+     複勝 thr1.3 d1300-1600               dev   60.0% (5363bet/ 778R) conf   62.0% (2080bet/299R) tot   60.6% hits 791
+     複勝 thr1.0 Mout                     dev   60.6% (11020bet/1584R) conf   58.7% (4221bet/587R) tot   60.0% hits 1478
+     単勝 thr1.0 Mtop3                    dev   57.1% (1406bet/1109R) conf   67.3% (568bet/434R) tot   60.0% hits 83
+     複勝 thr1.0 g12>=0.3                 dev   58.9% (5376bet/ 672R) conf   62.6% (2239bet/268R) tot   60.0% hits 967
+     複勝 thr1.3 g12<0.15                 dev   59.6% (3624bet/ 505R) conf   61.1% (1226bet/164R) tot   60.0% hits 475
+     単勝 thr1.0 g12>=0.3                 dev   65.2% (5376bet/ 672R) conf   46.5% (2239bet/268R) tot   59.7% hits 155
+     単勝 thr1.0 M1                       dev   55.2% ( 333bet/ 333R) conf   71.9% (121bet/121R) tot   59.6% hits 29
+     複勝 thr1.0 pop7+                    dev   60.0% (9241bet/1563R) conf   58.7% (3486bet/582R) tot   59.6% hits 906
+     単勝 thr1.3 d1700+                   dev   60.3% (1198bet/ 183R) conf   58.0% (583bet/ 79R) tot   59.5% hits 24
+     複勝 thr2.0 d1700+                   dev   66.0% ( 935bet/ 183R) conf   46.2% (456bet/ 79R) tot   59.5% hits 105
+     複勝 thr1.3 g12mid                   dev   61.6% (2917bet/ 407R) conf   53.7% (1138bet/155R) tot   59.4% hits 396
+     複勝 thr1.3 pop1-3                   dev   55.5% ( 218bet/ 206R) conf   68.4% ( 93bet/ 85R) tot   59.3% hits 114
+     複勝 thr1.0 tier9+                   dev   59.0% (8691bet/1058R) conf   59.8% (3235bet/382R) tot   59.2% hits 1431
+     複勝 thr1.6 g12<0.15                 dev   58.7% (3197bet/ 505R) conf   60.3% (1100bet/164R) tot   59.1% hits 367
+     複勝 thr1.6 tier<=5                  dev   64.9% ( 244bet/  52R) conf   48.1% (129bet/ 21R) tot   59.1% hits 33
+     複勝 thr1.0 d<=1200                  dev   58.5% (5320bet/ 623R) conf   60.4% (1865bet/209R) tot   59.0% hits 829
+     複勝 thr1.6 pop4-6                   dev   59.8% (1604bet/ 986R) conf   57.0% (680bet/385R) tot   59.0% hits 446
+     単勝 thr1.0 tier<=5                  dev   33.4% ( 334bet/  52R) conf  110.8% (164bet/ 21R) tot   58.9% hits 8
+     複勝 thr1.3 p>=.20                   dev   50.9% ( 115bet/ 112R) conf   82.1% ( 39bet/ 37R) tot   58.8% hits 51
+     複勝 thr2.0 field<=10                dev   60.4% (1321bet/ 367R) conf   54.3% (486bet/126R) tot   58.8% hits 201
+     複勝 thr1.0 tier<=5                  dev   62.1% ( 334bet/  52R) conf   52.0% (164bet/ 21R) tot   58.8% hits 61
+     複勝 thr1.3                          dev   59.0% (11344bet/1584R) conf   58.1% (4341bet/587R) tot   58.7% hits 1583
+     複勝 thr2.0 p.05-.10                 dev   57.6% (2983bet/1379R) conf   61.6% (1164bet/517R) tot   58.7% hits 396
+     単勝 thr1.0 d1300-1600               dev   60.3% (6072bet/ 778R) conf   54.7% (2385bet/299R) tot   58.7% hits 171
+     複勝 thr1.6 d1300-1600               dev   57.9% (4728bet/ 778R) conf   60.5% (1872bet/299R) tot   58.6% hits 596
+     複勝 thr1.6 pop1-3                   dev   56.1% (  99bet/  95R) conf   63.5% ( 46bet/ 43R) tot   58.4% hits 52
+     複勝 thr1.3 field11+                 dev   58.3% (9596bet/1215R) conf   58.3% (3686bet/461R) tot   58.3% hits 1233
+     複勝 thr1.6 g12mid                   dev   60.7% (2591bet/ 407R) conf   52.3% (1031bet/155R) tot   58.3% hits 303
+     複勝 thr1.3 pop7+                    dev   58.4% (8870bet/1563R) conf   57.5% (3355bet/582R) tot   58.2% hits 814
+     単勝 thr1.3 p.05-.10                 dev   65.8% (4168bet/1496R) conf   37.7% (1577bet/555R) tot   58.1% hits 94
+     複勝 thr2.0 pop1-3                   dev   62.1% (  39bet/  38R) conf   49.4% ( 18bet/ 18R) tot   58.1% hits 20
+     複勝 thr1.3 Mout                     dev   58.6% (10039bet/1582R) conf   56.5% (3837bet/587R) tot   58.0% hits 1159
+     複勝 thr2.0 d1300-1600               dev   56.8% (4076bet/ 777R) conf   59.7% (1629bet/299R) tot   57.6% hits 436
+     複勝 thr1.6                          dev   57.9% (10103bet/1584R) conf   56.9% (3942bet/587R) tot   57.6% hits 1231
+     単勝 thr1.3 d1300-1600               dev   58.3% (5363bet/ 778R) conf   55.5% (2080bet/299R) tot   57.5% hits 119
+     複勝 thr1.3 g12>=0.3                 dev   57.0% (4803bet/ 672R) conf   58.7% (1977bet/268R) tot   57.5% hits 712
+     複勝 thr1.6 pop7+                    dev   57.6% (8400bet/1562R) conf   56.8% (3216bet/582R) tot   57.4% hits 733
+     複勝 thr2.0 g12<0.15                 dev   56.7% (2764bet/ 505R) conf   59.0% (954bet/164R) tot   57.3% hits 258
+     単勝 thr1.3 pop4-6                   dev   55.6% (2256bet/1244R) conf   60.9% (893bet/457R) tot   57.1% hits 100
+     複勝 thr1.6 field11+                 dev   57.0% (8567bet/1215R) conf   57.3% (3363bet/461R) tot   57.1% hits 953
+     複勝 thr1.6 p>=.20                   dev   46.1% (  83bet/  80R) conf   85.0% ( 32bet/ 30R) tot   57.0% hits 34
+     単勝 thr1.3 pop1-3                   dev   54.0% ( 218bet/ 206R) conf   63.5% ( 93bet/ 85R) tot   56.9% hits 17
+     複勝 thr1.0 o30+                     dev   57.3% (8768bet/1579R) conf   55.5% (3424bet/587R) tot   56.8% hits 773
+     単勝 thr1.3 g12>=0.3                 dev   63.0% (4803bet/ 672R) conf   41.7% (1977bet/268R) tot   56.8% hits 104
+     複勝 thr1.6 Mout                     dev   57.3% (9120bet/1581R) conf   55.5% (3537bet/587R) tot   56.8% hits 934
+     単勝 thr1.6 p.05-.10                 dev   64.1% (3610bet/1450R) conf   37.7% (1402bet/541R) tot   56.8% hits 70
+     単勝 thr2.0 o7-15                    dev   33.6% (  98bet/  97R) conf  131.7% ( 30bet/ 30R) tot   56.6% hits 6
+     複勝 thr1.0 p<.05                    dev   57.7% (5732bet/1498R) conf   52.9% (2230bet/564R) tot   56.4% hits 389
+     複勝 thr1.3 tier9+                   dev   56.0% (7787bet/1058R) conf   57.1% (2877bet/382R) tot   56.3% hits 1053
+     複勝 thr1.6 g12>=0.3                 dev   55.7% (4315bet/ 672R) conf   57.5% (1811bet/268R) tot   56.2% hits 561
+     複勝 thr1.3 o30+                     dev   56.6% (8634bet/1578R) conf   55.1% (3355bet/587R) tot   56.2% hits 744
+     複勝 thr1.3 d<=1200                  dev   56.3% (4783bet/ 623R) conf   55.4% (1678bet/209R) tot   56.1% hits 614
+     複勝 thr2.0 tier<=5                  dev   63.7% ( 215bet/  52R) conf   40.6% (108bet/ 21R) tot   56.0% hits 22
+     複勝 thr2.0 pop7+                    dev   56.0% (7702bet/1560R) conf   55.1% (2967bet/582R) tot   55.8% hits 609
+     単勝 thr1.0                          dev   57.3% (12759bet/1584R) conf   51.3% (4910bet/587R) tot   55.7% hits 342
+     複勝 thr2.0 g12mid                   dev   59.0% (2211bet/ 406R) conf   46.9% (908bet/155R) tot   55.5% hits 213
+     複勝 thr2.0                          dev   55.8% (8742bet/1582R) conf   54.6% (3431bet/587R) tot   55.5% hits 874
+     複勝 thr1.6 o30+                     dev   56.0% (8364bet/1578R) conf   54.1% (3267bet/587R) tot   55.4% hits 700
+     複勝 thr1.6 tier9+                   dev   55.1% (7014bet/1058R) conf   56.4% (2628bet/382R) tot   55.4% hits 829
+     複勝 thr1.6 d<=1200                  dev   55.5% (4311bet/ 623R) conf   54.8% (1542bet/209R) tot   55.3% hits 488
+     単勝 thr1.6 g12>=0.3                 dev   60.9% (4315bet/ 672R) conf   41.7% (1811bet/268R) tot   55.2% hits 75
+     複勝 thr1.3 tier<=5                  dev   59.9% ( 290bet/  52R) conf   45.5% (146bet/ 21R) tot   55.1% hits 41
+     単勝 thr1.0 Mout                     dev   57.4% (11020bet/1584R) conf   48.6% (4221bet/587R) tot   55.0% hits 230
+     複勝 thr2.0 field11+                 dev   55.0% (7421bet/1215R) conf   54.7% (2945bet/461R) tot   54.9% hits 673
+     単勝 thr1.0 g12<0.15                 dev   52.1% (4079bet/ 505R) conf   62.5% (1376bet/164R) tot   54.7% hits 106
+     複勝 thr1.3 p<.05                    dev   56.0% (5467bet/1489R) conf   51.2% (2119bet/559R) tot   54.7% hits 331
+     複勝 thr2.0 Mout                     dev   55.0% (8041bet/1575R) conf   53.3% (3140bet/587R) tot   54.6% hits 690
+     複勝 thr2.0 g12>=0.3                 dev   53.3% (3767bet/ 671R) conf   56.4% (1569bet/268R) tot   54.2% hits 403
+     単勝 thr2.0 p.05-.10                 dev   64.8% (2983bet/1379R) conf   26.7% (1164bet/517R) tot   54.1% hits 45
+     単勝 thr1.6 d1300-1600               dev   52.8% (4728bet/ 778R) conf   57.2% (1872bet/299R) tot   54.1% hits 80
+     複勝 thr2.0 o30+                     dev   54.4% (7846bet/1577R) conf   52.8% (3081bet/587R) tot   54.0% hits 613
+     単勝 thr1.0 field11+                 dev   54.7% (10735bet/1215R) conf   51.8% (4152bet/461R) tot   53.9% hits 268
+     単勝 thr1.3                          dev   55.1% (11344bet/1584R) conf   49.9% (4341bet/587R) tot   53.6% hits 233
+     複勝 thr1.6 p<.05                    dev   54.9% (5176bet/1477R) conf   50.1% (2028bet/557R) tot   53.6% hits 284
+     単勝 thr1.0 pop7+                    dev   56.3% (9241bet/1563R) conf   45.9% (3486bet/582R) tot   53.5% hits 133
+     単勝 thr2.0 g12>=0.3                 dev   59.6% (3767bet/ 671R) conf   38.4% (1569bet/268R) tot   53.4% hits 51
+     複勝 thr2.0 pop4-6                   dev   53.9% (1001bet/ 692R) conf   51.4% (446bet/285R) tot   53.1% hits 245
+     複勝 thr2.0 tier9+                   dev   52.1% (6113bet/1057R) conf   54.9% (2298bet/382R) tot   52.9% hits 587
+     単勝 thr1.3 g12<0.15                 dev   49.2% (3624bet/ 505R) conf   63.0% (1226bet/164R) tot   52.7% hits 73
+     単勝 thr1.3 pop7+                    dev   55.0% (8870bet/1563R) conf   46.5% (3355bet/582R) tot   52.7% hits 116
+     単勝 thr1.3 Mout                     dev   54.3% (10039bet/1582R) conf   48.0% (3837bet/587R) tot   52.6% hits 165
+     単勝 thr1.3 field11+                 dev   53.0% (9596bet/1215R) conf   49.7% (3686bet/461R) tot   52.1% hits 183
+     複勝 thr2.0 d<=1200                  dev   52.2% (3731bet/ 622R) conf   51.3% (1346bet/209R) tot   51.9% hits 333
+     単勝 thr1.6                          dev   52.5% (10103bet/1584R) conf   49.7% (3942bet/587R) tot   51.7% hits 167
+     複勝 thr2.0 p<.05                    dev   52.6% (4804bet/1458R) conf   49.0% (1900bet/556R) tot   51.6% hits 231
+     単勝 thr1.6 pop7+                    dev   53.5% (8400bet/1562R) conf   46.4% (3216bet/582R) tot   51.5% hits 101
+     単勝 thr1.0 o3-7                     dev   43.5% ( 183bet/ 173R) conf   73.8% ( 64bet/ 63R) tot   51.3% hits 23
+     単勝 thr2.0 d1300-1600               dev   51.5% (4076bet/ 777R) conf   50.9% (1629bet/299R) tot   51.3% hits 54
+     単勝 thr1.6 pop4-6                   dev   45.5% (1604bet/ 986R) conf   63.9% (680bet/385R) tot   51.0% hits 58
+     単勝 thr1.6 Mout                     dev   51.2% (9120bet/1581R) conf   48.5% (3537bet/587R) tot   50.4% hits 124
+     単勝 thr1.0 o30+                     dev   53.3% (8768bet/1579R) conf   42.9% (3424bet/587R) tot   50.4% hits 97
+     単勝 thr1.3 o30+                     dev   52.9% (8634bet/1578R) conf   43.8% (3355bet/587R) tot   50.4% hits 94
+     単勝 thr1.0 pop1-3                   dev   43.1% ( 472bet/ 425R) conf   65.2% (230bet/201R) tot   50.4% hits 43
+     単勝 thr1.0 g12mid                   dev   50.9% (3304bet/ 407R) conf   47.9% (1295bet/155R) tot   50.1% hits 81
+     単勝 thr1.6 g12<0.15                 dev   45.5% (3197bet/ 505R) conf   62.8% (1100bet/164R) tot   49.9% hits 51
+     単勝 thr1.6 field11+                 dev   49.5% (8567bet/1215R) conf   50.0% (3363bet/461R) tot   49.6% hits 130
+     単勝 thr1.3 g12mid                   dev   49.3% (2917bet/ 407R) conf   50.0% (1138bet/155R) tot   49.5% hits 56
+     単勝 thr1.0 d<=1200                  dev   51.1% (5320bet/ 623R) conf   44.3% (1865bet/209R) tot   49.3% hits 127
+     単勝 thr1.6 o30+                     dev   51.5% (8364bet/1578R) conf   42.9% (3267bet/587R) tot   49.1% hits 85
+     単勝 thr2.0 pop7+                    dev   49.8% (7702bet/1560R) conf   43.9% (2967bet/582R) tot   48.1% hits 76
+     単勝 thr1.6 g12mid                   dev   47.0% (2591bet/ 407R) conf   49.9% (1031bet/155R) tot   47.8% hits 41
+     単勝 thr1.3 p>=.20                   dev   31.8% ( 115bet/ 112R) conf   94.9% ( 39bet/ 37R) tot   47.8% hits 9
+     単勝 thr2.0                          dev   48.6% (8742bet/1582R) conf   44.7% (3431bet/587R) tot   47.5% hits 106
+     単勝 thr1.3 d<=1200                  dev   50.1% (4783bet/ 623R) conf   40.1% (1678bet/209R) tot   47.5% hits 90
+     単勝 thr1.0 tier9+                   dev   47.0% (8691bet/1058R) conf   45.7% (3235bet/382R) tot   46.7% hits 217
+     単勝 thr1.0 p<.05                    dev   44.6% (5732bet/1498R) conf   51.4% (2230bet/564R) tot   46.5% hits 51
+     単勝 thr1.6 d<=1200                  dev   49.0% (4311bet/ 623R) conf   38.6% (1542bet/209R) tot   46.2% hits 68
+     単勝 thr2.0 o30+                     dev   47.6% (7846bet/1577R) conf   40.9% (3081bet/587R) tot   45.7% hits 68
+     単勝 thr2.0 Mout                     dev   46.5% (8041bet/1575R) conf   43.7% (3140bet/587R) tot   45.7% hits 79
+     単勝 thr1.3 p<.05                    dev   43.3% (5467bet/1489R) conf   51.5% (2119bet/559R) tot   45.6% hits 43
+     単勝 thr2.0 g12<0.15                 dev   41.5% (2764bet/ 505R) conf   56.7% (954bet/164R) tot   45.4% hits 33
+     単勝 thr1.0 p>=.20                   dev   37.4% ( 188bet/ 178R) conf   67.3% ( 67bet/ 63R) tot   45.3% hits 18
+     単勝 thr2.0 field11+                 dev   45.6% (7421bet/1215R) conf   44.0% (2945bet/461R) tot   45.1% hits 80
+     単勝 thr1.6 p<.05                    dev   40.2% (5176bet/1477R) conf   52.0% (2028bet/557R) tot   43.5% hits 34
+     単勝 thr1.3 tier9+                   dev   43.2% (7787bet/1058R) conf   41.6% (2877bet/382R) tot   42.7% hits 141
+     単勝 thr2.0 pop4-6                   dev   39.3% (1001bet/ 692R) conf   49.1% (446bet/285R) tot   42.4% hits 27
+     単勝 thr2.0 g12mid                   dev   38.9% (2211bet/ 406R) conf   43.0% (908bet/155R) tot   40.1% hits 22
+     単勝 thr1.6 p>=.20                   dev   24.3% (  83bet/  80R) conf   78.1% ( 32bet/ 30R) tot   39.3% hits 4
+     単勝 thr1.6 tier9+                   dev   38.4% (7014bet/1058R) conf   39.8% (2628bet/382R) tot   38.8% hits 95
+     単勝 thr2.0 p<.05                    dev   33.6% (4804bet/1458R) conf   51.2% (1900bet/556R) tot   38.6% hits 22
+     単勝 thr2.0 d<=1200                  dev   40.2% (3731bet/ 622R) conf   33.6% (1346bet/209R) tot   38.4% hits 38
+     単勝 thr2.0 tier9+                   dev   32.2% (6113bet/1057R) conf   33.6% (2298bet/382R) tot   32.6% hits 54
+     単勝 thr1.6 o3-7                     dev    0.0% (   7bet/   7R) conf    0.0% (  2bet/  2R) tot    0.0% hits 0
