@@ -58,6 +58,11 @@ def classify(order, tan, field, surface=None, dist=None, tier=None, gap12=None, 
 
     o1 = tan.get(t1, 0)
     fire = o1 >= KAIRI_ODDS or (o1 >= 6.0 and p1 and p1*o1 >= 1.0)  # 第2条件(7/19): 6倍+×モデル価値1.0+ WF108.1%
+    # 7/21層別: 未勝利・新馬(tier10)の乖離単勝はWF46.5%/31Rで死亡 → 発火抑止
+    if fire and tier is not None and tier >= 10:
+        out.append(("乖離単勝[新馬・未勝利]", f"単勝 {t1} は買わない", 46.5, "✕見送り推奨",
+                    "未勝利の乖離単勝はWF46.5%/31R。軽キャリア馬は市場(調教・血統)が正しい"))
+        fire = False
     if fire:
         add("乖離単勝(1位が4人気以下)", f"単勝 {t1}", KAIRI_NOTE)
         # ★システム主軸フィルタ(7/20 20エージェント探索・両分割CONFIRMED): 乖離単勝の中の最上位シグナル

@@ -21,10 +21,14 @@ def classify(order, tan, pops, g12=None, dist=None, tier=None, demote_flags=None
     o1 = tan.get(m1, 0)
     top6 = set(order[:6])
 
-    # --- 既知生存: 単勝15倍+×混戦 ---
+    # --- 既知生存: 単勝15倍+×混戦 (7/21層別: 下級C級は0%/35Rで死亡→B級以上限定) ---
     if o1 >= 15 and g12 is not None and g12 < 0.15:
-        out.append(("大井 単勝15倍+×混戦", f"単勝 {m1}", 183.6, "◎買い推奨",
-                    "2年183.6%/47R。市場が見捨てた深乖離×モデル僅差"))
+        if tier is not None and tier >= 9:
+            out.append(("大井 単勝15倍+×混戦[下級C級]", f"単勝 {m1} は買わない", 0.0,
+                        "✕見送り推奨", "下級C級(tier9+)の深乖離は2年0%/35R。JRA未勝利46.5%と同構造"))
+        else:
+            out.append(("大井 単勝15倍+×混戦×B級以上", f"単勝 {m1}", 719.2, "◎買い推奨",
+                        "2年719%/12R(n小注意・全体183.6%/47Rの利益源)。下級C級を除外した強化版"))
 
     # --- 本命: 三連複 1人気外し×モデル6位内 ---
     if 2.5 <= o1 < 7.0 and g12 is not None and 0.15 <= g12 < 0.30:

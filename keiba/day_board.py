@@ -119,6 +119,8 @@ def eval_race(it, date, nar, fast=False):
             out.update(rank="B", note="混戦×モデル上位集中(BOX型・未検証の遊び枠)")
         else:
             out.update(rank="C", note="市場一致/歪みなし=見送り")
+        if "未勝利" in out.get("name", "") and out["rank"] in ("S", "A", "B"):
+            out.update(rank="C", note="未勝利=乖離パターン対象外(WF46.5%)・ランキングのみ参考")
         wmap = {h["num"]: h for h in race["horses"]}
         out["weights"] = any(h.get("weight") for h in race["horses"])
         out["rows"] = [dict(num=r["num"], name=names.get(r["num"], ""),
@@ -139,19 +141,19 @@ def gather_races(date, venue_arg):
     if venue_arg == "auto":
         try:
             targets += [(it, True) for it in PK.fetch_list(date, nar=True)
-                        if it.get("venue") == "大井"]
+                        if it.get("venue") == "大井" and "新馬" not in it.get("name", "")]
         except Exception:
             pass
         try:
             targets += [(it, False) for it in PK.fetch_list(date, nar=False)
-                        if "障害" not in it.get("name", "")]
+                        if "障害" not in it.get("name", "") and "新馬" not in it.get("name", "")]
         except Exception:
             pass
     else:
         wants = set(venue_arg.split(","))
         if wants & {"中央", "JRA"}:
             targets += [(it, False) for it in PK.fetch_list(date, nar=False)
-                        if "障害" not in it.get("name", "")]
+                        if "障害" not in it.get("name", "") and "新馬" not in it.get("name", "")]
             wants -= {"中央", "JRA"}
         if wants:
             for nar in (True, False):
