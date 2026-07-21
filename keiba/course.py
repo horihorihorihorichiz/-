@@ -18,12 +18,29 @@ _JRA_SHIBA_OUTER = {          # (venue): {外回りとみなす距離}
     "阪神": {1600, 1800, 2400, 2600},
 }
 
+# 距離だけでは内外が決まらない(=io表記が必須)の組合せ。
+# io不明で来たら決め打ちせず中間VG2に寄せる(外VG1/内VG3の平均的扱い)。
+AMBIGUOUS_IO = {
+    ("新潟", "芝", 1400),
+    ("京都", "芝", 1400), ("京都", "芝", 1600),
+}
+
+def is_ambiguous(venue, surface, dist, io=None):
+    """内外がio表記なしでは確定できない組合せか(過去走の仕分け限界の明示用)"""
+    if io in ("内", "外"):
+        return False
+    return ((venue or "").strip(), surface or "", dist or 0) in AMBIGUOUS_IO
+
 def course_vg(venue, surface, dist, io=None):
     """venue×surface×dist(+netkeiba内外表記io) → VG(1..5)"""
     v = (venue or "").strip()
     s = surface or ""
     d = dist or 0
     io = io if io in ("内", "外") else None
+
+    # 内外両設定距離でio不明 → 決め打ちを避け中間VG2
+    if io is None and (v, s, d) in AMBIGUOUS_IO:
+        return 2
 
     # ---- NAR(地方) ----
     if v == "大井":
