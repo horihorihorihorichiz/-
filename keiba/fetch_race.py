@@ -16,6 +16,7 @@ netkeiba の公開ページのみ使用（プレミアム/ログイン不要）:
 安全: 認証情報は一切扱わない。オッズ/買い目は predict.py 側で取得・判定。
 """
 import sys, os, re, json, argparse, datetime, urllib.request, gzip, io, time
+import course
 
 UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120 Safari/537.36"
 
@@ -121,7 +122,8 @@ def fetch_shutuba(race_id, nar=True):
     if not field:
         field = len(horses)
     return {"race_name": race_name, "surface": surface, "distance": distance,
-            "baba": baba, "tier": tier, "field": field, "venue": venue, "horses": horses}
+            "baba": baba, "tier": tier, "field": field, "venue": venue, "horses": horses,
+            "_d1": d1}
 
 # ---- 競走成績（過去走） ----
 def fetch_horse_results(horse_id, race_date, today_surface, today_dist):
@@ -173,7 +175,8 @@ def fetch_horse_results(horse_id, race_date, today_surface, today_dist):
                 tsi = float(tv)
         out.append({
             "surface": surf, "dist": dist, "finish": int(fin.group()), "field": field,
-            "umaban": um, "corner4": c4, "agari": agari, "vg": 2, "tier": tier,
+            "umaban": um, "corner4": c4, "agari": agari,
+            "vg": course.course_vg(course.extract_venue(g("開催")), surf, dist), "tier": tier,
             "days": days, "pace": pace_label(g("ペース")), "baba_idx": None, "tsi": tsi,
             "_baba": baba, "_venue": g("開催"),
         })
@@ -333,7 +336,11 @@ def main():
         # NAR=場コード(predictはrace_idでNAR判定) / JRA=場名(predictがJRA_VENUESで判定→fetch_jra)
         "venue": rid[4:6] if nar else su["venue"],
         "surface": su["surface"], "distance": su["distance"], "field": su["field"],
-        "baba": baba, "today_vg": 2, "dist_cat": dist_cat(su["distance"]),
+        "baba": baba,
+        "today_vg": course.course_vg(
+            course.NAR_CODE.get(rid[4:6], "") if nar else su["venue"],
+            su["surface"], su["distance"], io=course.parse_io(su.get("_d1", ""))),
+        "dist_cat": dist_cat(su["distance"]),
         "dsi_haiten": 5, "today_tier": su["tier"], "nsi_haiten": 20,
         "race_id": rid, "horses": horses,
     }

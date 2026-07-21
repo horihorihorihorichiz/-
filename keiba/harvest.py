@@ -11,6 +11,7 @@ from concurrent.futures import ThreadPoolExecutor
 import fetch_race as FR
 import fetch_result as FRES
 import pick_races as PR
+import course
 
 
 def build_race_json(rid, su, race_date, workers):
@@ -48,7 +49,11 @@ def build_race_json(rid, su, race_date, workers):
         "name": f"{su['race_name']} {su['surface']}{su['distance']}",
         "venue": rid[4:6] if nar else su["venue"],
         "surface": su["surface"], "distance": su["distance"], "field": su["field"],
-        "baba": su["baba"], "today_vg": 2, "dist_cat": FR.dist_cat(su["distance"]),
+        "baba": su["baba"],
+        "today_vg": course.course_vg(
+            course.NAR_CODE.get(rid[4:6], "") if nar else su["venue"],
+            su["surface"], su["distance"], io=course.parse_io(su.get("_d1", ""))),
+        "dist_cat": FR.dist_cat(su["distance"]),
         "dsi_haiten": 5, "today_tier": su["tier"], "nsi_haiten": 20,
         "race_id": rid, "horses": horses,
     }
