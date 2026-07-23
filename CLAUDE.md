@@ -183,7 +183,11 @@ python pick_races.py --ev                   # ★毎日: 今日の候補を評�
 python pick_races.py --ev --all --tracks 川崎 # 平場も含め場を絞ってスキャン
 python pick_races.py --prescreen             # ★オッズ前の事前絞り: 頭数+モデルで軸が立つレースを先に選ぶ
 python pick_races.py --prescreen --max-field 12 # 頭数上限で更に絞る
+python3 day_board.py                         # ★デイボード: 今日の大井+JRA全場を1枚のmdに集約(S/A/B/C判定)
 ```
 - pick_races.py: netkeiba公開のレース一覧から 重賞>OP/特別>特別 の順で選定（帯広ばんえいは除外）。
 - **恒久運用（毎週自動起動）は Routines**（`/schedule` or claude.ai/code/routines）。設定手順とコピペ用
   プロンプトは `keiba/ROUTINE.md`。ルーチンは買い目の確認連絡まで・購入とGOは人間。
+- **モデル非依存**: 買いパターン判定は patterns.py(JRA)/oi_patterns.py(大井)/day_board.py にコード化済み。
+  どのモデル(Opus等)で動いてもスクリプトの判定に従う。条件マップ=keiba/COND_MAP_20260723.md。
+  日付は必ず実行時JSTを取得(day_board.pyのjst_now方式)。新環境では pip install -q numpy lightgbm を先に。
