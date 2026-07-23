@@ -89,9 +89,19 @@ def classify(order, tan, field, surface=None, dist=None, tier=None, gap12=None, 
             hits.append(SURVIVORS[0])
         if surface == "ダ":
             hits.append(SURVIVORS[1])
-        if dist and 1401 <= dist <= 1900:
-            hits.append(SURVIVORS[2])
+        if dist and 1401 <= dist <= 1900 and not (tier and tier < 6):
+            hits.append(SURVIVORS[2])  # 7/23層別: 中距離の利益は上級由来。条件級は43.9%につき抑止
         
+        # ★7/23 条件マップ採掘(mine_cond.py・53条件dev/conf): 中距離×上級の重複が最強帯
+        if tier and tier >= 6 and dist and 1401 <= dist <= 1900:
+            out.append(("◎◎乖離単勝×中距離×上級", f"単勝 {t1} [中距離×上級=重複最強帯]",
+                        331.6, "◎◎最優先買い",
+                        "dev338.1%/32→conf320.5%/19 通算331.6%/51R hits12・最大的中除外でも256.6%"))
+        # 逆に 中距離×条件クラス は43.9%/56Rの死亡帯(7/23) → 単独の中距離該当でも警告
+        if dist and 1401 <= dist <= 1900 and tier and tier < 6:
+            out.append(("⚠乖離単勝[中距離×条件級]", f"単勝 {t1} は弱い帯",
+                        43.9, "✕見送り推奨",
+                        "7/23採掘: 中距離でも条件級(1-2勝)は43.9%/56R。中距離の利益は上級戦由来"))
         for s2 in hits:
             out.append((f"乖離単勝×{s2['cond']}", f"単勝 {t1} (強化条件該当)",
                         s2["roi"], "◎買い推奨",
