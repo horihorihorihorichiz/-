@@ -119,8 +119,13 @@ def eval_race(it, date, nar, fast=False):
             out.update(rank="B", note="混戦×モデル上位集中(BOX型・未検証の遊び枠)")
         else:
             out.update(rank="C", note="市場一致/歪みなし=見送り")
-        if "未勝利" in out.get("name", "") and out["rank"] in ("S", "A", "B"):
-            out.update(rank="C", note="未勝利=乖離パターン対象外(WF46.5%)・ランキングのみ参考")
+        # 未勝利・新馬: 検証済み発火(S)は残す(7/25採掘のモデル2位系)。A/Bの近接ヒューリスティックだけ無効化
+        if "未勝利" in out.get("name", "") and out["rank"] in ("A", "B"):
+            out.update(rank="C", note="未勝利=準発火ヒューリスティック対象外・ランキングのみ参考")
+        # 新潟芝1000m直線: モデル無効コース(7/25検証: 1位0/8勝・勝ち馬平均モデル7位)
+        if (race.get("venue") == "新潟" or rid[4:6] == "04") and race.get("surface") == "芝" \
+                and race.get("distance") == 1000:
+            out.update(rank="C", note="新潟1000直=モデル無効コース(出禁)。外枠バイアスは織込済で妙味なし")
         wmap = {h["num"]: h for h in race["horses"]}
         out["weights"] = any(h.get("weight") for h in race["horses"])
         out["rows"] = [dict(num=r["num"], name=names.get(r["num"], ""),

@@ -57,6 +57,26 @@ def classify(order, tan, field, surface=None, dist=None, tier=None, gap12=None, 
         out.append((key, desc, roi, verdict_of(roi), note))
 
     o1 = tan.get(t1, 0)
+    # ★未勝利・新馬専用(7/25 20エージェント採掘・懐疑2票の独立再現でCONFIRMED)
+    #   構造: 1位は序列正だが得点過大(単勝67.8%)。自信レース(g12大)ほど市場が1位に過剰集中し2位中穴が売れ残る
+    if tier is not None and tier >= 10 and gap12 is not None and len(order) >= 2:
+        t2 = order[1]
+        o2 = tan.get(t2, 0)
+        if gap12 >= 0.6 and 5.0 <= o2 < 10.0:
+            out.append(("◎未勝利・新馬 モデル2位中穴単勝", f"単勝 {t2} (モデル2位{o2}倍)",
+                        132.6, "◎買い推奨",
+                        "dev143.5%/52→conf120.2%/46 通算132.6%/98R hits20・最大的中除外124.4%。1位は買わない"))
+        elif 0.6 <= gap12 < 0.95 and o2:
+            out.append(("◎未勝利・新馬 モデル2位単勝(g12帯)", f"単勝 {t2} (モデル2位{o2}倍)",
+                        126.0, "◎買い推奨",
+                        "dev135.3%/73→conf114.8%/61 通算126.0%/134R・除外後117.7%。帯感度は0.85-1.0まで両側+"))
+        if surface == "芝" and tan:
+            fav = min(tan, key=lambda h: tan[h])
+            vr = {n: i+1 for i, n in enumerate(order)}.get(fav, 99)
+            if vr in (2, 3):
+                out.append(("○未勝利・新馬芝 1人気(モデル2-3位)単勝", f"単勝 {fav} ({tan[fav]}倍1人気)",
+                            108.4, "○小額のみ",
+                            "108.4%/107R 勝率39%の堅実型・除外後104.3%。薄エッジにつき小額。ダートは70%で対象外"))
     fire = o1 >= KAIRI_ODDS or (o1 >= 6.0 and p1 and p1*o1 >= 1.0)  # 第2条件(7/19): 6倍+×モデル価値1.0+ WF108.1%
     # 7/21層別: 未勝利・新馬(tier10)の乖離単勝はWF46.5%/31Rで死亡 → 発火抑止
     if fire and tier is not None and tier >= 10:
