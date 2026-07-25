@@ -72,7 +72,7 @@ def heat_of(order, tan, field, surface=None, dist=None, tier=None, p1=None, venu
 
 
 def classify(order, tan, field, surface=None, dist=None, tier=None, gap12=None, p1=None,
-             day=None, venue=None):
+             day=None, venue=None, spread15=None, waku2=None):
     """order=V3得点順の馬番リスト, tan={num:単勝オッズ}, field=頭数。
        返り値: [(パターン名, 買い目説明, ROI, 判定, note)]"""
     out = []
@@ -137,7 +137,11 @@ def classify(order, tan, field, surface=None, dist=None, tier=None, gap12=None, 
                         "18頭立ての乖離単勝は2年0的中/23R。11-17頭に絞ると201.5%/143R(dev198.6/conf207.1)"))
         # ★実用コア(7/25): 7倍+ × 11-17頭 × 上級 × 開催2日目以降 = 332.4%/63R
         #   最強帯(10倍+×上級412%/37R)より試行数が7割多く、除外後271.9%と頑健
-        if tier and 6 <= tier <= 9 and field and 11 <= field <= 17 and day and day >= 2:
+        if (surface == "芝" and dist and 1800 <= dist <= 1999):
+            out.append(("⚠乖離単勝[芝1800-1999]", f"単勝 {t1} は買わない(芝1800-1999)", 0.0,
+                        "✕見送り推奨",
+                        "芝1800-1999の乖離単勝は2年0的中/19R。主戦場からこの1セルを除くだけで214.9%→234.8%"))
+        elif tier and 6 <= tier <= 9 and field and 11 <= field <= 17 and day and day >= 2:
             out.append(("◎◎◎乖離単勝×11-17頭×上級×2日目+", f"単勝 {t1} (実用コア)",
                         332.4, "◎◎◎最優先・厚張り",
                         "dev319.3%/42→conf358.6%/21 通算332.4%/63R hits15・除外後271.9%。"
@@ -255,6 +259,49 @@ def classify(order, tan, field, surface=None, dist=None, tier=None, gap12=None, 
                     "基本形 187.5%/104点(dev187.6/conf187.3・除外後164.4・月JK147-206%)"
                     + ("／" + "・".join(tags) if tags else "")
                     + "。芝全体は104%＝距離と自信が揃った時だけ。ダート同条件は29.7%で厳禁"))
+    # ===== 非乖離レースの攻略(7/25 未開拓2000R採掘・全て自前再現一致) =====
+    # 【二層構造】ダート=穴を単勝で獲る(乖離単勝) / 芝=モデル上位の堅い決着を馬連・三連複で獲る
+    if len(order) >= 2 and not (tier and tier >= 10):
+        mm = "-".join(map(str, sorted(order[:2])))
+        # ★芝×少頭数(10頭以下)の馬連: ダートの同条件は32.2%で死亡=芝限定
+        if surface == "芝" and field and field <= 10:
+            if gap12 is not None and 0.2 <= gap12 < 0.6:
+                out.append(("◎◎芝×10頭以下×中確信 馬連1-2位", f"馬連 {mm}",
+                            184.2, "◎◎最優先買い",
+                            "dev144.6→conf249.3 通算184.2%/74点・除外後151.5%。"
+                            "g12は山型で0.6以上(確信しすぎ)は49%に落ちる。ダ同条件は32.2%"))
+            elif tier and 1 <= tier <= 5:
+                out.append(("◎芝×10頭以下×条件級 馬連1-2位", f"馬連 {mm}",
+                            165.9, "◎買い推奨",
+                            "dev148.2→conf203.1 通算165.9%/90点・除外後138.9%。"
+                            "『中距離×条件級は死亡』の逆＝少頭数芝では条件級が主戦場"))
+        # ★芝×条件級×自信×良 の三連複1-2-3位: 純システム紐の唯一の生存領域(ダは53.1%)
+        if (surface == "芝" and tier and 1 <= tier <= 5 and gap12 is not None and gap12 >= 0.2
+                and field and field <= 16 and len(order) >= 3):
+            out.append(("◎芝×条件級×自信 三連複モデル1-2-3位",
+                        f"三連複 {'-'.join(map(str, sorted(order[:3])))}",
+                        160.4, "◎買い推奨",
+                        "dev142.0→conf197.1 通算160.4%/168点・除外後133.1%(良馬場限定)。"
+                        "ダートの同条件は53.1%＝『システム紐は死亡』の唯一の例外領域"))
+        # ★得点形状: 上位が平坦(1位-5位の得点差が小さい)×少頭数 の馬連
+        #   spread15 = (得点1位 - 得点5位) を12スケールで割った生値
+        if (spread15 is not None and spread15 < 1.0 and field and field <= 12
+                and day and day >= 2):
+            tight = spread15 < 0.8
+            out.append(("◎上位平坦×12頭以下 馬連1-2位", f"馬連 {mm} (1-5位差{spread15:.2f})",
+                        177.6 if tight else 147.6, "◎買い推奨",
+                        ("差<0.8: dev138.7→conf214.4 通算177.6%/107点" if tight else
+                         "差<1.0: dev147.7→conf147.5(完全一致) 通算147.6%/171点・除外後122.6%")
+                        + "。逆側(尖ったレース)は78.9%/349点＝平坦なほどモデル1-2位で決まる"))
+        # ★外枠のモデル2位(市場が枠で嫌う馬をモデルが拾う): 内枠の同条件は83.2%で死亡
+        if field and 13 <= field <= 16 and day and day >= 3 and waku2 and waku2 >= 7:
+            fav2 = sorted(tan, key=lambda h: tan[h])[1] if len(tan) > 1 else None
+            t2 = order[1]
+            if fav2 != t2:
+                out.append(("◎◎外枠モデル2位×13-16頭×3日目+ 単勝", f"単勝 {t2} (モデル2位・{waku2}枠)",
+                            186.4, "◎◎最優先買い",
+                            "dev216.4→conf148.3 通算186.4%/200点 的中63(31.5%)・除外後170.5%。"
+                            "内枠(1-3枠)の同条件は83.2%で死亡／市場2番人気だと77.6%＝織込済みで妙味消滅"))
     add(f"複勝1位[{mrb}]", f"複勝 {t1}")
     if len(order) >= 2:
         add(f"ワイド1-2位[{mrb}]", f"ワイド {'-'.join(map(str, sorted(order[:2])))}")

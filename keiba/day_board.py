@@ -98,10 +98,14 @@ def eval_race(it, date, nar, fast=False):
                 _day = int(rid[8:10])
             except (ValueError, IndexError):
                 _day = None
-            fires = JP.classify(order, tan, race.get("field", len(order)),
+            sp15 = ((rows[0]["wavg"] - rows[4]["wavg"]) / 12.0) if len(rows) > 4 else None
+            _fld = race.get("field", len(order))
+            _w2 = course.jra_waku(order[1], _fld) if len(order) > 1 and _fld else None
+            fires = JP.classify(order, tan, _fld,
                                 surface=race.get("surface"), dist=race.get("distance"),
                                 tier=race.get("today_tier"), gap12=g12, p1=p1, day=_day,
-                                venue=it.get("venue") or race.get("venue"))
+                                venue=it.get("venue") or race.get("venue"),
+                                spread15=sp15, waku2=_w2)
         buy = [f for f in fires if f[3].startswith("◎")]
         spread4 = rows[0]["wavg"] - rows[3]["wavg"] if len(rows) > 3 else 99
         # ヒートスコア(重複条件数): 乖離発火時のみ意味を持つ
