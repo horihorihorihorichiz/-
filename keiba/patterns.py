@@ -234,20 +234,27 @@ def classify(order, tan, field, surface=None, dist=None, tier=None, gap12=None, 
                         76.0, "✕見送り推奨", "軸7-10倍のながしはWF76%=配当が3点をカバーできない"))
     else:
         add(f"単勝1位[{mrb}]", f"単勝 {t1}")
-    # ★芝の攻略(7/25 16体採掘→自前再現): 芝全体の馬連1-2位は104%で死んでいるが、
-    #   芝1500-1800m × モデル得点差g12>=0.3(自信) × 開催2日目以降 × メイン4場 に絞ると224.2%/71点
-    if (surface == "芝" and dist and 1500 <= dist <= 1800 and gap12 is not None and gap12 >= 0.3
-            and day and day >= 2 and not (tier and tier >= 10) and len(order) >= 2):
+    # ★芝の攻略(7/25 自前精査): 芝の馬連1-2位は全体104.0%/689点で死んでいるが、
+    #   **芝1600-1800m × 自信(g12>=0.3)** に絞ると 187.5%/104点(dev187.6/conf187.3=完全一致)。
+    #   月ジャックナイフ9通りで147-206%と一度も崩れず、除外後164.4%。距離窓の外は全滅
+    #   (1800-2400=90.4% / 1000-1400=28.5%)。同条件のダートは29.7%＝芝限定の現象。
+    #   券種も馬連だけ(ワイド105% 三連複83% 単勝94%)＝「実力上位2頭の1-2着」を獲る形。
+    if (surface == "芝" and dist and 1600 <= dist <= 1800 and gap12 is not None and gap12 >= 0.3
+            and not (tier and tier >= 10) and len(order) >= 2):
         mm = "-".join(map(str, sorted(order[:2])))
-        if venue in ("東京", "中山", "京都", "阪神"):
-            out.append(("◎◎芝 馬連モデル1-2位×1500-1800×自信×メイン場", f"馬連 {mm}",
-                        224.2, "◎◎最優先買い",
-                        "dev206.2%/42→conf250.3%/29 通算224.2%/71点・除外後190.7%。"
-                        "芝全体の馬連1-2位は104.0%/689点＝この4条件が揃った時だけ立つ"))
-        else:
-            out.append(("○芝 馬連モデル1-2位(ローカル場)", f"馬連 {mm}",
-                        187.5, "○小額のみ",
-                        "場を問わない同条件は187.5%/104点(dev187.6/conf187.3)。メイン4場版が本命"))
+        strong2 = gap12 >= 0.4
+        main2 = venue in MAIN_VENUES and day and day >= 2
+        roi2 = 224.2 if main2 else (210.5 if strong2 else 187.5)
+        tags = []
+        if strong2:
+            tags.append("自信厚(g12≥0.4→210.5%/82点)")
+        if main2:
+            tags.append("メイン場×2日目+(224.2%/71点)")
+        out.append(("◎◎芝 馬連モデル1-2位×1600-1800×自信", f"馬連 {mm}",
+                    roi2, "◎◎最優先買い",
+                    "基本形 187.5%/104点(dev187.6/conf187.3・除外後164.4・月JK147-206%)"
+                    + ("／" + "・".join(tags) if tags else "")
+                    + "。芝全体は104%＝距離と自信が揃った時だけ。ダート同条件は29.7%で厳禁"))
     add(f"複勝1位[{mrb}]", f"複勝 {t1}")
     if len(order) >= 2:
         add(f"ワイド1-2位[{mrb}]", f"ワイド {'-'.join(map(str, sorted(order[:2])))}")
