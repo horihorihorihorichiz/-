@@ -94,9 +94,13 @@ def eval_race(it, date, nar, fast=False):
             fires = oi_patterns.classify(order, tan, pops, g12=g12,
                                          dist=race.get("distance"), tier=race.get("today_tier"))
         else:
+            try:
+                _day = int(rid[8:10])
+            except (ValueError, IndexError):
+                _day = None
             fires = JP.classify(order, tan, race.get("field", len(order)),
                                 surface=race.get("surface"), dist=race.get("distance"),
-                                tier=race.get("today_tier"), gap12=g12, p1=p1)
+                                tier=race.get("today_tier"), gap12=g12, p1=p1, day=_day)
         buy = [f for f in fires if f[3].startswith("◎")]
         spread4 = rows[0]["wavg"] - rows[3]["wavg"] if len(rows) > 3 else 99
         # ヒートスコア(重複条件数): 乖離発火時のみ意味を持つ

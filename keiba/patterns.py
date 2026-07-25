@@ -69,7 +69,7 @@ def heat_of(order, tan, field, surface=None, dist=None, tier=None, p1=None):
     return hits, len(hits), roi, n
 
 
-def classify(order, tan, field, surface=None, dist=None, tier=None, gap12=None, p1=None):
+def classify(order, tan, field, surface=None, dist=None, tier=None, gap12=None, p1=None, day=None):
     """order=V3得点順の馬番リスト, tan={num:単勝オッズ}, field=頭数。
        返り値: [(パターン名, 買い目説明, ROI, 判定, note)]"""
     out = []
@@ -114,8 +114,20 @@ def classify(order, tan, field, surface=None, dist=None, tier=None, gap12=None, 
         out.append(("乖離単勝[新馬・未勝利]", f"単勝 {t1} は買わない", 46.5, "✕見送り推奨",
                     "未勝利の乖離単勝はWF46.5%/31R。軽キャリア馬は市場(調教・血統)が正しい"))
         fire = False
+    # ★開催初日カット(7/25 14体採掘→自前再現): 初日の乖離単勝は48.9%/18R(的中1)・2日目以降は173.5%/161R
+    #   (dev174.4/conf172.0とほぼ同値=時期偏りなし)。馬場情報が読めない初日は市場も自分も当てにならない
+    if fire and day == 1:
+        out.append(("乖離単勝[開催初日]", f"単勝 {t1} は買わない(開催初日)", 48.9, "✕見送り推奨",
+                    "初日の乖離単勝は2年48.9%/18R(的中1)。2日目以降だけで173.5%/161R・dev/conf同値"))
+        fire = False
     if fire:
         add("乖離単勝(1位が4人気以下)", f"単勝 {t1}", KAIRI_NOTE)
+        # ★最強帯(7/25): 1位オッズ10倍+ × 上級(2勝-OP、未勝利除く) = 412.2%/37R
+        if tier and 6 <= tier <= 9 and o1 >= 10.0:
+            out.append(("◎◎◎乖離単勝×10倍+×上級", f"単勝 {t1} ({o1}倍・上級)",
+                        412.2, "◎◎◎最優先・厚張り",
+                        "dev405.7%/23→conf422.9%/14 通算412.2%/37R hits8・最大的中除外310.3%。"
+                        "10倍未満の上級は素通し帯。現行最強の単一フィルタ"))
         # ★システム主軸フィルタ(7/20 20エージェント探索・両分割CONFIRMED): 乖離単勝の中の最上位シグナル
         mval = p1 * o1 if p1 else 0
         strong = []
@@ -144,10 +156,11 @@ def classify(order, tan, field, surface=None, dist=None, tier=None, gap12=None, 
             hits.append(SURVIVORS[2])  # 7/23層別: 中距離の利益は上級由来。条件級は43.9%につき抑止
         
         # ★7/23 条件マップ採掘(mine_cond.py・53条件dev/conf): 中距離×上級の重複が最強帯
-        if tier and tier >= 6 and dist and 1401 <= dist <= 1900:
-            out.append(("◎◎乖離単勝×中距離×上級", f"単勝 {t1} [中距離×上級=重複最強帯]",
+        if tier and 6 <= tier <= 9 and dist and 1301 <= dist <= 1900:
+            out.append(("◎◎乖離単勝×中距離×上級", f"単勝 {t1} [中距離(1301-1900)×上級=重複最強帯]",
                         331.6, "◎◎最優先買い",
-                        "dev338.1%/32→conf320.5%/19 通算331.6%/51R hits12・最大的中除外でも256.6%"))
+                        "dev338.1%/32→conf320.5%/19 通算331.6%/51R hits12・除外後256.6%。"
+                        "※1401-1900に絞ると357.6%/37R・さらにモデル価値1.30+で427.6%/29R(n薄)"))
         # 逆に 中距離×条件クラス は43.9%/56Rの死亡帯(7/23) → 単独の中距離該当でも警告
         if dist and 1401 <= dist <= 1900 and tier and tier < 6:
             out.append(("⚠乖離単勝[中距離×条件級]", f"単勝 {t1} は弱い帯",
