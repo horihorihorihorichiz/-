@@ -133,10 +133,14 @@ def eval_race(it, date, nar, fast=False):
             edge = [n for n in tan
                     if course.jra_waku(n, fld) >= 7 and tan[n] < 5.0 and n not in picks]
             if picks:
+                vrank = {n: i + 1 for i, n in enumerate(order)}
+                agree = [n for n in picks if vrank.get(n, 99) <= 3]
+                mtag = (f"モデル{','.join(str(vrank[n])+'位' for n in agree)}とも一致=心強い" if agree
+                        else "モデル上位とは不一致(パターン単独・n蓄積中)")
                 out.update(rank="S",
                            note=f"新潟1000直専用: 外枠(7-8枠)×2-3人気×5倍未満 → 単勝{sorted(picks)} "
-                                f"(5年112.8%/50点・除外後105.3%)。モデルランキングは参考外",
-                           fire_desc=f"単勝 {sorted(picks)} 各点。V3得点はこのコース無効(1位0/8勝)")
+                                f"(5年112.8%/50点・除外後105.3%)。{mtag}",
+                           fire_desc=f"単勝 {sorted(picks)} 各点。{mtag}。一致/不一致は結果に記録し20発後に層別評価")
             elif edge:
                 out.update(rank="A",
                            note=f"新潟1000直: 外枠×5倍未満{sorted(edge)}=縁(5年108.4%/117点・小額のみ)。"
