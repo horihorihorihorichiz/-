@@ -99,11 +99,20 @@ def eval_race(it, date, nar, fast=False):
                                 tier=race.get("today_tier"), gap12=g12, p1=p1)
         buy = [f for f in fires if f[3].startswith("◎")]
         spread4 = rows[0]["wavg"] - rows[3]["wavg"] if len(rows) > 3 else 99
+        # ヒートスコア(重複条件数): 乖離発火時のみ意味を持つ
+        hn, hc, hroi, hsn = ([], 0, 0, 0)
+        if not nar:
+            hn, hc, hroi, hsn = JP.heat_of(order, tan, race.get("field", len(order)),
+                                           surface=race.get("surface"), dist=race.get("distance"),
+                                           tier=race.get("today_tier"), p1=p1)
+        out.update(heat=hc, heat_hits=hn, heat_roi=hroi)
         if buy:
             best = max(buy, key=lambda f: f[2])
             out["rank"] = "S"
-            out["note"] = f"発火: {best[0]} ROI{best[2]:.0f}%"
-            out["fire_desc"] = best[1]
+            heat_tag = (f" 🔥{hc}条件重複({'+'.join(hn)})={hc}個以上帯WF{hroi:.0f}%/{hsn}R"
+                        if hc >= 3 else (f" 🔥{hc}条件" if hc else ""))
+            out["note"] = f"発火: {best[0]} ROI{best[2]:.0f}%{heat_tag}"
+            out["fire_desc"] = best[1] + (f" ／ 熱さ{hc}個: {'+'.join(hn)}" if hn else "")
         elif (o1 >= 12 and g12 < 0.20) or mval >= 1.6:
             why = []
             if o1 >= 12 and g12 < 0.20:

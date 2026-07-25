@@ -38,6 +38,37 @@ SURVIVORS = [
 ]
 
 
+# ★ヒートスコア(7/25 heat_score.py・WF179発火Rで実測): 確認済み条件の重複数で単調にROIが上がる
+#   1個以上163.8%(n176) 2個以上164.9%(n149) 3個以上210.7%(n113) 4個以上296.1%(n62) 5個以上645.3%(n19)
+#   dev/conf両方で単調上昇を確認。1人気モデル売りは重複条件としては寄与-4.5ptのため除外済み。
+HEAT_LADDER = {0: (161.0, 179), 1: (163.8, 176), 2: (164.9, 149),
+               3: (210.7, 113), 4: (296.1, 62), 5: (645.3, 19)}
+
+
+def heat_of(order, tan, field, surface=None, dist=None, tier=None, p1=None):
+    """乖離発火レースの「熱さ」= 確認済み条件の重複数と実測ROI帯を返す。
+       返り値: (該当条件list, 個数, その個数以上のWF実測ROI, サンプル数)"""
+    if not order or not tan or order[0] not in tan:
+        return [], 0, 0, 0
+    o1 = tan[order[0]]
+    hits = []
+    if tier and tier >= 6:
+        hits.append("上級")
+    if surface == "ダ":
+        hits.append("ダート")
+    if dist and 1401 <= dist <= 1900:
+        hits.append("中距離")
+    if field and field >= 15:
+        hits.append(f"多頭{field}")
+    if p1 and p1 * o1 >= 1.6:
+        hits.append(f"モデル価値{p1*o1:.1f}")
+    if 10 <= o1 <= 30:
+        hits.append(f"軸{o1}倍")
+    c = min(len(hits), 5)
+    roi, n = HEAT_LADDER.get(c, (161.0, 179))
+    return hits, len(hits), roi, n
+
+
 def classify(order, tan, field, surface=None, dist=None, tier=None, gap12=None, p1=None):
     """order=V3得点順の馬番リスト, tan={num:単勝オッズ}, field=頭数。
        返り値: [(パターン名, 買い目説明, ROI, 判定, note)]"""
