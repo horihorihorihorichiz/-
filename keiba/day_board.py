@@ -100,7 +100,8 @@ def eval_race(it, date, nar, fast=False):
                 _day = None
             fires = JP.classify(order, tan, race.get("field", len(order)),
                                 surface=race.get("surface"), dist=race.get("distance"),
-                                tier=race.get("today_tier"), gap12=g12, p1=p1, day=_day)
+                                tier=race.get("today_tier"), gap12=g12, p1=p1, day=_day,
+                                venue=it.get("venue") or race.get("venue"))
         buy = [f for f in fires if f[3].startswith("◎")]
         spread4 = rows[0]["wavg"] - rows[3]["wavg"] if len(rows) > 3 else 99
         # ヒートスコア(重複条件数): 乖離発火時のみ意味を持つ
@@ -108,7 +109,8 @@ def eval_race(it, date, nar, fast=False):
         if not nar:
             hn, hc, hroi, hsn = JP.heat_of(order, tan, race.get("field", len(order)),
                                            surface=race.get("surface"), dist=race.get("distance"),
-                                           tier=race.get("today_tier"), p1=p1)
+                                           tier=race.get("today_tier"), p1=p1,
+                                           venue=it.get("venue") or race.get("venue"))
         out.update(heat=hc, heat_hits=hn, heat_roi=hroi)
         if buy:
             best = max(buy, key=lambda f: f[2])

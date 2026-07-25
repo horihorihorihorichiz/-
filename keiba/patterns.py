@@ -38,38 +38,41 @@ SURVIVORS = [
 ]
 
 
-# ★ヒートスコア(7/25 heat_score.py・WF179発火Rで実測): 確認済み条件の重複数で単調にROIが上がる
-#   1個以上163.8%(n176) 2個以上164.9%(n149) 3個以上210.7%(n113) 4個以上296.1%(n62) 5個以上645.3%(n19)
-#   dev/conf両方で単調上昇を確認。1人気モデル売りは重複条件としては寄与-4.5ptのため除外済み。
-HEAT_LADDER = {0: (161.0, 179), 1: (163.8, 176), 2: (164.9, 149),
-               3: (210.7, 113), 4: (296.1, 62), 5: (645.3, 19)}
+# ★ヒートスコア v2(7/25再測定・土台=7倍+×非未勝利×開催2日目以降 161R)
+#   条件=上級/ダート/中距離(1301-1900)/11-17頭/モデル価値1.2+/メイン4場 の6つ。累積で単調上昇:
+#   0個173.5%(161R) 3個204.7%(133R) 5個359.0%(49R・dev328/conf423・除外281%) 6個522.5%(16R)
+#   ※6個はconf期の的中が無くn=16と薄いので「5個以上」を厚張りラインとして運用する
+HEAT_LADDER = {0: (173.5, 161), 1: (175.7, 159), 2: (180.3, 155),
+               3: (204.7, 133), 4: (208.9, 96), 5: (359.0, 49), 6: (522.5, 16)}
+MAIN_VENUES = ("東京", "中山", "京都", "阪神")
 
 
-def heat_of(order, tan, field, surface=None, dist=None, tier=None, p1=None):
-    """乖離発火レースの「熱さ」= 確認済み条件の重複数と実測ROI帯を返す。
+def heat_of(order, tan, field, surface=None, dist=None, tier=None, p1=None, venue=None):
+    """乖離発火レースの「熱さ」= 確認済み条件の重複数と実測ROI帯。
        返り値: (該当条件list, 個数, その個数以上のWF実測ROI, サンプル数)"""
     if not order or not tan or order[0] not in tan:
         return [], 0, 0, 0
     o1 = tan[order[0]]
     hits = []
-    if tier and tier >= 6:
+    if tier and 6 <= tier <= 9:
         hits.append("上級")
     if surface == "ダ":
         hits.append("ダート")
-    if dist and 1401 <= dist <= 1900:
+    if dist and 1301 <= dist <= 1900:
         hits.append("中距離")
-    if field and field >= 15:
-        hits.append(f"多頭{field}")
-    if p1 and p1 * o1 >= 1.6:
-        hits.append(f"モデル価値{p1*o1:.1f}")
-    if 10 <= o1 <= 30:
-        hits.append(f"軸{o1}倍")
-    c = min(len(hits), 5)
-    roi, n = HEAT_LADDER.get(c, (161.0, 179))
+    if field and 11 <= field <= 17:
+        hits.append(f"{field}頭")
+    if p1 and p1 * o1 >= 1.2:
+        hits.append(f"価値{p1*o1:.1f}")
+    if venue in MAIN_VENUES:
+        hits.append(f"メイン場({venue})")
+    c = min(len(hits), 6)
+    roi, n = HEAT_LADDER.get(c, (173.5, 161))
     return hits, len(hits), roi, n
 
 
-def classify(order, tan, field, surface=None, dist=None, tier=None, gap12=None, p1=None, day=None):
+def classify(order, tan, field, surface=None, dist=None, tier=None, gap12=None, p1=None,
+             day=None, venue=None):
     """order=V3得点順の馬番リスト, tan={num:単勝オッズ}, field=頭数。
        返り値: [(パターン名, 買い目説明, ROI, 判定, note)]"""
     out = []
@@ -128,13 +131,30 @@ def classify(order, tan, field, surface=None, dist=None, tier=None, gap12=None, 
                         412.2, "◎◎◎最優先・厚張り",
                         "dev405.7%/23→conf422.9%/14 通算412.2%/37R hits8・最大的中除外310.3%。"
                         "10倍未満の上級は素通し帯。現行最強の単一フィルタ"))
-        # ★システム主軸フィルタ(7/20 20エージェント探索・両分割CONFIRMED): 乖離単勝の中の最上位シグナル
+        # ★18頭は死亡確定(7/25 16体採掘→自前再現): 18頭のみ 0的中/23R・0.0%。11-17頭に限ると201.5%/143R
+        if field and field >= 18:
+            out.append(("⚠乖離単勝[18頭立て]", f"単勝 {t1} は買わない(18頭)", 0.0, "✕見送り推奨",
+                        "18頭立ての乖離単勝は2年0的中/23R。11-17頭に絞ると201.5%/143R(dev198.6/conf207.1)"))
+        # ★実用コア(7/25): 7倍+ × 11-17頭 × 上級 × 開催2日目以降 = 332.4%/63R
+        #   最強帯(10倍+×上級412%/37R)より試行数が7割多く、除外後271.9%と頑健
+        if tier and 6 <= tier <= 9 and field and 11 <= field <= 17 and day and day >= 2:
+            out.append(("◎◎◎乖離単勝×11-17頭×上級×2日目+", f"単勝 {t1} (実用コア)",
+                        332.4, "◎◎◎最優先・厚張り",
+                        "dev319.3%/42→conf358.6%/21 通算332.4%/63R hits15・除外後271.9%。"
+                        "18頭除外(0/23)と初日除外が独立に効く"))
+        # ★メイン4場(東京/中山/京都/阪神)は上級乖離が特に強い: 366.1%/41R vs ローカル185.3%/32R
+        if venue in ("東京", "中山", "京都", "阪神") and tier and 6 <= tier <= 9 and day and day >= 2:
+            out.append(("◎◎乖離単勝×メイン4場×上級×2日目+", f"単勝 {t1} ({venue})",
+                        366.1, "◎◎最優先買い",
+                        "dev403.6%/25→conf307.5%/16 通算366.1%/41R hits9・除外後273.2%。"
+                        "ローカル場の同条件は185.3%＝メイン場の方が乖離が効く"))
+        # ★システム主軸フィルタ: モデル価値は上級で完全単調(1.0=250%/1.5=337%/1.6=401%/2.0=548%)
         mval = p1 * o1 if p1 else 0
         strong = []
         if mval >= 1.6:
-            strong.append(f"モデル価値{mval:.1f}(WF186%)")
-        if field and field >= 15:
-            strong.append(f"多頭{field}頭(WF175%)")
+            strong.append(f"モデル価値{mval:.1f}(上級WF401%)")
+        if field and 11 <= field <= 17:
+            strong.append(f"{field}頭(11-17帯WF201%)")
         if strong:
             out.append(("◎◎乖離単勝×システム強化", f"単勝 {t1} [" + "・".join(strong) + "]",
                         185.9 if mval >= 1.6 else 175.4, "◎◎最優先買い",
@@ -214,6 +234,20 @@ def classify(order, tan, field, surface=None, dist=None, tier=None, gap12=None, 
                         76.0, "✕見送り推奨", "軸7-10倍のながしはWF76%=配当が3点をカバーできない"))
     else:
         add(f"単勝1位[{mrb}]", f"単勝 {t1}")
+    # ★芝の攻略(7/25 16体採掘→自前再現): 芝全体の馬連1-2位は104%で死んでいるが、
+    #   芝1500-1800m × モデル得点差g12>=0.3(自信) × 開催2日目以降 × メイン4場 に絞ると224.2%/71点
+    if (surface == "芝" and dist and 1500 <= dist <= 1800 and gap12 is not None and gap12 >= 0.3
+            and day and day >= 2 and not (tier and tier >= 10) and len(order) >= 2):
+        mm = "-".join(map(str, sorted(order[:2])))
+        if venue in ("東京", "中山", "京都", "阪神"):
+            out.append(("◎◎芝 馬連モデル1-2位×1500-1800×自信×メイン場", f"馬連 {mm}",
+                        224.2, "◎◎最優先買い",
+                        "dev206.2%/42→conf250.3%/29 通算224.2%/71点・除外後190.7%。"
+                        "芝全体の馬連1-2位は104.0%/689点＝この4条件が揃った時だけ立つ"))
+        else:
+            out.append(("○芝 馬連モデル1-2位(ローカル場)", f"馬連 {mm}",
+                        187.5, "○小額のみ",
+                        "場を問わない同条件は187.5%/104点(dev187.6/conf187.3)。メイン4場版が本命"))
     add(f"複勝1位[{mrb}]", f"複勝 {t1}")
     if len(order) >= 2:
         add(f"ワイド1-2位[{mrb}]", f"ワイド {'-'.join(map(str, sorted(order[:2])))}")
