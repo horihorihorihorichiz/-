@@ -157,10 +157,25 @@ def classify(order, tan, field, surface=None, dist=None, tier=None, gap12=None, 
             out.append((f"乖離単勝×{s2['cond']}", f"単勝 {t1} (強化条件該当)",
                         s2["roi"], "◎買い推奨",
                         f"発見{s2['dev']}→確認{s2['conf']} 通算{s2['n']}点"))
-        # 三連複ながし完全版(7/19深掘り・2年WF): 軸10-30倍×非長距離が主戦場。相手=市場1-3固定
+        # 三連複ながし(7/25 leg_sysvspop.py で紐構成を総当たり比較・全て2分割実測)
+        #  ・純システム紐(モデル2-4位/2-5位)は全条件で人気紐に完敗(53-89%)=採用しない
+        #  ・既定は市場1-4人気6点(軸10-30倍で206.0%/432点 dev189→conf232 除外173%)
+        #  ・中距離だけは「システムで選び市場が認めた馬」の混合紐が上(277.6%/105点 除外188%)
         if 10 <= o1 <= 30 and (not dist or dist <= 1900):
             mtop = [n for n in sorted(tan, key=lambda h: tan[h]) if n != t1][:3]
             mtop4 = [n for n in sorted(tan, key=lambda h: tan[h]) if n != t1][:4]
+            m5 = set(sorted(tan, key=lambda h: tan[h])[:6]) - {t1}
+            sys3 = [n for n in order if n != t1][:3]
+            mixleg = list(dict.fromkeys([n for n in sys3 if n in m5]
+                                        + [n for n in sorted(tan, key=lambda h: tan[h]) if n != t1][:2]))
+            if len(mixleg) >= 3 and dist and 1401 <= dist <= 1900:
+                import itertools as _it
+                pts = sorted(tuple(sorted(p)) for p in _it.combinations(sorted(mixleg), 2))
+                out.append(("◎◎三連複 混合紐(システム∩市場)×中距離",
+                            f"三連複 {t1}軸 - {sorted(mixleg)} ながし({len(pts)}点)",
+                            277.6, "◎◎最優先買い",
+                            "紐=モデル2-4位のうち市場6人気内 ∪ 市場1-2人気。dev252.5%→conf325.8% "
+                            "通算277.6%/105点・除外後188.4%・9ヶ月中6ヶ月+。純システム紐は89%で不採用"))
             if len(mtop) >= 3:
                 m5 = set(order[:5])
                 agree3 = all(p in m5 for p in mtop)
@@ -175,13 +190,11 @@ def classify(order, tan, field, surface=None, dist=None, tier=None, gap12=None, 
                             166.1, "◎買い推奨",
                             "2年WF 発見108.5%/59R→確認307.8%/24R／" + "・".join(marks)))
             if len(mtop4) >= 4:
-                f2, f3, f4 = mtop4[1], mtop4[2], mtop4[3]
-                ext = sorted([tuple(sorted(p)) for p in
-                              [(f2, f4), (f3, f4)]])
-                out.append(("【検証中】三連複5点拡張(4人気込み)",
-                            f"三連複 {t1}軸 追加2点: {ext[0][0]}-{ext[0][1]} / {ext[1][0]}-{ext[1][1]} (現行3点+これで5点)",
-                            190.0, "○紙上検証枠",
-                            "trio_shape.py 7/19: dev173.6/conf233.3/最大的中除外148.2% n=69R。来週は紙上並走で検証"))
+                out.append(("◎三連複 紐=市場1-4人気(6点)",
+                            f"三連複 {t1}軸 - {sorted(mtop4)} ながし(6点)",
+                            206.0, "◎買い推奨",
+                            "7/25 bet_sweep: dev188.6%/258→conf231.7%/174 通算206.0%/432点・除外後172.9%。"
+                            "3点版(191.5%)を全条件で上回るため6点を既定にする"))
         elif o1 < 10:
             out.append(("三連複ながし(軸オッズ不足)", f"軸{o1}倍<10倍 → ながしは見送り・単勝のみ",
                         76.0, "✕見送り推奨", "軸7-10倍のながしはWF76%=配当が3点をカバーできない"))
