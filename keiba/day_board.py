@@ -122,10 +122,27 @@ def eval_race(it, date, nar, fast=False):
         # 未勝利・新馬: 検証済み発火(S)は残す(7/25採掘のモデル2位系)。A/Bの近接ヒューリスティックだけ無効化
         if "未勝利" in out.get("name", "") and out["rank"] in ("A", "B"):
             out.update(rank="C", note="未勝利=準発火ヒューリスティック対象外・ランキングのみ参考")
-        # 新潟芝1000m直線: モデル無効コース(7/25検証: 1位0/8勝・勝ち馬平均モデル7位)
+        # 新潟芝1000m直線: モデル無効コース(1位0/8勝)→V3は使わず専用静的パターン(7/25 5年104R採掘)
+        #   基礎バイアス: 外枠(7-8)勝率11.1%/複勝圏30.7% vs 内枠(1-3)3.0%/9.3%
         if (race.get("venue") == "新潟" or rid[4:6] == "04") and race.get("surface") == "芝" \
                 and race.get("distance") == 1000:
-            out.update(rank="C", note="新潟1000直=モデル無効コース(出禁)。外枠バイアスは織込済で妙味なし")
+            fld = race.get("field", len(order))
+            out["fire_desc"] = ""  # V3系の発火説明はこのコースでは無効
+            picks = [n for n in tan
+                     if course.jra_waku(n, fld) >= 7 and pops.get(n) in (2, 3) and tan[n] < 5.0]
+            edge = [n for n in tan
+                    if course.jra_waku(n, fld) >= 7 and tan[n] < 5.0 and n not in picks]
+            if picks:
+                out.update(rank="S",
+                           note=f"新潟1000直専用: 外枠(7-8枠)×2-3人気×5倍未満 → 単勝{sorted(picks)} "
+                                f"(5年112.8%/50点・除外後105.3%)。モデルランキングは参考外",
+                           fire_desc=f"単勝 {sorted(picks)} 各点。V3得点はこのコース無効(1位0/8勝)")
+            elif edge:
+                out.update(rank="A",
+                           note=f"新潟1000直: 外枠×5倍未満{sorted(edge)}=縁(5年108.4%/117点・小額のみ)。"
+                                "2-3人気なら昇格")
+            else:
+                out.update(rank="C", note="新潟1000直: 外枠人気馬の該当なし=見送り(内中枠と穴は全滅帯)")
         wmap = {h["num"]: h for h in race["horses"]}
         out["weights"] = any(h.get("weight") for h in race["horses"])
         out["rows"] = [dict(num=r["num"], name=names.get(r["num"], ""),

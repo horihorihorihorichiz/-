@@ -107,3 +107,17 @@ def extract_venue(s):
     import re
     m = re.search("(" + "|".join(_VENUES) + ")", s or "")
     return m.group(1) if m else ""
+
+
+def jra_waku(num, field):
+    """JRA標準の枠番割当(馬番と頭数から枠番を導出)。
+       N<=8:1頭ずつ / 9-16:外枠から2頭 / 17:枠8が3頭 / 18:枠7・8が3頭"""
+    n, f = num, field
+    if f <= 8:
+        return n
+    if f <= 16:
+        k = 16 - f  # 枠1..kが1頭
+        return n if n <= k else k + (n - k + 1) // 2
+    if f == 17:
+        return (n + 1) // 2 if n <= 14 else 8
+    return (n + 1) // 2 if n <= 12 else (7 if n <= 15 else 8)
