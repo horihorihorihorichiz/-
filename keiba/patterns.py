@@ -144,8 +144,9 @@ def classify(order, tan, field, surface=None, dist=None, tier=None, gap12=None, 
         fav = min(tan, key=lambda h: tan[h])
         if vrank_all.get(fav, 99) >= 5:
             out.append(("乖離単勝×1人気モデル売り", f"単勝 {t1} (1人気{fav}をモデル{vrank_all.get(fav)}位と酷評)",
-                        216.7, "◎◎最強",
-                        "WF 発見214.0%/53R→確認223.2%/22R 通算216.7%。厚張り候補"))
+                        157.8, "◎買い推奨",
+                        "7/25監査で再計測: 通算157.8%/49R dev157.4→conf158.2・除外後128.5%。"
+                        "旧表記216.7%は未勝利込みの古い定義。ヒート重複条件としての寄与は-4.5ptで算入外"))
         # 条件付き強化版(2段階採掘の生存者)
         hits = []
         if tier and tier >= 6:
@@ -164,8 +165,8 @@ def classify(order, tan, field, surface=None, dist=None, tier=None, gap12=None, 
         # 逆に 中距離×条件クラス は43.9%/56Rの死亡帯(7/23) → 単独の中距離該当でも警告
         if dist and 1401 <= dist <= 1900 and tier and tier < 6:
             out.append(("⚠乖離単勝[中距離×条件級]", f"単勝 {t1} は弱い帯",
-                        43.9, "✕見送り推奨",
-                        "7/23採掘: 中距離でも条件級(1-2勝)は43.9%/56R。中距離の利益は上級戦由来"))
+                        34.7, "✕見送り推奨",
+                        "7/25監査: 中距離でも条件級(1-2勝)は34.7%/45R(dev53.8→conf0.0)。利益は上級戦由来"))
         for s2 in hits:
             out.append((f"乖離単勝×{s2['cond']}", f"単勝 {t1} (強化条件該当)",
                         s2["roi"], "◎買い推奨",
@@ -177,7 +178,7 @@ def classify(order, tan, field, surface=None, dist=None, tier=None, gap12=None, 
         if 10 <= o1 <= 30 and (not dist or dist <= 1900):
             mtop = [n for n in sorted(tan, key=lambda h: tan[h]) if n != t1][:3]
             mtop4 = [n for n in sorted(tan, key=lambda h: tan[h]) if n != t1][:4]
-            m5 = set(sorted(tan, key=lambda h: tan[h])[:6]) - {t1}
+            m5 = set([n for n in sorted(tan, key=lambda h: tan[h]) if n != t1][:5])
             sys3 = [n for n in order if n != t1][:3]
             mixleg = list(dict.fromkeys([n for n in sys3 if n in m5]
                                         + [n for n in sorted(tan, key=lambda h: tan[h]) if n != t1][:2]))
@@ -186,9 +187,9 @@ def classify(order, tan, field, surface=None, dist=None, tier=None, gap12=None, 
                 pts = sorted(tuple(sorted(p)) for p in _it.combinations(sorted(mixleg), 2))
                 out.append(("◎◎三連複 混合紐(システム∩市場)×中距離",
                             f"三連複 {t1}軸 - {sorted(mixleg)} ながし({len(pts)}点)",
-                            277.6, "◎◎最優先買い",
-                            "紐=モデル2-4位のうち市場6人気内 ∪ 市場1-2人気。dev252.5%→conf325.8% "
-                            "通算277.6%/105点・除外後188.4%・9ヶ月中6ヶ月+。純システム紐は89%で不採用"))
+                            260.3, "◎◎最優先買い",
+                            "紐=モデル2-4位のうち市場5人気内 ∪ 市場1-2人気。dev238.6%→conf300.8% "
+                            "通算260.3%/112点・除外後176.5%。純システム紐(モデル2-4位のみ)は89%で不採用"))
             if len(mtop) >= 3:
                 m5 = set(order[:5])
                 agree3 = all(p in m5 for p in mtop)
@@ -205,9 +206,9 @@ def classify(order, tan, field, surface=None, dist=None, tier=None, gap12=None, 
             if len(mtop4) >= 4:
                 out.append(("◎三連複 紐=市場1-4人気(6点)",
                             f"三連複 {t1}軸 - {sorted(mtop4)} ながし(6点)",
-                            206.0, "◎買い推奨",
-                            "7/25 bet_sweep: dev188.6%/258→conf231.7%/174 通算206.0%/432点・除外後172.9%。"
-                            "3点版(191.5%)を全条件で上回るため6点を既定にする"))
+                            215.7, "◎買い推奨",
+                            "7/25監査(現行発火条件で再計測): dev174.0→conf280.0 通算215.7%/366点・除外後176.7%。"
+                            "3点版(207.6%・dev94.7で不安定)より6点が安定"))
         elif o1 < 10:
             out.append(("三連複ながし(軸オッズ不足)", f"軸{o1}倍<10倍 → ながしは見送り・単勝のみ",
                         76.0, "✕見送り推奨", "軸7-10倍のながしはWF76%=配当が3点をカバーできない"))
