@@ -122,31 +122,31 @@ def eval_race(it, date, nar, fast=False):
         # 未勝利・新馬: 検証済み発火(S)は残す(7/25採掘のモデル2位系)。A/Bの近接ヒューリスティックだけ無効化
         if "未勝利" in out.get("name", "") and out["rank"] in ("A", "B"):
             out.update(rank="C", note="未勝利=準発火ヒューリスティック対象外・ランキングのみ参考")
-        # 新潟芝1000m直線: モデル無効コース(1位0/8勝)→V3は使わず専用静的パターン(7/25 5年104R採掘)
-        #   基礎バイアス: 外枠(7-8)勝率11.1%/複勝圏30.7% vs 内枠(1-3)3.0%/9.3%
+        # 新潟芝1000m直線: システム主軸×枠の専用合成(7/25 V3遡及5年104R・n1000_sysmine.py)
+        #   ◎外枠(7-8枠)×モデル1-3位×5倍以下 = 133.2%/56点(dev154→conf112・除外後126.9%・5年全年+)
+        #   対照: 内枠105.3% 中枠81.3% ／ 枠だけ(順位不問)108.4% ／ モデルだけ(枠不問)113.0%＝両方要る
         if (race.get("venue") == "新潟" or rid[4:6] == "04") and race.get("surface") == "芝" \
                 and race.get("distance") == 1000:
             fld = race.get("field", len(order))
-            out["fire_desc"] = ""  # V3系の発火説明はこのコースでは無効
-            picks = [n for n in tan
-                     if course.jra_waku(n, fld) >= 7 and pops.get(n) in (2, 3) and tan[n] < 5.0]
-            edge = [n for n in tan
-                    if course.jra_waku(n, fld) >= 7 and tan[n] < 5.0 and n not in picks]
-            if picks:
-                vrank = {n: i + 1 for i, n in enumerate(order)}
-                agree = [n for n in picks if vrank.get(n, 99) <= 3]
-                mtag = (f"モデル{','.join(str(vrank[n])+'位' for n in agree)}とも一致=心強い" if agree
-                        else "モデル上位とは不一致(パターン単独・n蓄積中)")
+            vrank = {n: i + 1 for i, n in enumerate(order)}
+            core = [n for n in tan if course.jra_waku(n, fld) >= 7
+                    and vrank.get(n, 99) <= 3 and tan[n] <= 5.0]
+            wide = [n for n in tan if course.jra_waku(n, fld) >= 7
+                    and vrank.get(n, 99) <= 3 and 5.0 < tan[n] <= 8.0]
+            if core:
+                d = "・".join(f"{n}(モデル{vrank[n]}位/{tan[n]}倍/{course.jra_waku(n, fld)}枠)" for n in sorted(core))
                 out.update(rank="S",
-                           note=f"新潟1000直専用: 外枠(7-8枠)×2-3人気×5倍未満 → 単勝{sorted(picks)} "
-                                f"(5年112.8%/50点・除外後105.3%)。{mtag}",
-                           fire_desc=f"単勝 {sorted(picks)} 各点。{mtag}。一致/不一致は結果に記録し20発後に層別評価")
-            elif edge:
+                           note=f"新潟1000直[システム×枠]: 外枠×モデル1-3位×5倍以下 → 単勝{sorted(core)} "
+                                "(5年133.2%/56点・除外後127%・全年+)",
+                           fire_desc=f"単勝 {sorted(core)} 各点。{d}。人気順位は不使用=システム主軸")
+            elif wide:
                 out.update(rank="A",
-                           note=f"新潟1000直: 外枠×5倍未満{sorted(edge)}=縁(5年108.4%/117点・小額のみ)。"
-                                "2-3人気なら昇格")
+                           note=f"新潟1000直: 外枠×モデル1-3位だが5-8倍{sorted(wide)}=縁"
+                                "(同条件8倍以下で109.2%・小額のみ)")
             else:
-                out.update(rank="C", note="新潟1000直: 外枠人気馬の該当なし=見送り(内中枠と穴は全滅帯)")
+                out.update(rank="C",
+                           note="新潟1000直: 外枠×モデル1-3位×低オッズの該当なし=見送り"
+                                "(中枠81%・穴帯は全滅)")
         wmap = {h["num"]: h for h in race["horses"]}
         out["weights"] = any(h.get("weight") for h in race["horses"])
         out["rows"] = [dict(num=r["num"], name=names.get(r["num"], ""),
