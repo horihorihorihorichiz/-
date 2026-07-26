@@ -132,6 +132,13 @@ def eval_race(it, date, nar, fast=False):
             out["note"] = f"【{tier}/{yen:,}円】{best[0]} ROI{best[2]:.0f}%{heat_tag}"
             out["fire_desc"] = (f"{best[1]} ／ 階級{tier}={yen:,}円({treason})"
                                 + (f" ／ 熱さ{hc}個: {'+'.join(hn)}" if hn else ""))
+            # ★全発火を必ず列挙(7/26教訓: 中京11Rで単勝の陰に三連複が隠れて買い漏らした)。
+            #   最上位ROIの1本だけ表示だと券種違いの併発(単勝+三連複など)を見落とす。
+            others = sorted((f for f in buy if f is not best), key=lambda f: -f[2])
+            if others:
+                out["fires_all"] = [f"{f[0]} ROI{f[2]:.0f}% → {f[1]}" for f in others]
+                out["fire_desc"] += " ／ ★併発: " + " ｜ ".join(
+                    f"{f[0]}({f[2]:.0f}%)" for f in others)
         elif (o1 >= 12 and g12 < 0.20) or mval >= 1.6:
             why = []
             if o1 >= 12 and g12 < 0.20:

@@ -41,7 +41,7 @@ GO/NO-GO・買い目構造は predict.py が自動判断する。
 
 ---
 
-## STEP2 変換規則（馬柱テキスト → build_*.py）★この文書の核心
+## STEP2 変換規則（馬柱テキスト → archive/builders/build_*.py 方式）★この文書の核心
 
 雛形は既存の `build_kasamatsu.py` / `build_sparking.py` をコピーして数字を差し替える。
 
@@ -125,9 +125,9 @@ C1=8   C2/3歳条件戦=9   C3/未勝利/新馬=10
 | `calc.py` | Ver.99.27 計算エンジン（触らない。仕様変更はユーザー指示時のみ） |
 | `predict.py` | 司令塔: オッズ取得→EV裁定→二層買い目→i-PAT |
 | `stats.py` | 通算 的中率・回収率 |
-| `build_*.py` / `race_*.json` | レース入力（過去分は変換の実例集として参照） |
+| `archive/builders/build_*.py` / `archive/races/race_*.json` | レース入力（過去分は変換の実例集として参照） |
 | `results.jsonl` | 全戦績（モデル較正の元データ） |
-| `CHROME_HANDOFF.md` | ブラウザ内AI(Claude for Chrome等)向けの動き方 |
+| `archive/reports/CHROME_HANDOFF.md` | ブラウザ内AI(Claude for Chrome等)向けの動き方 |
 | `AUTO_PLAYBOOK.md` | 全体運用・自動購入の安全規定 |
 
 ## 禁止事項（どのAIでも）
