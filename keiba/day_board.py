@@ -45,9 +45,15 @@ def load_or_fetch(rid, date, nar, fast=False):
 
 
 def refresh_weights(race, rid, nar):
-    """出馬表1ページだけ再取得して馬体重を最新化"""
+    """出馬表1ページだけ再取得して馬体重と★馬場状態を最新化。
+       ※babaはcalc.pyの道悪TAS(稍→S10/A5・重不→S15/A8)と展開補正(重不→ミドル上限)に効くので
+         キャッシュのまま放置すると得点が丸ごとズレる(7/26に新潟が良→不良になり発覚)"""
     try:
         su = FR.fetch_shutuba(rid, nar=nar)
+        nb = su.get("baba")
+        if nb and nb != race.get("baba"):
+            race["_baba_was"] = race.get("baba")
+            race["baba"] = nb
         wmap = {h["num"]: (h.get("weight", 0), h.get("change", 0)) for h in su["horses"]}
         n = 0
         for h in race["horses"]:
@@ -87,7 +93,7 @@ def eval_race(it, date, nar, fast=False):
         o1 = tan.get(m1, 0)
         p1 = rows[0].get("pwin", 0) / 100.0
         mval = p1 * o1
-        out.update(baba=race.get("baba") or "-",
+        out.update(baba=(race.get("baba") or "-") + ("←" + race["_baba_was"] if race.get("_baba_was") else ""),
                    axis=m1, axis_name=names.get(m1, ""), o1=o1, pop1=pops.get(m1, 0),
                    g12=round(g12, 3), mval=round(mval, 2), field=race.get("field"))
         # ---- パターン判定(場で分岐) ----
