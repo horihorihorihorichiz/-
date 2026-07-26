@@ -210,7 +210,8 @@ def derive_csi(races, venue, today_dist):
 def derive_off(races):
     # 道悪(TAS)は calc.py 仕様で「1年以内の稍/重/不」。min(off)採用のため古い好走で過大評価しない。
     return [r["finish"] for r in races
-            if r.get("_baba") in ("稍", "重", "不") and r.get("days", 9999) <= 365]
+            if (r.get("_baba") in ("稍", "重", "不") or r.get("baba_idx") in (1, 2, 3))
+            and r.get("days", 9999) <= 365]
 
 # Ver.101: 自前スピード指数DB（speedidx.py build が生成。無ければ空=従来動作）
 try:
@@ -316,7 +317,12 @@ def main():
                         r["tsi"] = v
                         r["tsi_src"] = "own"
         for r in races:
-            r.pop("_baba", None)
+            # ★7/26修正: _babaを捨てる前に baba_idx(良0/稍1/重2/不3) へ変換して保存する。
+            #   従来は全過去走 baba_idx=None のままpopしており「各走がどの馬場で走ったか」を
+            #   データごと失っていた(V4診断で判明)。将来の特徴・分析のためここで止血。
+            b = r.pop("_baba", None)
+            if r.get("baba_idx") is None and b is not None:
+                r["baba_idx"] = {"良": 0, "稍": 1, "重": 2, "不": 3}.get(b)
             r.pop("_venue", None)
         horses.append({
             "num": hs["num"], "name": hs["name"],

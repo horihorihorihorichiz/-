@@ -233,15 +233,49 @@ def gather_races(date, venue_arg):
     return uniq
 
 
+def baba_now(date, venue_sel="auto"):
+    """★当日馬場のワンコマンド確認(7/26追加): 各開催場の「これから発走が近いレース」の
+       出馬表1枚だけ取得して現在馬場を表示する。道悪の日はレース間でも変わる
+       (7/26新潟: 10R重→11R不)ので、発走前チェックのたびに叩く。"""
+    now = jst_now()
+    targets = gather_races(date, venue_sel)
+    seen = {}
+    for it, nar in sorted(targets, key=lambda x: x[0].get("time") or "99:99"):
+        v = it.get("venue", "?")
+        if v in seen and seen[v][2]:
+            continue     # 既に「発走前の最初のレース」を確保済み
+        upcoming = (date == now.strftime("%Y%m%d")
+                    and (it.get("time") or "99:99") >= now.strftime("%H:%M"))
+        seen[v] = (it, nar, upcoming)   # 発走前が無い場は最終レースで代表(上書きで残る)
+    print(f"━━ 現在馬場 {now.strftime('%m/%d %H:%M JST')} ━━")
+    for v, (it, nar, upcoming) in seen.items():
+        rid = it["race_id"]
+        try:
+            su = FR.fetch_shutuba(rid, nar=nar)
+            b = su.get("baba") or "?"
+            mark = {"良": "", "稍": " ⚠稍", "重": " ⚠⚠重", "不": " ⚠⚠⚠不良"}.get(b, "")
+            ref = f"{it.get('r')}R {it.get('time','')}" + ("" if upcoming else "(発走済)")
+            print(f"  {v:4s} {su.get('surface','')}: {b}{mark}  [{ref}基準]")
+        except Exception as e:
+            print(f"  {v:4s} 取得失敗: {e}")
+    print("  ※道悪表示の場は発走直前にもう一度確認する(レース間でも悪化する)")
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("date", nargs="?", default=None)
     ap.add_argument("--venue", default="auto")
     ap.add_argument("--rids", default=None)
     ap.add_argument("--fast", action="store_true")
+    ap.add_argument("--baba", action="store_true",
+                    help="ボードは作らず、今日の全開催場の現在馬場だけを表示")
     a = ap.parse_args()
     date = a.date or jst_now().strftime("%Y%m%d")
     now = jst_now()
+
+    if a.baba:
+        baba_now(date, a.venue)
+        return
 
     targets = gather_races(date, a.venue)
     if a.rids:

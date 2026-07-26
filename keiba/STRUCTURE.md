@@ -4,6 +4,7 @@
 ```bash
 python3 selfcheck.py                              # ①毎セッション最初に必ず(環境+回帰検査)
 python3 day_board.py                              # ②当日の全レース判定(S/SS発火・買い目)
+python3 day_board.py --baba                       # ②' 全開催場の現在馬場だけ即confirm(発走前チェック毎)
 python3 fetch_race.py <race_id> --run --budget 10000   # ③単レース予想
 ```
 
@@ -44,6 +45,7 @@ fit_v4.py        V4学習(二値×5シード) / fit_v3.py V3学習 / fit.py,fit_
 wf_compare.py    V3/V4を同一foldで4ゲート比較 / score_wfpreds.py 既存予測の採点
 verify_all.py    実装済み全パターンをwf_preds.jsonlから再計算する監査
 mine_cond.py / oddsfree_mine.py / rule_audit.py   条件採掘と偽陽性検定(--null-sweep)
+baba_impact.py   実装済み全パターンの馬場(良/稍/重不)別ROI実測
 course.py        コース特性VG・JRA枠割当(jra_waku)
 harvest.py       学習データ収穫(hist/) / harvest_year.py, harvest_nar_year.py 年次収穫
 ```

@@ -120,14 +120,23 @@ def classify(order, tan, field, surface=None, dist=None, tier=None, gap12=None, 
     if tier is not None and tier >= 10 and gap12 is not None and len(order) >= 2:
         t2 = order[1]
         o2 = tan.get(t2, 0)
+        # ★馬場層別(7/26 baba_impact.py実測): 良158.9%/64R に対し 稍75.8%/24R・重不100%/10R
+        #   ＝道悪計83.0%/34R。軽キャリア馬は道悪適性が過去走から読めず市場も自分も精度が落ちる
+        #   → 道悪の日は「◎買い推奨」から「△縁(小額のみ)」へ自動降格する
+        wet = baba in ("稍", "重", "不")
+        mv, mnote = (("△縁(小額のみ・道悪)",
+                      "⚠道悪実測83.0%/34R(良は158.9%/64R)=妙味薄。買うなら半額以下")
+                     if wet else ("◎買い推奨", ""))
         if gap12 >= 0.6 and 5.0 <= o2 < 10.0:
             out.append(("◎未勝利・新馬 モデル2位中穴単勝", f"単勝 {t2} (モデル2位{o2}倍)",
-                        132.6, "◎買い推奨",
-                        "dev143.5%/52→conf120.2%/46 通算132.6%/98R hits20・最大的中除外124.4%。1位は買わない"))
+                        132.6, mv,
+                        "dev143.5%/52→conf120.2%/46 通算132.6%/98R hits20・最大的中除外124.4%。1位は買わない"
+                        + ("。" + mnote if mnote else "")))
         elif 0.6 <= gap12 < 0.95 and o2:
             out.append(("◎未勝利・新馬 モデル2位単勝(g12帯)", f"単勝 {t2} (モデル2位{o2}倍)",
-                        126.0, "◎買い推奨",
-                        "dev135.3%/73→conf114.8%/61 通算126.0%/134R・除外後117.7%。帯感度は0.85-1.0まで両側+"))
+                        126.0, mv,
+                        "dev135.3%/73→conf114.8%/61 通算126.0%/134R・除外後117.7%。帯感度は0.85-1.0まで両側+"
+                        + ("。" + mnote if mnote else "")))
         if surface == "芝" and tan:
             fav = min(tan, key=lambda h: tan[h])
             vr = {n: i+1 for i, n in enumerate(order)}.get(fav, 99)
@@ -282,7 +291,8 @@ def classify(order, tan, field, surface=None, dist=None, tier=None, gap12=None, 
                     roi2, "◎◎最優先買い",
                     "基本形 187.5%/104点(dev187.6/conf187.3・除外後164.4・月JK147-206%)"
                     + ("／" + "・".join(tags) if tags else "")
-                    + "。芝全体は104%＝距離と自信が揃った時だけ。ダート同条件は29.7%で厳禁"))
+                    + "。芝全体は104%＝距離と自信が揃った時だけ。ダート同条件は29.7%で厳禁"
+                    + ("。⚠稍重は dev214→conf49 と不安定(27R)＝稍の日は半額" if baba == "稍" else "")))
     # ===== 非乖離レースの攻略(7/25 未開拓2000R採掘・全て自前再現一致) =====
     # 【二層構造】ダート=穴を単勝で獲る(乖離単勝) / 芝=モデル上位の堅い決着を馬連・三連複で獲る
     if len(order) >= 2 and not (tier and tier >= 10):

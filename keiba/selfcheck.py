@@ -135,7 +135,14 @@ def pattern_spec():
                day=3, venue="東京", baba="不")
     r = patterns.classify(**kw2)
     assert not any("三連複モデル1-2-3位" in x[0] for x in r), "道悪で芝三連複が発火(良限定のはず)"
-    return "発火5仕様OK(最強帯/未勝利抑止/初日抑止/外枠V4廃止/三連複良限定)"
+    # (f) 未勝利モデル2位は道悪で「△縁」へ自動降格(7/26 baba_impact: 良158.9% vs 道悪83.0%)
+    kw3 = dict(order=[4, 8, 2], tan={4: 3.0, 8: 6.5, 2: 9.0}, field=12, surface="ダ",
+               dist=1400, tier=10, gap12=0.8, p1=0.3, day=3, venue="東京")
+    good = [x for x in patterns.classify(**kw3, baba="良") if "モデル2位" in x[0]]
+    wet = [x for x in patterns.classify(**kw3, baba="重") if "モデル2位" in x[0]]
+    assert good and good[0][3].startswith("◎"), f"良で未勝利2位が発火しない: {good}"
+    assert wet and wet[0][3].startswith("△"), f"道悪で未勝利2位が降格しない: {wet}"
+    return "発火6仕様OK(最強帯/未勝利抑止/初日抑止/外枠V4廃止/三連複良限定/未勝利2位の道悪降格)"
 
 
 check("パターン発火仕様", pattern_spec, fix="patterns.py の直近変更を確認")

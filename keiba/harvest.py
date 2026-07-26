@@ -30,7 +30,10 @@ def build_race_json(rid, su, race_date, workers):
         csi = FR.derive_csi(career, su["venue"], su["distance"])
         races = career[:9]
         for r in races:
-            r.pop("_baba", None)
+            # ★7/26: _babaは捨てずbaba_idxに変換して保存(fetch_race.pyと同じ止血)
+            b = r.pop("_baba", None)
+            if r.get("baba_idx") is None and b is not None:
+                r["baba_idx"] = {"良": 0, "稍": 1, "重": 2, "不": 3}.get(b)
             r.pop("_venue", None)
         return {
             "num": hs["num"], "name": hs["name"],
