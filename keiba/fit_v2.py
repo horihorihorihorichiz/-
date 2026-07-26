@@ -10,6 +10,7 @@
 """
 import argparse, glob, json, math, os, sys
 import calc
+import course
 
 FEATS = ["idx_mean3", "idx_last", "idx_best", "wavg", "j_top3", "t_top3",
          "fin_frac", "agari_best", "days_log", "kinryo", "wchg",
@@ -18,6 +19,58 @@ FEATS = ["idx_mean3", "idx_last", "idx_best", "wavg", "j_top3", "t_top3",
          "cond_perf", "db_best", "exact_dist_place", "surf_switch", "wet_apt",
          "agari_dist_match", "agari_mean3_rel", "agari_close_q",
          "fin_best2", "layoff_lastfin", "classup_lastgood", "field_chg"]
+
+# ── V4追加(2026-07-26) ────────────────────────────────────────────────
+# レース内z標準化を「しない」生特徴。z化すると枠番は単なる馬番の順序に潰れ、
+# 「外枠かどうか」という絶対的な意味が消えるため生値のまま渡す。
+RAW_FEATS = ["waku", "waku_rel", "umaban_rel", "wet_x_baba", "waku_x_dirt"]
+# レース単位で全頭共通の文脈。z化すると全頭0になるので生値のまま渡す。
+CTX_FEATS = ["field", "baba_today", "today_vg", "is_dirt"]
+
+BABA_IDX = {"良": 0, "稍": 1, "稍重": 1, "重": 2, "不": 3, "不良": 3}
+
+
+def race_ctx(race):
+    """レース単位の生特徴(全頭共通)"""
+    return {
+        "field": float(race.get("field") or len(race.get("horses") or []) or 0),
+        "baba_today": float(BABA_IDX.get((race.get("baba") or "").strip(), 0)),
+        "today_vg": float(race.get("today_vg") or 3),
+        "is_dirt": 1.0 if (race.get("surface") or "") == "ダ" else 0.0,
+    }
+
+
+def raw_extra(num, ff, ctx):
+    """馬ごとの生特徴(枠番系・今日の馬場との交互作用)。
+       ff は horse_feats() の生値(z化前)、ctx は race_ctx()。"""
+    field = int(ctx["field"]) or 1
+    n = int(num)
+    waku = course.jra_waku(n, field) if 1 <= n <= field else 0
+    wet = ff.get("wet_apt")
+    wet = 0.0 if wet is None else float(wet)
+    waku_rel = (waku - 1) / 7.0 if waku else 0.5
+    return {
+        "waku": float(waku),
+        "waku_rel": waku_rel,
+        "umaban_rel": (n - 1) / max(field - 1, 1),
+        # 今日が道悪なほど、その馬の道悪実績が効く（良の日は0で無効化される）
+        "wet_x_baba": wet * ctx["baba_today"],
+        # 芝は内有利・ダは外有利のFSI知見を1本の交互作用で表す
+        "waku_x_dirt": waku_rel * (1.0 if ctx["is_dirt"] else -1.0),
+    }
+
+
+def build_row(r, n, v4=True):
+    """1頭分の特徴行。v4=False なら V3 と同じ [FEATS..., 頭数] を返す。"""
+    base = [r["X"][k][n] for k in FEATS]
+    if not v4:
+        return base + [float(len(r["ns"]))]
+    return (base + [r["raw_extra"][n][k] for k in RAW_FEATS]
+            + [r["ctx"][k] for k in CTX_FEATS])
+
+
+def feat_names(v4=True):
+    return FEATS + (RAW_FEATS + CTX_FEATS if v4 else ["field"])
 
 
 def z_in_race(vals):
@@ -87,8 +140,17 @@ def load_dataset(histdir, featdir):
         if any(t not in raw for t in top3) or len(raw) < 5:
             continue
         X = {k: z_in_race({n: raw[n].get(k) for n in raw}) for k in FEATS}
+        ctx = race_ctx(d["race"])
+        rx = {n: raw_extra(n, raw[n], ctx) for n in raw}
         ds.append(dict(X=X, ns=list(raw.keys()), top3=top3, odds=odds,
-                       date=d.get("date", ""), rid=rid))
+                       payout=d["result"].get("payout") or {},
+                       date=d.get("date", ""), rid=rid,
+                       ctx=ctx, raw_extra=rx,
+                       surface=d["race"].get("surface"),
+                       dist=d["race"].get("distance"),
+                       tier=d["race"].get("today_tier"),
+                       baba=d["race"].get("baba"),
+                       venue=d["race"].get("venue")))
     return ds
 
 
