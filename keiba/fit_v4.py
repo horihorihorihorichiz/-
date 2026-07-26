@@ -1,16 +1,18 @@
 # -*- coding: utf-8 -*-
-"""Ver.4: V3(LambdaRank)に「枠番・今日の馬場・コース特性VG」を足した本番学習。
+"""Ver.4 本番学習（2026-07-26）。wf_compare.py の "v4bin2s" が勝った構成をそのまま焼く。
 
-   V3が持っていなかったもの（2026-07-26 診断）:
-     - 枠番      → 「外枠のモデル2位が1位を逆転(+9.3pt)」という順位付けの壊れの原因
-     - 今日の馬場 → wet_apt(過去の道悪実績)はあるが「今日が不良か」を知らなかった
-     - today_vg  → 学習データ全6,701件で2固定のバグ（hist_fix_vg.py で修正済み）
+   V3 からの2点の変更:
+     1) 特徴に「枠番・馬番相対・今日の馬場×道悪実績・芝ダ×枠・頭数・VG」を追加
+        （V3には枠番も今日の馬場も無く、today_vg は学習データ全件2固定のバグだった）
+     2) 目的関数を LambdaRank(3着内の並び) から **二値(1着か否か)** に変更
+        LambdaRankは1位を過大評価する癖(top-rank inflation)があり、「外枠のモデル2位が
+        モデル1位より勝つ」という順位の壊れを生んでいた。二値+枠特徴でこれが消える。
+     3) 種違い5本の平均（レース内zで合議）。1本だけだと学習のブレがそのまま順位に出る。
 
-   追加特徴は fit_v2.RAW_FEATS / fit_v2.CTX_FEATS。レース内z標準化を通すと
-   枠番は馬番の順序に潰れ、レース単位の値は全頭0になるため、生値のまま渡す。
+   WF2200Rでの実測(V3→V4bin2s): 1位勝率 24.8→25.5% / 市場との差 -3.0→-2.2pt /
+   1位単勝ROI 74.4→76.5% / 三連複1-2-3位ROI 72.5→76.5% / 外枠2位の逆転=消滅。
 
-   採否は wf_compare.py のゲート4項目で判定する（このスクリプトは学習のみ）。
-   usage: python3 fit_v4.py [--rounds 800] [--write]
+   usage: python3 fit_v4.py --write
 """
 import argparse
 
@@ -18,18 +20,25 @@ import numpy as np
 import lightgbm as lgb
 
 import fit_v2 as V2
-from fit_v2win import winner_metrics
-from wf_compare import load_ds, matrix, predict
+from wf_compare import load_ds, matrix, VARIANTS, train_fold, predict, _zs
 
+SPEC = VARIANTS["v4bin2s"]      # 二値 / lr0.03 / leaves63 / min_data20 / 5seed
 TEST_DAYS = {"20260704", "20260705", "20260711", "20260712"}
+
+
+def seed_specs(k):
+    for i in range(k):
+        sp = dict(SPEC)
+        sp["params"] = dict(SPEC.get("params") or {},
+                            bagging_seed=100+i, feature_fraction_seed=200+i,
+                            data_random_seed=300+i)
+        yield i, sp
 
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--rounds", type=int, default=800)
-    ap.add_argument("--lr", type=float, default=0.02)
-    ap.add_argument("--leaves", type=int, default=31)
-    ap.add_argument("--out", default="model_v4.txt")
+    ap.add_argument("--seeds", type=int, default=5)
+    ap.add_argument("--prefix", default="model_v4_s")
     ap.add_argument("--write", action="store_true")
     a = ap.parse_args()
 
@@ -39,34 +48,40 @@ def main():
     names = V2.feat_names(v4=True)
     print(f"データ: train {len(train)}R / test {len(test)}R / 特徴 {len(names)}", flush=True)
 
-    n_val = max(50, len(train)//10)
-    Xt, yt, gt = matrix(train[:-n_val], True)
-    Xv, yv, gv = matrix(train[-n_val:], True)
-    dtr = lgb.Dataset(Xt, label=yt, group=gt, feature_name=names)
-    dva = lgb.Dataset(Xv, label=yv, group=gv, reference=dtr)
-    params = dict(objective="lambdarank", metric="ndcg", ndcg_eval_at=[5],
-                  learning_rate=a.lr, num_leaves=a.leaves, min_data_in_leaf=30,
-                  feature_fraction=0.8, bagging_fraction=0.8, bagging_freq=1,
-                  lambda_l2=5.0, verbose=-1, label_gain=[0, 1, 3, 7])
-    model = lgb.train(params, dtr, num_boost_round=a.rounds, valid_sets=[dva],
-                      callbacks=[lgb.early_stopping(60, verbose=False)])
-    print(f"best_iteration: {model.best_iteration}", flush=True)
+    models = []
+    for i, sp in seed_specs(a.seeds):
+        m = train_fold(train, sp)
+        models.append(m)
+        print(f"  seed{i}: best_iteration={m.best_iteration}", flush=True)
+        if a.write:
+            m.save_model(f"{a.prefix}{i}.txt", num_iteration=m.best_iteration)
 
-    imp = sorted(zip(names, model.feature_importance("gain")), key=lambda x: -x[1])
-    print("重要度top12: " + ", ".join(f"{k}={v:.0f}" for k, v in imp[:12]))
-    newf = [k for k in V2.RAW_FEATS + V2.CTX_FEATS]
-    print("追加特徴の重要度: " + ", ".join(
-        f"{k}={dict(imp)[k]:.0f}(#{[x[0] for x in imp].index(k)+1})" for k in newf))
+    imp = np.zeros(len(names))
+    for m in models:
+        imp += m.feature_importance("gain")
+    order = sorted(zip(names, imp), key=lambda x: -x[1])
+    print("\n重要度top12: " + ", ".join(f"{k}={v:.0f}" for k, v in order[:12]))
+    rank = {k: i+1 for i, (k, _) in enumerate(order)}
+    g = dict(order)
+    print("V4追加特徴: " + ", ".join(
+        f"{k}=#{rank[k]}({g[k]:.0f})" for k in V2.RAW_FEATS + V2.CTX_FEATS))
 
-    for name, dset in (("train", train), ("test", test)):
-        if not dset:
-            continue
-        print(f"\n── {name} ──")
-        winner_metrics(dset, lambda r: predict(model, r, True), "Ver.4(+枠+馬場+VG)")
+    # holdout: 1着を1位に置けた率
+    if test:
+        hit = 0
+        for r in test:
+            s = {}
+            for m in models:
+                p = predict(m, r, True)
+                z = _zs(p)
+                for n in z:
+                    s[n] = s.get(n, 0.0) + z[n]/len(models)
+            hit += (max(s, key=lambda n: s[n]) == r["top3"][0])
+        print(f"\nholdout {len(test)}R: 1着をモデル1位に置けた率 {hit/len(test)*100:.1f}%")
 
     if a.write:
-        model.save_model(a.out, num_iteration=model.best_iteration)
-        print(f"\n{a.out} に保存した。")
+        print(f"\n{a.prefix}0..{a.seeds-1}.txt に保存した。"
+              f"（v2_live はこの{a.seeds}本をレース内zで平均して使う）")
 
 
 if __name__ == "__main__":

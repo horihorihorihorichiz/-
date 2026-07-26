@@ -325,7 +325,11 @@ def classify(order, tan, field, surface=None, dist=None, tier=None, gap12=None, 
                             "芝の上位平坦馬連は通算130.1%だが最大的中除外88.6%＝高配当1本依存。"
                             "同パターンはダート限定(174.8%・除外138.0%)で採用"))
         # ★外枠のモデル2位(市場が枠で嫌う馬をモデルが拾う): 内枠の同条件は83.2%で死亡
-        if field and 13 <= field <= 16 and day and day >= 3 and waku2 and waku2 >= 7:
+        # ⚠2026-07-26判明: これはV3に枠特徴が無いことによる順位バグを拾っていた
+        #   （V3では外枠2位27.2% > モデル1位24.4%＝順位が逆転していた）。
+        #   V4では枠を学習して逆転が消えた(1位25.4% > 外枠2位22.0%)ので、V4では発火させない。
+        if (os.environ.get("KEIBA_ENGINE", "").lower() != "v4"
+                and field and 13 <= field <= 16 and day and day >= 3 and waku2 and waku2 >= 7):
             fav2 = sorted(tan, key=lambda h: tan[h])[1] if len(tan) > 1 else None
             t2 = order[1]
             if fav2 != t2:

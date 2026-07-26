@@ -18,6 +18,9 @@ import course
 
 DEV_MAX = "202603"
 
+JRA_CODE = {"01": "札幌", "02": "函館", "03": "福島", "04": "新潟", "05": "東京",
+            "06": "中山", "07": "中京", "08": "京都", "09": "阪神", "10": "小倉"}
+
 
 def key_of(nums):
     return "-".join(str(x) for x in sorted(nums))
@@ -36,8 +39,8 @@ def load(path):
         sc = d["scores"]
         sc = [float(x) for x in (sc if isinstance(sc, list) else
                                  [sc[str(n)] for n in order])]
-        venue = d.get("venue") or ""
         rid = d["rid"]
+        venue = d.get("venue") or JRA_CODE.get(rid[4:6], "")
         field = int(d.get("field") or len(order))
         surface, dist = d.get("surface"), int(d.get("dist") or 0)
         out.append(dict(
@@ -130,6 +133,7 @@ def main():
     ap.add_argument("path")
     ap.add_argument("--min-n", type=int, default=40)
     ap.add_argument("--pairs", action="store_true", default=True)
+    ap.add_argument("--show", default="", help="この条件(部分一致)のセルを合否に関わらず全部出す")
     a = ap.parse_args()
 
     rows = load(a.path)
@@ -167,6 +171,14 @@ def main():
         print(f"  {roi:6.1f}%  {bt:12s} {cond:52s} "
               f"n={c.n:4d} 的中{c.hits:3d} dev{c.dev:6.1f}/conf{c.conf:6.1f} 除外{c.excl:6.1f}")
     print(f"\n  合格 {len(ok)}件 / 検査 {len(cells)}セル")
+
+    if a.show:
+        print(f"\n── 「{a.show}」を含むセル（合否問わず・n>={a.min_n}） ──")
+        rowsf = [(c.roi, bt, cond, c) for (bt, cond), c in cells.items()
+                 if a.show in cond and c.n >= a.min_n]
+        for roi, bt, cond, c in sorted(rowsf, reverse=True, key=lambda x: x[0])[:30]:
+            print(f"  {roi:6.1f}%  {bt:12s} {cond:52s} "
+                  f"n={c.n:4d} 的中{c.hits:3d} dev{c.dev:6.1f}/conf{c.conf:6.1f} 除外{c.excl:6.1f}")
 
 
 if __name__ == "__main__":

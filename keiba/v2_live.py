@@ -3,11 +3,20 @@
    ユーザーが送る情報（馬柱・自前指数・騎手）だけで「勝つ馬の得点」を再計算し、
    ランキングの 得点/PWin/ランク を置き換える。市場情報は不使用。
    params_v2.json の weights_win が無ければ何もしない(None)。"""
-import json, math, os
+import glob, json, math, os
 
 import fit_v2 as V2
 
 _DIR = os.path.dirname(os.path.abspath(__file__))
+
+
+def _z(s):
+    """レース内zスコア化。目的関数の違う複数モデルを同じ土俵に載せてから平均するため。
+       二値モデルは出力が確率(0-1)、LambdaRankは順位スコアで、生値のままでは平均できない。"""
+    xs = list(s.values())
+    m = sum(xs)/len(xs)
+    sd = (sum((x-m)**2 for x in xs)/len(xs))**0.5 or 1.0
+    return {n: (v-m)/sd for n, v in s.items()}
 
 
 def _load(name):
@@ -40,21 +49,47 @@ def rescore(race, rows):
     if len(raw) < 5 or n_hist < len(raw)*0.6:
         return None
     X = {k: V2.z_in_race({n: raw[n].get(k) for n in raw}) for k in V2.FEATS}
+    ctx = V2.race_ctx(race)
+    rx = {n: V2.raw_extra(n, raw[n], ctx) for n in raw}
     engine = "Ver.2-WIN(U2)"
     s = None
-    # V3(LambdaRank)があれば優先。lightgbm不在/モデル無しは自動でU2線形にフォールバック
+    # 既定は V3。V4 は KEIBA_ENGINE=v4 で明示的に有効化する。
+    # ※patterns.py の g12 閾値は V3 の得点で採掘したもの。V4 は得点の意味が変わる
+    #   （二値=勝ち馬確率のレース内z）ので、パターン再採掘が済むまで既定にはしない。
+    want_v4 = os.environ.get("KEIBA_ENGINE", "").lower() == "v4"
     try:
         import lightgbm as lgb
-        mpath = os.path.join(_DIR, "model_v3.txt")
-        if os.path.exists(mpath):
-            booster = lgb.Booster(model_file=mpath)
-            ns = list(raw.keys())
-            import numpy as np
-            M = np.array([[X[k][n] for k in V2.FEATS] + [len(ns)] for n in ns],
-                         dtype=np.float32)
-            pred = booster.predict(M)
-            s = {n: float(v) for n, v in zip(ns, pred)}
-            engine = "Ver.3(LambdaRank)"
+        import numpy as np
+        ns = list(raw.keys())
+        pseudo = dict(X=X, ns=ns, ctx=ctx, raw_extra=rx)
+
+        def run(files, v4, zscore):
+            """zscore=True のときだけレース内z化してから平均する。
+               V3は単体モデルで、既存パターンのg12閾値が生スコア基準なので z化しない。"""
+            M = np.array([V2.build_row(pseudo, n, v4) for n in ns], dtype=np.float32)
+            acc, used = {n: 0.0 for n in ns}, 0
+            for fp in files:
+                b = lgb.Booster(model_file=fp)
+                if b.num_feature() != M.shape[1]:
+                    continue       # 特徴数が合わないモデルは使わない(取り違え防止)
+                p = dict(zip(ns, (float(v) for v in b.predict(M))))
+                p = _z(p) if zscore else p
+                for n in ns:
+                    acc[n] += p[n]
+                used += 1
+            return ({n: acc[n]/used for n in ns}, used) if used else (None, 0)
+
+        if want_v4:
+            v4files = sorted(glob.glob(os.path.join(_DIR, "model_v4_s*.txt")))
+            s, used = run(v4files, True, True)
+            if s:
+                engine = f"Ver.4(二値+枠+馬場・{used}種平均)"
+        if s is None:
+            mp = os.path.join(_DIR, "model_v3.txt")
+            if os.path.exists(mp):
+                s, used = run([mp], False, False)
+                if s:
+                    engine = "Ver.3(LambdaRank)"
     except Exception:
         s = None
     if s is None:

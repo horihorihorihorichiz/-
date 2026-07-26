@@ -1,0 +1,13 @@
+データ: train 5965R / test 127R / 特徴 36
+  seed0: best_iteration=122
+  seed1: best_iteration=113
+  seed2: best_iteration=151
+  seed3: best_iteration=126
+  seed4: best_iteration=177
+
+重要度top12: cond_perf=150305, wavg=78141, fin_frac=44065, fin_best2=34970, n_runs=33514, j_top3=32761, corner_frac=29842, field=26111, layoff_lastfin=25423, agari_mean3_rel=24536, agari_best=20818, classup_lastgood=17549
+V4追加特徴: waku=#32(1486), waku_rel=#36(192), umaban_rel=#24(6745), wet_x_baba=#31(1899), waku_x_dirt=#27(5159), field=#8(26111), baba_today=#34(739), today_vg=#33(1430), is_dirt=#35(499)
+
+holdout 127R: 1着をモデル1位に置けた率 26.8%
+
+model_v4_s0..4.txt に保存した。（v2_live はこの5本をレース内zで平均して使う）

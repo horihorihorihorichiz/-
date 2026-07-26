@@ -59,9 +59,16 @@ VARIANTS = {
     # 容量を上げた二値
     "v4bin2": dict(v4=True, binary=True,
                    params=dict(learning_rate=0.03, num_leaves=63, min_data_in_leaf=20)),
+    # さらに容量を上げた二値
+    "v4bin3": dict(v4=True, binary=True,
+                   params=dict(learning_rate=0.03, num_leaves=127, min_data_in_leaf=10)),
     # 二値(勝ち馬確率)とランキング(3着内の並び)はズレ方が違う → レース内z平均で合議
     "v4ens": dict(ens=["v4bin", "v4"]),
     "v4ens3": dict(ens=["v4bin", "v4", "v4t3"]),
+    # 種違いを平均して学習のブレを消す(順位付けの分散低減。特徴もハイパラも同じ)
+    "v4bin2s": dict(v4=True, binary=True, seeds=5,
+                    params=dict(learning_rate=0.03, num_leaves=63, min_data_in_leaf=20)),
+    "v4bin2s_ens": dict(ens=["v4bin2s", "v4"]),
 }
 
 
@@ -80,6 +87,18 @@ def fit_predict(train, fold, name):
         parts = [fit_predict(train, fold, sub) for sub in spec["ens"]]
         return [{n: sum(_zs(p[i])[n] for p in parts)/len(parts) for n in p0}
                 for i, p0 in enumerate(parts[0])]
+    k = spec.get("seeds") or 1
+    if k > 1:
+        outs = []
+        for i in range(k):
+            sp = dict(spec)
+            sp["params"] = dict(spec.get("params") or {},
+                                bagging_seed=100+i, feature_fraction_seed=200+i,
+                                data_random_seed=300+i)
+            m = train_fold(train, sp)
+            outs.append([predict(m, r, spec["v4"]) for r in fold])
+        return [{n: sum(_zs(o[i])[n] for o in outs)/k for n in outs[0][i]}
+                for i in range(len(fold))]
     model = train_fold(train, spec)
     return [predict(model, r, spec["v4"]) for r in fold]
 
