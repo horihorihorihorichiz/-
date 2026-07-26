@@ -309,14 +309,20 @@ def classify(order, tan, field, surface=None, dist=None, tier=None, gap12=None, 
                         "ダートの同条件は53.1%＝『システム紐は死亡』の唯一の例外領域"))
         # ★得点形状: 上位が平坦(1位-5位の得点差が小さい)×少頭数 の馬連
         #   spread15 = (得点1位 - 得点5位) を12スケールで割った生値
+        #  ★7/26 芝ダ分割で判明: この馬連は【ダート限定】。芝は最大的中除外88.6%で1発依存
         if (spread15 is not None and spread15 < 1.0 and field and field <= 12
                 and day and day >= 2):
             tight = spread15 < 0.8
-            out.append(("◎上位平坦×12頭以下 馬連1-2位", f"馬連 {mm} (1-5位差{spread15:.2f})",
-                        177.6 if tight else 147.6, "◎買い推奨",
-                        ("差<0.8: dev138.7→conf214.4 通算177.6%/107点" if tight else
-                         "差<1.0: dev147.7→conf147.5(完全一致) 通算147.6%/171点・除外後122.6%")
-                        + "。逆側(尖ったレース)は78.9%/349点＝平坦なほどモデル1-2位で決まる"))
+            if surface == "ダ":
+                out.append(("◎上位平坦×12頭以下×ダ 馬連1-2位", f"馬連 {mm} (1-5位差{spread15:.2f})",
+                            210.5 if tight else 174.8, "◎買い推奨",
+                            ("ダ×差<0.8: dev200.0→conf220.0 通算210.5%/44点・除外154.9%" if tight else
+                             "ダ×差<1.0: dev215.2→conf147.5 通算174.8%/67点・除外138.0%")
+                            + "。尖ったレースは78.9%。芝の同条件は除外後88.6%で不採用"))
+            else:
+                out.append(("△上位平坦×12頭以下[芝]", f"馬連 {mm} は見送り(芝)", 88.6, "✕見送り推奨",
+                            "芝の上位平坦馬連は通算130.1%だが最大的中除外88.6%＝高配当1本依存。"
+                            "同パターンはダート限定(174.8%・除外138.0%)で採用"))
         # ★外枠のモデル2位(市場が枠で嫌う馬をモデルが拾う): 内枠の同条件は83.2%で死亡
         if field and 13 <= field <= 16 and day and day >= 3 and waku2 and waku2 >= 7:
             fav2 = sorted(tan, key=lambda h: tan[h])[1] if len(tan) > 1 else None
