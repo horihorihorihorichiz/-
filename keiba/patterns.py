@@ -96,7 +96,7 @@ def tier_of(best_roi, heat_count):
 
 
 def classify(order, tan, field, surface=None, dist=None, tier=None, gap12=None, p1=None,
-             day=None, venue=None, spread15=None, waku2=None):
+             day=None, venue=None, spread15=None, waku2=None, baba=None):
     """order=V3得点順の馬番リスト, tan={num:単勝オッズ}, field=頭数。
        返り値: [(パターン名, 買い目説明, ROI, 判定, note)]"""
     out = []
@@ -300,8 +300,9 @@ def classify(order, tan, field, surface=None, dist=None, tier=None, gap12=None, 
                             "dev148.2→conf203.1 通算165.9%/90点・除外後138.9%。"
                             "『中距離×条件級は死亡』の逆＝少頭数芝では条件級が主戦場"))
         # ★芝×条件級×自信×良 の三連複1-2-3位: 純システム紐の唯一の生存領域(ダは53.1%)
+        #  ※測定条件は【良馬場限定】。道悪では未検証につき発火させない(7/26修正)
         if (surface == "芝" and tier and 1 <= tier <= 5 and gap12 is not None and gap12 >= 0.2
-                and field and field <= 16 and len(order) >= 3):
+                and field and field <= 16 and len(order) >= 3 and baba == "良"):
             out.append(("◎芝×条件級×自信 三連複モデル1-2-3位",
                         f"三連複 {'-'.join(map(str, sorted(order[:3])))}",
                         160.4, "◎買い推奨",

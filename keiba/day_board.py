@@ -87,7 +87,8 @@ def eval_race(it, date, nar, fast=False):
         o1 = tan.get(m1, 0)
         p1 = rows[0].get("pwin", 0) / 100.0
         mval = p1 * o1
-        out.update(axis=m1, axis_name=names.get(m1, ""), o1=o1, pop1=pops.get(m1, 0),
+        out.update(baba=race.get("baba") or "-",
+                   axis=m1, axis_name=names.get(m1, ""), o1=o1, pop1=pops.get(m1, 0),
                    g12=round(g12, 3), mval=round(mval, 2), field=race.get("field"))
         # ---- パターン判定(場で分岐) ----
         if nar:
@@ -105,7 +106,7 @@ def eval_race(it, date, nar, fast=False):
                                 surface=race.get("surface"), dist=race.get("distance"),
                                 tier=race.get("today_tier"), gap12=g12, p1=p1, day=_day,
                                 venue=it.get("venue") or race.get("venue"),
-                                spread15=sp15, waku2=_w2)
+                                spread15=sp15, waku2=_w2, baba=race.get("baba"))
         buy = [f for f in fires if f[3].startswith("◎")]
         spread4 = rows[0]["wavg"] - rows[3]["wavg"] if len(rows) > 3 else 99
         # ヒートスコア(重複条件数): 乖離発火時のみ意味を持つ
@@ -248,13 +249,13 @@ def main():
     md = [f"# デイボード {date[:4]}/{date[4:6]}/{date[6:8]}",
           f"更新 {now.strftime('%H:%M')} JST ／ 対象{len(results)}R ／ "
           "狙い目: SS=最強帯×ヒート4+(1万円) S=高ROI(5千円) A=中位(2千円) B=薄エッジ(千円) C=見送り", "",
-          "| 場 | R | 発走 | レース | 軸馬(モデル1位) | オッズ(人気) | g12 | 狙い目 | 判定 |",
-          "|---|---|---|---|---|---|---|---|---|"]
+          "| 場 | R | 発走 | レース | 馬場 | 軸馬(モデル1位) | オッズ(人気) | g12 | 狙い目 | 判定 |",
+          "|---|---|---|---|---|---|---|---|---|---|"]
     for o in results:
         ax = f"{o.get('axis','-')} {o.get('axis_name','')[:8]}" if o.get("axis") else "-"
         oz = f"{o.get('o1','-')}倍({o.get('pop1','-')}人)" if o.get("o1") else "-"
         wt = "体重◎" if o.get("weights") else "体重未"
-        md.append(f"| {o['venue']} | {o['r']} | {o['time']} | {o['name'][:10]}{o['dist']} | {ax} | {oz} | "
+        md.append(f"| {o['venue']} | {o['r']} | {o['time']} | {o['name'][:10]}{o['dist']} | {o.get('baba','-')} | {ax} | {oz} | "
                   f"{o.get('g12','-')} | **{o['rank']}** | {o['note'][:38]} {wt} |")
     md.append("")
     hot = sorted([o for o in results if o["rank"] in ("SS", "S", "A") and o.get("rows")],
