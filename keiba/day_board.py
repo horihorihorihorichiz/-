@@ -118,11 +118,13 @@ def eval_race(it, date, nar, fast=False):
         out.update(heat=hc, heat_hits=hn, heat_roi=hroi)
         if buy:
             best = max(buy, key=lambda f: f[2])
-            out["rank"] = "S"
-            heat_tag = (f" 🔥{hc}条件重複({'+'.join(hn)})={hc}個以上帯WF{hroi:.0f}%/{hsn}R"
-                        if hc >= 3 else (f" 🔥{hc}条件" if hc else ""))
-            out["note"] = f"発火: {best[0]} ROI{best[2]:.0f}%{heat_tag}"
-            out["fire_desc"] = best[1] + (f" ／ 熱さ{hc}個: {'+'.join(hn)}" if hn else "")
+            tier, yen, treason = JP.tier_of(best[2], hc)
+            out["rank"] = tier
+            out.update(tier=tier, yen=yen)
+            heat_tag = (f" 🔥{hc}条件({'+'.join(hn)})" if hc >= 3 else (f" 🔥{hc}条件" if hc else ""))
+            out["note"] = f"【{tier}/{yen:,}円】{best[0]} ROI{best[2]:.0f}%{heat_tag}"
+            out["fire_desc"] = (f"{best[1]} ／ 階級{tier}={yen:,}円({treason})"
+                                + (f" ／ 熱さ{hc}個: {'+'.join(hn)}" if hn else ""))
         elif (o1 >= 12 and g12 < 0.20) or mval >= 1.6:
             why = []
             if o1 >= 12 and g12 < 0.20:
@@ -241,11 +243,11 @@ def main():
         print(f"[{it.get('venue')}{it.get('r')}R] 判定中...", file=sys.stderr, flush=True)
         results.append(eval_race(it, date, nar, fast=a.fast))
 
-    RANK_ORD = {"S": 0, "A": 1, "B": 2, "C": 3, "-": 4}
-    n_sa = sum(1 for o in results if o["rank"] in ("S", "A"))
+    RANK_ORD = {"SS": -1, "S": 0, "A": 1, "B": 2, "C": 3, "-": 4}
+    n_sa = sum(1 for o in results if o["rank"] in ("SS", "S", "A"))
     md = [f"# デイボード {date[:4]}/{date[4:6]}/{date[6:8]}",
           f"更新 {now.strftime('%H:%M')} JST ／ 対象{len(results)}R ／ "
-          "狙い目: S=検証済パターン発火 A=準発火 B=混戦BOX型(未検証) C=見送り", "",
+          "狙い目: SS=最強帯×ヒート4+(1万円) S=高ROI(5千円) A=中位(2千円) B=薄エッジ(千円) C=見送り", "",
           "| 場 | R | 発走 | レース | 軸馬(モデル1位) | オッズ(人気) | g12 | 狙い目 | 判定 |",
           "|---|---|---|---|---|---|---|---|---|"]
     for o in results:
@@ -255,7 +257,7 @@ def main():
         md.append(f"| {o['venue']} | {o['r']} | {o['time']} | {o['name'][:10]}{o['dist']} | {ax} | {oz} | "
                   f"{o.get('g12','-')} | **{o['rank']}** | {o['note'][:38]} {wt} |")
     md.append("")
-    hot = sorted([o for o in results if o["rank"] in ("S", "A") and o.get("rows")],
+    hot = sorted([o for o in results if o["rank"] in ("SS", "S", "A") and o.get("rows")],
                  key=lambda x: (RANK_ORD[x["rank"]], x["time"]))
     for o in hot:
         md.append(f"## 【{o['rank']}】{o['venue']}{o['r']}R {o['time']} {o['name']}{o['dist']} ({o.get('field')}頭)")

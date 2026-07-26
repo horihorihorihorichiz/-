@@ -71,6 +71,30 @@ def heat_of(order, tan, field, surface=None, dist=None, tier=None, p1=None, venu
     return hits, len(hits), roi, n
 
 
+# ★階級(7/26確定・実測でヒート数がSS/Sを分離することを確認)
+#   実用コア×ヒート5+ = 453.0%/37R(dev434→conf484・除外352%)
+#   最強帯(10倍+×上級)×ヒート4+ = 565.8%/24R(dev589→conf538・除外413%)
+#   → SS は「パターンROI300%+ かつ ヒート4以上」で定義。1点1万円帯。
+TIER_BUDGET = {"SS": 10000, "S": 5000, "A": 2000, "B": 1000, "C": 0}
+
+
+def tier_of(best_roi, heat_count):
+    """買い階級を返す。best_roi=最上位パターンのWF実測ROI, heat_count=重複条件数"""
+    if best_roi is None:
+        return "C", 0, ""
+    if best_roi >= 300 and heat_count >= 4:
+        return "SS", TIER_BUDGET["SS"], "最強帯×ヒート4+ (実測453-566%帯)"
+    if best_roi >= 300:
+        return "S", TIER_BUDGET["S"], "高ROI帯だがヒート3以下"
+    if best_roi >= 200 and heat_count >= 4:
+        return "S", TIER_BUDGET["S"], "ROI200%+×ヒート4+"
+    if best_roi >= 160:
+        return "A", TIER_BUDGET["A"], "検証済みだが中位ROI"
+    if best_roi >= 105:
+        return "B", TIER_BUDGET["B"], "薄エッジ・小額のみ"
+    return "C", 0, "見送り"
+
+
 def classify(order, tan, field, surface=None, dist=None, tier=None, gap12=None, p1=None,
              day=None, venue=None, spread15=None, waku2=None):
     """order=V3得点順の馬番リスト, tan={num:単勝オッズ}, field=頭数。
