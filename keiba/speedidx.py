@@ -82,7 +82,8 @@ def build():
     # 較正: 既存race_*.jsonのnetkeiba純正tsi(貼り付け分)との線形回帰
     pairs = []
     import datetime as DT
-    for f in glob.glob("race_2026*.json"):
+    # 7/26整理でrace_*.jsonはarchive/races/へ移動(較正ペアの供給源はそのまま使う)
+    for f in glob.glob("race_2026*.json") + glob.glob("archive/races/race_2026*.json"):
         try:
             race = json.load(open(f, encoding="utf-8"))
         except Exception:
@@ -125,7 +126,9 @@ def build():
 
 
 def attach():
-    """hist/の馬柱のtsi=Noneの走に自前指数を付与（tsi_srcで由来を記録）"""
+    """hist/の馬柱のtsi=Noneの走に自前指数を付与（tsi_srcで由来を記録）。
+       tsi_src=own(過去のattach分)はDB再構築で較正スケールが変わるため**上書きして統一**する。
+       netkeiba純正のtsi(貼り付け由来)だけは温存。"""
     import datetime as DT
     db = json.load(open(DB, encoding="utf-8"))
     n_set = n_run = 0
@@ -139,8 +142,10 @@ def attach():
         for h in d["race"]["horses"]:
             for run in h.get("races", []):
                 n_run += 1
-                if run.get("tsi") is not None or not run.get("days"):
+                if not run.get("days"):
                     continue
+                if run.get("tsi") is not None and run.get("tsi_src") != "own":
+                    continue    # netkeiba純正は温存
                 dt = (rdate - DT.timedelta(days=run["days"])).strftime("%Y%m%d")
                 v = db.get(f"{h['name']}|{dt}")
                 if v is not None:
