@@ -190,10 +190,26 @@ function heading(s, title) {
       color:  '475569',
       bgRow:  'f5f7fa',
     },
+    {
+      client: '築地イベントセンター',
+      event:  'ロボットテクノロジージャパン',
+      note:   '',
+      amt:    '3,060',
+      color:  '0891b2',
+      bgRow:  'ecfeff',
+    },
+    {
+      client: '新宿新都心イベントセンター',
+      event:  'MSS（MUFG STARTUP SUMMIT）',
+      note:   '',
+      amt:    '1,857',
+      color:  '7c3aed',
+      bgRow:  'f5f3ff',
+    },
   ];
 
-  const RH = 0.9;
-  const GAP = 0.18;
+  const RH = 0.72;
+  const GAP = 0.12;
   const xClient = PX;        const wClient = 3.0;
   const xEvent  = PX + 3.0;  const wEvent  = 5.5;
   const xAmt    = PX + 8.5;  const wAmt    = CW - 8.5;
@@ -320,7 +336,7 @@ function heading(s, title) {
 
 // ── Write ─────────────────────────────────────────────────
 const args = process.argv.slice(2);
-let outputFile = path.resolve(__dirname, '..', 'slides', 'exports', 'sales-meeting.pptx');
+let outputFile = path.resolve(__dirname, '..', 'slides', 'exports', '営業会議_2026年7月度.pptx');
 for (let i = 0; i < args.length; i++) {
   if (args[i] === '--output' && args[i + 1]) outputFile = path.resolve(args[++i]);
 }
