@@ -10,7 +10,6 @@ const fs        = require('fs');
 
 // ── Palette ───────────────────────────────────────────────
 const BG     = 'ffffff';
-const CARD   = 'f5f7fa';
 const BORDER = 'e0e4ea';
 const TEXT   = '1a1a2e';
 const ACCENT = '2563eb';
@@ -32,22 +31,17 @@ const pptx = new PptxGenJS();
 pptx.layout = 'LAYOUT_WIDE';
 
 // ── Helpers ───────────────────────────────────────────────
-
 function bg(s) { s.background = { fill: BG }; }
-
 function R(s, x, y, w, h, color) {
   s.addShape('rect', { x, y, w, h, fill: { color }, line: { type: 'none' } });
 }
-
 function hLine(s, x, y, w, color = ACCENT, h = 0.04) {
   R(s, x, y, w, h, color);
 }
-
 function T(s, text, x, y, w, h, opts = {}) {
   s.addText(text, { x, y, w, h, fontFace: F, color: TEXT, bold: true,
     valign: 'top', align: 'left', ...opts });
 }
-
 function heading(s, title) {
   T(s, title, PX, 0.3, CW, 0.65, { fontSize: 26, bold: true, color: TEXT });
   hLine(s, PX, 1.05, CW);
@@ -67,10 +61,10 @@ function heading(s, title) {
   T(s, '営業会議', PX, 2.75, CW, 1.1,
     { fontSize: 62, bold: true, color: TEXT, align: 'center', valign: 'middle' });
 
-  T(s, '2026年6月度　月度実績報告・進捗確認', PX, 4.05, CW, 0.5,
+  T(s, '2026年7月度　月度実績報告・進捗確認', PX, 4.05, CW, 0.5,
     { fontSize: 20, bold: false, color: MUTED, align: 'center', valign: 'middle' });
 
-  T(s, '2026.06.18', PX, 4.7, CW, 0.4,
+  T(s, '2026.07.27', PX, 4.7, CW, 0.4,
     { fontSize: 14, bold: false, color: MUTED, align: 'center', valign: 'middle' });
 }
 
@@ -81,15 +75,16 @@ function heading(s, title) {
   heading(s, 'アジェンダ');
 
   const items = [
-    { num: '①', label: '5月分 売上　／　営業活動進捗', accent: true },
-    { num: '②', label: '店長・副店長から',               accent: false },
-    { num: '③', label: '吉川さん（PJ関連）',             accent: false },
-    { num: '④', label: '関さん（防災関連）',             accent: false },
+    { num: '①', label: '6月分 売上　／　営業活動進捗',  accent: true  },
+    { num: '②', label: '区民祭り 進捗報告（堀川）',       accent: true  },
+    { num: '③', label: '店長・副店長から',                 accent: false },
+    { num: '④', label: '吉川さん（PJ関連）',               accent: false },
+    { num: '⑤', label: '関さん（防災関連）',               accent: false },
   ];
 
-  const IH = 0.58;
-  const GAP = 0.12;
-  let iy = TOP + 0.15;
+  const IH = 0.53;
+  const GAP = 0.1;
+  let iy = TOP + 0.1;
 
   items.forEach(item => {
     const bg2 = item.accent ? 'dbeafe' : 'f5f7fa';
@@ -97,9 +92,9 @@ function heading(s, title) {
     R(s, PX, iy, CW, IH, bg2);
     R(s, PX, iy, 0.045, IH, bc);
     T(s, item.num, PX + 0.12, iy, 0.55, IH,
-      { fontSize: 18, bold: true, color: item.accent ? ACCENT : MUTED, align: 'center', valign: 'middle' });
+      { fontSize: 17, bold: true, color: item.accent ? ACCENT : MUTED, align: 'center', valign: 'middle' });
     T(s, item.label, PX + 0.72, iy, CW - 0.82, IH,
-      { fontSize: 16, bold: item.accent, color: TEXT, valign: 'middle' });
+      { fontSize: 15, bold: item.accent, color: TEXT, valign: 'middle' });
     iy += IH + GAP;
   });
 }
@@ -108,7 +103,7 @@ function heading(s, title) {
 {
   const s = pptx.addSlide();
   bg(s);
-  heading(s, '5月度 売上ランキング　（単位：円）');
+  heading(s, '6月度 売上ランキング　（単位：円）');
 
   const RH  = 0.365;
   const HY  = TOP;
@@ -121,28 +116,28 @@ function heading(s, title) {
 
   R(s, PX, HY, CW, RH, 'e8edf5');
   const ho = { fontSize: 11, bold: true, color: MUTED, valign: 'middle' };
-  T(s, '順位',   xRank,        HY, wRank, RH, { ...ho, align: 'center' });
-  T(s, '号数',   xNum,         HY, wNum,  RH, { ...ho, align: 'center' });
-  T(s, '店舗名', xName + 0.1,  HY, wName, RH, ho);
-  T(s, '売上金額', xAmt,       HY, wAmt,  RH, { ...ho, align: 'right'  });
-  T(s, '前期比', xYoy,         HY, wYoy,  RH, { ...ho, align: 'right'  });
+  T(s, '順位',     xRank,       HY, wRank, RH, { ...ho, align: 'center' });
+  T(s, '号数',     xNum,        HY, wNum,  RH, { ...ho, align: 'center' });
+  T(s, '店舗名',   xName + 0.1, HY, wName, RH, ho);
+  T(s, '売上金額', xAmt,        HY, wAmt,  RH, { ...ho, align: 'right'  });
+  T(s, '前期比',   xYoy,        HY, wYoy,  RH, { ...ho, align: 'right'  });
 
   const rows = [
-    { rank:  1, num: 225, name: '日本橋イベントセンター',       amt: '141,916,484', yoy: '8.4%',    yc: GREEN, mine: false },
-    { rank:  2, num: 305, name: '大阪北イベントセンター',       amt: '87,722,501',  yoy: '62.1%',   yc: GREEN, mine: false },
-    { rank:  3, num: 150, name: '仙台イベントセンター',         amt: '83,606,860',  yoy: '▲7.0%',  yc: RED,   mine: false },
-    { rank:  4, num: 398, name: '大阪中央イベントセンター',     amt: '80,502,402',  yoy: '0.9%',    yc: GREEN, mine: false },
-    { rank:  5, num: 145, name: '札幌イベントセンター',         amt: '53,712,021',  yoy: '105.4%',  yc: GREEN, mine: false },
-    { rank:  6, num: 330, name: '新宿新都心イベントセンター',   amt: '40,101,320',  yoy: '125.0%',  yc: GREEN, mine: false },
-    { rank:  7, num: 172, name: '神戸西イベントセンター',       amt: '36,361,979',  yoy: '5.1%',    yc: GREEN, mine: false },
-    { rank:  8, num: 204, name: '広島イベントセンター',         amt: '36,063,194',  yoy: '5.8%',    yc: GREEN, mine: false },
-    { rank:  9, num: 107, name: '岡山イベントセンター',         amt: '35,056,186',  yoy: '149.9%',  yc: GREEN, mine: false },
-    { rank: 10, num:  24, name: '名古屋イベントセンター',       amt: '33,447,345',  yoy: '126.2%',  yc: GREEN, mine: true  },
-    { rank: 11, num: 417, name: '銀座イベントセンター',         amt: '28,293,034',  yoy: '26.1%',   yc: GREEN, mine: false },
-    { rank: 12, num:  85, name: '姫路イベントセンター',         amt: '26,936,903',  yoy: '103.9%',  yc: GREEN, mine: false },
-    { rank: 13, num: 186, name: '大阪南港イベントセンター',     amt: '26,245,836',  yoy: '88.4%',   yc: GREEN, mine: false },
-    { rank: 14, num:  78, name: '所沢イベントセンター',         amt: '24,939,640',  yoy: '▲9.2%',  yc: RED,   mine: false },
-    { rank: 15, num: 179, name: '東京足立イベントセンター',     amt: '24,777,113',  yoy: '8.4%',    yc: GREEN, mine: false },
+    { rank:  1, num: 225, name: '日本橋イベントセンター',     amt: '151,287,256', yoy: '26.8%',    yc: GREEN, mine: false },
+    { rank:  2, num: 305, name: '大阪北イベントセンター',     amt: '88,835,405',  yoy: '▲37.0%',  yc: RED,   mine: false },
+    { rank:  3, num: 330, name: '新宿新都心イベントセンター', amt: '67,228,754',  yoy: '77.3%',    yc: GREEN, mine: false },
+    { rank:  4, num: 417, name: '銀座イベントセンター',       amt: '60,123,397',  yoy: '90.1%',    yc: GREEN, mine: false },
+    { rank:  5, num:  78, name: '所沢イベントセンター',       amt: '44,274,702',  yoy: '▲9.4%',   yc: RED,   mine: false },
+    { rank:  6, num: 145, name: '札幌イベントセンター',       amt: '41,433,503',  yoy: '▲25.0%',  yc: RED,   mine: false },
+    { rank:  7, num: 186, name: '大阪南港イベントセンター',   amt: '33,183,978',  yoy: '▲22.9%',  yc: RED,   mine: false },
+    { rank:  8, num: 179, name: '東京足立イベントセンター',   amt: '31,324,486',  yoy: '▲30.0%',  yc: RED,   mine: false },
+    { rank:  9, num: 176, name: '静岡三島イベントセンター',   amt: '28,222,920',  yoy: '22.5%',    yc: GREEN, mine: false },
+    { rank: 10, num:  24, name: '名古屋イベントセンター',     amt: '27,695,826',  yoy: '15.9%',    yc: GREEN, mine: true  },
+    { rank: 11, num: 150, name: '仙台イベントセンター',       amt: '25,044,900',  yoy: '▲36.0%',  yc: RED,   mine: false },
+    { rank: 12, num: 398, name: '大阪中央イベントセンター',   amt: '24,728,890',  yoy: '▲50.9%',  yc: RED,   mine: false },
+    { rank: 13, num: 322, name: '横浜町田イベントセンター',   amt: '24,199,441',  yoy: '54.6%',    yc: GREEN, mine: false },
+    { rank: 14, num:  45, name: '仙台ステーション',           amt: '20,238,380',  yoy: '2,011.8%', yc: GREEN, mine: false },
+    { rank: 15, num:  44, name: '目黒ステーション',           amt: '19,160,198',  yoy: '12.9%',    yc: GREEN, mine: false },
   ];
 
   rows.forEach((r, i) => {
@@ -164,35 +159,103 @@ function heading(s, title) {
   });
 }
 
-// ── SLIDE 4: 売上トピック ─────────────────────────────────
+// ── SLIDE 4: 売上トピックス ───────────────────────────────
 {
   const s = pptx.addSlide();
   bg(s);
-  heading(s, '売上トピック');
+  heading(s, '売上トピックス　（単位：千円）');
 
-  const RH = 0.46;
-  const HY = TOP;
+  const topics = [
+    {
+      client: 'ハマーステージ',
+      event:  'YONFES2026',
+      note:   '',
+      amt:    '7,000',
+      color:  ACCENT,
+      bgRow:  'dbeafe',
+    },
+    {
+      client: '中部電力パワーグリッド',
+      event:  '寛政変電所',
+      note:   '⚠ 台風により当日キャンセル → 7月 再実施予定',
+      amt:    '2,170',
+      color:  'b45309',
+      bgRow:  'fef9c3',
+    },
+    {
+      client: '',
+      event:  '福祉・介護の就職総合フェア2026',
+      note:   '',
+      amt:    '1,600',
+      color:  '475569',
+      bgRow:  'f5f7fa',
+    },
+  ];
 
-  const xType = PX;          const wType = 0.85;
-  const xCust = PX + 0.85;   const wCust = 3.2;
-  const xMkt  = PX + 4.05;   const wMkt  = 3.2;
-  const xProd = PX + 7.25;   const wProd = 2.2;
-  const xAmt  = PX + 9.45;   const wAmt  = 2.68;
+  const RH = 0.9;
+  const GAP = 0.18;
+  const xClient = PX;        const wClient = 3.0;
+  const xEvent  = PX + 3.0;  const wEvent  = 5.5;
+  const xAmt    = PX + 8.5;  const wAmt    = CW - 8.5;
+  let ty = TOP + 0.15;
+
+  topics.forEach(t => {
+    R(s, PX, ty, CW, RH, t.bgRow);
+    R(s, PX, ty, 0.055, RH, t.color);
+
+    if (t.client) {
+      T(s, t.client, xClient + 0.15, ty + 0.1, wClient - 0.2, 0.3,
+        { fontSize: 10, bold: true, color: MUTED, valign: 'middle' });
+    }
+    T(s, t.event, xClient + 0.15, ty + (t.client ? 0.38 : 0.25), wClient - 0.2, 0.38,
+      { fontSize: 14, bold: true, color: TEXT, valign: 'middle' });
+
+    if (t.note) {
+      T(s, t.note, xEvent + 0.1, ty + 0.35, wEvent - 0.2, 0.38,
+        { fontSize: 10, bold: true, color: t.color, valign: 'middle' });
+    }
+
+    T(s, t.amt, xAmt, ty, wAmt - 0.1, RH,
+      { fontSize: 28, bold: true, color: t.color, align: 'right', valign: 'middle' });
+
+    ty += RH + GAP;
+  });
+}
+
+// ── SLIDE 5: 区民祭り 受注管理 ───────────────────────────
+{
+  const s = pptx.addSlide();
+  bg(s);
+  heading(s, '区民祭り 受注管理（10区）');
+
+  const RH  = 0.40;
+  const HY  = TOP;
+
+  const xKu   = PX;          const wKu   = 1.2;
+  const xDate = PX + 1.2;    const wDate = 1.1;
+  const xBid  = PX + 2.3;    const wBid  = 1.4;
+  const xAmt  = PX + 3.7;    const wAmt  = 4.5;
+  const xSts  = PX + 8.2;    const wSts  = 1.0;
 
   R(s, PX, HY, CW, RH, 'e8edf5');
   const ho = { fontSize: 11, bold: true, color: MUTED, valign: 'middle' };
-  T(s, '区分',     xType, HY, wType, RH, { ...ho, align: 'center' });
-  T(s, '顧客名',   xCust, HY, wCust, RH, ho);
-  T(s, '市場機会', xMkt,  HY, wMkt,  RH, ho);
-  T(s, '主要商品', xProd, HY, wProd, RH, ho);
-  T(s, '売上',     xAmt,  HY, wAmt,  RH, { ...ho, align: 'right' });
+  T(s, '区',               xKu,   HY, wKu,   RH, ho);
+  T(s, '本番日',           xDate, HY, wDate, RH, { ...ho, align: 'center' });
+  T(s, '入札・見積期限',   xBid,  HY, wBid,  RH, { ...ho, align: 'center' });
+  T(s, '契約金額（税抜）', xAmt,  HY, wAmt,  RH, { ...ho, align: 'right' });
+  T(s, '状況',             xSts,  HY, wSts,  RH, { ...ho, align: 'center' });
 
   const rows = [
-    { type: '新規', cust: 'BMI',                mkt: 'ラオスフェス',   prod: 'テント',     amt: '4,000', isNew: true },
-    { type: '新規', cust: 'ヤマチコーポレーション', mkt: '防災展',       prod: 'テント',     amt: '4,000', isNew: true },
-    { type: '既存', cust: 'イーキューブ',         mkt: 'アイドル感謝祭', prod: 'EZパネル',   amt: '3,500', isNew: false },
-    { type: '既存', cust: '名古屋市名東区',       mkt: '区民祭り',      prod: 'テント',     amt: '3,300', isNew: false },
-    { type: '新規', cust: 'イーキューブ',         mkt: 'アイドル',      prod: 'EZパネル',   amt: '1,400', isNew: true },
+    { ku: '名東区', date: '5/10',  bid: '3月',   amt: '3,300,000', status: '確定', done: true },
+    { ku: '中村区', date: '10/31', bid: '5月',   amt: '5,500,000', status: '確定', done: true },
+    { ku: '瑞穂区', date: '11/7',  bid: '7月',   amt: '4,000,000', status: '未',   done: false },
+    { ku: '東区',   date: '11/8',  bid: '7月',   amt: '4,930,000', status: '未',   done: false },
+    { ku: '昭和区', date: '11/15', bid: '7月',   amt: '4,300,000', status: '未',   done: false },
+    { ku: '千種区', date: '12/5',  bid: '7月',   amt: '3,700,000', status: '未',   done: false },
+    { ku: '天白区', date: '12/5',  bid: '7月',   amt: '5,200,000', status: '未',   done: false },
+    { ku: '守山区', date: '12/6',  bid: '7月',   amt: '4,000,000', status: '未',   done: false },
+    { ku: '南区',   date: '2/21',  bid: '10月',  amt: '2,200,000', status: '未',   done: false },
+    { ku: '中川区', date: '2/28',  bid: '8月頃', amt: '未定',      status: '未',   done: false },
   ];
 
   rows.forEach((r, i) => {
@@ -200,40 +263,35 @@ function heading(s, title) {
     const rowBg = i % 2 === 0 ? BG : 'f5f7fa';
     R(s, PX, ry, CW, RH, rowBg);
 
-    const badgeBg = r.isNew ? ACCENT : 'e5e7eb';
-    const badgeFg = r.isNew ? 'ffffff' : MUTED;
-    const bW = 0.55; const bH = 0.24;
-    const bX = xType + (wType - bW) / 2;
-    const bY = ry + (RH - bH) / 2;
-    R(s, bX, bY, bW, bH, badgeBg);
-    T(s, r.type, bX, bY, bW, bH,
-      { fontSize: 9, bold: true, color: badgeFg, align: 'center', valign: 'middle' });
+    T(s, r.ku,   xKu,   ry, wKu,   RH, { fontSize: 13, bold: true,  color: TEXT, valign: 'middle' });
+    T(s, r.date, xDate, ry, wDate, RH, { fontSize: 12, bold: true,  color: TEXT, align: 'center', valign: 'middle' });
+    T(s, r.bid,  xBid,  ry, wBid,  RH, { fontSize: 12, bold: true,  color: TEXT, align: 'center', valign: 'middle' });
+    T(s, r.amt,  xAmt,  ry, wAmt,  RH, { fontSize: 13, bold: true,  color: r.amt === '未定' ? MUTED : TEXT, align: 'right', valign: 'middle' });
 
-    T(s, r.cust, xCust, ry, wCust, RH,
-      { fontSize: 13, bold: true, color: TEXT, valign: 'middle' });
-    T(s, r.mkt, xMkt, ry, wMkt, RH,
-      { fontSize: 12, bold: true, color: MUTED, valign: 'middle' });
-    T(s, r.prod, xProd, ry, wProd, RH,
-      { fontSize: 12, bold: true, color: MUTED, valign: 'middle' });
-    T(s, r.amt, xAmt, ry, wAmt, RH,
-      { fontSize: 14, bold: true, color: TEXT, align: 'right', valign: 'middle' });
+    const stsBg = r.done ? GREEN : 'e5e7eb';
+    const stsFg = r.done ? 'ffffff' : MUTED;
+    const stsW = 0.65, stsH = 0.24;
+    const stsX = xSts + (wSts - stsW) / 2;
+    const stsY = ry + (RH - stsH) / 2;
+    R(s, stsX, stsY, stsW, stsH, stsBg);
+    T(s, r.status, stsX, stsY, stsW, stsH,
+      { fontSize: 10, bold: true, color: stsFg, align: 'center', valign: 'middle' });
   });
 }
 
-// ── SLIDE 5: 原価引き当てのお願い ─────────────────────────
+// ── SLIDE 6: 原価引き当てのお願い ─────────────────────────
 {
   const s = pptx.addSlide();
   bg(s);
   heading(s, '原価引き当てのお願い');
 
-  // intro box
   R(s, PX, TOP + 0.1, CW, 0.65, 'dbeafe');
   T(s, '案件ごとの原価引き当てに、以下の項目も必ず入力してください。', PX + 0.2, TOP + 0.1, CW - 0.4, 0.65,
     { fontSize: 15, bold: true, color: TEXT, valign: 'middle' });
 
-  // card 1: 車両費
   const cy = TOP + 1.0;
   const cardW = (CW - 0.3) / 2;
+
   R(s, PX, cy, cardW, 1.6, 'f5f7fa');
   R(s, PX + 0.2, cy + 0.18, 0.45, 0.3, ACCENT);
   T(s, '①', PX + 0.2, cy + 0.18, 0.45, 0.3,
@@ -243,7 +301,6 @@ function heading(s, title) {
   T(s, '商品項目「③入件費・車輌費・諸経費」で\n搬入車両費を登録する', PX + 0.2, cy + 0.65, cardW - 0.4, 0.8,
     { fontSize: 13, bold: true, color: MUTED, valign: 'top', lineSpacingMultiple: 1.5 });
 
-  // card 2: 人件費
   const cx2 = PX + cardW + 0.3;
   R(s, cx2, cy, cardW, 1.6, 'f5f7fa');
   R(s, cx2 + 0.2, cy + 0.18, 0.45, 0.3, ACCENT);
@@ -254,7 +311,6 @@ function heading(s, title) {
   T(s, '商品項目「③入件費・車輌費・諸経費」で\n人件費を登録する', cx2 + 0.2, cy + 0.65, cardW - 0.4, 0.8,
     { fontSize: 13, bold: true, color: MUTED, valign: 'top', lineSpacingMultiple: 1.5 });
 
-  // warning box
   const wy = cy + 1.85;
   R(s, PX, wy, CW, 0.6, 'fef3c7');
   T(s, '売上だけでなく、車両費・人件費の引き当ても毎回必ず行ってください。正確な原価把握につながります。',
