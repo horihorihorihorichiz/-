@@ -75,6 +75,13 @@ VARIANTS = {
                 params=dict(learning_rate=0.03, num_leaves=63, min_data_in_leaf=20)),
     "v5s": dict(v4=True, extra=True, binary=True, seeds=5,
                 params=dict(learning_rate=0.03, num_leaves=63, min_data_in_leaf=20)),
+    # 種の引き測定(単体v5と同構成・乱数だけ変更)
+    "v5a": dict(v4=True, extra=True, binary=True,
+                params=dict(learning_rate=0.03, num_leaves=63, min_data_in_leaf=20,
+                            bagging_seed=111, feature_fraction_seed=222, data_random_seed=333)),
+    "v5b": dict(v4=True, extra=True, binary=True,
+                params=dict(learning_rate=0.03, num_leaves=63, min_data_in_leaf=20,
+                            bagging_seed=777, feature_fraction_seed=888, data_random_seed=999)),
     # 統一データの効果を切り分けるための再基準(特徴はV4のまま)
     "v4bin2u": dict(v4=True, binary=True,
                     params=dict(learning_rate=0.03, num_leaves=63, min_data_in_leaf=20)),
