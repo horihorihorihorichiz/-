@@ -6,379 +6,459 @@
   <title>建築トレンド 2026</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;600;700;800;900&family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600;800;900&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="themes/default.css">
   <style>
-    :root {
-      --primary: #ffffff;
-      --primary-light: #f5f5f5;
-      --accent: #111111;
-      --accent-secondary: #666666;
-      --text-primary: #111111;
-      --text-secondary: #333333;
-      --text-muted: #888888;
-      --bg-dark: #fafafa;
-      --bg-card: rgba(0, 0, 0, 0.03);
-      --bg-card-hover: rgba(0, 0, 0, 0.06);
-      --border-subtle: rgba(0, 0, 0, 0.08);
-      --shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.06);
+    /* ========== Editorial / quieted down ==========
+       paper off-white, ink near-black, serif headings.
+       Masthead / folio / kicker / watermark numbers removed.
+       Single-word red accents removed.
+       Body text >= 22px. */
+    :root{
+      --paper:#f1ede4;
+      --paper-2:#e6dfce;
+      --ink:#17140f;
+      --muted:#8b8578;
+      --accent:#b33a1f;         /* burnt brick — used sparingly for a few marks */
+      --pad-x:120px;
+      --pad-y:96px;
+      --body-top:120px;
+      --body-bottom:96px;
+      --line:1px solid var(--ink);
+      --line-thick:3px solid var(--ink);
+      --font-serif:'Noto Serif JP','Hiragino Mincho ProN','Yu Mincho','YuMincho',serif;
+      --font-sans:'Noto Sans JP','Hiragino Sans','Yu Gothic',system-ui,sans-serif;
+    }
+    html,body{background:var(--paper);color:var(--ink);}
+    body{font-family:var(--font-sans);}
+
+    .slide, .slide--title, .slide--section{background:var(--paper) !important;}
+    .slide-inner{background:var(--paper) !important;padding:var(--pad-y) var(--pad-x);color:var(--ink);}
+
+    /* Typographic primitives */
+    .display{
+      font-family:var(--font-serif);
+      font-weight:800;line-height:0.95;letter-spacing:-0.01em;
+    }
+    .italic{font-style:italic;}
+    .lede{
+      font-family:var(--font-serif);
+      font-size:24px;line-height:1.8;color:#2b251e;
+      max-width:760px;
+    }
+    .caption{
+      font-family:var(--font-sans);font-size:13px;letter-spacing:0.18em;
+      text-transform:uppercase;color:var(--muted);
+    }
+    .divider{height:1px;background:var(--ink);}
+    .divider--thick{height:3px;background:var(--ink);}
+
+    /* Decorative marks — kept minimal */
+    .ring{
+      position:absolute;border:1.5px solid var(--ink);border-radius:50%;
+    }
+    .disc{
+      position:absolute;border-radius:50%;background:var(--ink);
+    }
+    .square{
+      position:absolute;border:1.5px solid var(--ink);
     }
 
-    /* Style A: シンプルデザイン - 白背景、黒文字、ミニマル */
-    .slide {
-      background: #ffffff !important;
+    /* ------- Slide 1 : Cover ------- */
+    .cover .slide-inner{padding:0;}
+    .cover .title-block{
+      position:absolute;left:var(--pad-x);top:260px;right:var(--pad-x);
+    }
+    .cover .eyebrow{
+      font-family:var(--font-serif);font-style:italic;font-size:28px;color:var(--ink);
+      margin-bottom:32px;
+    }
+    .cover h1{
+      font-family:var(--font-serif);font-weight:900;
+      font-size:196px;line-height:0.92;letter-spacing:-0.02em;
+      color:var(--ink);
+    }
+    .cover h1 .yr{
+      font-family:var(--font-serif);font-style:italic;font-weight:400;
+      font-size:108px;color:var(--ink);margin-left:16px;
+    }
+    .cover .subblock{
+      position:absolute;left:var(--pad-x);bottom:180px;max-width:720px;
+      font-family:var(--font-serif);font-size:24px;line-height:1.9;color:#2b251e;
+      border-top:var(--line);padding-top:24px;
     }
 
-    .slide--title {
-      background: #ffffff !important;
+    /* ------- Slide 2 : Contents ------- */
+    .contents .body{
+      position:absolute;left:var(--pad-x);right:var(--pad-x);top:var(--body-top);bottom:var(--body-bottom);
+      display:grid;grid-template-columns:280px 1fr;gap:72px;
+    }
+    .contents .left h2{
+      font-family:var(--font-serif);font-weight:900;
+      font-size:72px;line-height:1;color:var(--ink);margin-bottom:28px;letter-spacing:-0.01em;
+    }
+    .contents .left p{
+      font-family:var(--font-serif);font-size:22px;line-height:1.9;color:#2b251e;max-width:260px;
+    }
+    .toc{border-top:var(--line-thick);align-self:start;}
+    .toc .row{
+      display:grid;grid-template-columns:96px 1fr 120px;
+      gap:32px;align-items:baseline;
+      padding:28px 0;border-bottom:var(--line);
+    }
+    .toc .n{
+      font-family:var(--font-serif);font-style:italic;font-weight:400;
+      font-size:64px;line-height:0.9;color:var(--ink);
+    }
+    .toc .t .ja{
+      font-family:var(--font-serif);font-weight:800;font-size:36px;line-height:1.2;color:var(--ink);
+    }
+    .toc .pg{
+      font-family:var(--font-serif);font-style:italic;font-size:24px;
+      color:var(--ink);text-align:right;
     }
 
-    .slide--section {
-      background: #f8f8f8 !important;
+    /* ------- Sectional feature slides ------- */
+    .feature .body{
+      position:absolute;left:var(--pad-x);right:var(--pad-x);
+      top:var(--body-top);bottom:var(--body-bottom);z-index:2;
+    }
+    .feature h2.section{
+      font-family:var(--font-serif);font-weight:900;
+      font-size:84px;line-height:1.12;color:var(--ink);
+      max-width:1200px;letter-spacing:-0.015em;
+    }
+    .feature .lede{
+      font-family:var(--font-serif);font-size:24px;line-height:1.8;color:#2b251e;
+      max-width:880px;
     }
 
-    /* 太いゴシック体 */
-    h1, h2, h3 { font-weight: 900; letter-spacing: -0.02em; }
+    /* ------- Slide 3 : 01 Carbon ------- */
+    .s-carbon .body{display:grid;grid-template-rows:auto auto 1fr;gap:32px;}
+    .s-carbon .infobox{
+      align-self:end;
+      border-top:3px solid var(--ink);padding-top:28px;
+      display:grid;grid-template-columns:1fr 1fr;gap:12px 72px;
+    }
+    .s-carbon .infobox .cap-full{grid-column:1 / -1;}
+    .bar-row{display:grid;grid-template-columns:1fr auto;align-items:baseline;margin-bottom:12px;}
+    .bar-row .label{font-family:var(--font-serif);font-size:22px;font-weight:600;color:var(--ink);}
+    .bar-row .val{font-family:var(--font-serif);font-style:italic;font-weight:400;font-size:36px;color:var(--ink);}
+    .bar{height:8px;background:var(--paper-2);overflow:hidden;margin-bottom:26px;}
+    .bar > span{display:block;height:100%;background:var(--ink);}
 
-    /* アクセントライン */
-    .accent-line {
-      width: 60px; height: 4px; background: #111; margin-bottom: 24px;
+    /* ------- Slide 4 : 02 Wood ------- */
+    .s-wood .body{display:grid;grid-template-rows:auto 1fr;gap:36px;}
+    .s-wood .top{max-width:1200px;}
+    .s-wood .cols{display:grid;grid-template-columns:1.1fr 1fr;gap:80px;align-items:start;}
+    .s-wood .hero{
+      font-family:var(--font-serif);font-weight:900;
+      font-size:224px;line-height:0.85;color:var(--ink);letter-spacing:-0.02em;
     }
-    .accent-line--center {
-      width: 60px; height: 4px; background: #111; margin: 0 auto 24px;
+    .s-wood .hero .unit{
+      font-size:64px;font-weight:400;font-style:italic;vertical-align:baseline;margin-left:6px;color:var(--ink);
     }
+    .s-wood .hero-cap{
+      margin-top:22px;font-family:var(--font-serif);font-size:22px;line-height:1.8;color:#2b251e;
+      max-width:500px;border-top:var(--line);padding-top:18px;
+    }
+    .tl{list-style:none;margin-top:8px;}
+    .tl li{
+      padding:18px 0;border-bottom:var(--line);display:grid;
+      grid-template-columns:140px 1fr;gap:28px;align-items:baseline;
+    }
+    .tl li:first-child{border-top:var(--line);}
+    .tl .y{font-family:var(--font-serif);font-style:italic;font-weight:400;font-size:40px;color:var(--ink);line-height:1;}
+    .tl .txt{font-family:var(--font-serif);font-size:22px;line-height:1.75;color:#2b251e;}
+    .tl .txt b{font-family:var(--font-serif);font-weight:800;font-size:24px;color:var(--ink);display:block;margin-bottom:6px;}
+    .tl li.future .y, .tl li.future .txt b{color:var(--muted);}
 
-    /* 数字ハイライト */
-    .big-number {
-      font-size: 4rem; font-weight: 900; line-height: 1;
-      color: #111;
+    /* ------- Slide 5 : 03 AI × BIM ------- */
+    .s-ai .body{display:grid;grid-template-rows:auto 1fr auto;gap:36px;}
+    .s-ai .top{max-width:1200px;}
+    .s-ai .row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:64px;align-self:center;}
+    .stat{border-top:var(--line-thick);padding-top:24px;}
+    .stat .n{
+      font-family:var(--font-serif);font-weight:900;font-size:148px;line-height:0.9;letter-spacing:-0.03em;color:var(--ink);
     }
-    .big-number span {
-      font-size: 1.5rem; font-weight: 600; color: #888;
+    .stat .n .u{font-size:52px;font-weight:400;font-style:italic;color:var(--muted);margin-left:6px;}
+    .stat h3{
+      font-family:var(--font-serif);font-weight:800;font-size:30px;margin-top:14px;color:var(--ink);
     }
-
-    /* ミニマルカード */
-    .min-card {
-      background: #f8f8f8; border-radius: 12px; padding: 28px;
-      border: 1px solid rgba(0,0,0,0.05);
-    }
-    .min-card h3 {
-      font-size: 1.2rem; margin-bottom: 10px; color: #111;
-    }
-    .min-card p {
-      font-size: 0.95rem; color: #555; line-height: 1.7;
-    }
-
-    /* アイコン丸 */
-    .icon-circle {
-      width: 56px; height: 56px; border-radius: 50%;
-      background: #111; color: #fff;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 1.5rem; font-weight: 800; margin-bottom: 16px;
-    }
-
-    /* タグ */
-    .tag {
-      display: inline-block; padding: 4px 14px; border-radius: 20px;
-      font-size: 0.75rem; font-weight: 600; letter-spacing: 0.05em;
-      border: 1.5px solid #111; color: #111; margin-bottom: 16px;
-    }
-
-    /* フロー矢印 */
-    .flow-arrow {
-      display: flex; align-items: center; justify-content: center;
-      font-size: 2rem; color: #ccc;
-    }
-
-    /* グリッドレイアウト */
-    .grid-3 {
-      display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 24px;
-    }
-    .grid-2 {
-      display: grid; grid-template-columns: 1fr 1fr; gap: 32px; align-items: center;
+    .stat p{font-family:var(--font-serif);font-size:22px;line-height:1.75;color:#2b251e;margin-top:14px;max-width:340px;}
+    .s-ai .foot{
+      font-family:var(--font-serif);font-style:italic;font-size:24px;color:#2b251e;max-width:1300px;
+      padding-left:24px;border-left:3px solid var(--ink);
     }
 
-    /* 引用スタイル */
-    .quote-minimal {
-      font-size: 1.8rem; font-weight: 700; line-height: 1.6;
-      border-left: 4px solid #111; padding-left: 28px; color: #111;
+    /* ------- Slide 6 : 04 + 05 spread ------- */
+    .spread .body{
+      position:absolute;left:var(--pad-x);right:var(--pad-x);top:var(--body-top);bottom:var(--body-bottom);
+      display:grid;grid-template-columns:1fr 1px 1fr;gap:72px;
+    }
+    .spread .rule{background:var(--ink);}
+    .spread .col h3{
+      font-family:var(--font-serif);font-weight:900;font-size:80px;line-height:1.08;color:var(--ink);
+      margin:12px 0 20px;letter-spacing:-0.015em;
+    }
+    .spread .col .num{
+      font-family:var(--font-serif);font-style:italic;font-weight:400;font-size:80px;line-height:0.9;color:var(--ink);
+    }
+    .spread .col p{font-family:var(--font-serif);font-size:22px;line-height:1.85;color:#2b251e;max-width:500px;}
+    .bignum{
+      font-family:var(--font-serif);font-weight:900;font-size:128px;line-height:1;color:var(--ink);
+      letter-spacing:-0.02em;margin:44px 0 8px;
+    }
+    .bignum .u{font-size:40px;font-weight:400;font-style:italic;color:var(--muted);}
+    .sublabel{
+      font-family:var(--font-serif);font-size:22px;color:var(--muted);line-height:1.6;
     }
 
-    /* プログレスバー */
-    .progress-bar {
-      height: 8px; background: #eee; border-radius: 4px; overflow: hidden;
-      margin-top: 8px;
+    /* ------- Slide 7 : Closing ------- */
+    .closing .slide-inner{padding:0;}
+    .closing .block{
+      position:absolute;left:var(--pad-x);right:var(--pad-x);top:260px;
     }
-    .progress-bar-fill {
-      height: 100%; background: #111; border-radius: 4px;
+    .closing .quote{
+      font-family:var(--font-serif);font-weight:400;font-style:italic;
+      font-size:112px;line-height:1.18;letter-spacing:-0.015em;color:var(--ink);
+      max-width:1560px;
     }
-
-    /* バッジ上書き */
-    .badge { border: 1.5px solid #111; color: #111; background: transparent; }
-    .badge--accent { background: #111; color: #fff; border-color: #111; }
-
-    /* セクション番号 */
-    .section-num {
-      font-size: 6rem; font-weight: 900; color: rgba(0,0,0,0.06);
-      position: absolute; top: 40px; right: 80px; line-height: 1;
+    .closing .quote b{font-weight:900;font-style:normal;}
+    .closing .sign{
+      position:absolute;left:var(--pad-x);right:var(--pad-x);bottom:160px;
+      border-top:var(--line);padding-top:24px;
+      font-family:var(--font-serif);font-style:italic;font-size:24px;color:var(--ink);
     }
 
-    /* タイムライン */
-    .timeline-item {
-      display: flex; gap: 20px; margin-bottom: 28px;
-    }
-    .timeline-dot {
-      width: 14px; height: 14px; border-radius: 50%;
-      background: #111; margin-top: 6px; flex-shrink: 0;
-    }
-    .timeline-content h4 {
-      font-size: 1.1rem; font-weight: 700; margin-bottom: 4px;
-    }
-    .timeline-content p {
-      font-size: 0.9rem; color: #666; line-height: 1.6;
-    }
+    /* override default theme defaults */
+    .slide--title .slide-inner, .slide--section .slide-inner{background:var(--paper) !important;}
+    .slide--title h1{color:var(--ink);}
+    h1,h2,h3{color:var(--ink);}
+    .highlight-box{background:transparent;border:none;padding:0;}
+
+    /* neutralize default.css rules that bleed accent color */
+    .slide--content h2{border-bottom:none;margin-bottom:0;padding-bottom:0;display:block;}
+    .slide-progress{background:var(--ink);opacity:0.15;height:2px;}
   </style>
 </head>
 <body>
-  <div class="slides-container">
+<div class="slides-container">
 
-    <!-- ========== Slide 1: Title ========== -->
-    <div class="slide slide--title">
-      <div class="slide-inner" style="justify-content: center; text-align: center;">
-        <div class="tag animate-in delay-1">ARCHITECTURE TRENDS</div>
-        <h1 class="animate-in delay-2" style="font-size: 4.5rem; color: #111; margin-bottom: 16px;">建築トレンド 2026</h1>
-        <div class="accent-line--center animate-in delay-3"></div>
-        <p class="animate-in delay-3" style="font-size: 1.3rem; color: #666; max-width: 600px; margin: 0 auto;">
-          これからの建築を形づくる<br>5つのキーワード
-        </p>
-        <p class="animate-in delay-4" style="font-size: 0.9rem; color: #aaa; margin-top: 40px;">2026.03.30</p>
+  <!-- ========== Slide 1 : Cover ========== -->
+  <div class="slide slide--title cover">
+    <div class="slide-inner">
+      <div class="ring" style="width:520px;height:520px;right:-160px;top:-160px;"></div>
+      <div class="ring" style="width:220px;height:220px;right:200px;top:60px;"></div>
+
+      <div class="title-block">
+        <div class="eyebrow">— これからの建築を、5つの視座で。</div>
+        <h1>建築<br>トレンド<span class="yr italic">2026.</span></h1>
+      </div>
+
+      <div class="subblock">
+        気候、素材、知能、そして人。<br>
+        5つのキーワードで、次の建築の輪郭をたどる。
       </div>
     </div>
-
-    <!-- ========== Slide 2: Overview ========== -->
-    <div class="slide slide--content">
-      <div class="slide-inner">
-        <div class="accent-line animate-in"></div>
-        <h2 class="animate-in delay-1" style="font-size: 2.2rem; color: #111; margin-bottom: 40px;">5つのキーワード</h2>
-        <div class="grid-3">
-          <div class="min-card animate-in delay-2">
-            <div class="icon-circle">1</div>
-            <h3>カーボンニュートラル</h3>
-            <p>脱炭素建築の標準化</p>
-          </div>
-          <div class="min-card animate-in delay-3">
-            <div class="icon-circle">2</div>
-            <h3>木造の進化</h3>
-            <p>CLT・中高層木造の拡大</p>
-          </div>
-          <div class="min-card animate-in delay-4">
-            <div class="icon-circle">3</div>
-            <h3>AI × BIM</h3>
-            <p>設計プロセスの自動化</p>
-          </div>
-        </div>
-        <div class="grid-2 animate-in delay-5" style="margin-top: 24px; max-width: 66%;">
-          <div class="min-card">
-            <div class="icon-circle">4</div>
-            <h3>リノベーション</h3>
-            <p>既存ストック活用の加速</p>
-          </div>
-          <div class="min-card">
-            <div class="icon-circle">5</div>
-            <h3>ウェルビーイング</h3>
-            <p>健康・快適性の数値化</p>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ========== Slide 3: Section - カーボンニュートラル ========== -->
-    <div class="slide slide--section">
-      <div class="slide-inner" style="justify-content: center; position: relative;">
-        <span class="section-num">01</span>
-        <div class="tag animate-in delay-1">KEYWORD 01</div>
-        <h2 class="animate-in delay-2" style="font-size: 3rem; color: #111;">カーボンニュートラル建築</h2>
-        <p class="animate-in delay-3" style="font-size: 1.1rem; color: #666; max-width: 500px;">
-          2050年脱炭素に向けて、建築分野のCO₂削減が急加速
-        </p>
-      </div>
-    </div>
-
-    <!-- ========== Slide 4: カーボンニュートラル詳細 ========== -->
-    <div class="slide slide--content">
-      <div class="slide-inner">
-        <div class="accent-line animate-in"></div>
-        <h2 class="animate-in delay-1" style="font-size: 2rem; color: #111; margin-bottom: 36px;">建築部門のCO₂排出構造</h2>
-        <div class="grid-2">
-          <div class="animate-left delay-2">
-            <div style="margin-bottom: 28px;">
-              <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
-                <span style="font-weight: 700;">運用エネルギー</span>
-                <span style="font-weight: 700;">70%</span>
-              </div>
-              <div class="progress-bar"><div class="progress-bar-fill" style="width: 70%"></div></div>
-            </div>
-            <div style="margin-bottom: 28px;">
-              <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
-                <span style="font-weight: 700;">材料製造（エンボディドカーボン）</span>
-                <span style="font-weight: 700;">22%</span>
-              </div>
-              <div class="progress-bar"><div class="progress-bar-fill" style="width: 22%"></div></div>
-            </div>
-            <div>
-              <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
-                <span style="font-weight: 700;">解体・廃棄</span>
-                <span style="font-weight: 700;">8%</span>
-              </div>
-              <div class="progress-bar"><div class="progress-bar-fill" style="width: 8%"></div></div>
-            </div>
-          </div>
-          <div class="animate-right delay-3">
-            <div class="min-card" style="margin-bottom: 16px;">
-              <h3>ZEB（ネット・ゼロ・エネルギー・ビル）</h3>
-              <p>2030年までに新築ビルの50%以上をZEB化する政策目標</p>
-            </div>
-            <div class="min-card">
-              <h3>LCCM住宅</h3>
-              <p>ライフサイクル全体でCO₂マイナスを実現する次世代住宅</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ========== Slide 5: Section - 木造の進化 ========== -->
-    <div class="slide slide--section">
-      <div class="slide-inner" style="justify-content: center; position: relative;">
-        <span class="section-num">02</span>
-        <div class="tag animate-in delay-1">KEYWORD 02</div>
-        <h2 class="animate-in delay-2" style="font-size: 3rem; color: #111;">木造建築の進化</h2>
-        <p class="animate-in delay-3" style="font-size: 1.1rem; color: #666; max-width: 500px;">
-          CLT・集成材の技術革新で中高層木造が現実に
-        </p>
-      </div>
-    </div>
-
-    <!-- ========== Slide 6: 木造詳細 ========== -->
-    <div class="slide slide--content">
-      <div class="slide-inner">
-        <div class="accent-line animate-in"></div>
-        <h2 class="animate-in delay-1" style="font-size: 2rem; color: #111; margin-bottom: 36px;">木造建築のマイルストーン</h2>
-        <div class="grid-2">
-          <div class="animate-left delay-2">
-            <div class="timeline-item">
-              <div class="timeline-dot"></div>
-              <div class="timeline-content">
-                <h4>2019 — CLT基準法改正</h4>
-                <p>CLT（直交集成板）が一般的な構造材料として基準法に位置づけ</p>
-              </div>
-            </div>
-            <div class="timeline-item">
-              <div class="timeline-dot"></div>
-              <div class="timeline-content">
-                <h4>2022 — 木材利用促進法</h4>
-                <p>公共建築物だけでなく民間建築物にも木材利用を促進</p>
-              </div>
-            </div>
-            <div class="timeline-item">
-              <div class="timeline-dot"></div>
-              <div class="timeline-content">
-                <h4>2025 — 中高層木造の増加</h4>
-                <p>10階建て以上の木造ビルが国内で複数竣工</p>
-              </div>
-            </div>
-            <div class="timeline-item">
-              <div class="timeline-dot" style="background: #ccc;"></div>
-              <div class="timeline-content">
-                <h4 style="color: #888;">2030 — 木造比率目標</h4>
-                <p>新築建築物の木造比率を現在の40%→55%へ</p>
-              </div>
-            </div>
-          </div>
-          <div class="animate-right delay-3">
-            <div class="min-card">
-              <div style="display: flex; gap: 20px; align-items: baseline; margin-bottom: 12px;">
-                <div class="big-number">18<span>階</span></div>
-              </div>
-              <p style="color: #555; line-height: 1.6;">国内最高の木造ビル（2025年竣工）。CLTとRC造のハイブリッド構造により実現。</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ========== Slide 7: Section - AI × BIM ========== -->
-    <div class="slide slide--section">
-      <div class="slide-inner" style="justify-content: center; position: relative;">
-        <span class="section-num">03</span>
-        <div class="tag animate-in delay-1">KEYWORD 03</div>
-        <h2 class="animate-in delay-2" style="font-size: 3rem; color: #111;">AI × BIM</h2>
-        <p class="animate-in delay-3" style="font-size: 1.1rem; color: #666; max-width: 500px;">
-          AIが設計・施工・維持管理の全プロセスを変革
-        </p>
-      </div>
-    </div>
-
-    <!-- ========== Slide 8: AI × BIM 詳細 ========== -->
-    <div class="slide slide--content">
-      <div class="slide-inner">
-        <div class="accent-line animate-in"></div>
-        <h2 class="animate-in delay-1" style="font-size: 2rem; color: #111; margin-bottom: 36px;">AI導入による変化</h2>
-        <div class="grid-3">
-          <div class="min-card animate-in delay-2" style="text-align: center;">
-            <div style="font-size: 2.5rem; margin-bottom: 8px;">&#9997;&#65039;</div>
-            <h3>設計フェーズ</h3>
-            <div class="big-number" style="margin: 12px 0;">-40<span>%</span></div>
-            <p>設計期間の短縮。AIが法規チェック・構造計算を自動化</p>
-          </div>
-          <div class="min-card animate-in delay-3" style="text-align: center;">
-            <div style="font-size: 2.5rem; margin-bottom: 8px;">&#127959;</div>
-            <h3>施工フェーズ</h3>
-            <div class="big-number" style="margin: 12px 0;">-25<span>%</span></div>
-            <p>コスト削減。BIMデータから自動積算・工程最適化</p>
-          </div>
-          <div class="min-card animate-in delay-4" style="text-align: center;">
-            <div style="font-size: 2.5rem; margin-bottom: 8px;">&#128736;&#65039;</div>
-            <h3>維持管理</h3>
-            <div class="big-number" style="margin: 12px 0;">+60<span>%</span></div>
-            <p>予防保全の精度向上。IoTセンサー × AI予測</p>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ========== Slide 9: まとめ ========== -->
-    <div class="slide slide--content">
-      <div class="slide-inner" style="justify-content: center;">
-        <div class="accent-line--center animate-in"></div>
-        <div style="text-align: center; max-width: 700px; margin: 0 auto;">
-          <div class="quote-minimal animate-in delay-2" style="border-left: none; padding-left: 0; text-align: center;">
-            建築の未来は<br>
-            「環境」「技術」「人」の<br>
-            交差点にある。
-          </div>
-          <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-top: 40px;">
-            <span class="tag animate-in delay-3">カーボンニュートラル</span>
-            <span class="tag animate-in delay-3">木造の進化</span>
-            <span class="tag animate-in delay-4">AI × BIM</span>
-            <span class="tag animate-in delay-4">リノベーション</span>
-            <span class="tag animate-in delay-5">ウェルビーイング</span>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ========== Slide 10: END ========== -->
-    <div class="slide slide--title">
-      <div class="slide-inner" style="justify-content: center; text-align: center;">
-        <h1 class="animate-in delay-1" style="font-size: 3.5rem; color: #111;">Thank you.</h1>
-        <div class="accent-line--center animate-in delay-2"></div>
-        <p class="animate-in delay-3" style="font-size: 1rem; color: #888;">建築トレンド 2026 — Architecture Trends</p>
-      </div>
-    </div>
-
   </div>
 
-  <script src="engine.js"></script>
+  <!-- ========== Slide 2 : Contents ========== -->
+  <div class="slide slide--content contents">
+    <div class="slide-inner">
+      <div class="ring" style="width:140px;height:140px;left:56px;bottom:120px;"></div>
+
+      <div class="body">
+        <div class="left">
+          <h2>目次</h2>
+          <p>この号で追いかける5つの主題。<br>どれも独立した流れでありながら、<br>静かに互いを引き寄せている。</p>
+        </div>
+
+        <div class="toc">
+          <div class="row">
+            <div class="n">01</div>
+            <div class="t"><div class="ja">カーボンニュートラル建築</div></div>
+            <div class="pg">p. 003</div>
+          </div>
+          <div class="row">
+            <div class="n">02</div>
+            <div class="t"><div class="ja">木造建築の進化</div></div>
+            <div class="pg">p. 004</div>
+          </div>
+          <div class="row">
+            <div class="n">03</div>
+            <div class="t"><div class="ja">AI&nbsp;×&nbsp;BIM</div></div>
+            <div class="pg">p. 005</div>
+          </div>
+          <div class="row">
+            <div class="n">04</div>
+            <div class="t"><div class="ja">リノベーション</div></div>
+            <div class="pg">p. 006</div>
+          </div>
+          <div class="row">
+            <div class="n">05</div>
+            <div class="t"><div class="ja">ウェルビーイング</div></div>
+            <div class="pg">p. 006</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== Slide 3 : 01 Carbon ========== -->
+  <div class="slide slide--content feature s-carbon">
+    <div class="slide-inner">
+      <div class="disc" style="width:14px;height:14px;left:120px;top:120px;"></div>
+
+      <div class="body">
+        <div>
+          <h2 class="section">建築は、<br>地球にとって最大の炭素産業である。</h2>
+        </div>
+
+        <p class="lede">
+          世界のCO₂排出の約<b>37%</b>は建築に由来する。2050年に向けて、設計の前提そのものが書き換えられようとしている。
+        </p>
+
+        <div class="infobox">
+          <div class="caption cap-full">建築部門のCO₂排出構造</div>
+          <div>
+            <div class="bar-row"><span class="label">運用エネルギー</span><span class="val italic">70%</span></div>
+            <div class="bar"><span style="width:70%"></span></div>
+            <div class="bar-row"><span class="label">材料製造</span><span class="val italic">22%</span></div>
+            <div class="bar"><span style="width:22%"></span></div>
+          </div>
+          <div>
+            <div class="bar-row"><span class="label">解体・廃棄</span><span class="val italic">8%</span></div>
+            <div class="bar"><span style="width:8%"></span></div>
+            <div class="caption" style="margin-top:6px;">Source · IEA / UNEP, 2024</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== Slide 4 : 02 Wood ========== -->
+  <div class="slide slide--content feature s-wood">
+    <div class="slide-inner">
+      <div class="ring" style="width:180px;height:180px;left:560px;bottom:90px;"></div>
+
+      <div class="body">
+        <div class="top">
+          <h2 class="section">街が、木で立ち上がる。</h2>
+        </div>
+
+        <div class="cols">
+          <div>
+            <div class="caption" style="margin-bottom:14px;">木造建築のマイルストーン</div>
+            <ul class="tl">
+              <li><div class="y italic">2019</div><div class="txt"><b>CLT基準法改正</b>直交集成板が一般的な構造材料として基準法に位置づけ。</div></li>
+              <li><div class="y italic">2022</div><div class="txt"><b>木材利用促進法</b>公共だけでなく民間建築物にも木材利用を拡大。</div></li>
+              <li><div class="y italic">2025</div><div class="txt"><b>中高層木造の増加</b>10階以上の木造ビルが国内で複数竣工。</div></li>
+              <li class="future"><div class="y italic">2030</div><div class="txt"><b>木造比率目標</b>新築の木造比率 40% → 55% へ。</div></li>
+            </ul>
+          </div>
+
+          <div>
+            <div class="caption" style="margin-bottom:14px;">2030年へ向かう、その到達点</div>
+            <div class="hero">18<span class="unit italic">階</span></div>
+            <div class="hero-cap">
+              2025年、国内最高の木造ビル。CLTとRC造のハイブリッドで、木は「風合い」から「骨格」へ還った。
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== Slide 5 : 03 AI × BIM ========== -->
+  <div class="slide slide--content feature s-ai">
+    <div class="slide-inner">
+      <div class="square" style="width:22px;height:22px;left:120px;top:120px;transform:rotate(45deg);"></div>
+
+      <div class="body">
+        <div class="top">
+          <h2 class="section">設計図を、もう一度考え直す。</h2>
+        </div>
+
+        <div class="row">
+          <div class="stat">
+            <div class="n">−40<span class="u italic">%</span></div>
+            <h3>設計期間</h3>
+            <p>法規チェック、構造計算、ドキュメント生成。手仕事の大半が自動化される。</p>
+          </div>
+          <div class="stat">
+            <div class="n">−25<span class="u italic">%</span></div>
+            <h3>施工コスト</h3>
+            <p>BIMデータから自動積算、工程最適化。見積の透明度が一段上がる。</p>
+          </div>
+          <div class="stat">
+            <div class="n">+60<span class="u italic">%</span></div>
+            <h3>維持管理の精度</h3>
+            <p>IoTセンサー × AI予測により、建物は「使われながら学習する」対象に。</p>
+          </div>
+        </div>
+
+        <div class="foot italic">
+          — 創造性の輪郭は変わらない。ただ、そこに至る道のりが短くなる。
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== Slide 6 : 04 + 05 Spread ========== -->
+  <div class="slide slide--content spread">
+    <div class="slide-inner">
+      <div class="ring" style="width:220px;height:220px;right:-60px;top:-60px;"></div>
+
+      <div class="body">
+        <!-- Column 04 -->
+        <div class="col">
+          <div class="num italic">04</div>
+          <h3>既存を<br>読み直す。</h3>
+          <p>新築の時代から、<b>ストック更新の時代</b>へ。<br>
+             既存躯体の価値を読み解き、<br>
+             手を入れることで街が変わる。</p>
+          <div class="bignum">64<span class="u italic">%</span></div>
+          <div class="sublabel">2030年 リノベ市場比率の予測</div>
+        </div>
+
+        <div class="rule"></div>
+
+        <!-- Column 05 -->
+        <div class="col">
+          <div class="num italic">05</div>
+          <h3>建築は、<br>ケアになる。</h3>
+          <p>WELL認証、CASBEE-ウェルネス、<br>
+             環境IoTによる快適性の数値化。<br>
+             空間は「健康を手当てする装置」として設計される。</p>
+          <div class="bignum">×3.2</div>
+          <div class="sublabel">健康志向オフィスの生産性指標</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== Slide 7 : Closing ========== -->
+  <div class="slide slide--title closing">
+    <div class="slide-inner">
+      <div class="ring" style="width:420px;height:420px;right:-120px;bottom:-120px;"></div>
+
+      <div class="block">
+        <div class="quote">
+          建築の未来は、<br>
+          <b>環境</b>と<b>技術</b>と<b>人</b>の<br>
+          交差点にある。
+        </div>
+      </div>
+
+      <div class="sign">
+        — 建築トレンド 2026 / 2026.03.30
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script src="engine.js"></script>
 </body>
 </html>
