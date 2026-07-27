@@ -48,7 +48,9 @@ def rescore(race, rows):
             n_hist += 1
     if len(raw) < 5 or n_hist < len(raw)*0.6:
         return None
-    X = {k: V2.z_in_race({n: raw[n].get(k) for n in raw}) for k in V2.FEATS}
+    for h in race.get("horses", []):
+        raw[h["num"]].update(V2.extra_strength(h, race))
+    X = {k: V2.z_in_race({n: raw[n].get(k) for n in raw}) for k in V2.FEATS + V2.EXTRA_FEATS}
     ctx = V2.race_ctx(race)
     rx = {n: V2.raw_extra(n, raw[n], ctx) for n in raw}
     engine = "Ver.2-WIN(U2)"
@@ -65,12 +67,27 @@ def rescore(race, rows):
 
         def run(files, v4, zscore):
             """zscore=True のときだけレース内z化してから平均する。
-               V3は単体モデルで、既存パターンのg12閾値が生スコア基準なので z化しない。"""
-            M = np.array([V2.build_row(pseudo, n, v4) for n in ns], dtype=np.float32)
+               V3は単体モデルで、既存パターンのg12閾値が生スコア基準なので z化しない。
+               行の形はモデルの特徴数で自動選択: 28=V3 / 36=V4 / 42=V5(+強さ特徴)。"""
+            mats = {}
+
+            def mat(v4_, extra):
+                key = (v4_, extra)
+                if key not in mats:
+                    mats[key] = np.array(
+                        [V2.build_row(pseudo, n, v4_, extra) for n in ns], dtype=np.float32)
+                return mats[key]
+
             acc, used = {n: 0.0 for n in ns}, 0
             for fp in files:
                 b = lgb.Booster(model_file=fp)
-                if b.num_feature() != M.shape[1]:
+                M = None
+                for v4_, extra in ((v4, False), (v4, True)):
+                    cand = mat(v4_, extra)
+                    if b.num_feature() == cand.shape[1]:
+                        M = cand
+                        break
+                if M is None:
                     continue       # 特徴数が合わないモデルは使わない(取り違え防止)
                 p = dict(zip(ns, (float(v) for v in b.predict(M))))
                 p = _z(p) if zscore else p

@@ -29,6 +29,49 @@ CTX_FEATS = ["field", "baba_today", "today_vg", "is_dirt"]
 
 BABA_IDX = {"良": 0, "稍": 1, "稍重": 1, "重": 2, "不": 3, "不良": 3}
 
+# ── V5追加(2026-07-27 強い馬当て強化) ────────────────────────────────
+# 全て「保存済みの過去走フィールドだけ」から計算する＝学習とライブで完全同一(統一原則)。
+# None耐性: 該当走が無ければNone→レース内zで0(平均扱い)に落ちる。
+EXTRA_FEATS = ["idx_trend", "fin_w", "class_fin", "bigfield_fin", "corner_gain", "wet_fin"]
+
+
+def extra_strength(h, race):
+    """強い馬当てのための追加特徴。
+       idx_trend   : 直近指数 − 2-5走前平均(上昇ムード)
+       fin_w       : 着順割合のrecency加重平均(直近ほど重い)
+       class_fin   : 今日と同等以上のクラスでの着順割合(格上での実績だけを見る)
+       bigfield_fin: 多頭数(14頭+)での着順割合(混戦での強さ)
+       corner_gain : 4角→ゴールの追い上げ幅(展開に頼らない末脚)
+       wet_fin     : 道悪(baba_idx>=1)での着順割合 ※7/27のbaba_idx遡及補完で学習側も利用可能"""
+    rs = h.get("races", [])
+    f = {}
+    tsis = [r.get("tsi") for r in rs[:5]]
+    later = [t for t in tsis[1:] if t is not None]
+    f["idx_trend"] = (tsis[0] - sum(later)/len(later)) if (tsis and tsis[0] is not None
+                                                          and later) else None
+    ws = vs = 0.0
+    for j, r in enumerate(rs[:5]):
+        if r.get("finish") and r.get("field"):
+            w = 1.0/(1+j)
+            ws += w
+            vs += w * r["finish"]/max(r["field"], 1)
+    f["fin_w"] = -(vs/ws) if ws else None
+    tt = race.get("today_tier")
+    cls = [r["finish"]/max(r["field"], 1) for r in rs
+           if r.get("finish") and r.get("field") and r.get("tier") is not None
+           and tt is not None and r["tier"] <= tt]
+    f["class_fin"] = -(sum(cls)/len(cls)) if cls else None
+    big = [r["finish"]/max(r["field"], 1) for r in rs
+           if r.get("finish") and r.get("field") and r["field"] >= 14]
+    f["bigfield_fin"] = -(sum(big)/len(big)) if big else None
+    cg = [(r["corner4"] - r["finish"])/max(r["field"], 1) for r in rs[:3]
+          if r.get("corner4") and r.get("finish") and r.get("field")]
+    f["corner_gain"] = sum(cg)/len(cg) if cg else None
+    wet = [r["finish"]/max(r["field"], 1) for r in rs
+           if r.get("finish") and r.get("field") and (r.get("baba_idx") or 0) >= 1]
+    f["wet_fin"] = -(sum(wet)/len(wet)) if wet else None
+    return f
+
 
 def race_ctx(race):
     """レース単位の生特徴(全頭共通)"""
@@ -60,17 +103,23 @@ def raw_extra(num, ff, ctx):
     }
 
 
-def build_row(r, n, v4=True):
-    """1頭分の特徴行。v4=False なら V3 と同じ [FEATS..., 頭数] を返す。"""
+def build_row(r, n, v4=True, extra=False):
+    """1頭分の特徴行。v4=False なら V3 と同じ [FEATS..., 頭数] を返す。
+       extra=True で V5 の強さ特徴(EXTRA_FEATS・レース内z済み)を追加。"""
     base = [r["X"][k][n] for k in FEATS]
     if not v4:
         return base + [float(len(r["ns"]))]
-    return (base + [r["raw_extra"][n][k] for k in RAW_FEATS]
-            + [r["ctx"][k] for k in CTX_FEATS])
+    row = (base + [r["raw_extra"][n][k] for k in RAW_FEATS]
+           + [r["ctx"][k] for k in CTX_FEATS])
+    if extra:
+        row += [r["X"][k][n] for k in EXTRA_FEATS]
+    return row
 
 
-def feat_names(v4=True):
-    return FEATS + (RAW_FEATS + CTX_FEATS if v4 else ["field"])
+def feat_names(v4=True, extra=False):
+    if not v4:
+        return FEATS + ["field"]
+    return FEATS + RAW_FEATS + CTX_FEATS + (EXTRA_FEATS if extra else [])
 
 
 def z_in_race(vals):
@@ -139,7 +188,9 @@ def load_dataset(histdir, featdir):
             raw[h["num"]] = ff
         if any(t not in raw for t in top3) or len(raw) < 5:
             continue
-        X = {k: z_in_race({n: raw[n].get(k) for n in raw}) for k in FEATS}
+        for h in d["race"]["horses"]:
+            raw[h["num"]].update(extra_strength(h, d["race"]))
+        X = {k: z_in_race({n: raw[n].get(k) for n in raw}) for k in FEATS + EXTRA_FEATS}
         ctx = race_ctx(d["race"])
         rx = {n: raw_extra(n, raw[n], ctx) for n in raw}
         ds.append(dict(X=X, ns=list(raw.keys()), top3=top3, odds=odds,
