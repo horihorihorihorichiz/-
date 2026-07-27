@@ -70,7 +70,9 @@ def v3_regression():
     if not info or info["engine"] != "Ver.3(LambdaRank)":
         raise RuntimeError(f"エンジンがV3でない: {info}")
     got = [(r["num"], r["wavg"]) for r in res["rows"][:3]]
-    want = [(15, 106.8), (8, 103.8), (5, 103.5)]
+    # 7/27情報統一(speedidx 2年化・tsi被覆66%)でhistの入力が変わり指紋も正当に更新。
+    # 旧: [(15,106.8),(8,103.8),(5,103.5)] (tsi被覆21.9%時代)
+    want = [(15, 106.8), (5, 104.5), (8, 103.5)]
     if got != want:
         raise RuntimeError(f"得点指紋不一致 got={got} want={want}")
     return "得点指紋一致"
