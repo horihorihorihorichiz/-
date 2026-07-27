@@ -58,7 +58,9 @@ def rescore(race, rows):
     # 既定は V3。V4 は KEIBA_ENGINE=v4 で明示的に有効化する。
     # ※patterns.py の g12 閾値は V3 の得点で採掘したもの。V4 は得点の意味が変わる
     #   （二値=勝ち馬確率のレース内z）ので、パターン再採掘が済むまで既定にはしない。
-    want_v4 = os.environ.get("KEIBA_ENGINE", "").lower() == "v4"
+    eng = os.environ.get("KEIBA_ENGINE", "").lower()
+    want_v4 = eng == "v4"
+    want_v5 = eng == "v5"
     try:
         import lightgbm as lgb
         import numpy as np
@@ -96,7 +98,13 @@ def rescore(race, rows):
                 used += 1
             return ({n: acc[n]/used for n in ns}, used) if used else (None, 0)
 
-        if want_v4:
+        if want_v5:
+            mp = os.path.join(_DIR, "model_v5.txt")
+            if os.path.exists(mp):
+                s, used = run([mp], True, False)
+                if s:
+                    engine = "Ver.5(統一データ+強さ6特徴・二値)"
+        elif want_v4:
             v4files = sorted(glob.glob(os.path.join(_DIR, "model_v4_s*.txt")))
             s, used = run(v4files, True, True)
             if s:

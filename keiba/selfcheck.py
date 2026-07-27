@@ -51,7 +51,7 @@ check("依存(numpy/lightgbm)", lambda: __import__("numpy") and __import__("ligh
       fix="pip install -q numpy lightgbm")
 
 # 3. 必須ファイル -----------------------------------------------------------
-REQUIRED = ["model_v3.txt", "params.json", "params_v2.json", "pattern_stats.json",
+REQUIRED = ["model_v3.txt", "model_v5.txt", "params.json", "params_v2.json", "pattern_stats.json",
             "results.jsonl", "RULES.md", "SOP.md",
             "model_v4_s0.txt", "model_v4_s1.txt", "model_v4_s2.txt",
             "model_v4_s3.txt", "model_v4_s4.txt"]
@@ -97,6 +97,23 @@ def v4_engine():
 
 
 check("V4エンジン起動", v4_engine, fix="model_v4_s*.txt の存在とfit_v2のRAW/CTX特徴を確認")
+
+
+def v5_engine():
+    import calc, v2_live
+    os.environ["KEIBA_ENGINE"] = "v5"
+    try:
+        d = json.load(open("hist/202610020612.json", encoding="utf-8"))
+        res = calc.run(d["race"])
+        info = v2_live.rescore(d["race"], res["rows"])
+        if not info or not info["engine"].startswith("Ver.5"):
+            raise RuntimeError(f"V5が起動しない: {info}")
+        return info["engine"]
+    finally:
+        os.environ.pop("KEIBA_ENGINE", None)
+
+
+check("V5エンジン起動", v5_engine, fix="model_v5.txt の存在とEXTRA_FEATSを確認")
 
 
 # 5. パターン発火(仕様の生きた検査) ------------------------------------------
