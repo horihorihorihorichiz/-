@@ -125,7 +125,7 @@ def eval_race(it, date, nar, fast=False):
         out.update(heat=hc, heat_hits=hn, heat_roi=hroi)
         if buy:
             best = max(buy, key=lambda f: f[2])
-            tier, yen, treason = JP.tier_of(best[2], hc)
+            tier, yen, treason = JP.tier_of(best[2], hc, best[0])
             out["rank"] = tier
             out.update(tier=tier, yen=yen)
             heat_tag = (f" 🔥{hc}条件({'+'.join(hn)})" if hc >= 3 else (f" 🔥{hc}条件" if hc else ""))

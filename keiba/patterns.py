@@ -81,18 +81,32 @@ def heat_of(order, tan, field, surface=None, dist=None, tier=None, p1=None, venu
 TIER_BUDGET = {"SS": 10000, "S": 5000, "A": 2000, "B": 1000, "C": 0}
 
 
-def tier_of(best_roi, heat_count):
-    """買い階級を返す。best_roi=最上位パターンのWF実測ROI, heat_count=重複条件数"""
+def tier_of(best_roi, heat_count, name=None):
+    """買い階級を返す。best_roi=最上位パターンのWF実測ROI, heat_count=重複条件数,
+       name=パターン名(ヒートを適用するか判定。None=乖離扱い=後方互換)。
+
+       ★7/27 sim_rank.py 2200R再生シミュで改定(全構成比較で「改4」採用):
+         旧規則(SS=ヒート4+/ROI300単独S)は S階級が赤字・SSにヒート4の赤字帯(84%/19R)混入。
+         新規則: 損益+101.7万/投下82.1万(ROI223.9%)・全階級黒字・最大DD-8.1万・
+                 dev220.4%/conf228.1%・ブートストラップ2000回でP(損失)=0%。
+       - SS(1万円) = 乖離系 ROI300%+ × ヒート5以上(実測322.9%/34R。ヒート4は84%で除外)
+       - S (5千円) = 乖離系 ROI200-300 × ヒート4以上(システム強化圏。実測331.5%/13R)
+       - A (2千円) = ROI160%+(乖離のROI300+×ヒート4もここへ退避)
+       - B (千円)  = ROI105%+
+       - 非乖離パターン(馬連系等)はヒートの意味が無いためROIのみで判定"""
     if best_roi is None:
         return "C", 0, ""
-    if best_roi >= 300 and heat_count >= 4:
-        return "SS", TIER_BUDGET["SS"], "最強帯×ヒート4+ (実測453-566%帯)"
-    if best_roi >= 300:
-        return "S", TIER_BUDGET["S"], "高ROI帯だがヒート3以下"
-    if best_roi >= 200 and heat_count >= 4:
-        return "S", TIER_BUDGET["S"], "ROI200%+×ヒート4+"
+    kairi = name is None or ("乖離" in name or "未勝利・新馬 モデル2位" in name)
+    if kairi:
+        if best_roi >= 300 and heat_count >= 5:
+            return "SS", TIER_BUDGET["SS"], "乖離300%+×ヒート5+ (実測322.9%/34R)"
+        if 200 <= best_roi < 300 and heat_count >= 4:
+            return "S", TIER_BUDGET["S"], "乖離200-300×ヒート4+ (実測331.5%/13R)"
     if best_roi >= 160:
-        return "A", TIER_BUDGET["A"], "検証済みだが中位ROI"
+        note = "検証済み中位ROI" if kairi else "非乖離系(ヒート不適用)"
+        if kairi and best_roi >= 300 and heat_count == 4:
+            note = "高ROIだがヒート4帯は実測84%につきAへ退避"
+        return "A", TIER_BUDGET["A"], note
     if best_roi >= 105:
         return "B", TIER_BUDGET["B"], "薄エッジ・小額のみ"
     return "C", 0, "見送り"
@@ -188,8 +202,9 @@ def classify(order, tan, field, surface=None, dist=None, tier=None, gap12=None, 
             strong.append(f"{field}頭(11-17帯WF201%)")
         if strong:
             out.append(("◎◎乖離単勝×システム強化", f"単勝 {t1} [" + "・".join(strong) + "]",
-                        185.9 if mval >= 1.6 else 175.4, "◎◎最優先買い",
-                        "2年WF: モデル価値(確率×オッズ)1.6+=186%/多頭15+=175%。乖離単勝の中の最強フィルタ・厚張り候補"))
+                        247.0 if mval >= 1.6 else 137.9, "◎◎最優先買い",
+                        "★7/27統一データ版: mval1.6+=247.0%/57R(dev315.5/conf204.0/除外191.4) "
+                        "11-17頭のみ=137.9%/117R(dev130.5/conf152.8)。統一で最強フィルタがさらに強化"))
         # ★最強条件(7/19ユーザー発案の一致構造採掘): 1番人気をモデルが5位以下に酷評=群衆の錨が偽物
         vrank_all = {n: i+1 for i, n in enumerate(order)}
         fav = min(tan, key=lambda h: tan[h])
@@ -304,10 +319,10 @@ def classify(order, tan, field, surface=None, dist=None, tier=None, gap12=None, 
             fav2 = sorted(tan, key=lambda h: tan[h])[1] if len(tan) > 1 else None
             t2 = order[1]
             if fav2 != t2:
-                out.append(("◎◎外枠モデル2位×13-16頭×3日目+ 単勝", f"単勝 {t2} (モデル2位・{waku2}枠)",
-                            186.4, "◎◎最優先買い",
-                            "dev216.4→conf148.3 通算186.4%/200点 的中63(31.5%)・除外後170.5%。"
-                            "内枠(1-3枠)の同条件は83.2%で死亡／市場2番人気だと77.6%＝織込済みで妙味消滅"))
+                out.append(("△外枠モデル2位×13-16頭×3日目+ 単勝", f"単勝 {t2} (モデル2位・{waku2}枠)",
+                            130.4, "△縁(小額のみ)",
+                            "★7/27統一データ版: 130.4%/207R(dev162.9→conf92.0)＝conf<100でゲート不通過。"
+                            "(旧186.4%はV3枠バグ+旧データの産物) 参考表示のみ・買うなら小額"))
     add(f"複勝1位[{mrb}]", f"複勝 {t1}")
     if len(order) >= 2:
         add(f"ワイド1-2位[{mrb}]", f"ワイド {'-'.join(map(str, sorted(order[:2])))}")
