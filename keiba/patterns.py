@@ -81,7 +81,7 @@ def heat_of(order, tan, field, surface=None, dist=None, tier=None, p1=None, venu
 TIER_BUDGET = {"SS": 10000, "S": 5000, "A": 2000, "B": 1000, "C": 0}
 
 
-def tier_of(best_roi, heat_count, name=None):
+def tier_of(best_roi, heat_count, name=None, venue=None):
     """買い階級を返す。best_roi=最上位パターンのWF実測ROI, heat_count=重複条件数,
        name=パターン名(ヒートを適用するか判定。None=乖離扱い=後方互換)。
 
@@ -97,6 +97,13 @@ def tier_of(best_roi, heat_count, name=None):
     if best_roi is None:
         return "C", 0, ""
     kairi = name is None or ("乖離" in name or "未勝利・新馬 モデル2位" in name)
+    # ★中山の乖離単勝系は場だけ死んでいる(7/29 sim場別分解: 中山23R ROI18.9% vs 他場155R 287.3%・
+    #   dev/conf両期マイナス)。n=23<40で全抑止の証拠基準に届かないため、B(千円)へ自動降格して
+    #   少額でデータ収集を継続する(未勝利道悪の降格と同じ流儀)。芝馬連も中山0/14だが降格対象は乖離のみ。
+    if venue == "中山" and kairi and "未勝利" not in (name or ""):
+        if best_roi >= 105:
+            return "B", TIER_BUDGET["B"], "⚠中山の乖離は18.9%/23R(他場287%)→B降格・データ収集継続"
+        return "C", 0, "見送り"
     if kairi:
         if best_roi >= 300 and heat_count >= 5:
             return "SS", TIER_BUDGET["SS"], "乖離300%+×ヒート5+ (実測322.9%/34R)"

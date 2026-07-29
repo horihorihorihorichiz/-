@@ -127,7 +127,7 @@ def simulate(rows, tier_fn=None, budgets=None, all_fires=False, collect=False):
             continue
         best = max(buy, key=lambda f: f[2])
         try:
-            tier, yen, _ = tier_fn(best[2], hc, best[0])
+            tier, yen, _ = tier_fn(best[2], hc, best[0], r.get("venue"))
         except TypeError:
             tier, yen, _ = tier_fn(best[2], hc)
         if yen <= 0:

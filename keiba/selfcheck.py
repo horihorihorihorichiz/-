@@ -166,7 +166,11 @@ def pattern_spec():
     assert patterns.tier_of(383, 4, "◎◎乖離単勝×中距離×1勝クラス")[0] == "A"
     assert patterns.tier_of(247, 4, "◎◎乖離単勝×システム強化")[0] == "S"
     assert patterns.tier_of(165.9, 5, "◎◎芝 馬連モデル1-2位×1600-1800×自信")[0] == "A"
-    return "発火7仕様OK(最強帯/未勝利抑止/初日抑止/外枠V4廃止/三連複良限定/未勝利2位道悪降格/階級改4)"
+    # (h) 中山の乖離はB降格(7/29 sim場別: 中山18.9%/23R vs 他場287%)。未勝利2位と他場は対象外
+    assert patterns.tier_of(383, 5, "◎◎乖離単勝×中距離×1勝クラス", "中山")[0] == "B"
+    assert patterns.tier_of(383, 5, "◎◎乖離単勝×中距離×1勝クラス", "京都")[0] == "SS"
+    assert patterns.tier_of(138.8, 3, "◎未勝利・新馬 モデル2位中穴単勝", "中山")[0] == "B"
+    return "発火8仕様OK(最強帯/未勝利抑止/初日抑止/外枠V4廃止/三連複良限定/未勝利2位道悪降格/階級改4/中山乖離B降格)"
 
 
 check("パターン発火仕様", pattern_spec, fix="patterns.py の直近変更を確認")

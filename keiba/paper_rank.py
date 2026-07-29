@@ -119,7 +119,7 @@ def cmd_run(date):
                                       dist=race.get("distance"), tier=race.get("today_tier"),
                                       p1=p1, venue=it.get("venue") or race.get("venue"))
             best = max(buy, key=lambda f: f[2])
-            tier, yen, reason = JP.tier_of(best[2], hc, best[0])
+            tier, yen, reason = JP.tier_of(best[2], hc, best[0], it.get("venue"))
             if yen <= 0:
                 byrid.pop(rid, None)
                 continue
