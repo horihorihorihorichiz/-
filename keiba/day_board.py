@@ -170,10 +170,11 @@ def eval_race(it, date, nar, fast=False):
                     and vrank.get(n, 99) <= 3 and 5.0 < tan[n] <= 8.0]
             if core:
                 d = "・".join(f"{n}(モデル{vrank[n]}位/{tan[n]}倍/{course.jra_waku(n, fld)}枠)" for n in sorted(core))
-                out.update(rank="S",
-                           note=f"新潟1000直[システム×枠]: 外枠×モデル1-3位×5倍以下 → 単勝{sorted(core)} "
+                # 8/2階級整合(ユーザー指摘): 千直ROI133.2%は改4階級表でB(千円)。旧表示Sは預算のSと紛らわしいため廃止
+                out.update(rank="B", tier="B", yen=1000,
+                           note=f"【B/1,000円】新潟1000直[システム×枠]: 外枠×モデル1-3位×5倍以下 → 単勝{sorted(core)} "
                                 "(5年133.2%/56点・除外後127%・全年+)",
-                           fire_desc=f"単勝 {sorted(core)} 各点。{d}。人気順位は不使用=システム主軸")
+                           fire_desc=f"単勝 {sorted(core)} 各1,000円。{d}。人気順位は不使用=システム主軸")
             elif wide:
                 out.update(rank="A",
                            note=f"新潟1000直: 外枠×モデル1-3位だが5-8倍{sorted(wide)}=縁"
