@@ -1,0 +1,25 @@
+データ: train 6159R / test 127R / 特徴 28
+best_iteration: 106
+重要度top10: wavg=14167, cond_perf=11319, j_top3=10061, fin_frac=4537, fin_best2=3572, t_top3=2738, n_runs=2233, layoff_lastfin=2196, agari_mean3_rel=1698, idx_mean3=1620
+
+── train ──
+  Ver.3(LambdaRank)
+    ★3着内馬が5位以内率 68.9% / 3頭全員5位以内率 31.2%
+    勝ち馬=1位率 33.4% / 3位以内率 62.2% / 勝ち馬の平均順位 3.65
+    モデル1位の単勝フラット回収率 103.3% (n=6159)
+    乖離バケット(1位が4番人気以下 582R) 単勝回収率 173.6%
+
+── test ──
+  Ver.3(LambdaRank)
+    ★3着内馬が5位以内率 70.2% / 3頭全員5位以内率 29.9%
+    勝ち馬=1位率 29.1% / 3位以内率 64.6% / 勝ち馬の平均順位 3.50
+    モデル1位の単勝フラット回収率 89.9% (n=127)
+    乖離バケット(1位が4番人気以下 14R) 単勝回収率 175.7%
+model_v3.txt に保存した。
+データ: train 6159R / test 127R / 特徴 42
+best_iteration: 252
+重要度top12: fin_w=37841, j_top3=16611, wavg=13834, cond_perf=9646, t_top3=7453, n_runs=7244, class_fin=6904, field=5875, agari_best=5110, corner_frac=5023, days_log=4805, bigfield_fin=4658
+強さ特徴6本: idx_trend=#26, fin_w=#1, class_fin=#7, bigfield_fin=#12, corner_gain=#24, wet_fin=#33
+holdout 127R: 1着をモデル1位に置けた率 25.2%
+model_v5.txt に保存した。( KEIBA_ENGINE=v5 で有効化 / 42特徴 )
+MODELS-DONE
