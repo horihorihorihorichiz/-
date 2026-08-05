@@ -89,6 +89,13 @@ VARIANTS = {
     # 採掘根拠: exp_tenkai.py 「差し×スロー」でモデル1位単勝ROI-20.8pt(片側p=0.031)
     "v6": dict(v4=True, extra=True, tenkai=True, binary=True,
                params=dict(learning_rate=0.03, num_leaves=63, min_data_in_leaf=20)),
+    # 種の引き測定(V6と同構成・乱数だけ変更): V5では種だけで±0.9pt動いた前科がある
+    "v6a": dict(v4=True, extra=True, tenkai=True, binary=True,
+                params=dict(learning_rate=0.03, num_leaves=63, min_data_in_leaf=20,
+                            bagging_seed=111, feature_fraction_seed=222, data_random_seed=333)),
+    "v6b": dict(v4=True, extra=True, tenkai=True, binary=True,
+                params=dict(learning_rate=0.03, num_leaves=63, min_data_in_leaf=20,
+                            bagging_seed=777, feature_fraction_seed=888, data_random_seed=999)),
 }
 
 
