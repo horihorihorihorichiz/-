@@ -32,14 +32,14 @@ def load_ds(force=False):
     return ds
 
 
-def matrix(rs, v4, extra=False):
+def matrix(rs, v4, extra=False, tenkai=False):
     X, y, grp = [], [], []
     for r in rs:
         lab = {n: 0 for n in r["ns"]}
         for pos, t in enumerate(r["top3"]):
             lab[t] = 3 - pos
         for n in r["ns"]:
-            X.append(V2.build_row(r, n, v4, extra))
+            X.append(V2.build_row(r, n, v4, extra, tenkai))
             y.append(lab[n])
         grp.append(len(r["ns"]))
     return (np.array(X, dtype=np.float32), np.array(y, dtype=np.float32), grp)
@@ -85,6 +85,10 @@ VARIANTS = {
     # 統一データの効果を切り分けるための再基準(特徴はV4のまま)
     "v4bin2u": dict(v4=True, binary=True,
                     params=dict(learning_rate=0.03, num_leaves=63, min_data_in_leaf=20)),
+    # ── V6(2026-08-05): V5+展開5特徴(早期位置ep・脚質構成press/front_n・交互作用) ──
+    # 採掘根拠: exp_tenkai.py 「差し×スロー」でモデル1位単勝ROI-20.8pt(片側p=0.031)
+    "v6": dict(v4=True, extra=True, tenkai=True, binary=True,
+               params=dict(learning_rate=0.03, num_leaves=63, min_data_in_leaf=20)),
 }
 
 
@@ -112,19 +116,22 @@ def fit_predict(train, fold, name):
                                 bagging_seed=100+i, feature_fraction_seed=200+i,
                                 data_random_seed=300+i)
             m = train_fold(train, sp)
-            outs.append([predict(m, r, spec["v4"], bool(spec.get("extra"))) for r in fold])
+            outs.append([predict(m, r, spec["v4"], bool(spec.get("extra")),
+                                 bool(spec.get("tenkai"))) for r in fold])
         return [{n: sum(_zs(o[i])[n] for o in outs)/k for n in outs[0][i]}
                 for i in range(len(fold))]
     model = train_fold(train, spec)
-    return [predict(model, r, spec["v4"], bool(spec.get("extra"))) for r in fold]
+    return [predict(model, r, spec["v4"], bool(spec.get("extra")),
+                    bool(spec.get("tenkai"))) for r in fold]
 
 
 def train_fold(train, spec):
     v4 = spec["v4"]
     ex = bool(spec.get("extra"))
+    tk = bool(spec.get("tenkai"))
     n_val = max(50, len(train)//10)
-    Xt, yt, gt = matrix(train[:-n_val], v4, ex)
-    Xv, yv, gv = matrix(train[-n_val:], v4, ex)
+    Xt, yt, gt = matrix(train[:-n_val], v4, ex, tk)
+    Xv, yv, gv = matrix(train[-n_val:], v4, ex, tk)
     if spec.get("binary"):
         yt = (yt == 3).astype(np.float32)
         yv = (yv == 3).astype(np.float32)
@@ -146,8 +153,8 @@ def train_fold(train, spec):
                      callbacks=[lgb.early_stopping(60, verbose=False)])
 
 
-def predict(model, r, v4, extra=False):
-    M = np.array([V2.build_row(r, n, v4, extra) for n in r["ns"]], dtype=np.float32)
+def predict(model, r, v4, extra=False, tenkai=False):
+    M = np.array([V2.build_row(r, n, v4, extra, tenkai) for n in r["ns"]], dtype=np.float32)
     s = model.predict(M)
     return {n: float(v) for n, v in zip(r["ns"], s)}
 

@@ -34,6 +34,21 @@ BABA_IDX = {"良": 0, "稍": 1, "稍重": 1, "重": 2, "不": 3, "不良": 3}
 # None耐性: 該当走が無ければNone→レース内zで0(平均扱い)に落ちる。
 EXTRA_FEATS = ["idx_trend", "fin_w", "class_fin", "bigfield_fin", "corner_gain", "wet_fin"]
 
+# ── V6追加(2026-08-05 展開) ─────────────────────────────────────────
+# 各馬の早期位置ep(過去5走のcorner4/field平均、無ければ紙上脚質)と、レースの脚質構成
+# (先行圧press・逃げ候補数front_n)、およびその交互作用(pace_adv=圧が高いほど差しが利く)。
+# 全て馬柱由来の事前情報。exp_tenkai.pyの検定(差し×スロー過大評価 p=0.031)が採用根拠。
+TENKAI_FEATS = ["ep", "ep_rel", "press", "front_n", "pace_adv"]
+STYLE_POS = {"逃": 0.10, "先": 0.30, "差": 0.60, "追": 0.85}
+
+
+def ep_of(h):
+    rs = h.get("races", [])
+    cf = [r["corner4"]/max(r.get("field") or 1, 1) for r in rs[:5] if r.get("corner4")]
+    if cf:
+        return sum(cf)/len(cf)
+    return STYLE_POS.get(h.get("paper_style"))
+
 
 def extra_strength(h, race):
     """強い馬当てのための追加特徴。
@@ -75,11 +90,17 @@ def extra_strength(h, race):
 
 def race_ctx(race):
     """レース単位の生特徴(全頭共通)"""
+    eps = [e for e in (ep_of(h) for h in race.get("horses") or []) if e is not None]
+    press = (sum(max(0.0, 0.30-e)/0.30 for e in eps)/len(eps)) if eps else 0.085
+    med = sorted(eps)[len(eps)//2] if eps else 0.45
     return {
         "field": float(race.get("field") or len(race.get("horses") or []) or 0),
         "baba_today": float(BABA_IDX.get((race.get("baba") or "").strip(), 0)),
         "today_vg": float(race.get("today_vg") or 3),
         "is_dirt": 1.0 if (race.get("surface") or "") == "ダ" else 0.0,
+        "press": press,
+        "front_n": float(sum(1 for e in eps if e <= 0.20)),
+        "ep_med": med,
     }
 
 
@@ -100,12 +121,20 @@ def raw_extra(num, ff, ctx):
         "wet_x_baba": wet * ctx["baba_today"],
         # 芝は内有利・ダは外有利のFSI知見を1本の交互作用で表す
         "waku_x_dirt": waku_rel * (1.0 if ctx["is_dirt"] else -1.0),
+        # V6展開: 自馬の早期位置と脚質構成の交互作用(先行圧が高いほど差しが利く)
+        "ep": ff.get("ep") if ff.get("ep") is not None else 0.45,
+        "ep_rel": (ff.get("ep") if ff.get("ep") is not None else 0.45) - ctx.get("ep_med", 0.45),
+        "press": ctx.get("press", 0.085),
+        "front_n": ctx.get("front_n", 2.0),
+        "pace_adv": (ctx.get("press", 0.085) - 0.085)
+                    * ((ff.get("ep") if ff.get("ep") is not None else 0.45) - 0.40),
     }
 
 
-def build_row(r, n, v4=True, extra=False):
+def build_row(r, n, v4=True, extra=False, tenkai=False):
     """1頭分の特徴行。v4=False なら V3 と同じ [FEATS..., 頭数] を返す。
-       extra=True で V5 の強さ特徴(EXTRA_FEATS・レース内z済み)を追加。"""
+       extra=True で V5 の強さ特徴(EXTRA_FEATS・レース内z済み)を追加。
+       tenkai=True で V6 の展開特徴(TENKAI_FEATS・生値)を追加。"""
     base = [r["X"][k][n] for k in FEATS]
     if not v4:
         return base + [float(len(r["ns"]))]
@@ -113,13 +142,16 @@ def build_row(r, n, v4=True, extra=False):
            + [r["ctx"][k] for k in CTX_FEATS])
     if extra:
         row += [r["X"][k][n] for k in EXTRA_FEATS]
+    if tenkai:
+        row += [r["raw_extra"][n].get(k, 0.0) for k in TENKAI_FEATS]
     return row
 
 
-def feat_names(v4=True, extra=False):
+def feat_names(v4=True, extra=False, tenkai=False):
     if not v4:
         return FEATS + ["field"]
-    return FEATS + RAW_FEATS + CTX_FEATS + (EXTRA_FEATS if extra else [])
+    return (FEATS + RAW_FEATS + CTX_FEATS + (EXTRA_FEATS if extra else [])
+            + (TENKAI_FEATS if tenkai else []))
 
 
 def z_in_race(vals):
@@ -151,6 +183,7 @@ def horse_feats(h, race):
     f["corner_frac"] = -sum(cf)/len(cf) if cf else None
     f["dist_chg"] = -abs(race.get("distance", 1600) - rs[0]["dist"])/race.get("distance", 1600) if rs else None
     f["csi"] = h.get("csi", 0)
+    f["ep"] = ep_of(h)   # V6展開: 早期位置(raw_extra経由でTENKAI_FEATSに使う)
     import features2   # 遅延import(循環回避)。U2統合の12特徴を合流
     f.update(features2.extra_feats(h, race))
     return f
