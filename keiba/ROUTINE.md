@@ -1,6 +1,31 @@
 # 週末ルーチン設定手順（Ver.100=紙上運用が本線／旧・レース選定も残置）
 
-## ★Ver.100 紙上運用ルーチン（2026-07-12〜の本線。こちらを登録推奨）
+## ★★最新（2026-08-08〜）: デイボード+15分前プッシュ通知ルーチン（こちらを登録）
+登録: claude.ai/code/routines → New routine
+- 名前: `競馬・週末デイボード運用`
+- cron: `3 9 * * 6,0`（土日 9:03 JST）
+- リポジトリ: `horihorihorihorichiz/-`（Allowed domainsは旧手順のnetkeiba系と同じ）
+- プロンプト（そのまま貼る）:
+```
+keiba/RULES.md §0 と keiba/CLAUDE.md の競馬節を読んでから、当日運用を開始:
+0. pip install -q numpy lightgbm && cd keiba && python3 selfcheck.py  # ALL GREEN必須
+1. python3 day_board.py で今日の全場ボードを生成し、SendUserFileで送付
+2. python3 paper_rank.py run で発火レースを紙上記帳
+3. 以降は終日パトロール: 各買いレース(A近接含む)の発走15分前に
+   paper_rank.py run→最新オッズ+馬体重(day_board.refresh_weights)を反映し、
+   PushNotificationとチャットで通知(買い目・金額・オッズ→払戻・馬体重±・判定変化)。
+   発走3分前は paper_rank.py run で凍結。確定後は paper_rank.py settle→結果をプッシュ報告。
+   待ち時間は ScheduleWakeup で「次のレースの発走15分前の4分前」に起床を張り、
+   ユーザーと会話したら返信の最後に必ず張り直す。保険として15分間隔のCronCreateも張る。
+4. 全レース終了後: paper_rank.py stats で日次精算(2日累計・150Rライン進捗)を報告し、
+   まとめmdを SendUserFile で送付、commit & push（ブランチ claude/stoic-ride-p35k9n）
+※環境リセット検出時(ファイル欠損/HEADが古い)は git fetch origin claude/stoic-ride-p35k9n
+  && git merge --ff-only origin/claude/stoic-ride-p35k9n && pip install -q numpy lightgbm で復旧。
+※実弾なし=紙上のみ。購入・投票・GOは人間。認証情報は扱わない・netkeibaにログインしない。
+※結果は確定後のみ記録。判定ライン: 精算150Rで回収90%超→少額実弾の相談／70%未満→設計見直し。
+```
+
+## ★Ver.100 紙上運用ルーチン（2026-07-12〜の旧本線。上の新版を推奨）
 登録: claude.ai/code/routines → New routine
 - 名前: `競馬・週末紙上運用(Ver.100)`
 - cron: `3 9 * * 6,0`（土日 9:03 JST）
