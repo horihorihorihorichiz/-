@@ -106,14 +106,15 @@ def tier_of(best_roi, heat_count, name=None, venue=None):
             return "B", TIER_BUDGET["B"], "⚠中山の乖離は18.9%/23R(他場287%)→B降格・データ収集継続"
         return "C", 0, "見送り"
     if kairi:
-        if best_roi >= 300 and heat_count >= 5:
-            return "SS", TIER_BUDGET["SS"], "乖離300%+×ヒート5+ (実測322.9%/34R)"
-        if 200 <= best_roi < 300 and heat_count >= 4:
-            return "S", TIER_BUDGET["S"], "乖離200-300×ヒート4+ (実測331.5%/13R)"
+        # ★8/15 SS再定義(ss_mine.py・台帳2394R): 旧「300%+×ヒート5」は台帳刷新後に主張300%超が
+        #   消滅して永久に発火しない死文となったため、事前指定6セルから採掘し直した。
+        #   新SS=主張230%+×ヒート4+ → 実測237.6%/42R(dev304.5/conf164.0)・null検定p=0.000(1000回)。
+        if best_roi >= 230 and heat_count >= 4:
+            return "SS", TIER_BUDGET["SS"], "乖離230%+×ヒート4+ (実測237.6%/42R・null p=0.000)"
+        if 200 <= best_roi < 230 and heat_count >= 4:
+            return "S", TIER_BUDGET["S"], "乖離200-230×ヒート4+"
     if best_roi >= 160:
         note = "検証済み中位ROI" if kairi else "非乖離系(ヒート不適用)"
-        if kairi and best_roi >= 300 and heat_count == 4:
-            note = "高ROIだがヒート4帯は実測84%につきAへ退避"
         return "A", TIER_BUDGET["A"], note
     if best_roi >= 105:
         return "B", TIER_BUDGET["B"], "薄エッジ・小額のみ"

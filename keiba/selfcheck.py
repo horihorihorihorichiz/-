@@ -163,10 +163,11 @@ def pattern_spec():
     wet = [x for x in patterns.classify(**kw3, baba="重") if "モデル2位" in x[0]]
     assert good and good[0][3].startswith("◎"), f"良で未勝利2位が発火しない: {good}"
     assert wet and wet[0][3].startswith("△"), f"道悪で未勝利2位が降格しない: {wet}"
-    # (g) 階級規則(7/27 sim改4): SS=乖離300+×h5+ / h4はA退避 / S=200-300×h4+ / 非乖離はヒート無視
+    # (g) 階級規則(8/15 SS再定義): SS=乖離230+×h4+ (ss_mine.py 237.6%/42R null p=0) / S=200-230×h4+
     assert patterns.tier_of(383, 5, "◎◎乖離単勝×中距離×1勝クラス")[0] == "SS"
-    assert patterns.tier_of(383, 4, "◎◎乖離単勝×中距離×1勝クラス")[0] == "A"
-    assert patterns.tier_of(247, 4, "◎◎乖離単勝×システム強化")[0] == "S"
+    assert patterns.tier_of(247, 4, "◎◎乖離単勝×システム強化")[0] == "SS"
+    assert patterns.tier_of(210, 4, "◎◎乖離単勝×システム強化")[0] == "S"
+    assert patterns.tier_of(247, 3, "◎◎乖離単勝×システム強化")[0] == "A"
     assert patterns.tier_of(165.9, 5, "◎◎芝 馬連モデル1-2位×1600-1800×自信")[0] == "A"
     # (h) 中山の乖離はB降格(7/29 sim場別: 中山18.9%/23R vs 他場287%)。未勝利2位と他場は対象外
     assert patterns.tier_of(383, 5, "◎◎乖離単勝×中距離×1勝クラス", "中山")[0] == "B"
