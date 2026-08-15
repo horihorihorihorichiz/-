@@ -14,6 +14,11 @@
    ※判定はライブと同一の patterns.classify/heat_of/tier_of。JRAのみ(台帳がJRA採掘のため)。
    ※購入・投票・GOは人間。これは記帳だけ。"""
 import argparse, datetime, itertools, json, os, sys
+import re
+
+# 障害レース除外(2026-08-15 新潟JSすり抜け事故の再発防止): 「障害」表記だけでなく
+# JS/ジャンプS等の重賞名もモデル対象外(平地専用)として弾く
+JUMP_RE = re.compile(r"障害|ジャンプ|JS(?![a-z])")
 
 import calc
 import course
@@ -73,7 +78,7 @@ def cmd_run(date):
     logs = load_log()
     byrid = {r["race_id"]: r for r in logs}
     lst = [it for it in PKR.fetch_list(date, nar=False)
-           if "障害" not in it.get("name", "")]
+           if not JUMP_RE.search(it.get("name", ""))]
     print(f"[{date}] JRA {len(lst)}レースを紙上判定 ({now.strftime('%H:%M')} JST)", file=sys.stderr)
     n_new = n_upd = 0
     for it in lst:

@@ -208,14 +208,14 @@ def gather_races(date, venue_arg):
             pass
         try:
             targets += [(it, False) for it in PK.fetch_list(date, nar=False)
-                        if "障害" not in it.get("name", "") and "新馬" not in it.get("name", "")]
+                        if not __import__("re").search(r"障害|ジャンプ|JS(?![a-z])", it.get("name", "")) and "新馬" not in it.get("name", "")]
         except Exception:
             pass
     else:
         wants = set(venue_arg.split(","))
         if wants & {"中央", "JRA"}:
             targets += [(it, False) for it in PK.fetch_list(date, nar=False)
-                        if "障害" not in it.get("name", "") and "新馬" not in it.get("name", "")]
+                        if not __import__("re").search(r"障害|ジャンプ|JS(?![a-z])", it.get("name", "")) and "新馬" not in it.get("name", "")]
             wants -= {"中央", "JRA"}
         if wants:
             for nar in (True, False):
