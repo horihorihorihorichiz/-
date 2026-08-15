@@ -166,3 +166,9 @@ keiba/RULES.md と keiba/SOP.md を読んでから:
 次にcreate_trigger/update_triggerツールが使えるセッションで、開催判定を
 「JRA(nar=False) or 大井(nar=Trueでvenue=大井)のレースがあれば稼働」に更新すること。
 大井の日は夕方〜ナイターパトロール(oi_patterns判定・15分前通知・9分心拍cron必須)。
+
+## 【TODO 2026-08-15】毎朝ルーチンに通知台帳(notify.py)を組込み
+update_triggerツールが使えるセッションで trig_01W62FS4 のpromptに以下を追記:
+- 記帳時に notify.plan(race_id,"pre15",...) / notify.plan(race_id,"result",...) を登録
+- 通知送信直後に notify.mark()、心拍は毎回 python3 notify.py で欠落チェック→即送信
+(RULES.md §通知・運用の恒久ルール参照。本文はセッション8/15の下書きを参照)
