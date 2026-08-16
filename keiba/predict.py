@@ -43,9 +43,12 @@ def _f(x):
 def fetch_jra(race_id):
     """JRA JSON API。1単/4馬連/5ワイド/6馬単/7三連複/8三連単。"""
     base = "https://race.netkeiba.com/api/api_get_jra_odds.html?race_id=%s&type=%d&action=init"
+    ng = [None]   # API側の停止理由(例 "empty free odds schedule"=場単位の無料配信停止)を捕獲
     def grab(t):
         try:
             d = json.loads(_http(base % (race_id, t)))
+            if d.get("status") == "NG":
+                ng[0] = d.get("reason") or "NG"
             return d["data"]["odds"][str(t)]
         except Exception:
             return {}
@@ -58,7 +61,7 @@ def fetch_jra(race_id):
     trip   = {"%d-%d-%d" % tuple(sorted(us(k, 3))): _f(v[0]) for k, v in grab(7).items()}
     santan = {">".join(map(str, us(k, 3))): _f(v[0]) for k, v in grab(8).items()}  # 順序
     return dict(tan=tan, fuku=fuku, umaren=umaren, wide=wide, umatan=umatan,
-                sanrenpuku=trip, santan=santan)
+                sanrenpuku=trip, santan=santan, ng_reason=ng[0])
 
 def fetch_nar(race_id, field, axis=None):
     """NAR HTML。cart-item属性(例 _b8_c0_14_1_2=三連単⑭→①→②)から券種・組合せ・順序を確実に取得。

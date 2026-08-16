@@ -346,3 +346,4 @@ python pick_races.py <YYYYMMDD> --run --budget 10000
 4. **障害レース除外**: 「障害」表記だけでなく JUMP_RE=障害|ジャンプ|JS で判定（新潟JSすり抜け事故）。
 5. **環境リセット復旧**: paper_rank.py欠損を検知したら ff-merge+pip install -q numpy lightgbm。
    復旧前に判定・通知をしない（古いコードでの判定事故防止）。
+6. **オッズ配信停止の扱い(2026-08-16)**: predict.fetch_jraの戻りに ng_reason が入る(例 "empty free odds schedule"=netkeiba側で場単位の無料オッズ配信停止)。オッズ0件のときは必ずng_reasonを確認し、通知には「取得失敗」ではなく**配信停止(外部要因)か自システムの障害かを区別して明記**する。配信停止中のレースは判定不能=見送り(オッズ無しで買わない)。復旧は心拍で自動再試行。
