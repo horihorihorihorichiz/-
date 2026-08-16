@@ -90,6 +90,15 @@ def cmd_run(date):
                 continue
             if not byrid[rid].get("frozen"):
                 byrid[rid]["frozen"] = True
+                # 凍結時オッズも保存(2026-08-16 ANALYSIS: 「直前まで乖離が残った集合」の成績を
+                # 別集計するため。朝発火とのdrift直接測定に使う)
+                try:
+                    odf = PR.fetch_jra(rid)
+                    tanf = {int(k): v for k, v in odf.get("tan", {}).items() if v}
+                    if tanf:
+                        byrid[rid]["odds_at_freeze"] = {str(k): v for k, v in sorted(tanf.items())}
+                except Exception:
+                    pass
             continue
         prev = byrid.get(rid)
         if prev and (prev.get("frozen") or prev.get("settled")):
@@ -131,12 +140,13 @@ def cmd_run(date):
             bets = fire_to_bets(best[0], order, tan, yen)
             if not bets:
                 continue
+            # 全頭オッズを保存(2026-08-16 ANALYSIS: 旧[:0]バグで常にNone→2位系driftが測れなかった)
             entry = dict(race_id=rid, date=date, venue=it.get("venue"), r=it.get("r"),
                          post=post, recorded=now.strftime("%m%d %H:%M"),
                          pattern=best[0], roi_claim=best[2], tier=tier, heat=hc,
-                         bets=bets, odds_at_rec={str(k): v for k, v in
-                                                 sorted(tan.items())[:0]} or None,
-                         o1=tan.get(order[0]), baba=race.get("baba"),
+                         bets=bets, odds_at_rec={str(k): v for k, v in sorted(tan.items())},
+                         o1=tan.get(order[0]), o2=tan.get(order[1]) if len(order) > 1 else None,
+                         baba=race.get("baba"),
                          frozen=False, settled=False)
             if prev:
                 entry["recorded_first"] = prev.get("recorded_first", prev["recorded"])
