@@ -94,10 +94,11 @@ def cmd_run(date):
                 # 凍結時オッズも保存(2026-08-16 ANALYSIS: 「直前まで乖離が残った集合」の成績を
                 # 別集計するため。朝発火とのdrift直接測定に使う)
                 try:
-                    odf = PR.fetch_jra(rid)
+                    odf = PR.fetch_jra(rid, fresh=True)   # 凍結時はJRA公式(1-2分毎更新)
                     tanf = {int(k): v for k, v in odf.get("tan", {}).items() if v}
                     if tanf:
                         byrid[rid]["odds_at_freeze"] = {str(k): v for k, v in sorted(tanf.items())}
+                        byrid[rid]["freeze_src"] = odf.get("tan_source")
                 except Exception:
                     pass
             continue

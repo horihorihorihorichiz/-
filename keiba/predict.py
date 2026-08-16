@@ -40,8 +40,11 @@ def _f(x):
     try: return float(str(x).replace(",", ""))
     except: return None
 
-def fetch_jra(race_id):
-    """JRA JSON API。1単/4馬連/5ワイド/6馬単/7三連複/8三連単。"""
+def fetch_jra(race_id, fresh=False):
+    """JRA JSON API。1単/4馬連/5ワイド/6馬単/7三連複/8三連単。
+       fresh=True: 単勝・複勝をJRA公式(jra_odds.py・1-2分毎更新)から優先取得。
+       netkeiba無料オッズは実測40-50分遅れ(2026-08-16検証)のため、直前判定・凍結は必ずfresh=True。
+       netkeiba配信停止(ng_reason)時も自動で公式にフォールバック。"""
     base = "https://race.netkeiba.com/api/api_get_jra_odds.html?race_id=%s&type=%d&action=init"
     ng = [None]   # API側の停止理由(例 "empty free odds schedule"=場単位の無料配信停止)を捕獲
     def grab(t):
@@ -60,8 +63,20 @@ def fetch_jra(race_id):
     umatan = {"%d>%d" % tuple(us(k, 2)): _f(v[0]) for k, v in grab(6).items()}     # 順序
     trip   = {"%d-%d-%d" % tuple(sorted(us(k, 3))): _f(v[0]) for k, v in grab(7).items()}
     santan = {">".join(map(str, us(k, 3))): _f(v[0]) for k, v in grab(8).items()}  # 順序
-    return dict(tan=tan, fuku=fuku, umaren=umaren, wide=wide, umatan=umatan,
-                sanrenpuku=trip, santan=santan, ng_reason=ng[0])
+    out = dict(tan=tan, fuku=fuku, umaren=umaren, wide=wide, umatan=umatan,
+               sanrenpuku=trip, santan=santan, ng_reason=ng[0], tan_source="netkeiba")
+    if fresh or not tan:
+        try:
+            import jra_odds
+            off = jra_odds.fetch_official(race_id)
+            if off.get("tan"):
+                out["tan"] = {str(k): v for k, v in off["tan"].items()}
+                if off.get("fuku"):
+                    out["fuku"] = {str(k): v for k, v in off["fuku"].items()}
+                out["tan_source"] = "jra.go.jp(%s)" % off.get("asof", "")
+        except Exception:
+            pass
+    return out
 
 def fetch_nar(race_id, field, axis=None):
     """NAR HTML。cart-item属性(例 _b8_c0_14_1_2=三連単⑭→①→②)から券種・組合せ・順序を確実に取得。
