@@ -178,6 +178,22 @@ def pattern_spec():
 
 check("パターン発火仕様", pattern_spec, fix="patterns.py の直近変更を確認")
 
+
+# 5.5 ルールブック凍結(2026-08-16 後知恵禁止ルール) ----------------------
+def frozen_check():
+    import hashlib
+    import json as _json
+    rec = _json.load(open(os.path.join(_DIR, "PATTERNS_FROZEN.json"), encoding="utf-8"))
+    for f, want in rec["sha256"].items():
+        got = hashlib.sha256(open(os.path.join(_DIR, f), "rb").read()).hexdigest()
+        assert got == want, (f"{f} が凍結記録と不一致。ルール改定なら PATTERNS_FROZEN.json を"
+                             f"新しい窓端とともに更新し、成績カウントは窓端より後の月からやり直すこと")
+    return f"凍結{rec['frozen_at']}版と一致(窓端{rec['data_window_end']})"
+
+
+check("ルールブック凍結", frozen_check,
+      fix="意図した改定なら PATTERNS_FROZEN.json のsha256と窓端を更新(RULES.md §後知恵禁止)")
+
 # 6. JST -----------------------------------------------------------------
 now = datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=9)))
 check("JST時刻", lambda: now.strftime("%Y-%m-%d %H:%M JST"))

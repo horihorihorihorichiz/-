@@ -1,0 +1,9 @@
+{
+ "frozen_at": "2026-08-16",
+ "data_window_end": "202608",
+ "note": "後知恵禁止ルール(RULES.md)に基づく凍結。改定時は本ファイルを新窓端とともに更新し、成績カウントは新窓端より後の月から。",
+ "sha256": {
+  "patterns.py": "4c54d8356f9cd8150b0c8590be645cd72e441fe45889b3adc6a70b3042dd92f3",
+  "oi_patterns.py": "1e0ce5bcddcfc93da546414126b9736d133d18406308712e0e912c277c0ac6b4"
+ }
+}

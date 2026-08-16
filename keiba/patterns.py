@@ -108,9 +108,10 @@ def tier_of(best_roi, heat_count, name=None, venue=None):
     if kairi:
         # ★8/15 SS再定義(ss_mine.py・台帳2394R): 旧「300%+×ヒート5」は台帳刷新後に主張300%超が
         #   消滅して永久に発火しない死文となったため、事前指定6セルから採掘し直した。
-        #   新SS=主張230%+×ヒート4+ → 実測237.6%/42R(dev304.5/conf164.0)・null検定p=0.000(1000回)。
+        #   新SS=主張230%+×ヒート4+ → 窓内参考値237.6%/42R・null p=0.000。※採掘窓内の数字であり実測ではない
+        #   (ANALYSIS_20260816.md)。実測=2026-08-16凍結後の紙上成績のみ。
         if best_roi >= 230 and heat_count >= 4:
-            return "SS", TIER_BUDGET["SS"], "乖離230%+×ヒート4+ (実測237.6%/42R・null p=0.000)"
+            return "SS", TIER_BUDGET["SS"], "乖離230%+×ヒート4+ [参考値237.6%/42R窓内・実測は凍結後紙上のみ]"
         if 200 <= best_roi < 230 and heat_count >= 4:
             return "S", TIER_BUDGET["S"], "乖離200-230×ヒート4+"
     if best_roi >= 160:

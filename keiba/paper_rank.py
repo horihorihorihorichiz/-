@@ -90,6 +90,7 @@ def cmd_run(date):
                 continue
             if not byrid[rid].get("frozen"):
                 byrid[rid]["frozen"] = True
+                byrid[rid].setdefault("confirmed", False)  # 直前判定を経ていない=watch扱い
                 # 凍結時オッズも保存(2026-08-16 ANALYSIS: 「直前まで乖離が残った集合」の成績を
                 # 別集計するため。朝発火とのdrift直接測定に使う)
                 try:
@@ -148,8 +149,19 @@ def cmd_run(date):
                          o1=tan.get(order[0]), o2=tan.get(order[1]) if len(order) > 1 else None,
                          baba=race.get("baba"),
                          frozen=False, settled=False)
+            # 直前判定(2026-08-16 ANALYSIS): 発走25分以内の判定で発火が残った時だけ「正式な買い」。
+            # 朝発火は監視(watch)扱い。ドリフトで乖離が消えるレースを買わないための二段記録。
+            try:
+                ph, pm = int(post[:2]), int(post[3:5])
+                mins_to_post = (ph*60+pm) - (now.hour*60+now.minute)
+            except Exception:
+                mins_to_post = 999
+            entry["judged_tminus"] = mins_to_post
+            if 0 < mins_to_post <= 25:
+                entry["confirmed"] = True
             if prev:
                 entry["recorded_first"] = prev.get("recorded_first", prev["recorded"])
+                entry["confirmed"] = entry.get("confirmed") or prev.get("confirmed", False)
                 n_upd += 1
             else:
                 entry["recorded_first"] = entry["recorded"]
@@ -203,27 +215,37 @@ def cmd_stats():
     if not logs:
         print("精算済みレコードなし")
         return
-    st = sum(r["stake_total"] for r in logs)
-    rt = sum(r["ret"] for r in logs)
-    h = sum(1 for r in logs if r["ret"] > 0)
+
+    def block(rows, label):
+        if not rows:
+            print(f"  ({label}: 0R)")
+            return
+        st = sum(r["stake_total"] for r in rows)
+        rt = sum(r["ret"] for r in rows)
+        h = sum(1 for r in rows if r["ret"] > 0)
+        print(f"  {label}: {len(rows)}R 的中{h} ({h/len(rows)*100:.0f}%) "
+              f"投下{st:,}円→回収{rt:,}円 (ROI {rt/max(st,1)*100:.1f}%) 損益{rt-st:+,}円")
+        from collections import defaultdict
+        byt = defaultdict(lambda: [0, 0, 0.0, 0.0])
+        for r in rows:
+            a = byt[r["tier"]]
+            a[0] += 1
+            a[1] += r["ret"] > 0
+            a[2] += r["stake_total"]
+            a[3] += r["ret"]
+        for t in ("SS", "S", "A", "B"):
+            if t in byt:
+                n_, h_, s_, r_ = byt[t]
+                print(f"    {t}: {n_}R 的中{h_} ROI {r_/max(s_,1)*100:.0f}% 損益{r_-s_:+,.0f}円")
+
+    conf = [r for r in logs if r.get("confirmed")]
+    watch = [r for r in logs if not r.get("confirmed")]
     print(f"紙上運用(パターン・ルールブック/JRA): {len(logs)}R精算")
-    print(f"  的中{h} ({h/len(logs)*100:.0f}%) / 投下{st:,}円 → 回収{rt:,}円 "
-          f"(ROI {rt/max(st,1)*100:.1f}%) / 損益 {rt-st:+,}円")
-    from collections import defaultdict
-    byt = defaultdict(lambda: [0, 0, 0.0, 0.0])
-    for r in logs:
-        a = byt[r["tier"]]
-        a[0] += 1
-        a[1] += r["ret"] > 0
-        a[2] += r["stake_total"]
-        a[3] += r["ret"]
-    for t in ("SS", "S", "A", "B"):
-        if t in byt:
-            n_, h_, s_, r_ = byt[t]
-            print(f"  {t}: {n_}R 的中{h_} ROI {r_/max(s_,1)*100:.0f}% 損益{r_-s_:+,.0f}円")
-    print(f"  参考: シミュ(WF2200R)はROI223.9%・的中17%。")
-    print(f"  判定ライン(RULES): 精算150Rで回収90%超→少額実弾を検討 / 70%未満→設計に戻る")
-    print(f"  進捗: {len(logs)}/150R")
+    print(f"★正式な買い＝直前判定(発走25分以内)で発火が残ったレースのみ。8/16以前の記帳は全てwatch扱い。")
+    block(conf, "正式(直前判定済み)[実測]")
+    block(watch, "watch(朝発火のみ・8/16以前含む)[参考]")
+    print(f"  判定ライン(RULES): 正式150Rで回収90%超→少額実弾を検討 / 70%未満→設計に戻る")
+    print(f"  進捗: 正式{len(conf)}/150R ※シミュ200%級は窓内参考値(ANALYSIS_20260816.md)・実測扱い禁止")
 
 
 def main():
