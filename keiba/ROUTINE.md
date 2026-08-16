@@ -172,3 +172,7 @@ update_triggerツールが使えるセッションで trig_01W62FS4 のpromptに
 - 記帳時に notify.plan(race_id,"pre15",...) / notify.plan(race_id,"result",...) を登録
 - 通知送信直後に notify.mark()、心拍は毎回 python3 notify.py で欠落チェック→即送信
 (RULES.md §通知・運用の恒久ルール参照。本文はセッション8/15の下書きを参照)
+
+## 【TODO 2026-08-16】毎朝ルーチンを土日のみに変更(ユーザー指示)
+trig_01W62FS4 の cron を "3 0 * * 6,0"(土日9:03JST) に更新する。update_triggerが承認待ちで未完。
+次に承認が通るセッション、または claude.ai/code/routines のUIから変更。平日大井は自動起動しない。
