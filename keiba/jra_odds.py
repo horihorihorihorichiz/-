@@ -197,7 +197,8 @@ def fetch_official(race_id, debug=False):
         empty["names"] = names
         return empty
 
-    mh = re.search(r"(\d+回\S{2,3}\d+日).{0,80}?(\d{1,2}:\d{2}現在|確定)", page, re.S)
+    # 発売中="18:06現在" / 発走後="最終"(最終オッズ) / 確定表示があれば"確定"
+    mh = re.search(r"(\d+回\S{2,3}\d+日).{0,80}?(\d{1,2}:\d{2}現在|確定|最終)", page, re.S)
     asof = kai = None
     if mh:
         kai, asof = mh.group(1), mh.group(2)
