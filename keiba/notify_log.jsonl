@@ -11,7 +11,7 @@
 {"race_id": "202644081603", "kind": "recheck", "date": "20260816", "due": "16:30", "note": "", "planned_at": "14:57", "sent_at": "16:32"}
 {"race_id": "202644081604", "kind": "recheck", "date": "20260816", "due": "17:02", "note": "", "planned_at": "14:57", "sent_at": "17:01"}
 {"race_id": "202601050811", "kind": "recheck", "date": "20260816", "due": "17:28", "note": "", "planned_at": "14:57", "sent_at": "17:25"}
-{"race_id": "202644081606", "kind": "recheck", "date": "20260816", "due": "18:07", "note": "", "planned_at": "14:57", "sent_at": null}
+{"race_id": "202644081606", "kind": "recheck", "date": "20260816", "due": "18:07", "note": "", "planned_at": "14:57", "sent_at": "17:59"}
 {"race_id": "202644081607", "kind": "recheck", "date": "20260816", "due": "18:40", "note": "", "planned_at": "14:57", "sent_at": null}
 {"race_id": "202644081608", "kind": "recheck", "date": "20260816", "due": "19:15", "note": "", "planned_at": "14:57", "sent_at": null}
 {"race_id": "202644081609", "kind": "pre15", "date": "20260816", "due": "19:55", "note": "", "planned_at": "14:57", "sent_at": null}
