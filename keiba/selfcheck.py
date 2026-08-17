@@ -11,22 +11,32 @@
      4. V3回帰指紋   : 既知レースの得点が既知値と一致するか(モデル/特徴の取り違え検出)
      5. パターン発火 : patterns.py の代表発火・抑止・V4ゲートが仕様通りか
      6. JST時刻      : 実行時刻の取得(時間軸ズレ事故の防止)
+     7. JRA公式オッズ: jra_odds.py が sp.jra.jp に到達し単複を取れるか(非開催日はスキップ)
+     8. watch台帳    : watch_log.py のW10/W11判定ロジックと台帳の健全性
+     9. 通知ギャップ : notify.py の欠落検出・実行基盤停止(ギャップ)検出が動くか
 
    usage: python3 selfcheck.py        # 全部
           python3 selfcheck.py -q     # 結果1行のみ
+          KEIBA_SELFCHECK_NONET=1 python3 selfcheck.py   # 外部サイトを叩く検査を飛ばす
 """
 import datetime, json, os, subprocess, sys
 
 _DIR = os.path.dirname(os.path.abspath(__file__))
 os.chdir(_DIR)
 
-OK, NG = [], []
+OK, NG, SKIP = [], [], []
+
+
+class Skip(Exception):
+    """検査の前提が今日は成立しない(非開催日など)。NGではない。"""
 
 
 def check(name, fn, fix=""):
     try:
         detail = fn()
         OK.append((name, detail or ""))
+    except Skip as s:
+        SKIP.append((name, f"{s}"))
     except Exception as e:
         NG.append((name, f"{e}", fix))
 
@@ -199,17 +209,78 @@ now = datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=9)))
 check("JST時刻", lambda: now.strftime("%Y-%m-%d %H:%M JST"))
 
 
+# 7. JRA公式オッズ(2026-08-17追加) -------------------------------------------
+#    直前判定・凍結は fetch_jra(fresh=True)=sp.jra.jp が生命線(netkeibaは40-50分遅れ)。
+#    週末朝に「実は取れなくなっていた」を当日発見しないための到達確認。
+#    非開催日(JRA公式のオッズ一覧に開催が載らない日)はスキップ扱い。
+def jra_odds_reach():
+    if os.environ.get("KEIBA_SELFCHECK_NONET"):
+        raise Skip("KEIBA_SELFCHECK_NONET=1 のため外部到達確認を省略")
+    import re
+    import jra_odds as JO
+    try:
+        idx = JO._http(JO.ACCESS_O, "cname=" + JO.ODDS_INDEX_CNAME)
+    except Exception as e:
+        raise RuntimeError(f"sp.jra.jp に到達できない: {e}")
+    keys = sorted(set(re.findall(r"sw15orl\d{2}(\d{10})\d{8}/", idx)))
+    if not keys:
+        if "sw15orl" in idx:
+            raise RuntimeError("オッズ一覧の開催リンク書式が変わった疑い(正規表現の見直しが必要)")
+        raise Skip("JRA公式オッズ一覧に開催なし(=当日/前日がJRA非開催。週末は掲載される)")
+    k = keys[-1]                                   # VV+YYYY+KK+DD
+    rid = k[2:6] + k[:2] + k[6:8] + k[8:10] + "11"  # → netkeiba形式 YYYY+VV+KK+DD+RR
+    d = JO.fetch_official(rid)
+    if d.get("tan"):
+        return (f"{len(keys)}開催掲載 / {rid} 単勝{len(d['tan'])}頭・複勝{len(d.get('fuku') or {})}頭 "
+                f"取得OK({d.get('kai_nichi')} {d.get('asof')})")
+    reason = d.get("reason") or "不明"
+    if "パース" in reason or "構造" in reason:
+        raise RuntimeError(f"公式ページのパース失敗=サイト構造変更の疑い: {reason}")
+    raise Skip(f"到達OK・オッズ未取得({reason})")
+
+
+check("JRA公式オッズ(sp.jra.jp)", jra_odds_reach,
+      fix="python3 jra_odds.py <race_id> --debug で確認。取れない間は直前判定のオッズが40-50分遅れになる")
+
+
+# 8. watch台帳(W10/W11ライブ記録) --------------------------------------------
+def watch_log_health():
+    import watch_log
+    return watch_log.probe()
+
+
+check("watch台帳(W10/W11)", watch_log_health,
+      fix="python3 watch_log.py probe で詳細。台帳が壊れていたら watch_log.jsonl の該当行を確認")
+
+
+# 9. 通知の欠落・停止ギャップ検出(2026-08-16の28分停止事故の再発防止) -------------
+def notify_health():
+    import notify
+    detail = notify.selftest()          # 一時ファイルで検査。実台帳には触れない
+    od = notify.check()                 # 実台帳の現況(未送信の遅延通知)
+    if od:
+        raise RuntimeError(f"未送信の期限超過通知が{len(od)}件ある: "
+                           + ", ".join(f"{r['race_id']}/{r['kind']}({r['late_min']}分遅延)" for r in od[:3]))
+    return detail
+
+
+check("通知台帳・停止ギャップ検出", notify_health,
+      fix="python3 notify.py で欠落一覧。送信済みなら notify.mark()、送る意味が無いなら notify.close()")
+
+
 def main():
     quiet = "-q" in sys.argv
     if not quiet:
         print("━━ selfcheck（迷わない・ミスらないための起動検査）━━")
         for name, detail in OK:
             print(f"  ✅ {name}: {detail}")
+        for name, why in SKIP:
+            print(f"  ⏭ {name}: スキップ({why})")
         for name, err, fix in NG:
             print(f"  ❌ {name}: {err}")
             if fix:
                 print(f"     対処→ {fix}")
-    status = "ALL GREEN" if not NG else f"NG {len(NG)}件"
+    status = ("ALL GREEN" + (f"(スキップ{len(SKIP)})" if SKIP else "")) if not NG else f"NG {len(NG)}件"
     print(f"selfcheck: {status} ({now.strftime('%m/%d %H:%M JST')})")
     if not NG and not quiet:
         print("\n次にやること:")

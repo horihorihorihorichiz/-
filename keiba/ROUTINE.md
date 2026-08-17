@@ -1,6 +1,8 @@
 # 週末ルーチン設定手順（Ver.100=紙上運用が本線／旧・レース選定も残置）
 
-## ★★最新（2026-08-08〜）: デイボード+15分前プッシュ通知ルーチン（こちらを登録）
+## ★★最新（2026-08-08〜 / 2026-08-17プロンプト更新）: デイボード+15分前プッシュ通知ルーチン（こちらを登録）
+> 8/17更新: 直前判定(confirmed)・watch_log(W10/W11)・notify --heartbeat の3点を追加。
+> **登録済みのルーチンにも下のプロンプトを貼り直すこと**（貼り直さないと旧手順のまま回る）。
 登録: claude.ai/code/routines → New routine
 - 名前: `競馬・週末デイボード運用`
 - cron: `3 9 * * 6,0`（土日 9:03 JST）
@@ -10,14 +12,20 @@
 keiba/RULES.md §0 と keiba/CLAUDE.md の競馬節を読んでから、当日運用を開始:
 0. pip install -q numpy lightgbm && cd keiba && python3 selfcheck.py  # ALL GREEN必須
 1. python3 day_board.py で今日の全場ボードを生成し、SendUserFileで送付
-2. python3 paper_rank.py run で発火レースを紙上記帳
+2. python3 paper_rank.py run で発火レースを紙上記帳 / python3 watch_log.py run でW10/W11を記録
 3. 以降は終日パトロール: 各買いレース(A近接含む)の発走15分前に
    paper_rank.py run→最新オッズ+馬体重(day_board.refresh_weights)を反映し、
    PushNotificationとチャットで通知(買い目・金額・オッズ→払戻・馬体重±・判定変化)。
+   ★発走25分以内の再判定で発火が残ると confirmed=true(=正式な買い)。朝だけ判定して放置すると
+     永久にwatch(参考値)にしかならないので、買い候補は必ずT-25〜T-15で再実行する。
+   ★同じタイミングで watch_log.py run も回す(W11の10倍+判定がJRA公式オッズで正確になる)。
+   ★心拍のたびに python3 notify.py --heartbeat を実行。停止ギャップ(20分以上の空白)と
+     期限超過の未送信通知が出たら、遅延分も含めて即送信する(RULES §通知7)。
    発走3分前は paper_rank.py run で凍結。確定後は paper_rank.py settle→結果をプッシュ報告。
    待ち時間は ScheduleWakeup で「次のレースの発走15分前の4分前」に起床を張り、
    ユーザーと会話したら返信の最後に必ず張り直す。保険として15分間隔のCronCreateも張る。
 4. 全レース終了後: paper_rank.py stats で日次精算(2日累計・150Rライン進捗)を報告し、
+   watch_log.py settle && watch_log.py stats でW10/W11の当日分も精算・報告し、
    まとめmdを SendUserFile で送付、commit & push（ブランチ claude/stoic-ride-p35k9n）
 ※環境リセット検出時(ファイル欠損/HEADが古い)は git fetch origin claude/stoic-ride-p35k9n
   && git merge --ff-only origin/claude/stoic-ride-p35k9n && pip install -q numpy lightgbm で復旧。

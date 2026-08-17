@@ -70,3 +70,55 @@ python predict.py race_xxx.json --race-id <id> --cart --cap 5000 # キャップ�
 ローカルClaude Code＋Playwright(ipat_local_CLAUDE.md)で「Aを実行→購入画面へ→Bを実行→確認画面で停止」
 までは自動化可。**確定クリックの自動化は非推奨**（誤発注・二重発注・オッズ急変リスク）。
 どうしても行う場合も 1日上限・1レース上限・GO限定・全ログ記録をハードコードすること。
+
+---
+
+# 週末ライブ運用の実行手順（2026-08-17 追加・8/22-23から適用）
+
+「凍結ルールブックの直前判定」「W10/W11のwatch記録」「通知の欠落・停止検出」を
+**その日のうちに機械が担保する**ための追加コマンド。既存の予想ロジックには一切触れていない。
+
+## 当日の実行順（心拍/ルーチンが回す）
+```bash
+cd keiba
+python3 selfcheck.py                    # ALL GREEN必須(JRA公式オッズ到達確認を含む・非開催日は⏭)
+python3 day_board.py                    # ボード生成
+python3 paper_rank.py run               # 凍結ルールの発火を紙上記帳(何度でも)
+python3 watch_log.py run                # ★W10/W11を賭け金ゼロで記録(全JRAレース・day_board の後だと速い)
+# ── 各レース発走15-25分前に paper_rank.py run と watch_log.py run --fast を必ず再実行 ──
+#    paper_rank: 発走25分以内の再判定で発火が残った時だけ confirmed=true（＝正式な買い）
+#    watch_log : 発走30分以内はJRA公式オッズ(fresh)で判定するのでW11の10倍+境界が正確になる
+python3 notify.py --heartbeat           # ★心拍のたび: 停止ギャップ検出＋期限超過通知の一覧
+# ── 全レース終了後 ──
+python3 paper_rank.py settle && python3 paper_rank.py stats
+python3 watch_log.py settle  && python3 watch_log.py stats
+```
+
+## paper_rank.py 直前判定モード（実測はここからしか生まれない）
+- `judged_tminus` = 判定時点の発走までの分数。`confirmed=true` は **0 < tminus <= 25** で発火が
+  残ったレースのみ。朝だけ判定して放置したレースは永久に watch(参考値)にしかならない。
+- 発走3分前で `frozen=true` + `odds_at_freeze`(JRA公式)を保存。以後そのレースは再判定しない。
+- **過去日付の run は既定で新規記帳しない**（発走後オッズで記帳＝後知恵記録になるため。
+  どうしても必要なら `--allow-past`）。
+- 8/16以前の記帳には confirmed が無い＝全て watch 扱い。**正式カウントは 8/22 からゼロスタート**。
+
+## watch_log.py（W10/W11・賭け金ゼロ）
+- W10 = モデル1位 ∧ 前走tsi最高1位（合議一致）、W11 = W10 かつ モデル1位が単勝10倍以上。
+- 前走tsi は race_json の `horses[].races[0].tsi`（hist/{rid}.json でも同じ場所）。
+- **一致レースだけでなく全レースを記録**する（不一致＝対照群が無いと「発見」を名乗れない。
+  8/17にW10の最高tsi版が対照群で消滅した教訓）。tsi同値1位のレースは判定不能として集計から除外。
+- 出力は名目100円（単勝/複勝）のROI。`stake` は常に 0＝実弾ではない。
+- 判定ライン: W10 n>=30 / W11 n>=50 で VALIDATE 相当の判定。台帳側の数値(W10 85.1%/W11 192.2%)は
+  [窓内=参考値]、ライブ記録は[ライブ実測]とラベルを分けて報告する。
+- 出現頻度の目安（直近347Rでの実測）: W10 は約1/3のレース、W11 は約1.4%（週末で1-2R程度）。
+
+## notify.py 停止・欠落の検出（8/16の28分停止で中京12Rの通知が飛んだ事故の再発防止）
+- `notify.plan(rid, kind, due, post="14:35")` … post を渡すと遅延検出時に
+  「未発走(まだ送れる)/発走後(手遅れ)」を自動判別する。
+- `notify.check()` … 期限超過で未送信の予定を**日付をまたいで18時間分**返す（late_min/stage付き・
+  遅い順）。復帰時に「期限がとっくに過ぎた通知」を静かに落とさない。
+- `notify.heartbeat()` / `python3 notify.py --heartbeat` … 最終実行時刻を notify_state.json に刻み、
+  **20分以上の空白を実行基盤停止として検出**。停止中に期限を迎えた予定を missed として列挙する。
+- `notify.sweep()` … 心拍が呼ぶ入口。`{"gap":…, "overdue":[…]}` を返す。両方とも即送信対象。
+- `notify.close(rid, kind, reason=…)` … 送る意味が無くなった予定の明示的な取り下げ（黙って消さない）。
+- selfcheck は「未送信の期限超過通知が残っていたら ❌」にする。ALL GREEN のまま週末に入ること。

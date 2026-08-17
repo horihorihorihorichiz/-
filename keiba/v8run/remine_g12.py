@@ -1,0 +1,1 @@
+/home/user/-/keiba/remine_g12.py

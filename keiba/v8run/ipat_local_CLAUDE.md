@@ -1,0 +1,1 @@
+/home/user/-/keiba/ipat_local_CLAUDE.md

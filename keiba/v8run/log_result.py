@@ -1,0 +1,1 @@
+/home/user/-/keiba/log_result.py

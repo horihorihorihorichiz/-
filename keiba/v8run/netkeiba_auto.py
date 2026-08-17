@@ -1,0 +1,1 @@
+/home/user/-/keiba/netkeiba_auto.py

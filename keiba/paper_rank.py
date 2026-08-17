@@ -73,12 +73,19 @@ def fire_to_bets(name, order, odds, yen):
     return []
 
 
-def cmd_run(date):
+def cmd_run(date, allow_past=False):
     now = jst_now()
     logs = load_log()
     byrid = {r["race_id"]: r for r in logs}
     lst = [it for it in PKR.fetch_list(date, nar=False)
            if not JUMP_RE.search(it.get("name", ""))]
+    # 過去日付のrunは既定で「既存レコードを読むだけ」。発走後のオッズ(=結果を知った後の値)で
+    # 新規記帳すると後知恵記録になり、凍結ルールの成績が汚れる(2026-08-17 ドライランで判明)。
+    past_day = date < now.strftime("%Y%m%d")
+    if past_day and not allow_past:
+        print(f"[{date}] 過去日付のため新規記帳は行わない(既存{sum(1 for r in logs if r['date']==date)}件は保持)。"
+              f"意図的な追記は --allow-past", file=sys.stderr)
+        return
     print(f"[{date}] JRA {len(lst)}レースを紙上判定 ({now.strftime('%H:%M')} JST)", file=sys.stderr)
     n_new = n_upd = 0
     for it in lst:
@@ -254,11 +261,13 @@ def main():
     sub = ap.add_subparsers(dest="cmd", required=True)
     p1 = sub.add_parser("run")
     p1.add_argument("date", nargs="?", default=None)
+    p1.add_argument("--allow-past", action="store_true",
+                    help="過去日付でも新規記帳する(後知恵記録になるため通常は使わない)")
     sub.add_parser("settle")
     sub.add_parser("stats")
     a = ap.parse_args()
     if a.cmd == "run":
-        cmd_run(a.date or jst_now().strftime("%Y%m%d"))
+        cmd_run(a.date or jst_now().strftime("%Y%m%d"), allow_past=a.allow_past)
     elif a.cmd == "settle":
         cmd_settle()
     else:
