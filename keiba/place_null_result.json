@@ -1,0 +1,21 @@
+{
+ "variant": "v3place",
+ "fold": "202608",
+ "train_races": 6704,
+ "alpha_real": 0.0358,
+ "se_real": 0.0159,
+ "beta_real": 0.8082,
+ "alpha_null": [
+  0.0162,
+  -0.0008,
+  0.0053,
+  0.0109,
+  0.032,
+  0.0018,
+  0.0198,
+  0.0103
+ ],
+ "alpha_null_mean": 0.012,
+ "alpha_null_max": 0.032,
+ "null_ge_real": 0
+}

@@ -111,24 +111,27 @@ def harville_place(w, k=3):
     return np.clip(w + p2 + p3, 1e-12, 1.0)
 
 
-def pl_from_place(q, iters=200, tol=1e-12):
+def pl_from_place(q, iters=20000, tol=1e-9, ret_iters=False):
     """P(3着内)の並び q (和=3) を再現する PL強度 w を不動点法で求める。
-       w <- w * q / harville(w) を正規化しながら繰り返す。"""
+       w <- w * q / harville(w) を正規化しながら繰り返す。
+
+       停止条件は **残差** max|harville(w)-q| < tol（w の変化量ではない）。
+       w の変化量で切ると n=4 の強い一極集中ケースで収束前に抜けてしまい、
+       残差 1.2e-3 のまま返る事故があったため（2026-08-17 修正）。
+       実データ（n>=5）では 20〜300 回で残差 1e-11 に達し早期脱出する。"""
     q = np.clip(np.asarray(q, dtype=float), 1e-6, 1 - 1e-6)
     n = len(q)
     if n <= 3:
-        return np.full(n, 1.0 / n)
+        return (np.full(n, 1.0 / n), 0) if ret_iters else np.full(n, 1.0 / n)
     w = q / q.sum()
-    for _ in range(iters):
+    it = 0
+    for it in range(1, iters + 1):
         h = harville_place(w, 3)
-        w2 = w * (q / np.clip(h, 1e-9, None))
-        w2 = np.clip(w2, 1e-12, None)
-        w2 /= w2.sum()
-        if np.max(np.abs(w2 - w)) < tol:
-            w = w2
+        if np.max(np.abs(h - q)) < tol:
             break
-        w = w2
-    return w
+        w = np.clip(w * (q / np.clip(h, 1e-12, None)), 1e-12, None)
+        w /= w.sum()
+    return (w, it) if ret_iters else w
 
 
 def _triples(n):
