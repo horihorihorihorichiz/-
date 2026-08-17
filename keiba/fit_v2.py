@@ -41,6 +41,35 @@ EXTRA_FEATS = ["idx_trend", "fin_w", "class_fin", "bigfield_fin", "corner_gain",
 TENKAI_FEATS = ["ep", "ep_rel", "press", "front_n", "pace_adv"]
 STYLE_POS = {"逃": 0.10, "先": 0.30, "差": 0.60, "追": 0.85}
 
+# ── V8追加(2026-08-17 情報拡張・V8_PROTOCOL_20260817.md) ───────────────────
+# F1=当日トラックバイアス / F2=前走不利推定 / F4=コースプロファイル。
+# 実体は course_bias.py（as-of保証つき）。ここでは「どの群をどの順で行に並べるか」だけ持つ。
+# ★既存経路(V3/V4/V5/V6)は v8=False のとき一切触らない。dataset の中身も増やさない。
+import course_bias as CB      # noqa: E402  (importしただけでは台帳を読まない=遅延構築)
+
+V8_ORDER = ("f1", "f2", "f4")
+V8_CTX = {"f1": CB.CTX_F1, "f2": [], "f4": CB.CTX_F4}    # レース単位(全頭共通・生値)
+V8_RAW = {"f1": CB.RAW_F1, "f2": [], "f4": CB.RAW_F4}    # 馬単位・生値(z化しない)
+V8_Z = {"f1": [], "f2": CB.Z_F2, "f4": CB.Z_F4}          # 馬単位・レース内z化
+V8_Z_ALL = CB.Z_F2 + CB.Z_F4
+
+
+def v8_groups(v8):
+    """v8 引数の正規化。False/None→無効、True/'all'→全群、'f1,f2'→指定群のみ。
+       順序は必ず V8_ORDER に従う(行の並びが実行ごとに変わるとモデルが壊れるため)。"""
+    if not v8:
+        return ()
+    if v8 is True or v8 == "all":
+        return V8_ORDER
+    if isinstance(v8, str):
+        want = {s.strip().lower() for s in v8.split(",") if s.strip()}
+    else:
+        want = {str(s).strip().lower() for s in v8}
+    bad = want - set(V8_ORDER)
+    if bad:
+        raise ValueError(f"未知のV8特徴群: {sorted(bad)} (有効={V8_ORDER})")
+    return tuple(g for g in V8_ORDER if g in want)
+
 
 def ep_of(h):
     rs = h.get("races", [])
@@ -131,10 +160,11 @@ def raw_extra(num, ff, ctx):
     }
 
 
-def build_row(r, n, v4=True, extra=False, tenkai=False):
+def build_row(r, n, v4=True, extra=False, tenkai=False, v8=None):
     """1頭分の特徴行。v4=False なら V3 と同じ [FEATS..., 頭数] を返す。
        extra=True で V5 の強さ特徴(EXTRA_FEATS・レース内z済み)を追加。
-       tenkai=True で V6 の展開特徴(TENKAI_FEATS・生値)を追加。"""
+       tenkai=True で V6 の展開特徴(TENKAI_FEATS・生値)を追加。
+       v8='f1,f2,f4' 等で V8 の情報拡張特徴を末尾に追加(load_dataset(v8=...)が必要)。"""
     base = [r["X"][k][n] for k in FEATS]
     if not v4:
         return base + [float(len(r["ns"]))]
@@ -144,14 +174,25 @@ def build_row(r, n, v4=True, extra=False, tenkai=False):
         row += [r["X"][k][n] for k in EXTRA_FEATS]
     if tenkai:
         row += [r["raw_extra"][n].get(k, 0.0) for k in TENKAI_FEATS]
+    gs = v8_groups(v8)
+    if gs:
+        if "v8_ctx" not in r:
+            raise KeyError("V8特徴が dataset に無い。load_dataset(..., v8=...) で作ること")
+        for g in gs:
+            row += [r["v8_ctx"].get(k, 0.0) for k in V8_CTX[g]]
+            row += [r["v8_raw"][n].get(k, 0.0) for k in V8_RAW[g]]
+            row += [r["X"][k][n] for k in V8_Z[g]]
     return row
 
 
-def feat_names(v4=True, extra=False, tenkai=False):
+def feat_names(v4=True, extra=False, tenkai=False, v8=None):
     if not v4:
         return FEATS + ["field"]
-    return (FEATS + RAW_FEATS + CTX_FEATS + (EXTRA_FEATS if extra else [])
-            + (TENKAI_FEATS if tenkai else []))
+    names = (FEATS + RAW_FEATS + CTX_FEATS + (EXTRA_FEATS if extra else [])
+             + (TENKAI_FEATS if tenkai else []))
+    for g in v8_groups(v8):
+        names = names + V8_CTX[g] + V8_RAW[g] + V8_Z[g]
+    return names
 
 
 def z_in_race(vals):
@@ -189,8 +230,40 @@ def horse_feats(h, race):
     return f
 
 
-def load_dataset(histdir, featdir):
+def v8_attach(race, raw, ctx, rid=None, idx=None, prior_day=None):
+    """V8(F1/F2/F4)の特徴を組み立てる。学習でもライブでも**同じ関数**を通す(統一原則)。
+
+       raw    : 馬番 -> 生特徴dict。ここに F2 と同コース実績(z化する量)を書き足す。
+       戻り値 : (v8_ctx, v8_raw)  … v8_ctx=レース単位・v8_raw=馬単位の生特徴
+
+       rid が as-of インデックスに載っていれば「そのレースの発走時点」で凍結済みの値を使う。
+       載っていない(=ライブの未来のレース)場合は、インデックス最終時点のコース累積 +
+       呼び出し側が渡した当日の先行レース結果(prior_day)から同じ式で作る。"""
+    idx = idx if idx is not None else CB.index()
+    if rid and rid in idx.ctx:
+        ctx8 = idx.race_ctx(rid)
+        f2map = idx.f2_of(rid)
+    else:
+        ctx8 = idx.live_race_ctx(race, prior_day)
+        f2map = {h.get("num"): CB.f2_feats(h, idx.agari) for h in race.get("horses") or []}
+    fld = int(ctx.get("field") or 0) or len(race.get("horses") or [])
+    v8raw = {}
+    for h in race.get("horses") or []:
+        n = h.get("num")
+        if n not in raw:
+            continue
+        raw[n].update(f2map.get(n) or {k: None for k in CB.Z_F2})
+        hv = CB.horse_v8(n, race, h, ctx8, field=fld)
+        for k in CB.Z_F4:            # 同コース実績はレース内zに回す
+            raw[n][k] = hv.pop(k)
+        v8raw[n] = hv
+    return ctx8, v8raw
+
+
+def load_dataset(histdir, featdir, v8=None):
     ds = []
+    gs = v8_groups(v8)
+    idx = CB.index() if gs else None
     for f in sorted(glob.glob(os.path.join(histdir, "*.json"))):
         rid = os.path.basename(f)[:-5]
         try:
@@ -223,18 +296,27 @@ def load_dataset(histdir, featdir):
             continue
         for h in d["race"]["horses"]:
             raw[h["num"]].update(extra_strength(h, d["race"]))
-        X = {k: z_in_race({n: raw[n].get(k) for n in raw}) for k in FEATS + EXTRA_FEATS}
         ctx = race_ctx(d["race"])
+        zkeys = FEATS + EXTRA_FEATS
+        v8ctx = v8raw = None
+        if gs:
+            v8ctx, v8raw = v8_attach(d["race"], raw, ctx, rid=rid, idx=idx)
+            zkeys = zkeys + V8_Z_ALL
+        X = {k: z_in_race({n: raw[n].get(k) for n in raw}) for k in zkeys}
         rx = {n: raw_extra(n, raw[n], ctx) for n in raw}
-        ds.append(dict(X=X, ns=list(raw.keys()), top3=top3, odds=odds,
-                       payout=d["result"].get("payout") or {},
-                       date=d.get("date", ""), rid=rid,
-                       ctx=ctx, raw_extra=rx,
-                       surface=d["race"].get("surface"),
-                       dist=d["race"].get("distance"),
-                       tier=d["race"].get("today_tier"),
-                       baba=d["race"].get("baba"),
-                       venue=d["race"].get("venue")))
+        row = dict(X=X, ns=list(raw.keys()), top3=top3, odds=odds,
+                   payout=d["result"].get("payout") or {},
+                   date=d.get("date", ""), rid=rid,
+                   ctx=ctx, raw_extra=rx,
+                   surface=d["race"].get("surface"),
+                   dist=d["race"].get("distance"),
+                   tier=d["race"].get("today_tier"),
+                   baba=d["race"].get("baba"),
+                   venue=d["race"].get("venue"))
+        if gs:
+            row["v8_ctx"] = v8ctx
+            row["v8_raw"] = v8raw
+        ds.append(row)
     return ds
 
 
