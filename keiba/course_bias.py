@@ -209,18 +209,16 @@ def f2_feats(h, tbl):
 
 # ══════════════════════════════════════════════════════════════════════════
 #  F4補助: 当該馬の「同コース」実績（過去走レコードのみ＝事前情報）
-#  ※過去走レコードには開催場が入っていないため、コース同一性は
-#    (馬場 × 距離帯 × VG(コース性格グループ)) で近似する。
+#  ※既知の限界: 過去走レコードには開催場が入っておらず、vg も収穫初期の見落としで
+#    実測 91% が 2 固定（＝信用できない）。よって「同コース」は
+#    (馬場 × 距離帯) までの近似にとどめる。場まで一致させたいなら収穫側の拡張が要る。
 # ══════════════════════════════════════════════════════════════════════════
 def same_course_record(h, race):
     surf = race.get("surface")
     band = dist_band(race.get("distance"))
-    vg = race.get("today_vg")
     runs, top3, fins = 0, 0, []
     for pr in h.get("races") or []:
         if pr.get("surface") != surf or dist_band(pr.get("dist")) != band:
-            continue
-        if vg is not None and pr.get("vg") is not None and pr["vg"] != vg:
             continue
         fin, fld = pr.get("finish"), pr.get("field")
         if not fin or not fld:
@@ -489,14 +487,25 @@ def _selftest():
     later = [r for r, dt in idx.date.items() if dt > first_date and idx.race_ctx(r)["cp_n"] > 0]
     print(f"✅ 最古日({first_date}) {len(z)}Rの F4 は全て0 / 以降 {len(later)}Rで累積あり")
 
-    # 6) F2の値域と被覆
-    rid = os.path.basename(files[len(files)//2])[:-5]
-    f2 = idx.f2_of(rid)
-    cov = sum(1 for v in f2.values() if v["f2_wide_mean3"] is not None)
-    for v in f2.values():
-        for k, x in v.items():
-            assert x is None or -0.1 <= x <= 5.0, f"{k}={x} が想定域外"
-    print(f"✅ F2: {rid} 被覆 {cov}/{len(f2)}頭・値域OK")
+    # 6) F2の値域と被覆(新馬戦は過去走が無いので被覆0が正常。全体で見る)
+    tot = cov = 0
+    for rid in list(idx.f2)[::7]:
+        for v in idx.f2_of(rid).values():
+            tot += 1
+            cov += v["f2_wide_mean3"] is not None
+            for k, x in v.items():
+                assert x is None or -0.1 <= x <= 5.0, f"{rid} {k}={x} が想定域外"
+    print(f"✅ F2: {tot}頭で値域OK・被覆 {cov/max(tot,1)*100:.1f}% (残りは新馬/未出走)")
+
+    # 7) 同コース実績の被覆
+    tot = cov = 0
+    for f in files[::40]:
+        d2 = json.load(open(f, encoding="utf-8"))
+        for h in d2["race"]["horses"]:
+            r = same_course_record(h, d2["race"])
+            tot += 1
+            cov += r["cs_top3"] is not None
+    print(f"✅ 同コース実績(F4): {tot}頭で被覆 {cov/max(tot,1)*100:.1f}%")
     return idx
 
 

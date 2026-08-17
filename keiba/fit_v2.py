@@ -166,15 +166,18 @@ def build_row(r, n, v4=True, extra=False, tenkai=False, v8=None):
        tenkai=True で V6 の展開特徴(TENKAI_FEATS・生値)を追加。
        v8='f1,f2,f4' 等で V8 の情報拡張特徴を末尾に追加(load_dataset(v8=...)が必要)。"""
     base = [r["X"][k][n] for k in FEATS]
-    if not v4:
-        return base + [float(len(r["ns"]))]
-    row = (base + [r["raw_extra"][n][k] for k in RAW_FEATS]
-           + [r["ctx"][k] for k in CTX_FEATS])
-    if extra:
-        row += [r["X"][k][n] for k in EXTRA_FEATS]
-    if tenkai:
-        row += [r["raw_extra"][n].get(k, 0.0) for k in TENKAI_FEATS]
     gs = v8_groups(v8)
+    if not v4:
+        row = base + [float(len(r["ns"]))]
+        if not gs:
+            return row          # ← V3の行は1バイトも変わらない
+    else:
+        row = (base + [r["raw_extra"][n][k] for k in RAW_FEATS]
+               + [r["ctx"][k] for k in CTX_FEATS])
+        if extra:
+            row += [r["X"][k][n] for k in EXTRA_FEATS]
+        if tenkai:
+            row += [r["raw_extra"][n].get(k, 0.0) for k in TENKAI_FEATS]
     if gs:
         if "v8_ctx" not in r:
             raise KeyError("V8特徴が dataset に無い。load_dataset(..., v8=...) で作ること")
@@ -187,9 +190,10 @@ def build_row(r, n, v4=True, extra=False, tenkai=False, v8=None):
 
 def feat_names(v4=True, extra=False, tenkai=False, v8=None):
     if not v4:
-        return FEATS + ["field"]
-    names = (FEATS + RAW_FEATS + CTX_FEATS + (EXTRA_FEATS if extra else [])
-             + (TENKAI_FEATS if tenkai else []))
+        names = FEATS + ["field"]
+    else:
+        names = (FEATS + RAW_FEATS + CTX_FEATS + (EXTRA_FEATS if extra else [])
+                 + (TENKAI_FEATS if tenkai else []))
     for g in v8_groups(v8):
         names = names + V8_CTX[g] + V8_RAW[g] + V8_Z[g]
     return names

@@ -20,26 +20,30 @@ import fit_v2 as V2
 import course
 
 CACHE = "wf_ds_cache.pkl"
+CACHE_V8 = "wf_ds_cache_v8.pkl"     # V8特徴入りは別キャッシュ(既存キャッシュを汚さない)
 
 
-def load_ds(force=False):
-    if not force and os.path.exists(CACHE):
-        with open(CACHE, "rb") as f:
+def load_ds(force=False, v8=False):
+    """v8=True のとき F1/F2/F4 を全部載せた dataset を作る。
+       行の取捨は variant 側の v8 指定で行うので、キャッシュは常に全群込みで持つ。"""
+    cache = CACHE_V8 if v8 else CACHE
+    if not force and os.path.exists(cache):
+        with open(cache, "rb") as f:
             return pickle.load(f)
-    ds = V2.load_dataset("hist", "hist_feat")
-    with open(CACHE, "wb") as f:
+    ds = V2.load_dataset("hist", "hist_feat", v8="all" if v8 else None)
+    with open(cache, "wb") as f:
         pickle.dump(ds, f)
     return ds
 
 
-def matrix(rs, v4, extra=False, tenkai=False):
+def matrix(rs, v4, extra=False, tenkai=False, v8=None):
     X, y, grp = [], [], []
     for r in rs:
         lab = {n: 0 for n in r["ns"]}
         for pos, t in enumerate(r["top3"]):
             lab[t] = 3 - pos
         for n in r["ns"]:
-            X.append(V2.build_row(r, n, v4, extra, tenkai))
+            X.append(V2.build_row(r, n, v4, extra, tenkai, v8))
             y.append(lab[n])
         grp.append(len(r["ns"]))
     return (np.array(X, dtype=np.float32), np.array(y, dtype=np.float32), grp)
@@ -96,6 +100,18 @@ VARIANTS = {
     "v6b": dict(v4=True, extra=True, tenkai=True, binary=True,
                 params=dict(learning_rate=0.03, num_leaves=63, min_data_in_leaf=20,
                             bagging_seed=777, feature_fraction_seed=888, data_random_seed=999)),
+    # ── V8(2026-08-17 情報拡張): V8_PROTOCOL_20260817.md の事前登録どおり
+    #    F1(当日トラックバイアス)・F2(前走不利推定)・F4(コースプロファイル)を群ごとに独立評価。
+    #    ベースは V3(28特徴) と、実装上の比較用に V6 の2本立て。--v8 で dataset 側も切替わる。
+    "v8base": dict(v4=False),                                    # = v3(比較基準の再掲)
+    "v8f1": dict(v4=False, v8="f1"),
+    "v8f2": dict(v4=False, v8="f2"),
+    "v8f4": dict(v4=False, v8="f4"),
+    "v8f12": dict(v4=False, v8="f1,f2"),
+    "v8all": dict(v4=False, v8="f1,f2,f4"),
+    # V6(現行最上位の特徴集合)の上に載せた版。V8単体の寄与を見た後に使う。
+    "v8v6": dict(v4=True, extra=True, tenkai=True, binary=True, v8="f1,f2,f4",
+                 params=dict(learning_rate=0.03, num_leaves=63, min_data_in_leaf=20)),
 }
 
 
@@ -124,21 +140,22 @@ def fit_predict(train, fold, name):
                                 data_random_seed=300+i)
             m = train_fold(train, sp)
             outs.append([predict(m, r, spec["v4"], bool(spec.get("extra")),
-                                 bool(spec.get("tenkai"))) for r in fold])
+                                 bool(spec.get("tenkai")), spec.get("v8")) for r in fold])
         return [{n: sum(_zs(o[i])[n] for o in outs)/k for n in outs[0][i]}
                 for i in range(len(fold))]
     model = train_fold(train, spec)
     return [predict(model, r, spec["v4"], bool(spec.get("extra")),
-                    bool(spec.get("tenkai"))) for r in fold]
+                    bool(spec.get("tenkai")), spec.get("v8")) for r in fold]
 
 
 def train_fold(train, spec):
     v4 = spec["v4"]
     ex = bool(spec.get("extra"))
     tk = bool(spec.get("tenkai"))
+    v8 = spec.get("v8")
     n_val = max(50, len(train)//10)
-    Xt, yt, gt = matrix(train[:-n_val], v4, ex, tk)
-    Xv, yv, gv = matrix(train[-n_val:], v4, ex, tk)
+    Xt, yt, gt = matrix(train[:-n_val], v4, ex, tk, v8)
+    Xv, yv, gv = matrix(train[-n_val:], v4, ex, tk, v8)
     if spec.get("binary"):
         yt = (yt == 3).astype(np.float32)
         yv = (yv == 3).astype(np.float32)
@@ -160,8 +177,8 @@ def train_fold(train, spec):
                      callbacks=[lgb.early_stopping(60, verbose=False)])
 
 
-def predict(model, r, v4, extra=False, tenkai=False):
-    M = np.array([V2.build_row(r, n, v4, extra, tenkai) for n in r["ns"]], dtype=np.float32)
+def predict(model, r, v4, extra=False, tenkai=False, v8=None):
+    M = np.array([V2.build_row(r, n, v4, extra, tenkai, v8) for n in r["ns"]], dtype=np.float32)
     s = model.predict(M)
     return {n: float(v) for n, v in zip(r["ns"], s)}
 
@@ -256,9 +273,12 @@ def main():
     ap.add_argument("--dump", default="", help="この variant の予測を wf_preds_<v>.jsonl に出す")
     ap.add_argument("--trunc", type=int, default=0,
                     help="lambdarank_truncation_level (0=既定のまま)")
+    ap.add_argument("--v8", action="store_true",
+                    help="V8(F1/F2/F4)特徴入りの dataset を使う(v8* variant に必須)")
     a = ap.parse_args()
 
-    ds = load_ds(a.reload)
+    need_v8 = a.v8 or any(VARIANTS.get(v, {}).get("v8") for v in a.variants.split(","))
+    ds = load_ds(a.reload, v8=need_v8)
     months = sorted({r["date"][:6] for r in ds})
     folds = [m for m in months if m >= a.start_fold]
     variants = a.variants.split(",")
