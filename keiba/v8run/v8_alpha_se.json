@@ -1,0 +1,57 @@
+{
+ "v8base": {
+  "tau": 0.993,
+  "alpha": -0.1249,
+  "se_alpha": 0.029,
+  "beta": 1.1081,
+  "se_beta": 0.0208,
+  "z_alpha": -4.31,
+  "train": 6523,
+  "d2ll": 32.1,
+  "beta_only": 1.022
+ },
+ "v8f1": {
+  "tau": 0.998,
+  "alpha": -0.1207,
+  "se_alpha": 0.0289,
+  "beta": 1.1056,
+  "se_beta": 0.0208,
+  "z_alpha": -4.18,
+  "train": 6523,
+  "d2ll": 30.2,
+  "beta_only": 1.022
+ },
+ "v8f2": {
+  "tau": 1.006,
+  "alpha": -0.1192,
+  "se_alpha": 0.0288,
+  "beta": 1.1036,
+  "se_beta": 0.0209,
+  "z_alpha": -4.13,
+  "train": 6523,
+  "d2ll": 28.7,
+  "beta_only": 1.022
+ },
+ "v8f4": {
+  "tau": 1.003,
+  "alpha": -0.1067,
+  "se_alpha": 0.0289,
+  "beta": 1.0985,
+  "se_beta": 0.0209,
+  "z_alpha": -3.69,
+  "train": 6523,
+  "d2ll": 24.9,
+  "beta_only": 1.022
+ },
+ "v8all": {
+  "tau": 1.004,
+  "alpha": -0.1141,
+  "se_alpha": 0.0289,
+  "beta": 1.1017,
+  "se_beta": 0.021,
+  "z_alpha": -3.95,
+  "train": 6523,
+  "d2ll": 26.3,
+  "beta_only": 1.022
+ }
+}
