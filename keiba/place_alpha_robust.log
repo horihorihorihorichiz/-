@@ -1,0 +1,80 @@
+
+========================================================================
+v3place
+========================================================================
+202404[MINE] train=  328R  registered α=+0.0827(z+1.17)   flex α=+0.0873(z+1.19)
+202407[MINE] train=  481R  registered α=+0.0605(z+1.05)   flex α=+0.0589(z+0.98)
+202408[MINE] train=  645R  registered α=-0.0023(z-0.05)   flex α=-0.0091(z-0.18)
+202409[MINE] train=  902R  registered α=+0.0105(z+0.25)   flex α=-0.0019(z-0.04)
+202410[MINE] train= 1108R  registered α=+0.0258(z+0.68)   flex α=+0.0116(z+0.30)
+202411[MINE] train= 1343R  registered α=+0.0250(z+0.73)   flex α=+0.0102(z+0.29)
+202412[MINE] train= 1592R  registered α=+0.0130(z+0.42)   flex α=-0.0027(z-0.09)
+202501[MINE] train= 1802R  registered α=+0.0263(z+0.91)   flex α=+0.0092(z+0.30)
+202502[MINE] train= 2010R  registered α=+0.0343(z+1.24)   flex α=+0.0172(z+0.60)
+202503[MINE] train= 2267R  registered α=+0.0181(z+0.69)   flex α=+0.0005(z+0.02)
+202504[MINE] train= 2595R  registered α=+0.0149(z+0.60)   flex α=-0.0024(z-0.09)
+202505[MINE] train= 2851R  registered α=+0.0098(z+0.42)   flex α=-0.0072(z-0.30)
+202506[MINE] train= 3149R  registered α=+0.0083(z+0.37)   flex α=-0.0086(z-0.37)
+202507[MINE] train= 3399R  registered α=+0.0165(z+0.76)   flex α=+0.0004(z+0.02)
+202508[MINE] train= 3649R  registered α=+0.0217(z+1.03)   flex α=+0.0053(z+0.25)
+202509[MINE] train= 3960R  registered α=+0.0282(z+1.39)   flex α=+0.0121(z+0.58)
+202510[MINE] train= 4159R  registered α=+0.0299(z+1.51)   flex α=+0.0130(z+0.64)
+202511[MINE] train= 4373R  registered α=+0.0296(z+1.53)   flex α=+0.0118(z+0.59)
+202512[MINE] train= 4628R  registered α=+0.0259(z+1.38)   flex α=+0.0081(z+0.42)
+202601[MINE] train= 4848R  registered α=+0.0275(z+1.49)   flex α=+0.0095(z+0.50)
+202602[MINE] train= 5087R  registered α=+0.0321(z+1.78)   flex α=+0.0147(z+0.79)
+202603[VALIDATE] train= 5342R  registered α=+0.0305(z+1.74)   flex α=+0.0132(z+0.73)
+202604[VALIDATE] train= 5636R  registered α=+0.0343(z+1.99)   flex α=+0.0180(z+1.02)
+202605[VALIDATE] train= 5893R  registered α=+0.0330(z+1.95)   flex α=+0.0168(z+0.96)
+202606[CONFIRM] train= 6216R  registered α=+0.0401(z+2.44)   flex α=+0.0246(z+1.45)
+202607[CONFIRM] train= 6446R  registered α=+0.0380(z+2.34)   flex α=+0.0223(z+1.34)
+202608[CONFIRM] train= 6704R  registered α=+0.0358(z+2.25)   flex α=+0.0201(z+1.23)
+
+[out-of-sample 対数損失 / 1頭]
+  MINE      n=  69705  市場のみ 0.40194 | registered 0.40195 (改善-0.000015) | flex-no-model 0.40130 | flex 0.40133 (改善-0.000035)
+  VALIDATE  n=  12358  市場のみ 0.38655 | registered 0.38643 (改善+0.000116) | flex-no-model 0.38598 | flex 0.38592 (改善+0.000057)
+  CONFIRM   n=   9147  市場のみ 0.41522 | registered 0.41519 (改善+0.000030) | flex-no-model 0.41430 | flex 0.41429 (改善+0.000007)
+  ALL       n=  91210  市場のみ 0.40119 | registered 0.40118 (改善+0.000007) | flex-no-model 0.40053 | flex 0.40054 (改善-0.000019)
+  registered: α>0 26/27fold 最長連続=24
+  flex: α>0 21/27fold 最長連続=14
+
+========================================================================
+v8place
+========================================================================
+202404[MINE] train=  328R  registered α=+0.0721(z+0.98)   flex α=+0.0765(z+1.00)
+202407[MINE] train=  481R  registered α=+0.0578(z+1.00)   flex α=+0.0568(z+0.94)
+202408[MINE] train=  645R  registered α=-0.0036(z-0.07)   flex α=-0.0100(z-0.20)
+202409[MINE] train=  902R  registered α=+0.0095(z+0.23)   flex α=-0.0019(z-0.04)
+202410[MINE] train= 1108R  registered α=+0.0316(z+0.83)   flex α=+0.0179(z+0.46)
+202411[MINE] train= 1343R  registered α=+0.0294(z+0.87)   flex α=+0.0153(z+0.44)
+202412[MINE] train= 1592R  registered α=+0.0203(z+0.66)   flex α=+0.0053(z+0.17)
+202501[MINE] train= 1802R  registered α=+0.0297(z+1.03)   flex α=+0.0133(z+0.44)
+202502[MINE] train= 2010R  registered α=+0.0381(z+1.39)   flex α=+0.0216(z+0.76)
+202503[MINE] train= 2267R  registered α=+0.0268(z+1.02)   flex α=+0.0101(z+0.37)
+202504[MINE] train= 2595R  registered α=+0.0224(z+0.91)   flex α=+0.0062(z+0.25)
+202505[MINE] train= 2851R  registered α=+0.0185(z+0.79)   flex α=+0.0024(z+0.10)
+202506[MINE] train= 3149R  registered α=+0.0171(z+0.76)   flex α=+0.0011(z+0.05)
+202507[MINE] train= 3399R  registered α=+0.0270(z+1.24)   flex α=+0.0117(z+0.53)
+202508[MINE] train= 3649R  registered α=+0.0295(z+1.41)   flex α=+0.0139(z+0.65)
+202509[MINE] train= 3960R  registered α=+0.0352(z+1.74)   flex α=+0.0198(z+0.95)
+202510[MINE] train= 4159R  registered α=+0.0365(z+1.84)   flex α=+0.0204(z+1.00)
+202511[MINE] train= 4373R  registered α=+0.0358(z+1.86)   flex α=+0.0186(z+0.93)
+202512[MINE] train= 4628R  registered α=+0.0341(z+1.81)   flex α=+0.0169(z+0.87)
+202601[MINE] train= 4848R  registered α=+0.0351(z+1.91)   flex α=+0.0177(z+0.94)
+202602[MINE] train= 5087R  registered α=+0.0398(z+2.21)   flex α=+0.0230(z+1.25)
+202603[VALIDATE] train= 5342R  registered α=+0.0380(z+2.17)   flex α=+0.0212(z+1.18)
+202604[VALIDATE] train= 5636R  registered α=+0.0429(z+2.50)   flex α=+0.0271(z+1.54)
+202605[VALIDATE] train= 5893R  registered α=+0.0407(z+2.42)   flex α=+0.0253(z+1.46)
+202606[CONFIRM] train= 6216R  registered α=+0.0468(z+2.85)   flex α=+0.0317(z+1.88)
+202607[CONFIRM] train= 6446R  registered α=+0.0449(z+2.78)   flex α=+0.0297(z+1.79)
+202608[CONFIRM] train= 6704R  registered α=+0.0424(z+2.67)   flex α=+0.0272(z+1.67)
+
+[out-of-sample 対数損失 / 1頭]
+  MINE      n=  69705  市場のみ 0.40194 | registered 0.40194 (改善+0.000002) | flex-no-model 0.40130 | flex 0.40132 (改善-0.000023)
+  VALIDATE  n=  12358  市場のみ 0.38655 | registered 0.38640 (改善+0.000141) | flex-no-model 0.38598 | flex 0.38589 (改善+0.000085)
+  CONFIRM   n=   9147  市場のみ 0.41522 | registered 0.41517 (改善+0.000050) | flex-no-model 0.41430 | flex 0.41428 (改善+0.000020)
+  ALL       n=  91210  市場のみ 0.40119 | registered 0.40116 (改善+0.000026) | flex-no-model 0.40053 | flex 0.40053 (改善-0.000004)
+  registered: α>0 26/27fold 最長連続=24
+  flex: α>0 25/27fold 最長連続=23
+
+wrote place_alpha_robust.json
