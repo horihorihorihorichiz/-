@@ -3,3 +3,4 @@ wf_ds_cache.pkl
 wf_ds_cache_v8.pkl
 # V8 as-ofインデックス(course_bias.py が5秒で再生成。台帳の増加を検知して自動更新)
 cb_cache.pkl
+v8run/
