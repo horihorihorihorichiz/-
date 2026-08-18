@@ -1,0 +1,19 @@
+[g1] groups=8 folds=28 (202403..202608)
+   芝|中: 1465R
+   ダ|中: 1404R
+   ダ|マ: 1383R
+   ダ|短: 1057R
+   芝|マ: 1041R
+   芝|短: 754R
+   芝|長: 485R
+   ダ|長: 110R
+  [202403] done trainings=14 (4s)
+  [202404] done trainings=38 (11s)
+  [202407] done trainings=66 (19s)
+  [202408] done trainings=94 (26s)
+  [202409] done trainings=122 (38s)
+  [202410] done trainings=150 (49s)
+  [202411] done trainings=178 (60s)
+  [202412] done trainings=208 (73s)
+  [202501] done trainings=238 (85s)
+  [202502] done trainings=270 (99s)
