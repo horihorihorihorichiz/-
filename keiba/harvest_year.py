@@ -33,6 +33,9 @@ def commit_push(msg):
     return False
 
 
+FORCE = False
+
+
 def harvest_date(date, workers=3):
     """1日分: レース一覧→各レース収穫→オッズ盤。返り値=(成功数, 失敗数)"""
     race_date = datetime.date(int(date[:4]), int(date[4:6]), int(date[6:8]))
@@ -49,7 +52,7 @@ def harvest_date(date, workers=3):
             continue   # 障害レースはモデル対象外
         hpath = os.path.join("hist", f"{rid}.json")
         opath = os.path.join("hist_odds", f"{rid}.json")
-        if not os.path.exists(hpath):
+        if FORCE or not os.path.exists(hpath):
             try:
                 su = HV.FR.fetch_shutuba(rid, nar=False)
                 race = HV.build_race_json(rid, su, race_date, workers)
@@ -80,8 +83,11 @@ def main():
     ap.add_argument("--start", default="20250713")
     ap.add_argument("--end", default="20260705")
     ap.add_argument("--commit-every", type=int, default=6, help="N開催日ごとにcommit+push")
+    ap.add_argument("--force", action="store_true", help="既存ファイルも再取得(パーサ更新時)")
     ap.add_argument("--no-refit", action="store_true")
     a = ap.parse_args()
+    global FORCE
+    FORCE = getattr(a, "force", False)
     os.makedirs("hist", exist_ok=True)
     os.makedirs("hist_odds", exist_ok=True)
 
