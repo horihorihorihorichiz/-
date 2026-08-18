@@ -66,14 +66,21 @@ def fetch_jra(race_id, fresh=False, fresh_combo=False):
         except Exception:
             return {}
     def us(k, n): return [int(k[i:i+2]) for i in range(0, 2*n, 2)]      # 分解
+    # 値は [下限, 上限, 人気]。単勝/馬連/馬単/三連複/三連単は上限=0.0(意味なし)だが、
+    # **複勝(2)とワイド(5)だけは v[1] が上限**。3着内特化の期待値計算では上限も要るので拾う。
+    o2, o5 = grab(2), grab(5)
     tan = {str(int(k)): _f(v[0]) for k, v in grab(1).items()}
-    fuku = {str(int(k)): _f(v[0]) for k, v in grab(2).items()}   # 複勝(下限)
+    fuku = {str(int(k)): _f(v[0]) for k, v in o2.items()}              # 複勝(下限)
+    fuku_max = {str(int(k)): _f(v[1]) for k, v in o2.items() if len(v) > 1 and _f(v[1])}
     umaren = {"%d-%d" % tuple(sorted(us(k, 2))): _f(v[0]) for k, v in grab(4).items()}
-    wide   = {"%d-%d" % tuple(sorted(us(k, 2))): _f(v[0]) for k, v in grab(5).items()}
+    wide   = {"%d-%d" % tuple(sorted(us(k, 2))): _f(v[0]) for k, v in o5.items()}
+    wide_max = {"%d-%d" % tuple(sorted(us(k, 2))): _f(v[1])
+                for k, v in o5.items() if len(v) > 1 and _f(v[1])}
     umatan = {"%d>%d" % tuple(us(k, 2)): _f(v[0]) for k, v in grab(6).items()}     # 順序
     trip   = {"%d-%d-%d" % tuple(sorted(us(k, 3))): _f(v[0]) for k, v in grab(7).items()}
     santan = {">".join(map(str, us(k, 3))): _f(v[0]) for k, v in grab(8).items()}  # 順序
-    out = dict(tan=tan, fuku=fuku, umaren=umaren, wide=wide, umatan=umatan,
+    out = dict(tan=tan, fuku=fuku, fuku_max=fuku_max, umaren=umaren,
+               wide=wide, wide_max=wide_max, umatan=umatan,
                sanrenpuku=trip, santan=santan, ng_reason=ng[0], tan_source="netkeiba",
                odds_time=(max(otime.values()) if otime else None),
                odds_time_by_type={str(k): v for k, v in sorted(otime.items())})
@@ -85,6 +92,8 @@ def fetch_jra(race_id, fresh=False, fresh_combo=False):
                 out["tan"] = {str(k): v for k, v in off["tan"].items()}
                 if off.get("fuku"):
                     out["fuku"] = {str(k): v for k, v in off["fuku"].items()}
+                if off.get("fuku_max"):
+                    out["fuku_max"] = {str(k): v for k, v in off["fuku_max"].items()}
                 out["tan_source"] = "jra.go.jp(%s)" % off.get("asof", "")
         except Exception:
             pass
