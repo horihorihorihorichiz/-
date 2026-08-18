@@ -1,0 +1,13 @@
+読み込み 5990R: MINE 4440R / VALIDATE 874R / CONFIRM 676R
+[M1] tau=0.98 完了
+[M2] tau=0.86 完了
+[M2c] tau=0.69 完了
+[M3-l2] tau=0.26 完了
+[M3-huber] tau=0.65 完了
+[M3-log] tau=0.72 完了
+[M4-l2] tau=0.27 完了
+[M4-huber] tau=0.85 完了
+[M4-log] tau=0.89 完了
+[M5] tau=0.29 完了
+
+payout_obj_result.json に保存（総試行数 184）
