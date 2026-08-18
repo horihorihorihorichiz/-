@@ -19,7 +19,11 @@ def fetch_one(rid):
             d = json.loads(_http(BASE % (rid, t)))
             odds = (d.get("data") or {}).get("odds", {}).get(str(t), {})
             if odds:
-                out[key] = {k: v[0] for k, v in odds.items()}
+                # 複勝(2)/ワイド(5)は[下限,上限,人気]の3要素。両方保存する
+                if t in (2, 5):
+                    out[key] = {k: [v[0], v[1]] for k, v in odds.items()}
+                else:
+                    out[key] = {k: v[0] for k, v in odds.items()}
         except Exception:
             pass
         time.sleep(0.3)

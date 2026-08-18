@@ -40,18 +40,28 @@ def _f(x):
     try: return float(str(x).replace(",", ""))
     except: return None
 
-def fetch_jra(race_id, fresh=False):
+def fetch_jra(race_id, fresh=False, fresh_combo=False):
     """JRA JSON API。1単/4馬連/5ワイド/6馬単/7三連複/8三連単。
        fresh=True: 単勝・複勝をJRA公式(jra_odds.py・1-2分毎更新)から優先取得。
        netkeiba無料オッズは実測40-50分遅れ(2026-08-16検証)のため、直前判定・凍結は必ずfresh=True。
-       netkeiba配信停止(ng_reason)時も自動で公式にフォールバック。"""
+       netkeiba配信停止(ng_reason)時も自動で公式にフォールバック。
+       fresh_combo=True: ワイド・三連複もJRA公式から取り直す(3着内特化の直前判定用)。
+         コスト大(出走頭数-2+3リクエスト・1秒間隔=約15-20秒)なので既定OFF。
+       ※過去レースは netkeiba が最終オッズを返す(2023年以降で実測)。収集は
+         harvest_odds_combo.py。JRA公式は当日+直近開催しか掲載しない。"""
     base = "https://race.netkeiba.com/api/api_get_jra_odds.html?race_id=%s&type=%d&action=init"
     ng = [None]   # API側の停止理由(例 "empty free odds schedule"=場単位の無料配信停止)を捕獲
+    # official_datetime = そのオッズの実際の更新時刻。netkeiba無料は実測40-50分遅れなので
+    # 券種ごとに拾って「一番新しい時刻」を odds_time に残す(遅延の実測に使う)。
+    otime = {}
     def grab(t):
         try:
             d = json.loads(_http(base % (race_id, t)))
             if d.get("status") == "NG":
                 ng[0] = d.get("reason") or "NG"
+            ot = (d.get("data") or {}).get("official_datetime")
+            if ot:
+                otime[t] = ot
             return d["data"]["odds"][str(t)]
         except Exception:
             return {}
@@ -64,7 +74,9 @@ def fetch_jra(race_id, fresh=False):
     trip   = {"%d-%d-%d" % tuple(sorted(us(k, 3))): _f(v[0]) for k, v in grab(7).items()}
     santan = {">".join(map(str, us(k, 3))): _f(v[0]) for k, v in grab(8).items()}  # 順序
     out = dict(tan=tan, fuku=fuku, umaren=umaren, wide=wide, umatan=umatan,
-               sanrenpuku=trip, santan=santan, ng_reason=ng[0], tan_source="netkeiba")
+               sanrenpuku=trip, santan=santan, ng_reason=ng[0], tan_source="netkeiba",
+               odds_time=(max(otime.values()) if otime else None),
+               odds_time_by_type={str(k): v for k, v in sorted(otime.items())})
     if fresh or not tan:
         try:
             import jra_odds
@@ -74,6 +86,21 @@ def fetch_jra(race_id, fresh=False):
                 if off.get("fuku"):
                     out["fuku"] = {str(k): v for k, v in off["fuku"].items()}
                 out["tan_source"] = "jra.go.jp(%s)" % off.get("asof", "")
+        except Exception:
+            pass
+    # 組合せは公式取得のコストが大きい(1レース15-20秒)。watch/paper のループを遅くしないため
+    # 自動フォールバックはせず、明示 fresh_combo=True の時だけ公式を叩く。
+    if fresh_combo:
+        try:
+            import jra_odds
+            c = jra_odds.fetch_official_combo(race_id, kinds=("wide", "sanrenpuku"))
+            if c.get("wide"):
+                out["wide"] = dict(c["wide"])
+                out["wide_max"] = dict(c.get("wide_max") or {})
+            if c.get("sanrenpuku"):
+                out["sanrenpuku"] = dict(c["sanrenpuku"])
+            if c.get("wide") or c.get("sanrenpuku"):
+                out["combo_source"] = "jra.go.jp(%s)" % (c.get("asof") or "")
         except Exception:
             pass
     return out

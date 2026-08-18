@@ -25,14 +25,21 @@ race_id との対応:
   race_id の並べ替えなので、開催日(カレンダー日付)を知らなくても照合できる。
 
 使い方:
-  from jra_odds import fetch_official
-  d = fetch_official("202604020812")
+  from jra_odds import fetch_official, fetch_official_combo
+  d = fetch_official("202604020812")                      # 単勝・複勝
+  c = fetch_official_combo("202604020812")                # ワイド・三連複(+ umaren)
+  # c -> {"wide": {"1-2": 10.8, ...}, "wide_max": {...}, "sanrenpuku": {"1-2-3": 184.6, ...},
+  #       "umaren": {}, "asof": "18:01現在", "kai_nichi": "2回新潟8日", "reason": None}
+  # ※ netkeiba(predict.fetch_jra)の値と全点一致を実測(2026-08-18・札幌/中京 3レース)。
+  #    netkeiba無料は40-50分遅れ、公式は1-2分更新なので直前の組合せオッズは必ず公式で。
   # -> {"tan": {1: 43.4, ...}, "fuku": {1: 7.9, ...}, "fuku_max": {1: 10.9, ...},
   #     "names": {1: "ブロッコロ", ...}, "asof": "18:01現在", "kai_nichi": "2回新潟8日",
   #     "source": "sp.jra.jp", "reason": None}
   # 取れない時: tan/fuku は空dict、reason に理由。
 CLI:
-  python3 jra_odds.py 202604020812
+  python3 jra_odds.py 202604020812                        # 単複
+  python3 jra_odds.py 202604020812 --combo                # ワイド+三連複
+  python3 jra_odds.py 202604020812 --combo wide --json    # ワイドだけJSONで
 注意:
   - 公開ページのみ。ログイン・購入系(ipat等)には一切触れない。
   - リクエスト間に1秒スリープ(計3リクエスト)。
@@ -330,11 +337,14 @@ def fetch_official_combo(race_id, kinds=("wide", "sanrenpuku"), debug=False,
             if not opts:
                 out["reason"] = "三連複の軸馬セレクトが見つからない(発売前/構造変更?)"
                 continue
-            field = max(n for _, n in opts)
-            need = [(c, n) for c, n in opts if n <= field - 2]
+            # セレクトは出走馬(除外・取消を除く)が馬番順に並ぶ。上位2頭を軸にした
+            # 組合せは必ず他の軸ページに現れるので、末尾2頭分は取らなくてよい。
+            # (馬番に欠番があっても「順番の末尾2つ」で正しく網羅できる)
+            opts.sort(key=lambda x: x[1])
+            need = opts[:-2] if len(opts) > 2 else opts
             if max_axis:
                 need = need[:max_axis]
-            log("三連複 出走%d頭 → 軸ページ%d本" % (field, len(need)))
+            log("三連複 出走%d頭 → 軸ページ%d本" % (len(opts), len(need)))
             trio = {}
             for cn, n in need:
                 time.sleep(SLEEP)
