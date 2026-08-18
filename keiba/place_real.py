@@ -536,6 +536,9 @@ def main():
                 t = c["T"].get(kind)
                 if t is None or len(t["hit"]) == 0:
                     continue
+                omodes = {"floor": t["odds"]}
+                if kind in oratio:
+                    omodes["exp"] = t["odds"] * oratio[kind](np.log(np.clip(t["odds"], 1e-9, None)))
                 for src in ("model", "blend"):
                     for cal in ("raw", "iso"):
                         p = t["p"][src]
@@ -544,38 +547,41 @@ def main():
                             if f is None:
                                 continue
                             p = f(p)
-                        ev = p * t["odds"]
-                        ths = EV_TH_FUKU if kind == "fuku" else EV_TH_COMBO
-                        for th in ths:
-                            sel = ev >= th
-                            tag = "%s/%s/%s/%s/ev%.1f" % (sp, kind, src, cal, th)
-                            acc[tag + "/n"] += int(sel.sum())
-                            acc[tag + "/pay"] += float(t["pay"][sel].sum())
-                            acc[tag + "/floor"] += float((t["odds"][sel] * t["hit"][sel]).sum())
-                            acc[tag + "/hit"] += float(t["hit"][sel].sum())
-                            acc[tag + "/ev"] += float(ev[sel].sum())
-                            acc[tag + "/pm"] += float(p[sel].sum())
-                            acc[tag + "/imp"] += float((1.0 / t["odds"][sel]).sum())
-                        # top-k（EV降順・EV>=1.0 のものだけ）
-                        order = np.argsort(-ev)
-                        for k in TOPK:
-                            idx = [i for i in order[:k] if ev[i] >= 1.0]
-                            if not idx:
-                                continue
-                            tag = "%s/%s/%s/%s/top%d" % (sp, kind, src, cal, k)
-                            acc[tag + "/n"] += len(idx)
-                            acc[tag + "/pay"] += float(t["pay"][idx].sum())
-                            acc[tag + "/floor"] += float((t["odds"][idx] * t["hit"][idx]).sum())
-                            acc[tag + "/hit"] += float(t["hit"][idx].sum())
-                            acc[tag + "/ev"] += float(ev[idx].sum())
-                            acc[tag + "/races"] += 1
-                        if src == "blend" and cal == "iso" and sp != "MINE":
-                            sel = ev >= 1.0
-                            if sel.any():
-                                b = t["odds"][sel] - 1.0
-                                pp = p[sel]
-                                f = np.clip((pp * (b + 1) - 1) / np.clip(b, 1e-9, None), 0, 1)
-                                kelly["%s/%s" % (sp, kind)].append(float(f.sum()))
+                        for om, oo in omodes.items():
+                            ev = p * oo
+                            ths = EV_TH_FUKU if kind == "fuku" else EV_TH_COMBO
+                            for th in ths:
+                                sel = ev >= th
+                                tag = "%s/%s/%s/%s/%s/ev%.1f" % (sp, kind, src, cal, om, th)
+                                acc[tag + "/n"] += int(sel.sum())
+                                acc[tag + "/pay"] += float(t["pay"][sel].sum())
+                                acc[tag + "/floor"] += float((t["odds"][sel] * t["hit"][sel]).sum())
+                                acc[tag + "/hit"] += float(t["hit"][sel].sum())
+                                acc[tag + "/ev"] += float(ev[sel].sum())
+                                acc[tag + "/pm"] += float(p[sel].sum())
+                                acc[tag + "/imp"] += float((1.0 / t["odds"][sel]).sum())
+                            # top-k（EV降順・EV>=1.0 のものだけ）
+                            order = np.argsort(-ev)
+                            for k in TOPK:
+                                idx = [i for i in order[:k] if ev[i] >= 1.0]
+                                if not idx:
+                                    continue
+                                tag = "%s/%s/%s/%s/%s/top%d" % (sp, kind, src, cal, om, k)
+                                acc[tag + "/n"] += len(idx)
+                                acc[tag + "/pay"] += float(t["pay"][idx].sum())
+                                acc[tag + "/floor"] += float((t["odds"][idx] * t["hit"][idx]).sum())
+                                acc[tag + "/hit"] += float(t["hit"][idx].sum())
+                                acc[tag + "/ev"] += float(ev[idx].sum())
+                                acc[tag + "/pm"] += float(p[idx].sum())
+                                acc[tag + "/imp"] += float((1.0 / t["odds"][idx]).sum())
+                                acc[tag + "/races"] += 1
+                            if src == "blend" and cal == "iso" and sp != "MINE" and om == list(omodes)[-1]:
+                                sel = ev >= 1.0
+                                if sel.any():
+                                    b = oo[sel] - 1.0
+                                    pp = p[sel]
+                                    fk = np.clip((pp * (b + 1) - 1) / np.clip(b, 1e-9, None), 0, 1)
+                                    kelly["%s/%s" % (sp, kind)].append(float(fk.sum()))
 
         def _row(tag):
             n = acc[tag + "/n"]
@@ -590,75 +596,67 @@ def main():
                         mean_imp=round(acc[tag + "/imp"] / n, 6) if acc[tag + "/imp"] else None,
                         races=int(acc[tag + "/races"]) or None)
 
+        OMODES = ("floor", "exp")
+        RULES = {}
+        for kind in BET_KINDS:
+            RULES[kind] = (["ev%.1f" % th for th in
+                            (EV_TH_FUKU if kind == "fuku" else EV_TH_COMBO)]
+                           + ["top%d" % k for k in TOPK])
         res["bets"] = {}
         for sp, _, _ in SPLITS:
             for kind in BET_KINDS:
                 for src in ("model", "blend"):
                     for cal in ("raw", "iso"):
-                        ths = EV_TH_FUKU if kind == "fuku" else EV_TH_COMBO
-                        for th in ths:
-                            tag = "%s/%s/%s/%s/ev%.1f" % (sp, kind, src, cal, th)
-                            v = _row(tag)
-                            if v:
-                                res["bets"][tag] = v
-                        for k in TOPK:
-                            tag = "%s/%s/%s/%s/top%d" % (sp, kind, src, cal, k)
-                            v = _row(tag)
-                            if v:
-                                res["bets"][tag] = v
+                        for om in OMODES:
+                            for rule in RULES[kind]:
+                                tag = "%s/%s/%s/%s/%s/%s" % (sp, kind, src, cal, om, rule)
+                                v = _row(tag)
+                                if v:
+                                    res["bets"][tag] = v
         res["kelly"] = {k: dict(n=len(v), mean_total_f=round(float(np.mean(v)), 3),
                                 p90=round(float(np.percentile(v, 90)), 3))
                         for k, v in kelly.items() if v}
 
         # 表示
         for kind in BET_KINDS:
-            ths = EV_TH_FUKU if kind == "fuku" else EV_TH_COMBO
-            print("\n  ── %s ──" % BET_JP[kind])
-            print("   %-9s %-6s %-4s %-6s %8s %6s %8s %8s %7s"
-                  % ("split", "src", "cal", "rule", "n", "hits", "ROI%", "ROI_floor", "meanEV"))
+            print("\n  ── %s ──  (odds: floor=台帳下限 / exp=下限×期待払戻倍率)" % BET_JP[kind])
+            print("   %-9s %-6s %-4s %-5s %-7s %8s %6s %8s %9s %7s"
+                  % ("split", "src", "cal", "odds", "rule", "n", "hits", "ROI%",
+                     "ROI_floor", "meanEV"))
             for sp, _, _ in SPLITS:
                 for src in ("model", "blend"):
                     for cal in ("raw", "iso"):
-                        for th in ths:
-                            v = res["bets"].get("%s/%s/%s/%s/ev%.1f" % (sp, kind, src, cal, th))
-                            if v:
-                                print("   %-9s %-6s %-4s EV>=%.1f %8d %6d %8.1f %8.1f %7.2f"
-                                      % (sp, src, cal, th, v["n"], v["hits"], v["roi"],
-                                         v["roi_floor"], v["mean_ev"]))
-            print("   [点数設計 top-k / src=blend,cal=iso]")
-            for sp, _, _ in SPLITS:
-                for k in TOPK:
-                    v = res["bets"].get("%s/%s/blend/iso/top%d" % (sp, kind, k))
-                    if v:
-                        print("   %-9s blend  iso  top%-3d %8d %6d %8.1f %8.1f %7.2f (%sR)"
-                              % (sp, k, v["n"], v["hits"], v["roi"], v["roi_floor"],
-                                 v["mean_ev"], v["races"]))
+                        for om in OMODES:
+                            for rule in RULES[kind]:
+                                v = res["bets"].get("%s/%s/%s/%s/%s/%s"
+                                                    % (sp, kind, src, cal, om, rule))
+                                if not v:
+                                    continue
+                                if rule.startswith("top") and not (src == "blend" and cal == "iso"):
+                                    continue
+                                print("   %-9s %-6s %-4s %-5s %-7s %8d %6d %8.1f %9.1f %7.2f%s"
+                                      % (sp, src, cal, om, rule, v["n"], v["hits"], v["roi"],
+                                         v["roi_floor"], v["mean_ev"],
+                                         "" if not v["races"] else " (%dR)" % v["races"]))
 
         # 合否判定
         print("\n[6] 合否判定（事前登録: VAL n>=40 & ROI>=110 / CONF n>=25 & ROI>=105）")
         verdict = {}
         for kind in BET_KINDS:
-            ths = EV_TH_FUKU if kind == "fuku" else EV_TH_COMBO
             for src in ("model", "blend"):
                 for cal in ("raw", "iso"):
-                    for th in ths:
-                        v = res["bets"].get("VALIDATE/%s/%s/%s/ev%.1f" % (kind, src, cal, th))
-                        c = res["bets"].get("CONFIRM/%s/%s/%s/ev%.1f" % (kind, src, cal, th))
-                        if not v or not c:
-                            continue
-                        ok = (v["n"] >= PASS_VAL["n"] and v["roi"] >= PASS_VAL["roi"]
-                              and c["n"] >= PASS_CONF["n"] and c["roi"] >= PASS_CONF["roi"])
-                        verdict["%s/%s/%s/ev%.1f" % (kind, src, cal, th)] = dict(
-                            val=(v["n"], v["roi"]), conf=(c["n"], c["roi"]), pass_=bool(ok))
-                    for k in TOPK:
-                        v = res["bets"].get("VALIDATE/%s/%s/%s/top%d" % (kind, src, cal, k))
-                        c = res["bets"].get("CONFIRM/%s/%s/%s/top%d" % (kind, src, cal, k))
-                        if not v or not c:
-                            continue
-                        ok = (v["n"] >= PASS_VAL["n"] and v["roi"] >= PASS_VAL["roi"]
-                              and c["n"] >= PASS_CONF["n"] and c["roi"] >= PASS_CONF["roi"])
-                        verdict["%s/%s/%s/top%d" % (kind, src, cal, k)] = dict(
-                            val=(v["n"], v["roi"]), conf=(c["n"], c["roi"]), pass_=bool(ok))
+                    for om in OMODES:
+                        for rule in RULES[kind]:
+                            v = res["bets"].get("VALIDATE/%s/%s/%s/%s/%s"
+                                                % (kind, src, cal, om, rule))
+                            c = res["bets"].get("CONFIRM/%s/%s/%s/%s/%s"
+                                                % (kind, src, cal, om, rule))
+                            if not v or not c:
+                                continue
+                            ok = (v["n"] >= PASS_VAL["n"] and v["roi"] >= PASS_VAL["roi"]
+                                  and c["n"] >= PASS_CONF["n"] and c["roi"] >= PASS_CONF["roi"])
+                            verdict["%s/%s/%s/%s/%s" % (kind, src, cal, om, rule)] = dict(
+                                val=(v["n"], v["roi"]), conf=(c["n"], c["roi"]), pass_=bool(ok))
         res["verdict"] = verdict
         npass = sum(1 for v in verdict.values() if v["pass_"])
         print("   合格 %d / %d 組合せ" % (npass, len(verdict)))
