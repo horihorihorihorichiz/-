@@ -227,13 +227,176 @@ def fetch_official(race_id, debug=False):
                 asof=asof, kai_nichi=kai, source="sp.jra.jp", reason=None)
 
 
+# ─────────────────────────────────────────────────────────────────────────
+# 組合せ馬券(ワイド/三連複/馬連)の公式オッズ
+#   T=5 ワイド : 1ページに全組合せ(馬番順の表)。<th class="kumiNo">1-2</th> +
+#                <div class="wideMin">/<div class="wideMax">。→ 1リクエスト。
+#   T=4 馬連   : 同構造で <td class="oz">単一値。→ 1リクエスト。
+#   T=7 三連複 : 「軸馬を選択」式。開催ページのリンクは …Z99(軸未選択)で表が無い。
+#                そのページの <option value="…Z01/xx"> から軸別ページのcnameを取り、
+#                軸=1..N-2 を順に取ると全組合せを網羅できる(どの3頭も最小馬番≤N-2)。
+#                <th class="kumi">1-2-3</th><td class="ozzu">184.6</td>
+#   ※T=2(複勝単独)のページは存在しない。複勝は T=1(単勝・複勝)に同居 → fetch_official。
+# ─────────────────────────────────────────────────────────────────────────
+KIND_TYPE = {"umaren": 4, "wide": 5, "sanrenpuku": 7}
+
+_PAIR_RE = re.compile(
+    r'<th class="kumiNo"[^>]*>(\d+)-(\d+)</th>\s*<td class="(?:oz|wideOdds)[^"]*">\s*'
+    r'(?:<div class="wideMin">([\d.,]+)</div>\s*<div class="wideHaifun">[^<]*</div>\s*'
+    r'<div class="wideMax">([\d.,]+)</div>|([\d.,]+))', re.S)
+_TRIO_RE = re.compile(
+    r'<th class="kumi"[^>]*>(\d+)-(\d+)-(\d+)</th>\s*<td class="ozzu[^"]*">\s*([\d.,]+)')
+
+
+def _parse_pairs(html):
+    """馬連/ワイドページ → ({"1-2":min}, {"1-2":max})。馬連はmax=minと同値。"""
+    lo, hi = {}, {}
+    for a, b, wmin, wmax, single in _PAIR_RE.findall(html):
+        k = "%d-%d" % tuple(sorted((int(a), int(b))))
+        v = _f(wmin or single)
+        if v:
+            lo[k] = v
+            hi[k] = _f(wmax) or v
+    return lo, hi
+
+
+def _parse_trios(html):
+    out = {}
+    for a, b, c, od in _TRIO_RE.findall(html):
+        v = _f(od)
+        if v:
+            out["%d-%d-%d" % tuple(sorted((int(a), int(b), int(c))))] = v
+    return out
+
+
+def fetch_official_combo(race_id, kinds=("wide", "sanrenpuku"), debug=False,
+                         max_axis=None):
+    """JRA公式(sp.jra.jp)から組合せ馬券のオッズを取る。ログイン不要・公開ページのみ。
+
+    kinds: "wide"(ワイド) / "sanrenpuku"(三連複) / "umaren"(馬連) の任意の組合せ。
+    返り値 dict(wide={"1-2":10.8,...}(下限), wide_max={...}(上限),
+                sanrenpuku={"1-2-3":184.6,...}, umaren={...},
+                asof="18:06現在"|"最終"|"確定", kai_nichi="1回札幌8日",
+                source="sp.jra.jp", reason=None or 失敗理由)
+    注: JRA公式は当日+直近開催しか掲載しない(過去日は取れない)。
+        過去レースは netkeiba(predict.fetch_jra) / harvest_odds_combo.py を使う。
+    リクエスト数: ワイド/馬連=各1、三連複=(出走頭数-2)+1。1秒間隔。"""
+    out = dict(wide={}, wide_max={}, sanrenpuku={}, umaren={}, asof=None,
+               kai_nichi=None, source="sp.jra.jp", reason=None)
+    p = _parse_race_id(race_id)
+    if not p:
+        out["reason"] = "race_id が JRA 12桁形式でない(場コード01-10): %s" % race_id
+        return out
+    kinds = [k for k in kinds if k in KIND_TYPE]
+    if not kinds:
+        out["reason"] = "kinds が不正(wide/sanrenpuku/umaren): %s" % (kinds,)
+        return out
+    log = _logger(debug)
+
+    rkey = p["vv"] + p["year"] + p["kk"] + p["dd"] + p["rr"]
+    first_pat = _race_link_pat(rkey, KIND_TYPE[kinds[0]])
+    day, reason = _nav_day_page(p, first_pat, log)
+    if reason:
+        out["reason"] = reason
+        return out
+    day = day or ""
+
+    got_header = False
+    for kind in kinds:
+        t = KIND_TYPE[kind]
+        mr = re.search(_race_link_pat(rkey, t), day)
+        if not mr:
+            out["reason"] = "%sR の%sリンクが開催ページに無い(発売前/取止め?)" % (
+                int(p["rr"]), kind)
+            continue
+        log("%s cname: %s" % (kind, mr.group(1)))
+        time.sleep(SLEEP)
+        if kind in ("wide", "umaren"):
+            marker = r'class="kumiNo"'
+            page = _fetch_expect(mr.group(1), marker, log=log)
+            if not re.search(marker, page):
+                out["reason"] = "%sページのパース失敗(表が無い)" % kind
+                continue
+            lo, hi = _parse_pairs(page)
+            out[kind] = lo
+            if kind == "wide":
+                out["wide_max"] = hi
+        else:
+            # 三連複: 軸未選択ページ → <option> から軸別cnameを取得
+            base = _fetch_expect(mr.group(1), r'id="jikuuma"', log=log)
+            opts = re.findall(
+                r'<option value="(sw157ou\w*Z(\d{2})/[0-9A-F]{2})"', base)
+            opts = [(c, int(n)) for c, n in opts if n != "99"]   # Z99=軸未選択
+            if not opts:
+                out["reason"] = "三連複の軸馬セレクトが見つからない(発売前/構造変更?)"
+                continue
+            field = max(n for _, n in opts)
+            need = [(c, n) for c, n in opts if n <= field - 2]
+            if max_axis:
+                need = need[:max_axis]
+            log("三連複 出走%d頭 → 軸ページ%d本" % (field, len(need)))
+            trio = {}
+            for cn, n in need:
+                time.sleep(SLEEP)
+                pg = _fetch_expect(cn, r'class="kumi"', log=log)
+                got = _parse_trios(pg)
+                if not got:
+                    log("軸%d のパース失敗" % n)
+                trio.update(got)
+                if not got_header:
+                    got_header = _grab_header(pg, out)
+            out["sanrenpuku"] = trio
+        if not got_header:
+            got_header = _grab_header(locals().get("page") or locals().get("base") or "", out)
+    if not any(out[k] for k in ("wide", "sanrenpuku", "umaren")) and not out["reason"]:
+        out["reason"] = "組合せオッズを1件も取得できなかった"
+    return out
+
+
+def _grab_header(page, out):
+    mh = re.search(r"(\d+回\S{2,3}\d+日).{0,120}?(\d{1,2}:\d{2}現在|確定|最終)", page, re.S)
+    if mh:
+        out["kai_nichi"], out["asof"] = mh.group(1), mh.group(2)
+        return True
+    return False
+
+
 def main():
     import argparse
-    ap = argparse.ArgumentParser(description="JRA公式(sp.jra.jp)単勝・複勝オッズ取得")
+    ap = argparse.ArgumentParser(description="JRA公式(sp.jra.jp)オッズ取得(単複/ワイド/三連複)")
     ap.add_argument("race_id", help="netkeiba形式12桁 (例 202604020812)")
     ap.add_argument("--json", action="store_true", help="JSONで出力")
+    ap.add_argument("--combo", nargs="*", metavar="KIND",
+                    help="組合せ馬券を取る。既定=wide sanrenpuku (他: umaren)")
+    ap.add_argument("--max-axis", type=int, default=None,
+                    help="三連複の軸ページ数上限(検証用。既定=全網羅)")
     ap.add_argument("--debug", action="store_true")
     args = ap.parse_args()
+
+    if args.combo is not None:
+        kinds = args.combo or ["wide", "sanrenpuku"]
+        c = fetch_official_combo(args.race_id, kinds=kinds, debug=args.debug,
+                                 max_axis=args.max_axis)
+        if args.json:
+            print(json.dumps(c, ensure_ascii=False, indent=1))
+            return
+        p = _parse_race_id(args.race_id) or {}
+        print("■ JRA公式 組合せオッズ (%s)  %s %sR  %s %s" % (
+            c["source"], p.get("venue", "?"), int(p.get("rr", 0) or 0),
+            c.get("kai_nichi") or "", c.get("asof") or ""))
+        if c["reason"]:
+            print("  ※", c["reason"])
+        for kind in ("umaren", "wide", "sanrenpuku"):
+            d2 = c.get(kind) or {}
+            if not d2:
+                continue
+            print("  %s: %d点" % (kind, len(d2)))
+            for k in sorted(d2, key=lambda x: d2[x])[:10]:
+                if kind == "wide":
+                    print("    %-10s %7.1f - %.1f" % (k, d2[k], c["wide_max"].get(k, d2[k])))
+                else:
+                    print("    %-10s %7.1f" % (k, d2[k]))
+        return
 
     d = fetch_official(args.race_id, debug=args.debug)
     if args.json:
