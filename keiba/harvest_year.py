@@ -105,7 +105,7 @@ def main():
         date = d.strftime("%Y%m%d")
         d += datetime.timedelta(days=1)
         # JRA開催は土日祝中心だが、非開催日は一覧1リクエストで空が返るだけなので全日なめる
-        if date in done_dates:
+        if date in done_dates and not FORCE:
             continue
         ok, fail = harvest_date(date)
         done_dates.add(date)

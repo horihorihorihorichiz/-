@@ -55,8 +55,9 @@ MODELS = {
     "M4-huber":  dict(kind="reg", target="place_payout", loss="huber"),
     "M4-log":    dict(kind="reg", target="place_payout", loss="l2", logt=True),
 }
-LGB_MODELS = list(MODELS)          # M5 は学習しない（線形探索）
-ALL_MODELS = LGB_MODELS + ["M5"]
+LEDGER_M1 = "wf_preds_v3ext2.jsonl"   # M1(現行V3)は既存WF台帳をそのまま使う(PROTOCOL §2-2)
+LGB_MODELS = [k for k in MODELS if k != "M1"]   # M1=台帳 / M5=線形探索 は学習しない
+ALL_MODELS = ["M1"] + LGB_MODELS + ["M5"]
 # EV回帰(予測値そのものが損益)のモデル = 見送り基準(d)の対象
 EV_REG = [k for k in LGB_MODELS if MODELS[k]["kind"] == "reg"]
 
@@ -140,16 +141,20 @@ def train_fold(train, spec):
         p = dict(BASE, objective="lambdarank", metric="ndcg", ndcg_eval_at=[5],
                  label_gain=[0, 1, 3, 7])
     elif kind == "binary":
+        # 学習は払戻重み付き。ただし**早期停止の判定は重み無し**(PROTOCOL §2-1)。
+        # 重み付きlogloss はごく一部の高配当行が支配し、1〜2回で停止して学習が起きない。
         dtr = lgb.Dataset(Xt, label=yt, weight=wt)
-        dva = lgb.Dataset(Xv, label=yv, weight=wv, reference=dtr)
+        dva = lgb.Dataset(Xv, label=yv, reference=dtr)
         p = dict(BASE, objective="binary", metric="binary_logloss")
     else:
+        # 早期停止の指標は常に l1(絶対誤差)。l2 は外れ値(高配当)が支配して
+        # 2回で停止するため、学習の有無を判定する指標として使えない(PROTOCOL §2-1)。
         dtr = lgb.Dataset(Xt, label=yt)
         dva = lgb.Dataset(Xv, label=yv, reference=dtr)
         if spec["loss"] == "huber":
             p = dict(BASE, objective="huber", alpha=100.0, metric="l1")
         else:
-            p = dict(BASE, objective="regression", metric="l2")
+            p = dict(BASE, objective="regression", metric="l1")
     return lgb.train(p, dtr, num_boost_round=800, valid_sets=[dva],
                      callbacks=[lgb.early_stopping(60, verbose=False)])
 
@@ -324,6 +329,26 @@ def load_preds(path=PREDS):
         d["odds"] = {int(k): float(v) for k, v in d["odds"].items()}
         races.append(d)
     return races
+
+
+def merge_m1(races, path=LEDGER_M1):
+    """M1(現行V3)のスコアを既存WF台帳から取り込む(PROTOCOL §2-2)。
+       台帳に無い rid は評価から落とし、全モデルを同一レース集合に揃える。"""
+    led = {}
+    for line in open(path, encoding="utf-8"):
+        d = json.loads(line)
+        led[d["rid"]] = {int(n): float(s) for n, s in zip(d["order"], d["scores"])}
+    out, drop = [], 0
+    for r in races:
+        m = led.get(r["rid"])
+        if not m or any(n not in m for n in r["ns"]):
+            drop += 1
+            continue
+        r["preds"]["M1"] = [m[n] for n in r["ns"]]
+        out.append(r)
+    if drop:
+        print(f"※台帳に無い/欠損の {drop}R を除外（全モデル同一集合に揃えるため）")
+    return out
 
 
 def load_odds(rid):
@@ -558,7 +583,7 @@ def filtered_stats(races, name, fn):
 
 
 def run_eval(path=PREDS):
-    races = prep(load_preds(path))
+    races = prep(merge_m1(load_preds(path)))
     by = defaultdict(list)
     for r in races:
         by[r["split"]].append(r)
