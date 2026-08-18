@@ -499,6 +499,71 @@ def evaluate():
     print(f"saved course_result.json ({(time.time()-t0)/60:.1f}min)")
 
 
+def datasize():
+    """データ量と成績の関係: 「何レースあれば専用が汎用に追いつくか」を測る。
+       方式1/2 の全fold予測を『そのfold時点の当該コース学習レース数』でビン分けし、
+       同一レース集合の GEN と Δα・単勝ROI・複勝ROI を比較する（窓を跨いだ全期間プール）。"""
+    RM = race_meta()
+    gen, _ = load_preds("course_preds_gen.jsonl", RM)
+    gen_by_rid = {}
+    for (obj, meth, c), v in gen.items():
+        for rid, pr in v.items():
+            gen_by_rid[(obj, rid)] = pr
+    BINS = [(0, 30), (30, 60), (60, 100), (100, 150), (150, 220), (220, 10 ** 9)]
+    out = {}
+    for path, meth in (("course_preds_m1.jsonl", "M1"), ("course_preds_m2.jsonl", "M2")):
+        for obj in OBJS:
+            acc = defaultdict(lambda: dict(rs=[], gs=[], ms=[]))
+            for line in open(path, encoding="utf-8"):
+                d = json.loads(line)
+                if d["obj"] != obj or not d.get("spec_used", True):
+                    continue
+                mrec = RM[d["rid"]]
+                pr = prep_race(mrec, d["ns"], d["scores"], obj)
+                g = gen_by_rid.get((obj, d["rid"]))
+                if pr is None or g is None:
+                    continue
+                tr = d["train_races"]
+                for lo, hi in BINS:
+                    if lo <= tr < hi:
+                        b = acc[(lo, hi)]
+                        b["rs"].append(pr)
+                        b["gs"].append(g)
+                        b["ms"].append(mrec)
+                        break
+            row = {}
+            for (lo, hi), b in sorted(acc.items()):
+                if len(b["rs"]) < 20:
+                    row[f"{lo}-{hi}"] = dict(n=len(b["rs"]))
+                    continue
+                am = alpha_of(b["rs"])
+                ag = alpha_of(b["gs"])
+                n, roi, hit = roi_of(b["rs"], b["ms"], "単勝")
+                _, roig, hitg = roi_of(b["gs"], b["ms"], "単勝")
+                _, froi, _ = roi_of(b["rs"], b["ms"], "複勝")
+                _, froig, _ = roi_of(b["gs"], b["ms"], "複勝")
+                row[f"{lo}-{hi}"] = dict(
+                    n=n, alpha=round(am[0], 4), alpha_gen=round(ag[0], 4),
+                    d_alpha=round(am[0] - ag[0], 4), se=round(am[1], 4),
+                    roi=roi, roi_gen=roig, hit=hit, hit_gen=hitg,
+                    froi=froi, froi_gen=froig)
+            out[f"{meth}|{obj}"] = row
+            print(f"\n=== {meth} / {obj} ===")
+            print(f"{'train_races':<12}{'n':>6}{'Δα':>9}{'α専':>9}{'α汎':>9}"
+                  f"{'単ROI専':>9}{'単ROI汎':>9}{'複ROI専':>9}{'複ROI汎':>9}")
+            for k, v in row.items():
+                if v.get("n", 0) < 20:
+                    print(f"{k:<12}{v.get('n',0):>6}  (n<20 のため未推定)")
+                    continue
+                print(f"{k:<12}{v['n']:>6}{v['d_alpha']:>9.4f}{v['alpha']:>9.4f}"
+                      f"{v['alpha_gen']:>9.4f}{v['roi']:>9.1f}{v['roi_gen']:>9.1f}"
+                      f"{v['froi']:>9.1f}{v['froi_gen']:>9.1f}")
+    json.dump(out, open("course_datasize.json", "w", encoding="utf-8"),
+              ensure_ascii=False, indent=1, default=float)
+    print("\nsaved course_datasize.json")
+
+
 if __name__ == "__main__":
     cmd = sys.argv[1] if len(sys.argv) > 1 else "eval"
-    {"gen": run_gen, "m12": run_m12, "m3": run_m3, "eval": evaluate}[cmd]()
+    {"gen": run_gen, "m12": run_m12, "m3": run_m3,
+     "eval": evaluate, "datasize": datasize}[cmd]()

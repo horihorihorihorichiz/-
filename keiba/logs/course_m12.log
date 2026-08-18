@@ -19,3 +19,12 @@ M1/M2: targets=28 folds=28
 [202510] done (46s)
 [202511] done (50s)
 [202512] done (55s)
+[202601] done (64s)
+[202602] done (75s)
+[202603] done (83s)
+[202604] done (93s)
+[202605] done (98s)
+[202606] done (105s)
+[202607] done (112s)
+[202608] done (117s)
+M1/M2 done (1.9min) fallback rows={('M1', 'place'): 611, ('M2', 'place'): 1049, ('M1', 'win'): 611, ('M2', 'win'): 1049}
