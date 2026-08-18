@@ -1,0 +1,847 @@
+<title>木造3階 製図早見盤</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Old+Mincho:wght@400;700&family=Zen+Kaku+Gothic+New:wght@400;500;700&family=Roboto+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --paper:#f7f7f3; --panel:#fffffe; --ink:#1b1e1b; --ink2:#4c534c;
+  --ink3:#7b827a; --rule:#dde3dc; --edge:#e6e9e3;
+  --axis:#a8324a; --axis-soft:#f6e8ec;
+  --blue:#2e6b8a; --blue-soft:#e7eff4;
+  --caution:#b4531f; --caution-soft:#fbeee3;
+  --ok:#3e6b47; --ok-soft:#eaf1eb;
+  --sheet:#ffffff; --sheet-edge:#d8dcd6;
+  --shadow:0 1px 2px rgba(27,30,27,.06),0 8px 28px rgba(27,30,27,.08);
+  --disp:'Zen Old Mincho',"Hiragino Mincho ProN","Yu Mincho",serif;
+  --body:'Zen Kaku Gothic New','Hiragino Sans','Noto Sans JP',
+         "Yu Gothic",Meiryo,system-ui,sans-serif;
+  --mono:'Roboto Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+  --bar:76px;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --paper:#151816; --panel:#1c201d; --ink:#e9ece7; --ink2:#b0b7ae;
+    --ink3:#848c83; --rule:#2b312d; --edge:#2b312d;
+    --axis:#e2879b; --axis-soft:#33222a;
+    --blue:#8fc2dd; --blue-soft:#1d2a33;
+    --caution:#e0a172; --caution-soft:#332721;
+    --ok:#9ccaa6; --ok-soft:#1f2a22;
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 10px 34px rgba(0,0,0,.45);
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#151816; --panel:#1c201d; --ink:#e9ece7; --ink2:#b0b7ae;
+  --ink3:#848c83; --rule:#2b312d; --edge:#2b312d;
+  --axis:#e2879b; --axis-soft:#33222a;
+  --blue:#8fc2dd; --blue-soft:#1d2a33;
+  --caution:#e0a172; --caution-soft:#332721;
+  --ok:#9ccaa6; --ok-soft:#1f2a22;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 10px 34px rgba(0,0,0,.45);
+}
+*,*::before,*::after{box-sizing:border-box}
+body{
+  margin:0;background:var(--paper);color:var(--ink);
+  font-family:var(--body);font-size:16px;line-height:1.9;
+  -webkit-text-size-adjust:100%;
+  background-image:
+    linear-gradient(var(--rule) 1px,transparent 1px),
+    linear-gradient(90deg,var(--rule) 1px,transparent 1px);
+  background-size:36.4px 36.4px;
+  background-position:-1px -1px;
+}
+.shell{max-width:760px;margin:0 auto;padding:0 16px var(--bar)}
+/* ---------- ヘッダ ---------- */
+header{padding:30px 0 22px}
+.eyebrow{font:500 11.5px/1.6 var(--mono);letter-spacing:.18em;
+  color:var(--axis);text-transform:uppercase}
+h1{font-family:var(--disp);font-weight:700;font-size:clamp(25px,6.4vw,38px);
+  line-height:1.35;margin:8px 0 4px;text-wrap:balance;letter-spacing:.01em}
+.sub{color:var(--ink2);font-size:14px;margin:0}
+/* カウントダウンを寸法線で見せる */
+.dimline{margin:20px 0 4px;display:block;width:100%;height:52px}
+.dimline text{font-family:var(--mono);font-size:13px;fill:var(--ink2)}
+.dimline .big{font-family:var(--disp);font-size:21px;font-weight:700;
+  fill:var(--axis)}
+/* ---------- タブ ---------- */
+nav{position:fixed;left:0;right:0;bottom:0;z-index:20;
+  background:color-mix(in srgb,var(--panel) 92%,transparent);
+  backdrop-filter:saturate(1.4) blur(12px);
+  border-top:1px solid var(--edge);
+  padding:6px 8px calc(6px + env(safe-area-inset-bottom))}
+.tabs{max-width:760px;margin:0 auto;display:grid;
+  grid-template-columns:repeat(5,1fr);gap:4px}
+.tabs button{font:500 12px/1.4 var(--body);color:var(--ink3);
+  background:none;border:0;border-radius:9px;padding:9px 2px 7px;
+  cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px}
+.tabs button .n{font:500 10px/1 var(--mono);letter-spacing:.08em;
+  color:var(--ink3)}
+.tabs button[aria-selected="true"]{color:var(--axis);background:var(--axis-soft)}
+.tabs button[aria-selected="true"] .n{color:var(--axis)}
+.tabs button:focus-visible{outline:2px solid var(--axis);outline-offset:2px}
+/* ---------- 中身 ---------- */
+section[role=tabpanel]{display:none;animation:fade .22s ease}
+section[role=tabpanel].on{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1}}
+@media (prefers-reduced-motion:reduce){
+  section[role=tabpanel]{animation:none}*{transition:none!important}}
+h2{font-family:var(--disp);font-size:22px;font-weight:700;line-height:1.5;
+  margin:38px 0 4px;text-wrap:balance}
+h2 .kicker{display:block;font:500 11px/1.6 var(--mono);letter-spacing:.16em;
+  color:var(--ink3);text-transform:uppercase;margin-bottom:2px}
+h3{font-family:var(--body);font-size:16px;font-weight:700;margin:26px 0 6px;
+  color:var(--blue)}
+p{margin:12px 0;max-width:64ch}
+ul,ol{margin:12px 0;padding-left:1.3em;max-width:64ch}
+li{margin:6px 0}
+b,strong{font-weight:700}
+.mark{background:linear-gradient(transparent 60%,
+  color-mix(in srgb,var(--axis) 22%,transparent) 60%)}
+.num{font-family:var(--mono);font-variant-numeric:tabular-nums}
+/* パネル */
+.panel{background:var(--panel);border:1px solid var(--edge);border-radius:14px;
+  padding:18px;margin:18px 0}
+.flag{border-radius:14px;padding:16px 18px;margin:20px 0;font-size:15px;
+  border:1px solid}
+.flag h4{margin:0 0 6px;font-size:15px;font-weight:700;
+  font-family:var(--body)}
+.flag p{margin:8px 0}
+.flag.fix{background:var(--caution-soft);border-color:
+  color-mix(in srgb,var(--caution) 40%,transparent);color:var(--ink)}
+.flag.fix h4{color:var(--caution)}
+.flag.no{background:var(--axis-soft);border-color:
+  color-mix(in srgb,var(--axis) 34%,transparent)}
+.flag.no h4{color:var(--axis)}
+.flag.yes{background:var(--ok-soft);border-color:
+  color-mix(in srgb,var(--ok) 34%,transparent)}
+.flag.yes h4{color:var(--ok)}
+.flag.info{background:var(--blue-soft);border-color:
+  color-mix(in srgb,var(--blue) 30%,transparent)}
+.flag.info h4{color:var(--blue)}
+/* 数値チップ */
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0}
+.chip{background:var(--panel);border:1px solid var(--edge);border-radius:9px;
+  padding:7px 11px;font-size:13px;color:var(--ink2);line-height:1.5}
+.chip b{font-family:var(--mono);font-size:14.5px;color:var(--ink);
+  font-variant-numeric:tabular-nums}
+/* 表 */
+.tw{overflow-x:auto;margin:16px 0;border:1px solid var(--edge);
+  border-radius:12px;background:var(--panel)}
+table{border-collapse:collapse;width:100%;font-size:14px;min-width:min(100%,420px)}
+th,td{padding:9px 12px;text-align:left;border-bottom:1px solid var(--edge);
+  white-space:nowrap}
+th{font-weight:700;font-size:12.5px;color:var(--ink2);background:
+  color-mix(in srgb,var(--rule) 40%,transparent);letter-spacing:.02em}
+td.n,th.n{text-align:right;font-family:var(--mono);
+  font-variant-numeric:tabular-nums}
+tr:last-child td{border-bottom:0}
+tr.sum td{font-weight:700;background:color-mix(in srgb,var(--rule) 26%,transparent)}
+td.wrap,th.wrap{white-space:normal;min-width:12em}
+/* 図面シート（暗い画面でも白い紙のまま） */
+figure{margin:22px 0}
+.sheet{background:var(--sheet);border:1px solid var(--sheet-edge);
+  border-radius:10px;padding:10px;box-shadow:var(--shadow);overflow-x:auto}
+.sheet svg{display:block;width:100%;height:auto;min-width:300px}
+figcaption{font-size:13px;color:var(--ink3);margin-top:9px;line-height:1.7}
+/* チェックリスト */
+.check{list-style:none;padding:0;margin:14px 0}
+.check li{padding:9px 0;border-bottom:1px solid var(--edge);margin:0}
+.check label{display:flex;gap:11px;align-items:flex-start;cursor:pointer}
+.check li:last-child{border-bottom:0}
+.check input{margin-top:6px;width:18px;height:18px;accent-color:var(--axis);
+  flex:none}
+.check span{font-size:14.5px;line-height:1.75}
+.check input:checked + span{color:var(--ink3);text-decoration:line-through}
+/* タイムライン */
+.tl{list-style:none;padding:0;margin:18px 0}
+.tl li{display:grid;grid-template-columns:62px 1fr;gap:14px;padding:11px 0;
+  border-bottom:1px solid var(--edge);margin:0;align-items:baseline}
+.tl li:last-child{border-bottom:0}
+.tl .t{font-family:var(--mono);font-size:14px;color:var(--axis);
+  font-variant-numeric:tabular-nums}
+.tl .w{font-size:15px}
+.tl .w em{display:block;font-style:normal;font-size:12.5px;color:var(--ink3);
+  font-family:var(--mono)}
+.tl li.key{background:var(--axis-soft);border-radius:9px;padding:11px 10px;
+  border-bottom:0;margin:4px -10px}
+/* カード */
+.deck{margin:18px 0}
+.bar2{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.track{flex:1;height:7px;background:var(--rule);border-radius:4px;overflow:hidden}
+.track i{display:block;height:100%;width:0;background:var(--ok);
+  transition:width .3s ease}
+.stat{font:500 12px/1 var(--mono);color:var(--ink3);white-space:nowrap}
+.ctrl{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-bottom:14px}
+.ctrl button{font:500 12.5px/1.4 var(--body);padding:9px 4px;border-radius:9px;
+  border:1px solid var(--edge);background:var(--panel);color:var(--ink2);
+  cursor:pointer}
+.ctrl button[aria-pressed="true"]{background:var(--axis);color:#fff;
+  border-color:var(--axis)}
+.ctrl button:focus-visible,.acts button:focus-visible,
+.step button:focus-visible{outline:2px solid var(--axis);outline-offset:2px}
+.qcard{background:var(--panel);border:1px solid var(--edge);border-radius:14px;
+  padding:22px 20px;min-height:220px;cursor:pointer;box-shadow:var(--shadow)}
+.qcard .tag{display:inline-block;font:500 11px/1 var(--mono);letter-spacing:.1em;
+  color:var(--blue);background:var(--blue-soft);border-radius:99px;
+  padding:5px 10px}
+.qcard .qt{font-size:17px;font-weight:700;line-height:1.8;margin:14px 0 0;
+  font-family:var(--disp)}
+.qcard .tip{text-align:center;color:var(--ink3);font-size:12.5px;margin-top:26px}
+.qcard .at{margin-top:16px;padding-top:16px;border-top:1px dashed var(--rule);
+  font-size:15px;line-height:2}
+.qcard .kw{margin-top:12px;font-size:12.5px;color:var(--ink3)}
+.qcard .kw b{color:var(--axis);font-family:var(--mono)}
+.acts{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+.acts button{font:700 15px/1 var(--body);padding:14px;border-radius:11px;
+  border:1px solid;cursor:pointer}
+.acts .ng{background:var(--caution-soft);color:var(--caution);
+  border-color:color-mix(in srgb,var(--caution) 34%,transparent)}
+.acts .ok{background:var(--ok-soft);color:var(--ok);
+  border-color:color-mix(in srgb,var(--ok) 34%,transparent)}
+.step{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+.step button{font:500 14px/1 var(--body);padding:11px;border-radius:9px;
+  border:1px solid var(--edge);background:var(--panel);color:var(--ink2);
+  cursor:pointer}
+.fin{text-align:center;padding:56px 16px}
+.fin h3{font-family:var(--disp);font-size:21px;color:var(--ok);margin:0 0 6px}
+footer{margin:46px 0 26px;padding-top:18px;border-top:1px solid var(--edge);
+  font-size:12.5px;color:var(--ink3);line-height:1.85}
+</style>
+
+<div class="shell">
+<header>
+  <div class="eyebrow">令和8年度 二級建築士 設計製図</div>
+  <h1>商店街に建つ併用住宅<br>木造3階建て</h1>
+  <p class="sub">2026年9月13日（日）11:00–16:00　／　1つの型を、手が覚えるまで。</p>
+  <svg class="dimline" viewBox="0 0 640 52" preserveAspectRatio="xMidYMid meet"
+       role="img" aria-labelledby="cdt">
+    <title id="cdt">本番までの残り日数</title>
+    <line x1="14" y1="34" x2="626" y2="34" stroke="currentColor"
+          stroke-width="1" opacity=".35"/>
+    <line x1="14" y1="24" x2="14" y2="44" stroke="currentColor"
+          stroke-width="1" opacity=".55"/>
+    <line x1="626" y1="24" x2="626" y2="44" stroke="currentColor"
+          stroke-width="1" opacity=".55"/>
+    <polygon points="14,34 30,30 30,38" fill="currentColor" opacity=".55"/>
+    <polygon points="626,34 610,30 610,38" fill="currentColor" opacity=".55"/>
+    <rect id="cdbg" x="250" y="16" width="140" height="24" rx="4"
+          fill="var(--paper)"/>
+    <text id="cdtext" class="big" x="320" y="34" text-anchor="middle"
+          dominant-baseline="middle">—</text>
+    <text x="14" y="14" text-anchor="start">今日</text>
+    <text x="626" y="14" text-anchor="end">9/13</text>
+  </svg>
+</header>
+
+<nav>
+  <div class="tabs" role="tablist" aria-label="セクション">
+    <button role="tab" data-p="p1" aria-selected="true"><span class="n">01</span>要点</button>
+    <button role="tab" data-p="p2" aria-selected="false"><span class="n">02</span>道具</button>
+    <button role="tab" data-p="p3" aria-selected="false"><span class="n">03</span>型</button>
+    <button role="tab" data-p="p4" aria-selected="false"><span class="n">04</span>カード</button>
+    <button role="tab" data-p="p5" aria-selected="false"><span class="n">05</span>本番</button>
+  </div>
+</nav>
+
+<!-- ============ 01 要点 ============ -->
+<section role="tabpanel" id="p1" class="on">
+
+<h2><span class="kicker">まず これだけ</span>型から2か所だけ直しました</h2>
+<p>もらった前提を計算し直したところ、そのままだと成り立たない数字が2つありました。
+図面3枚と断面図に影響するので、覚え直す前にここを確定させてください。</p>
+
+<div class="flag fix">
+  <h4>訂正① 階段は「1階だけ15段」</h4>
+  <p>1階の階高は 3,100mm。これを14段にすると 3,100 ÷ 14 ＝ <b class="num">221.4mm</b>
+  で、店舗の階段の基準（蹴上220mm以下）を超えます。「14段割りで蹴上207」が
+  成り立つのは階高2,900mmの2階→3階だけです。</p>
+  <p><b>1階を15段にすれば 3,100 ÷ 15 ＝ 206.7mm。</b>
+  住宅の基準（230以下）も店舗の基準（220以下）も両方満たすので、
+  当日どんな条件が出ても直さずに済みます。</p>
+  <p class="num" style="font-size:14px;color:var(--ink2)">
+  したは15、うえは14。</p>
+</div>
+
+<div class="flag fix">
+  <h4>訂正② 1FL は GL+550</h4>
+  <p>基礎の立ち上がりは地面から30cm以上必要です（平12建告1347号）。
+  そこに 基礎パッキン20 ＋ 土台105 ＋ 構造用合板24 ＋ フローリング15 を積むので、
+  1階の床は <b>GL+400 では物理的に納まりません</b>。</p>
+  <p>GL+550 にすると、軒高 <b class="num">9,350</b>、最高高さ
+  <b class="num">10,806</b>。GL+400 のままなら 9,200 と 10,656 です。
+  <b>どちらでもいいので、全部の図面で同じ数字にそろえてください。</b>
+  バラバラだとランクⅣの「図面相互の重大な不整合」になります。</p>
+</div>
+
+<h2><span class="kicker">合格の条件</span>うまく描くより、全部描く</h2>
+<p>採点はランクⅠ〜Ⅳで、<b>ランクⅠだけが合格</b>。合格率は例年46〜50%です。
+そして落ちる人の多くは、設計が下手だからではなく
+<span class="mark">描き終わらなかったから</span>落ちます。</p>
+
+<div class="flag no">
+  <h4>ランクⅣ ＝ 一発不合格の6項目</h4>
+  <ol>
+    <li>指定された構造・階数で建てていない</li>
+    <li><b>図面が1枚でも描き終わっていない</b></li>
+    <li>図面どうしがひどく食い違っている</li>
+    <li>面積が条件に合っていない</li>
+    <li>要求された部屋がない／階を間違えた</li>
+    <li>常識では考えられない計画（階段がない等）</li>
+  </ol>
+  <p>この6つは実力ではなく「うっかり」で起きます。だから最後の15分は、
+  描き足す時間ではなく<b>この6つを指差し確認する時間</b>にしてください。</p>
+</div>
+
+<h2><span class="kicker">なぜ型か</span>考える時間をゼロに近づける</h2>
+<p>設計の答えは本来いくらでもあります。でも残り20日で
+「どんな条件でも設計できる力」はつきません。だから逆に考えます。</p>
+<div class="flag yes">
+  <h4>作戦</h4>
+  <p>建物の形を1つに固定して、それを何十回も描く。そうすると本番で
+  「考える」時間がほとんどいらなくなり、その分を
+  <b>「問題文どおりに直す」時間</b>に回せます。</p>
+</div>
+<ul>
+  <li><b>建物はただの長方形の箱</b>。出っ張りも引っ込みもなし</li>
+  <li><b>階段は3階とも西側の同じ位置</b>。ここを動かさないだけで全部が楽になる</li>
+  <li><b>柱は3階とも同じ16本</b>。上の柱の真下に必ず下の柱がある</li>
+</ul>
+
+<h2><span class="kicker">提出物</span>7つの図書と目安時間</h2>
+<div class="tw"><table>
+<tr><th class="n">#</th><th class="wrap">名前</th><th>縮尺</th>
+    <th class="wrap">ひとことで言うと</th><th class="n">分</th></tr>
+<tr><td class="n">1</td><td class="wrap">1階平面図 兼 配置図</td><td>1/100</td>
+    <td class="wrap">1階を真上から見た絵＋敷地のどこに建てるか</td><td class="n">40</td></tr>
+<tr><td class="n">2</td><td class="wrap">各階平面図（2階・3階）</td><td>1/100</td>
+    <td class="wrap">2階と3階を真上から見た絵</td><td class="n">55</td></tr>
+<tr><td class="n">3</td><td class="wrap">床伏図 兼 小屋伏図</td><td>1/100</td>
+    <td class="wrap">床と屋根の骨組みの絵</td><td class="n">35</td></tr>
+<tr><td class="n">4</td><td class="wrap">立面図</td><td>1/100</td>
+    <td class="wrap">建物を横から見た絵</td><td class="n">20</td></tr>
+<tr><td class="n">5</td><td class="wrap">部分詳細図（断面）</td><td>1/20</td>
+    <td class="wrap">壁を包丁で切った断面の拡大図</td><td class="n">25</td></tr>
+<tr><td class="n">6</td><td class="wrap">面積表</td><td>—</td>
+    <td class="wrap">各階の広さの計算</td><td class="n">5</td></tr>
+<tr><td class="n">7</td><td class="wrap">計画の要点等（記述）</td><td>—</td>
+    <td class="wrap">なぜそうしたかを文章で書く</td><td class="n">25</td></tr>
+<tr class="sum"><td colspan="4">合計（読み取り25＋エスキス60を足すと290）</td>
+    <td class="n">205</td></tr>
+</table></div>
+<p>5時間＝300分。<b>余りは10分しかありません。</b>
+悩む時間の余裕はゼロだと思ってください。</p>
+</section>
+
+<!-- ============ 02 道具 ============ -->
+<section role="tabpanel" id="p2">
+<h2><span class="kicker">最優先</span>平行定規だけは、今日注文する</h2>
+<div class="flag no">
+  <h4>いま動く理由</h4>
+  <p>平行定規は毎年8〜9月に全国の受験生が一斉に買うので、
+  <b>品切れ・入荷待ちが起きます</b>。他の道具は最悪あとからでも間に合いますが、
+  これだけは代わりがありません。8月24日から手を動かし始めるには、
+  <b>遅くとも8月20日には注文</b>が必要です。</p>
+</div>
+<p>製図板に定規がくっついていて、まっすぐ水平な線が何本でも一瞬で引ける道具です。
+試験ではA2の用紙を使うので、<b>必ずA2用</b>を買ってください。</p>
+<div class="tw"><table>
+<tr><th class="wrap">候補</th><th class="n">目安</th><th class="wrap">ひとこと</th></tr>
+<tr><td class="wrap">マックス MP-400FL2</td><td class="n">30,000〜38,000</td>
+    <td class="wrap">いちばん定番。軽くて運びやすい</td></tr>
+<tr><td class="wrap">ドラパス DXM-501</td><td class="n">28,000〜35,000</td>
+    <td class="wrap">これも定番。好みで選んでよい</td></tr>
+<tr><td class="wrap">中古（フリマ）</td><td class="n">10,000〜20,000</td>
+    <td class="wrap">安いが定規のガタつきを必ず確認</td></tr>
+</table></div>
+<ul>
+  <li>A2サイズ用であること（A3用は試験で使えません）</li>
+  <li>持ち運びケースが付いているか。会場まで運びます</li>
+  <li>中古なら「定規が上下にスムーズに動くか」を確認</li>
+</ul>
+
+<h2><span class="kicker">同時に注文</span>その他一式（8,000〜12,000円）</h2>
+<div class="tw"><table>
+<tr><th class="wrap">道具</th><th class="n">数</th><th class="wrap">何に使うか</th></tr>
+<tr><td class="wrap">三角定規（大30cm）</td><td class="n">1組</td>
+    <td class="wrap">たて線と斜め線。平行定規に当てて使う</td></tr>
+<tr><td class="wrap">三角スケール15cm</td><td class="n">1</td>
+    <td class="wrap">1/100や1/20をそのまま測れるものさし</td></tr>
+<tr><td class="wrap">テンプレート（円・だ円）</td><td class="n">1</td>
+    <td class="wrap">柱の丸印や小さな円</td></tr>
+<tr><td class="wrap">シャープペン0.5mm</td><td class="n">3</td>
+    <td class="wrap">持ち替えが速さになる</td></tr>
+<tr><td class="wrap">シャープペン0.7mm</td><td class="n">1</td>
+    <td class="wrap">壁などの太い線を一発で</td></tr>
+<tr><td class="wrap">替芯 HB・B</td><td class="n">各2</td>
+    <td class="wrap">薄い線はHB、濃い線はB</td></tr>
+<tr><td class="wrap">消しゴム・字消し板</td><td class="n">各1</td>
+    <td class="wrap">消したい線だけ消すための金属板</td></tr>
+<tr><td class="wrap">製図用ブラシ</td><td class="n">1</td>
+    <td class="wrap">手で払うと図面が汚れる</td></tr>
+<tr><td class="wrap">ドラフティングテープ</td><td class="n">1</td>
+    <td class="wrap">はがしても紙が破れない</td></tr>
+<tr><td class="wrap">電卓（四則演算のみ）</td><td class="n">1</td>
+    <td class="wrap">関数電卓は持ち込めません</td></tr>
+<tr><td class="wrap">時計</td><td class="n">1</td>
+    <td class="wrap">会場に時計がないことがあります</td></tr>
+<tr><td class="wrap">蛍光ペン3色</td><td class="n">1</td>
+    <td class="wrap">問題文の読み落とし防止</td></tr>
+<tr><td class="wrap">A2製図用紙</td><td class="n">30〜50</td>
+    <td class="wrap">本番と同じ大きさで練習しないと時間感覚がつかない</td></tr>
+<tr><td class="wrap">A3方眼紙</td><td class="n">50</td>
+    <td class="wrap">エスキス用</td></tr>
+</table></div>
+<div class="flag no">
+  <h4>持ち込みのルールは受験票で確認を</h4>
+  <p>年によって「使えるテンプレートは円・だ円のみ」「家具の形をしたものは不可」
+  などの制限があります。<b>建築技術教育普及センターの案内と受験票の記載が正</b>です。
+  上の表は一般的な目安にすぎません。</p>
+</div>
+
+<h2><span class="kicker">届いた日にやる</span>三角スケールを体に入れる</h2>
+<p>これが最強の時短です。1/100 では <b class="num">910mm ＝ 9.1mm</b>。
+つまり<span class="mark">1マスは約1cm</span>。</p>
+<div class="tw"><table>
+<tr><th class="n">実寸</th><th class="n">1/100</th><th class="wrap">この型での意味</th></tr>
+<tr><td class="n">910</td><td class="n">9.1</td><td class="wrap">1マス</td></tr>
+<tr><td class="n">1,820</td><td class="n">18.2</td><td class="wrap">2マス・廊下や小部屋の幅</td></tr>
+<tr><td class="n">2,730</td><td class="n">27.3</td><td class="wrap">3マス</td></tr>
+<tr><td class="n">3,640</td><td class="n">36.4</td><td class="wrap">4マス・梁の最大スパン</td></tr>
+<tr><td class="n">7,280</td><td class="n">72.8</td><td class="wrap">建物の間口</td></tr>
+<tr><td class="n">9,100</td><td class="n">91.0</td><td class="wrap">建物の奥行</td></tr>
+</table></div>
+<p>建物ぜんぶで <b class="num">72.8 × 91mm</b>。名刺より少し大きいくらいです。
+A2用紙の中で意外と小さいことを、目で覚えておいてください。
+部分詳細図の1/20も同じ考えで、<b class="num">105→5.25 / 300→15 / 910→45.5</b>。</p>
+
+<h3>線の描き分け（15分で身につく）</h3>
+<div class="tw"><table>
+<tr><th>線</th><th class="wrap">道具</th><th class="wrap">使うところ</th></tr>
+<tr><td>太</td><td class="wrap">0.7mm ＋ B</td><td class="wrap">切れている壁・柱</td></tr>
+<tr><td>中</td><td class="wrap">0.5mm ＋ B</td><td class="wrap">家具・階段・建具</td></tr>
+<tr><td>細</td><td class="wrap">0.5mm ＋ HB</td><td class="wrap">寸法線・下書き・ハッチング</td></tr>
+</table></div>
+
+<h3>買い物チェックリスト</h3>
+<div class="panel"><ul class="check" data-store="buy">
+<li><label><input type="checkbox"><span><b>平行定規 A2（ケース付き）── 今日中に注文</b></span></label></li>
+<li><label><input type="checkbox"><span>三角定規（大）／三角スケール／テンプレート</span></label></li>
+<li><label><input type="checkbox"><span>シャープペン 0.5mm×3・0.7mm×1／替芯 HB・B</span></label></li>
+<li><label><input type="checkbox"><span>消しゴム／字消し板／製図用ブラシ／テープ</span></label></li>
+<li><label><input type="checkbox"><span>電卓（四則演算のみ）／時計／蛍光ペン</span></label></li>
+<li><label><input type="checkbox"><span>A2製図用紙 30〜50枚／A3方眼紙 50枚</span></label></li>
+<li><label><input type="checkbox"><span>届いたら：平行定規のガタつき確認</span></label></li>
+<li><label><input type="checkbox"><span>届いたら：用紙位置に目印をつける</span></label></li>
+<li><label><input type="checkbox"><span>届いたら：線の描き分け練習</span></label></li>
+<li><label><input type="checkbox"><span>届いたら：1/100 の感覚づくり</span></label></li>
+</ul></div>
+</section>
+
+<!-- ============ 03 型 ============ -->
+<section role="tabpanel" id="p3">
+<h2><span class="kicker">基本の数字</span>910mm を1マスにする</h2>
+<p>木造の家は <b class="num">910mm</b> という単位で作られています。畳の短いほうの辺です。
+これを1マスとして、方眼紙のように建物を区切ります。部屋の広さは全部マスの数で決まり、
+面積表は<span class="mark">マスの数 × 0.8281</span>で終わりです。</p>
+<div class="chips">
+  <div class="chip">1マス <b>910</b>mm（0.83㎡）</div>
+  <div class="chip">間口 <b>8</b>マス＝<b>7,280</b></div>
+  <div class="chip">奥行 <b>10</b>マス＝<b>9,100</b></div>
+  <div class="chip">各階 <b>80</b>マス＝<b>66.25</b>㎡</div>
+  <div class="chip">延べ <b>198.74</b>㎡</div>
+  <div class="chip">階高 <b>3,100 / 2,900 / 2,800</b></div>
+</div>
+
+<h3>通り（壁が並ぶ線）は8本だけ</h3>
+<p>たて（南北）に <b>A・B・C・D</b>、よこ（東西）に <b>1・2・3・4</b>。
+この8本を覚えれば、平面図も伏図も同じ骨格で描けます。</p>
+<div class="tw"><table>
+<tr><th>通り</th><th class="n">位置</th><th class="wrap">そこにあるもの</th></tr>
+<tr><td>A</td><td class="n">0</td><td class="wrap">西の外壁</td></tr>
+<tr><td>B</td><td class="n">1,820</td><td class="wrap">階段の東側の壁</td></tr>
+<tr><td>C</td><td class="n">4,550</td><td class="wrap">建物の中の間仕切り</td></tr>
+<tr><td>D</td><td class="n">7,280</td><td class="wrap">東の外壁</td></tr>
+<tr><td>1</td><td class="n">0</td><td class="wrap">南の外壁（道路側）</td></tr>
+<tr><td>2</td><td class="n">1,820</td><td class="wrap">玄関の奥の壁</td></tr>
+<tr><td>3</td><td class="n">5,460</td><td class="wrap">建物の中の間仕切り</td></tr>
+<tr><td>4</td><td class="n">9,100</td><td class="wrap">北の外壁</td></tr>
+</table></div>
+
+<h2><span class="kicker">1階</span>お店が主役。南いっぱいに売場</h2>
+<figure><div class="sheet">{{SVG:plan1f}}</div>
+<figcaption>売場は6×6マス＝36マス。西の列に 玄関・階段・便所・倉庫 を積む。</figcaption></figure>
+<ul>
+<li><b>売場を南いっぱいに</b> ── 商店街のお店なので、道路から見えて入りやすいことが最優先</li>
+<li><b>住宅の玄関は南西の角</b> ── 住む人も道路から直接入れる。お店の入口とは別にする</li>
+<li><b>階段は玄関のすぐ北隣</b> ── 玄関を入ってすぐ2階へ。お店を通らずに済む</li>
+<li><b>厨房とスタッフルームは北</b> ── お客さんが入らない裏方は奥にまとめる</li>
+</ul>
+<div class="flag info">
+  <h4>問題文に「客用便所」と書いてあったら</h4>
+  <p>この型では店舗用便所を厨房の側から入る形にしています。
+  客用と指定されたら、<b>便所と倉庫を入れかえて、売場のとなり（通りBの南寄り）に
+  持ってくる</b>のがいちばん傷が浅いです。</p>
+</div>
+
+<h2><span class="kicker">2階</span>水まわりを西に一直線</h2>
+<figure><div class="sheet">{{SVG:plan2f}}</div>
+<figcaption>便所・洗面脱衣室・浴室を西の列にそろえる。配管がまっすぐ下に降りる。</figcaption></figure>
+<ul>
+<li><b>居間・食事室・台所を南に</b> ── 1階の売場とまったく同じ位置・同じ大きさ。
+だから柱と壁がそのまま上下でそろう</li>
+<li><b>水まわりを西の列に集約</b> ── <span class="mark">記述で必ず書ける材料</span>になります</li>
+<li><b>和室は居間の北隣</b> ── 引戸でつなげば来客時に広く使える</li>
+</ul>
+
+<h2><span class="kicker">3階</span>廊下を東西に1本通す</h2>
+<figure><div class="sheet">{{SVG:plan3f}}</div>
+<figcaption>階段を出たら廊下1本で全部屋へ。子供室2つは同じ大きさにして描くのを速く。</figcaption></figure>
+
+<h2><span class="kicker">面積表</span>マスを数えて掛けるだけ</h2>
+<div class="tw"><table>
+<tr><th>階</th><th class="wrap">室名</th><th class="n">マス</th><th class="n">㎡</th></tr>
+<tr><td rowspan="7">1</td><td class="wrap">店舗売場</td><td class="n">36</td><td class="n">29.81</td></tr>
+<tr><td class="wrap">厨房・作業場</td><td class="n">12</td><td class="n">9.94</td></tr>
+<tr><td class="wrap">スタッフルーム</td><td class="n">12</td><td class="n">9.94</td></tr>
+<tr><td class="wrap">階段</td><td class="n">8</td><td class="n">6.62</td></tr>
+<tr><td class="wrap">住宅玄関</td><td class="n">4</td><td class="n">3.31</td></tr>
+<tr><td class="wrap">店舗用便所</td><td class="n">4</td><td class="n">3.31</td></tr>
+<tr><td class="wrap">倉庫</td><td class="n">4</td><td class="n">3.31</td></tr>
+<tr class="sum"><td colspan="2">1階 合計</td><td class="n">80</td><td class="n">66.25</td></tr>
+<tr><td rowspan="7">2</td><td class="wrap">居間・食事室・台所</td><td class="n">36</td><td class="n">29.81</td></tr>
+<tr><td class="wrap">和室 6帖</td><td class="n">12</td><td class="n">9.94</td></tr>
+<tr><td class="wrap">家事室・納戸</td><td class="n">12</td><td class="n">9.94</td></tr>
+<tr><td class="wrap">階段</td><td class="n">8</td><td class="n">6.62</td></tr>
+<tr><td class="wrap">浴室</td><td class="n">4</td><td class="n">3.31</td></tr>
+<tr><td class="wrap">洗面脱衣室</td><td class="n">4</td><td class="n">3.31</td></tr>
+<tr><td class="wrap">便所</td><td class="n">4</td><td class="n">3.31</td></tr>
+<tr class="sum"><td colspan="2">2階 合計</td><td class="n">80</td><td class="n">66.25</td></tr>
+<tr><td rowspan="7">3</td><td class="wrap">夫婦寝室</td><td class="n">24</td><td class="n">19.87</td></tr>
+<tr><td class="wrap">子供室A</td><td class="n">15</td><td class="n">12.42</td></tr>
+<tr><td class="wrap">子供室B</td><td class="n">15</td><td class="n">12.42</td></tr>
+<tr><td class="wrap">階段</td><td class="n">8</td><td class="n">6.62</td></tr>
+<tr><td class="wrap">納戸</td><td class="n">8</td><td class="n">6.62</td></tr>
+<tr><td class="wrap">廊下</td><td class="n">6</td><td class="n">4.97</td></tr>
+<tr><td class="wrap">便所</td><td class="n">4</td><td class="n">3.31</td></tr>
+<tr class="sum"><td colspan="2">3階 合計</td><td class="n">80</td><td class="n">66.25</td></tr>
+<tr class="sum"><td colspan="2">延べ面積</td><td class="n">240</td><td class="n">198.74</td></tr>
+</table></div>
+<p>建築面積は 7.28 × 9.10 ＝ 66.248 → <b class="num">66.25㎡</b>。
+延べは ×3 で <b class="num">198.74㎡</b>、200㎡以内におさまります。</p>
+
+<h2><span class="kicker">構造の要</span>柱は3階とも同じ16本</h2>
+<p>木造3階建てでいちばん大事なのが、<b>上の階の柱の真下に下の階の柱があること</b>です。
+ずれていると上の重さを梁だけで支えることになり危険です。
+この割合を<b>直下率</b>といいます。</p>
+<div class="tw"><table>
+<tr><th class="wrap">種類</th><th class="n">本数</th><th class="wrap">位置</th><th>寸法</th></tr>
+<tr><td class="wrap">通し柱</td><td class="n">4</td><td class="wrap">建物の四隅</td><td>120×120</td></tr>
+<tr><td class="wrap">管柱</td><td class="n">12</td><td class="wrap">A・B・C・D と 1・2・3・4 の交点</td><td>105×105</td></tr>
+</table></div>
+<div class="flag info">
+  <h4>記述で聞かれたら</h4>
+  <p>「柱の位置を全階でそろえ直下率を高めた。四隅は通し柱として建物のねじれに備えた」。
+  <b>1階の管柱を105角にできる根拠</b>は、木造3階建てが構造計算をする建物だからです
+  （原則は13.5cm角以上だが、通し柱にするか構造計算で確かめれば下げられる）。
+  条文番号は必ず法令集で確認してください。</p>
+</div>
+
+<h2><span class="kicker">訂正した箇所</span>階段の段数</h2>
+<figure><div class="sheet">{{SVG:stair}}</div>
+<figcaption>踏面はどちらも210でそろえる。段数だけ変える。</figcaption></figure>
+<div class="tw"><table>
+<tr><th class="wrap">どこ</th><th class="n">階高</th><th class="n">段数</th>
+    <th class="n">蹴上</th><th class="n">踏面</th></tr>
+<tr><td class="wrap">1階 → 2階</td><td class="n">3,100</td><td class="n">15</td>
+    <td class="n">206.7</td><td class="n">210</td></tr>
+<tr><td class="wrap">2階 → 3階</td><td class="n">2,900</td><td class="n">14</td>
+    <td class="n">207.1</td><td class="n">210</td></tr>
+</table></div>
+<p>階段室は2×4マス（1,820 × 3,640）の折り返し。15段なら段鼻から段鼻まで
+210 × 14 ＝ <b class="num">2,940mm</b> なので、折り返せば十分入ります。</p>
+
+<h2><span class="kicker">いちばんの山</span>床伏図</h2>
+<figure><div class="sheet">{{SVG:framing_floor}}</div>
+<figcaption>2階の床も3階の床も同じ骨組みでいける。覚えるのは1つだけ。</figcaption></figure>
+<p>伏図は、床を作っている<b>木の棒（梁）の並べ方を真上から見た絵</b>です。
+床板をはがして骨だけにした状態、と思ってください。</p>
+<h3>掛け方は5手順だけ</h3>
+<ol>
+<li>外周をぐるり1周、<b>胴差 105×300</b> で囲む</li>
+<li>南北方向に、B通りとC通りへ<b>大梁 105×300</b></li>
+<li>東西方向に、2通りと3通りへ<b>大梁 105×240</b></li>
+<li>そのすき間に<b>床小梁 105×180 を910mmおき</b>（東西方向）</li>
+<li>隅8か所に<b>火打梁 90×90</b> を斜めに</li>
+</ol>
+<div class="flag yes">
+  <h4>なぜこの掛け方か</h4>
+  <p>木の梁は長く飛ばせません。この型なら最大スパンは <b class="num">3,640mm</b>。
+  東西は 1,820 / 2,730 / 2,730、南北は 1,820 / 3,640 / 3,640 に区切られていて、
+  どれも木造で無理なく持ちます。</p>
+</div>
+<div class="flag fix">
+  <h4>売場の中の柱は、正直に描く</h4>
+  <p>C通りと2通りの交点（売場の中）に<b>柱が1本立ちます</b>。
+  「格好悪い」と思って省くと5.46mも梁を飛ばすことになり、構造として成立しません。
+  <b>描いてください。</b>木造3階建てを分かっている証拠になります。</p>
+</div>
+<p><b>火打梁って何？</b> 四角い枠は押すと平行四辺形にゆがみます。
+角に斜めの棒を入れるとゆがまなくなる ── それが火打梁です。</p>
+
+<h2><span class="kicker">屋根の骨</span>小屋伏図</h2>
+<figure><div class="sheet">{{SVG:framing_roof}}</div>
+<figcaption>棟は南北方向。屋根は東西の2方向へ流れる。</figcaption></figure>
+<div class="tw"><table>
+<tr><th class="wrap">名前</th><th class="wrap">よみ</th>
+    <th class="wrap">どんな棒か</th><th>寸法</th></tr>
+<tr><td class="wrap">棟木</td><td class="wrap">むなぎ</td>
+    <td class="wrap">屋根のてっぺんに1本</td><td>105×105</td></tr>
+<tr><td class="wrap">母屋</td><td class="wrap">もや</td>
+    <td class="wrap">棟木と平行に910mmおき</td><td>90×90</td></tr>
+<tr><td class="wrap">軒桁</td><td class="wrap">のきげた</td>
+    <td class="wrap">屋根の下端で壁の上に載る</td><td>105×240</td></tr>
+<tr><td class="wrap">垂木</td><td class="wrap">たるき</td>
+    <td class="wrap">棟から軒へ流れる細い棒</td><td>45×105</td></tr>
+<tr><td class="wrap">小屋束</td><td class="wrap">こやづか</td>
+    <td class="wrap">母屋を支える短い柱</td><td>90×90</td></tr>
+<tr><td class="wrap">小屋梁</td><td class="wrap">こやばり</td>
+    <td class="wrap">束を載せる水平の梁</td><td>105×240</td></tr>
+</table></div>
+<p>4寸勾配は「よこ10進むとたて4上がる」。建物の幅7,280の半分＝3,640なので、
+<b class="num">3,640 × 0.4 ＝ 1,456mm</b> が軒桁の上から棟までの高さです。</p>
+
+<h2><span class="kicker">高さ</span>立面図は足し算だけ</h2>
+<figure><div class="sheet">{{SVG:elevation_s}}</div>
+<figcaption>南から見た姿。棟が南北方向なので三角形に見える（妻面）。</figcaption></figure>
+<div class="tw"><table>
+<tr><th class="wrap">高さ</th><th class="n">GLから</th><th class="wrap">計算</th></tr>
+<tr><td class="wrap">1FL</td><td class="n">+550</td><td class="wrap">基礎の上に土台・床を積んだ高さ</td></tr>
+<tr><td class="wrap">2FL</td><td class="n">+3,650</td><td class="wrap">550 ＋ 3,100</td></tr>
+<tr><td class="wrap">3FL</td><td class="n">+6,550</td><td class="wrap">3,650 ＋ 2,900</td></tr>
+<tr><td class="wrap">軒高</td><td class="n">+9,350</td><td class="wrap">6,550 ＋ 2,800</td></tr>
+<tr class="sum"><td class="wrap">最高高さ</td><td class="n">+10,806</td><td class="wrap">9,350 ＋ 1,456</td></tr>
+</table></div>
+
+<h2><span class="kicker">1/20</span>部分詳細図</h2>
+<figure><div class="sheet">{{SVG:detail}}</div>
+<figcaption>外壁を包丁で切った断面。基礎まわりと2階床（胴差）まわり。</figcaption></figure>
+<h3>外壁の6層 ── 内から外へ</h3>
+<div class="tw"><table>
+<tr><th class="n">順</th><th class="wrap">材料</th><th class="n">厚</th><th class="wrap">役目</th></tr>
+<tr><td class="n">1</td><td class="wrap">強化石膏ボード</td><td class="n">15</td>
+    <td class="wrap">火に耐える（準耐火45分の要）</td></tr>
+<tr><td class="n">2</td><td class="wrap">柱＋グラスウール16K</td><td class="n">105</td>
+    <td class="wrap">構造＋断熱</td></tr>
+<tr><td class="n">3</td><td class="wrap">構造用合板</td><td class="n">9</td>
+    <td class="wrap">地震・風に耐える（壁倍率2.5）</td></tr>
+<tr><td class="n">4</td><td class="wrap">透湿防水シート</td><td class="n">—</td>
+    <td class="wrap">雨は止め、湿気は通す</td></tr>
+<tr><td class="n">5</td><td class="wrap">通気胴縁</td><td class="n">18</td>
+    <td class="wrap">すき間を作り湿気を上へ逃がす</td></tr>
+<tr><td class="n">6</td><td class="wrap">窯業系サイディング</td><td class="n">16</td>
+    <td class="wrap">外側の仕上げ</td></tr>
+<tr class="sum"><td colspan="2">合計</td><td class="n">163</td><td class="wrap">外壁の厚さ</td></tr>
+</table></div>
+<p><b class="num">15・105・9・18・16</b>。この5つの数字だけ、歌うように覚えてください。</p>
+<h3>基礎まわりの数字</h3>
+<div class="tw"><table>
+<tr><th class="wrap">部位</th><th class="n">寸法</th><th class="wrap">決まりの目安</th></tr>
+<tr><td class="wrap">根入れの深さ</td><td class="n">300</td><td class="wrap">240mm以上が必要</td></tr>
+<tr><td class="wrap">底盤の厚さ</td><td class="n">150</td><td class="wrap">べた基礎</td></tr>
+<tr><td class="wrap">立上りの厚さ</td><td class="n">150</td><td class="wrap">120mm以上が必要</td></tr>
+<tr><td class="wrap">立上りの地上部分</td><td class="n">386</td><td class="wrap">300mm以上が必要</td></tr>
+<tr><td class="wrap">アンカーボルト</td><td class="n">M12</td><td class="wrap">2,730以下・埋込み250以上</td></tr>
+<tr><td class="wrap">砕石</td><td class="n">60</td><td class="wrap">＋ 防湿フィルム</td></tr>
+</table></div>
+</section>
+
+<!-- ============ 04 カード ============ -->
+<section role="tabpanel" id="p4">
+<h2><span class="kicker">すきま時間</span>記述の暗記カード 20問</h2>
+<p>カードを押すと解答例が出ます。「言えた／まだ」で仕分けすると、
+次からは「まだ」だけを回せます。記録はこの端末に残ります。</p>
+<div class="deck">
+  <div class="bar2">
+    <div class="track"><i id="pbar"></i></div>
+    <span class="stat" id="stat">0 / 20</span>
+  </div>
+  <div class="ctrl">
+    <button id="fAll" aria-pressed="true">全部</button>
+    <button id="fLeft" aria-pressed="false">まだだけ</button>
+    <button id="bShuf">シャッフル</button>
+    <button id="bReset">記録を消す</button>
+  </div>
+  <div id="stage"></div>
+</div>
+<p style="font-size:13.5px;color:var(--ink3)">
+解答例は「そう書けば必ず正解」ではなく<b>書く材料</b>です。
+自分の図面に合わせて言い換えてください。</p>
+</section>
+
+<!-- ============ 05 本番 ============ -->
+<section role="tabpanel" id="p5">
+<h2><span class="kicker">9月13日</span>5時間の流れ</h2>
+<ol class="tl">
+  <li><span class="t">11:00</span><span class="w">問題文を読む・条件を書き出す<em>25分 → 11:25</em></span></li>
+  <li><span class="t">11:25</span><span class="w">エスキス（間取りを決める）<em>60分 → 12:25</em></span></li>
+  <li class="key"><span class="t">12:25</span><span class="w"><b>記述を先に片づける</b><em>25分 → 12:50</em></span></li>
+  <li><span class="t">12:50</span><span class="w">1階平面図 兼 配置図<em>40分 → 13:30</em></span></li>
+  <li><span class="t">13:30</span><span class="w">2階平面図<em>30分 → 14:00</em></span></li>
+  <li><span class="t">14:00</span><span class="w">3階平面図<em>25分 → 14:25</em></span></li>
+  <li><span class="t">14:25</span><span class="w">床伏図 兼 小屋伏図<em>35分 → 15:00</em></span></li>
+  <li><span class="t">15:00</span><span class="w">立面図<em>20分 → 15:20</em></span></li>
+  <li><span class="t">15:20</span><span class="w">部分詳細図 1/20<em>25分 → 15:45</em></span></li>
+  <li><span class="t">15:45</span><span class="w">最終確認<em>15分 → 16:00</em></span></li>
+</ol>
+<div class="flag info">
+  <h4>なぜ記述を先にやるのか</h4>
+  <p>あとに回すと必ず時間が足りなくなるからです。
+  図面は多少雑でも点は残りますが、<b>記述の白紙はまるごと失点</b>です。</p>
+</div>
+
+<h2><span class="kicker">最後の15分</span>指差し確認</h2>
+<div class="panel"><ul class="check" data-store="final">
+<li><label><input type="checkbox"><span>木造3階建てになっているか（構造・階数の指定どおりか）</span></label></li>
+<li><label><input type="checkbox"><span><b>7枚すべて描き終わっているか</b></span></label></li>
+<li><label><input type="checkbox"><span>平面図と伏図で柱の位置が合っているか</span></label></li>
+<li><label><input type="checkbox"><span>面積表の数字が条件に合っているか</span></label></li>
+<li><label><input type="checkbox"><span>要求された部屋がすべてあるか・階を間違えていないか</span></label></li>
+<li><label><input type="checkbox"><span>各階に階段があるか／全部の部屋に入れるか</span></label></li>
+<li><label><input type="checkbox"><span>室名・寸法・方位・縮尺を書き忘れていないか</span></label></li>
+<li><label><input type="checkbox"><span>1FL・軒高・最高高さが全図面で同じ数字か</span></label></li>
+</ul></div>
+
+<h2><span class="kicker">想定外が来たら</span>型の崩し方</h2>
+<p>本番で型どおりに置けないことは必ず起きます。そのときの優先順位です。</p>
+<div class="tw"><table>
+<tr><th class="wrap">起きたこと</th><th class="wrap">どう直すか</th></tr>
+<tr><td class="wrap">敷地が細長くて入らない</td>
+    <td class="wrap">マスの数を変える（7×11など）。<b>910の倍数は絶対に崩さない</b></td></tr>
+<tr><td class="wrap">要求室が1つ増えた</td>
+    <td class="wrap">納戸・倉庫をつぶす。売場と居間は最後まで削らない</td></tr>
+<tr><td class="wrap">「客用便所」と指定された</td>
+    <td class="wrap">便所と倉庫を入れかえて売場のとなりへ</td></tr>
+<tr><td class="wrap">駐車場・駐輪場が要求された</td>
+    <td class="wrap">建物を北へ寄せて南に空地。建物の形は変えない</td></tr>
+<tr><td class="wrap">階段の位置を指定された</td>
+    <td class="wrap">指定に従う。ただし<b>3階とも同じ位置</b>だけは死守</td></tr>
+<tr><td class="wrap">どうしても収まらない</td>
+    <td class="wrap"><b>要求室を全部入れるのが最優先。</b>不格好でも欠落よりマシ</td></tr>
+</table></div>
+
+<div class="flag no">
+  <h4>この資料を使うときの約束</h4>
+  <p><b>型は予想であって正解ではありません。</b>正解は当日の問題文だけです。
+  型どおりに置けない条件が出たら、迷わず問題文に従ってください。</p>
+  <p><b>法令の数値は必ず自分で法令集を引いて確かめてください。</b>
+  階段の寸法・基礎の寸法・壁倍率などは目安です。
+  2025年4月から木造の構造の決まりが変わっているので、
+  古い参考書の数字が今も正しいとは限りません。</p>
+</div>
+</section>
+
+<footer>
+作成 2026年8月18日　／　図面はすべて 910mm グリッドから生成。<br>
+合格発表 2026年12月3日。
+</footer>
+</div>
+
+<script>
+/* ---------- タブ ---------- */
+const tabs=[...document.querySelectorAll('.tabs button')];
+const panels=[...document.querySelectorAll('section[role=tabpanel]')];
+const pos={};
+function show(id,push){
+  const cur=panels.find(p=>p.classList.contains('on'));
+  if(cur) pos[cur.id]=window.scrollY;
+  tabs.forEach(t=>t.setAttribute('aria-selected',String(t.dataset.p===id)));
+  panels.forEach(p=>p.classList.toggle('on',p.id===id));
+  window.scrollTo(0,pos[id]||0);
+  if(push) history.replaceState(null,'','#'+id);
+}
+tabs.forEach(t=>t.onclick=()=>show(t.dataset.p,true));
+if(location.hash && document.getElementById(location.hash.slice(1)))
+  show(location.hash.slice(1),false);
+
+/* ---------- カウントダウン ---------- */
+(function(){
+  const exam=new Date('2026-09-13T11:00:00+09:00');
+  const now=new Date();
+  const d=Math.max(0,Math.ceil((exam-now)/86400000));
+  const el=document.getElementById('cdtext');
+  el.textContent = d>0 ? ('あと ' + d + ' 日') : '本番';
+  const w = el.getComputedTextLength ? el.getComputedTextLength()+26 : 140;
+  const bg=document.getElementById('cdbg');
+  bg.setAttribute('width',w); bg.setAttribute('x',320-w/2);
+})();
+
+/* ---------- チェックリストの保存 ---------- */
+document.querySelectorAll('.check[data-store]').forEach(list=>{
+  const key='seizu-'+list.dataset.store;
+  const saved=JSON.parse(localStorage.getItem(key)||'[]');
+  const boxes=[...list.querySelectorAll('input')];
+  boxes.forEach((b,i)=>{
+    b.checked=!!saved[i];
+    b.onchange=()=>localStorage.setItem(key,
+      JSON.stringify(boxes.map(x=>x.checked)));
+  });
+});
+
+/* ---------- 暗記カード ---------- */
+const CARDS={{CARDS}};
+const KEY='seizu-cards-v2';
+let state=JSON.parse(localStorage.getItem(KEY)||'{}');
+let order=CARDS.map((_,i)=>i), onlyLeft=false, idx=0, flip=false;
+const $=s=>document.querySelector(s);
+const stage=$('#stage');
+const deck=()=>onlyLeft?order.filter(i=>state[i]!=='ok'):order;
+const save=()=>localStorage.setItem(KEY,JSON.stringify(state));
+function esc(t){return t.replace(/&/g,'&amp;').replace(/</g,'&lt;');}
+function draw(){
+  const d=deck();
+  const known=CARDS.filter((_,i)=>state[i]==='ok').length;
+  $('#pbar').style.width=(known/CARDS.length*100)+'%';
+  $('#stat').textContent=known+' / '+CARDS.length;
+  if(!d.length){
+    stage.innerHTML='<div class="fin"><h3>ぜんぶ言えました</h3>'
+      +'<p>「全部」に戻すと、もう一度回せます。</p></div>';return;
+  }
+  if(idx>=d.length) idx=0;
+  const i=d[idx], c=CARDS[i];
+  const mk=state[i]==='ok'?' ✓ 言えた':(state[i]==='ng'?' … まだ':'');
+  stage.innerHTML=
+    '<div class="qcard" id="qc" role="button" tabindex="0">'
+    +'<span class="tag">'+c.c+'</span>'
+    +'<span style="font-size:12px;color:var(--ink3);margin-left:8px">'+mk+'</span>'
+    +'<p class="qt">'+esc(c.q)+'</p>'
+    +(flip?'<div class="at">'+esc(c.a)+'</div>'
+          +'<p class="kw">キーワード <b>'+esc(c.k)+'</b></p>'
+        :'<p class="tip">押すと解答例が出ます</p>')
+    +'</div>'
+    +(flip?'<div class="acts"><button class="ng" data-v="ng">まだ</button>'
+          +'<button class="ok" data-v="ok">言えた</button></div>':'')
+    +'<div class="step"><button data-m="-1">← 前</button>'
+    +'<button data-m="1">次 →</button><span class="stat" style="grid-column:1/-1;'
+    +'text-align:center;padding-top:4px">'+(idx+1)+' / '+d.length+'</span></div>';
+  const qc=$('#qc');
+  qc.onclick=()=>{flip=!flip;draw();};
+  qc.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();
+    flip=!flip;draw();}};
+  stage.querySelectorAll('[data-v]').forEach(b=>b.onclick=()=>{
+    state[i]=b.dataset.v;save();flip=false;
+    if(!(onlyLeft&&b.dataset.v==='ok'))idx++;draw();});
+  stage.querySelectorAll('[data-m]').forEach(b=>b.onclick=()=>{
+    const n=deck().length;idx=(idx+Number(b.dataset.m)+n)%n;flip=false;draw();});
+}
+$('#fAll').onclick=()=>{onlyLeft=false;idx=0;flip=false;
+  $('#fAll').setAttribute('aria-pressed','true');
+  $('#fLeft').setAttribute('aria-pressed','false');draw();};
+$('#fLeft').onclick=()=>{onlyLeft=true;idx=0;flip=false;
+  $('#fLeft').setAttribute('aria-pressed','true');
+  $('#fAll').setAttribute('aria-pressed','false');draw();};
+$('#bShuf').onclick=()=>{for(let i=order.length-1;i>0;i--){
+  const j=Math.floor(Math.random()*(i+1));[order[i],order[j]]=[order[j],order[i]];}
+  idx=0;flip=false;draw();};
+$('#bReset').onclick=()=>{if(confirm('「言えた／まだ」の記録を消します。'))
+  {state={};save();idx=0;flip=false;draw();}};
+draw();
+</script>

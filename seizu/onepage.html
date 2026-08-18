@@ -1,0 +1,937 @@
+<title>木造3階 製図早見盤</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Old+Mincho:wght@400;700&family=Zen+Kaku+Gothic+New:wght@400;500;700&family=Roboto+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --paper:#f7f7f3; --panel:#fffffe; --ink:#1b1e1b; --ink2:#4c534c;
+  --ink3:#7b827a; --rule:#dde3dc; --edge:#e6e9e3;
+  --axis:#a8324a; --axis-soft:#f6e8ec;
+  --blue:#2e6b8a; --blue-soft:#e7eff4;
+  --caution:#b4531f; --caution-soft:#fbeee3;
+  --ok:#3e6b47; --ok-soft:#eaf1eb;
+  --sheet:#ffffff; --sheet-edge:#d8dcd6;
+  --shadow:0 1px 2px rgba(27,30,27,.06),0 8px 28px rgba(27,30,27,.08);
+  --disp:'Zen Old Mincho',"Hiragino Mincho ProN","Yu Mincho",serif;
+  --body:'Zen Kaku Gothic New','Hiragino Sans','Noto Sans JP',
+         "Yu Gothic",Meiryo,system-ui,sans-serif;
+  --mono:'Roboto Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+  --bar:76px;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --paper:#151816; --panel:#1c201d; --ink:#e9ece7; --ink2:#b0b7ae;
+    --ink3:#848c83; --rule:#2b312d; --edge:#2b312d;
+    --axis:#e2879b; --axis-soft:#33222a;
+    --blue:#8fc2dd; --blue-soft:#1d2a33;
+    --caution:#e0a172; --caution-soft:#332721;
+    --ok:#9ccaa6; --ok-soft:#1f2a22;
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 10px 34px rgba(0,0,0,.45);
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#151816; --panel:#1c201d; --ink:#e9ece7; --ink2:#b0b7ae;
+  --ink3:#848c83; --rule:#2b312d; --edge:#2b312d;
+  --axis:#e2879b; --axis-soft:#33222a;
+  --blue:#8fc2dd; --blue-soft:#1d2a33;
+  --caution:#e0a172; --caution-soft:#332721;
+  --ok:#9ccaa6; --ok-soft:#1f2a22;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 10px 34px rgba(0,0,0,.45);
+}
+*,*::before,*::after{box-sizing:border-box}
+body{
+  margin:0;background:var(--paper);color:var(--ink);
+  font-family:var(--body);font-size:16px;line-height:1.9;
+  -webkit-text-size-adjust:100%;
+  background-image:
+    linear-gradient(var(--rule) 1px,transparent 1px),
+    linear-gradient(90deg,var(--rule) 1px,transparent 1px);
+  background-size:36.4px 36.4px;
+  background-position:-1px -1px;
+}
+.shell{max-width:760px;margin:0 auto;padding:0 16px var(--bar)}
+/* ---------- ヘッダ ---------- */
+header{padding:30px 0 22px}
+.eyebrow{font:500 11.5px/1.6 var(--mono);letter-spacing:.18em;
+  color:var(--axis);text-transform:uppercase}
+h1{font-family:var(--disp);font-weight:700;font-size:clamp(25px,6.4vw,38px);
+  line-height:1.35;margin:8px 0 4px;text-wrap:balance;letter-spacing:.01em}
+.sub{color:var(--ink2);font-size:14px;margin:0}
+/* カウントダウンを寸法線で見せる */
+.dimline{margin:20px 0 4px;display:block;width:100%;height:52px}
+.dimline text{font-family:var(--mono);font-size:13px;fill:var(--ink2)}
+.dimline .big{font-family:var(--disp);font-size:21px;font-weight:700;
+  fill:var(--axis)}
+/* ---------- タブ ---------- */
+nav{position:fixed;left:0;right:0;bottom:0;z-index:20;
+  background:color-mix(in srgb,var(--panel) 92%,transparent);
+  backdrop-filter:saturate(1.4) blur(12px);
+  border-top:1px solid var(--edge);
+  padding:6px 8px calc(6px + env(safe-area-inset-bottom))}
+.tabs{max-width:760px;margin:0 auto;display:grid;
+  grid-template-columns:repeat(5,1fr);gap:4px}
+.tabs button{font:500 12px/1.4 var(--body);color:var(--ink3);
+  background:none;border:0;border-radius:9px;padding:9px 2px 7px;
+  cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px}
+.tabs button .n{font:500 10px/1 var(--mono);letter-spacing:.08em;
+  color:var(--ink3)}
+.tabs button[aria-selected="true"]{color:var(--axis);background:var(--axis-soft)}
+.tabs button[aria-selected="true"] .n{color:var(--axis)}
+.tabs button:focus-visible{outline:2px solid var(--axis);outline-offset:2px}
+/* ---------- 中身 ---------- */
+section[role=tabpanel]{display:none;animation:fade .22s ease}
+section[role=tabpanel].on{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1}}
+@media (prefers-reduced-motion:reduce){
+  section[role=tabpanel]{animation:none}*{transition:none!important}}
+h2{font-family:var(--disp);font-size:22px;font-weight:700;line-height:1.5;
+  margin:38px 0 4px;text-wrap:balance}
+h2 .kicker{display:block;font:500 11px/1.6 var(--mono);letter-spacing:.16em;
+  color:var(--ink3);text-transform:uppercase;margin-bottom:2px}
+h3{font-family:var(--body);font-size:16px;font-weight:700;margin:26px 0 6px;
+  color:var(--blue)}
+p{margin:12px 0;max-width:64ch}
+ul,ol{margin:12px 0;padding-left:1.3em;max-width:64ch}
+li{margin:6px 0}
+b,strong{font-weight:700}
+.mark{background:linear-gradient(transparent 60%,
+  color-mix(in srgb,var(--axis) 22%,transparent) 60%)}
+.num{font-family:var(--mono);font-variant-numeric:tabular-nums}
+/* パネル */
+.panel{background:var(--panel);border:1px solid var(--edge);border-radius:14px;
+  padding:18px;margin:18px 0}
+.flag{border-radius:14px;padding:16px 18px;margin:20px 0;font-size:15px;
+  border:1px solid}
+.flag h4{margin:0 0 6px;font-size:15px;font-weight:700;
+  font-family:var(--body)}
+.flag p{margin:8px 0}
+.flag.fix{background:var(--caution-soft);border-color:
+  color-mix(in srgb,var(--caution) 40%,transparent);color:var(--ink)}
+.flag.fix h4{color:var(--caution)}
+.flag.no{background:var(--axis-soft);border-color:
+  color-mix(in srgb,var(--axis) 34%,transparent)}
+.flag.no h4{color:var(--axis)}
+.flag.yes{background:var(--ok-soft);border-color:
+  color-mix(in srgb,var(--ok) 34%,transparent)}
+.flag.yes h4{color:var(--ok)}
+.flag.info{background:var(--blue-soft);border-color:
+  color-mix(in srgb,var(--blue) 30%,transparent)}
+.flag.info h4{color:var(--blue)}
+/* 数値チップ */
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0}
+.chip{background:var(--panel);border:1px solid var(--edge);border-radius:9px;
+  padding:7px 11px;font-size:13px;color:var(--ink2);line-height:1.5}
+.chip b{font-family:var(--mono);font-size:14.5px;color:var(--ink);
+  font-variant-numeric:tabular-nums}
+/* 表 */
+.tw{overflow-x:auto;margin:16px 0;border:1px solid var(--edge);
+  border-radius:12px;background:var(--panel)}
+table{border-collapse:collapse;width:100%;font-size:14px;min-width:min(100%,420px)}
+th,td{padding:9px 12px;text-align:left;border-bottom:1px solid var(--edge);
+  white-space:nowrap}
+th{font-weight:700;font-size:12.5px;color:var(--ink2);background:
+  color-mix(in srgb,var(--rule) 40%,transparent);letter-spacing:.02em}
+td.n,th.n{text-align:right;font-family:var(--mono);
+  font-variant-numeric:tabular-nums}
+tr:last-child td{border-bottom:0}
+tr.sum td{font-weight:700;background:color-mix(in srgb,var(--rule) 26%,transparent)}
+td.wrap,th.wrap{white-space:normal;min-width:12em}
+/* 図面シート（暗い画面でも白い紙のまま） */
+figure{margin:22px 0}
+.sheet{background:var(--sheet);border:1px solid var(--sheet-edge);
+  border-radius:10px;padding:10px;box-shadow:var(--shadow);overflow-x:auto}
+.sheet svg{display:block;width:100%;height:auto;min-width:300px}
+figcaption{font-size:13px;color:var(--ink3);margin-top:9px;line-height:1.7}
+/* チェックリスト */
+.check{list-style:none;padding:0;margin:14px 0}
+.check li{padding:9px 0;border-bottom:1px solid var(--edge);margin:0}
+.check label{display:flex;gap:11px;align-items:flex-start;cursor:pointer}
+.check li:last-child{border-bottom:0}
+.check input{margin-top:6px;width:18px;height:18px;accent-color:var(--axis);
+  flex:none}
+.check span{font-size:14.5px;line-height:1.75}
+.check input:checked + span{color:var(--ink3);text-decoration:line-through}
+/* タイムライン */
+.tl{list-style:none;padding:0;margin:18px 0}
+.tl li{display:grid;grid-template-columns:62px 1fr;gap:14px;padding:11px 0;
+  border-bottom:1px solid var(--edge);margin:0;align-items:baseline}
+.tl li:last-child{border-bottom:0}
+.tl .t{font-family:var(--mono);font-size:14px;color:var(--axis);
+  font-variant-numeric:tabular-nums}
+.tl .w{font-size:15px}
+.tl .w em{display:block;font-style:normal;font-size:12.5px;color:var(--ink3);
+  font-family:var(--mono)}
+.tl li.key{background:var(--axis-soft);border-radius:9px;padding:11px 10px;
+  border-bottom:0;margin:4px -10px}
+/* カード */
+.deck{margin:18px 0}
+.bar2{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.track{flex:1;height:7px;background:var(--rule);border-radius:4px;overflow:hidden}
+.track i{display:block;height:100%;width:0;background:var(--ok);
+  transition:width .3s ease}
+.stat{font:500 12px/1 var(--mono);color:var(--ink3);white-space:nowrap}
+.ctrl{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-bottom:14px}
+.ctrl button{font:500 12.5px/1.4 var(--body);padding:9px 4px;border-radius:9px;
+  border:1px solid var(--edge);background:var(--panel);color:var(--ink2);
+  cursor:pointer}
+.ctrl button[aria-pressed="true"]{background:var(--axis);color:#fff;
+  border-color:var(--axis)}
+.ctrl button:focus-visible,.acts button:focus-visible,
+.step button:focus-visible{outline:2px solid var(--axis);outline-offset:2px}
+.qcard{background:var(--panel);border:1px solid var(--edge);border-radius:14px;
+  padding:22px 20px;min-height:220px;cursor:pointer;box-shadow:var(--shadow)}
+.qcard .tag{display:inline-block;font:500 11px/1 var(--mono);letter-spacing:.1em;
+  color:var(--blue);background:var(--blue-soft);border-radius:99px;
+  padding:5px 10px}
+.qcard .qt{font-size:17px;font-weight:700;line-height:1.8;margin:14px 0 0;
+  font-family:var(--disp)}
+.qcard .tip{text-align:center;color:var(--ink3);font-size:12.5px;margin-top:26px}
+.qcard .at{margin-top:16px;padding-top:16px;border-top:1px dashed var(--rule);
+  font-size:15px;line-height:2}
+.qcard .kw{margin-top:12px;font-size:12.5px;color:var(--ink3)}
+.qcard .kw b{color:var(--axis);font-family:var(--mono)}
+.acts{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+.acts button{font:700 15px/1 var(--body);padding:14px;border-radius:11px;
+  border:1px solid;cursor:pointer}
+.acts .ng{background:var(--caution-soft);color:var(--caution);
+  border-color:color-mix(in srgb,var(--caution) 34%,transparent)}
+.acts .ok{background:var(--ok-soft);color:var(--ok);
+  border-color:color-mix(in srgb,var(--ok) 34%,transparent)}
+.step{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+.step button{font:500 14px/1 var(--body);padding:11px;border-radius:9px;
+  border:1px solid var(--edge);background:var(--panel);color:var(--ink2);
+  cursor:pointer}
+.fin{text-align:center;padding:56px 16px}
+.fin h3{font-family:var(--disp);font-size:21px;color:var(--ok);margin:0 0 6px}
+footer{margin:46px 0 26px;padding-top:18px;border-top:1px solid var(--edge);
+  font-size:12.5px;color:var(--ink3);line-height:1.85}
+</style>
+
+<div class="shell">
+<header>
+  <div class="eyebrow">令和8年度 二級建築士 設計製図</div>
+  <h1>商店街に建つ併用住宅<br>木造3階建て</h1>
+  <p class="sub">2026年9月13日（日）11:00–16:00　／　1つの型を、手が覚えるまで。</p>
+  <svg class="dimline" viewBox="0 0 640 52" preserveAspectRatio="xMidYMid meet"
+       role="img" aria-labelledby="cdt">
+    <title id="cdt">本番までの残り日数</title>
+    <line x1="14" y1="34" x2="626" y2="34" stroke="currentColor"
+          stroke-width="1" opacity=".35"/>
+    <line x1="14" y1="24" x2="14" y2="44" stroke="currentColor"
+          stroke-width="1" opacity=".55"/>
+    <line x1="626" y1="24" x2="626" y2="44" stroke="currentColor"
+          stroke-width="1" opacity=".55"/>
+    <polygon points="14,34 30,30 30,38" fill="currentColor" opacity=".55"/>
+    <polygon points="626,34 610,30 610,38" fill="currentColor" opacity=".55"/>
+    <rect id="cdbg" x="250" y="16" width="140" height="24" rx="4"
+          fill="var(--paper)"/>
+    <text id="cdtext" class="big" x="320" y="34" text-anchor="middle"
+          dominant-baseline="middle">—</text>
+    <text x="14" y="14" text-anchor="start">今日</text>
+    <text x="626" y="14" text-anchor="end">9/13</text>
+  </svg>
+</header>
+
+<nav>
+  <div class="tabs" role="tablist" aria-label="セクション">
+    <button role="tab" data-p="p1" aria-selected="true"><span class="n">01</span>要点</button>
+    <button role="tab" data-p="p2" aria-selected="false"><span class="n">02</span>道具</button>
+    <button role="tab" data-p="p3" aria-selected="false"><span class="n">03</span>型</button>
+    <button role="tab" data-p="p4" aria-selected="false"><span class="n">04</span>カード</button>
+    <button role="tab" data-p="p5" aria-selected="false"><span class="n">05</span>本番</button>
+  </div>
+</nav>
+
+<!-- ============ 01 要点 ============ -->
+<section role="tabpanel" id="p1" class="on">
+
+<h2><span class="kicker">まず これだけ</span>型から2か所だけ直しました</h2>
+<p>もらった前提を計算し直したところ、そのままだと成り立たない数字が2つありました。
+図面3枚と断面図に影響するので、覚え直す前にここを確定させてください。</p>
+
+<div class="flag fix">
+  <h4>訂正① 階段は「1階だけ15段」</h4>
+  <p>1階の階高は 3,100mm。これを14段にすると 3,100 ÷ 14 ＝ <b class="num">221.4mm</b>
+  で、店舗の階段の基準（蹴上220mm以下）を超えます。「14段割りで蹴上207」が
+  成り立つのは階高2,900mmの2階→3階だけです。</p>
+  <p><b>1階を15段にすれば 3,100 ÷ 15 ＝ 206.7mm。</b>
+  住宅の基準（230以下）も店舗の基準（220以下）も両方満たすので、
+  当日どんな条件が出ても直さずに済みます。</p>
+  <p class="num" style="font-size:14px;color:var(--ink2)">
+  したは15、うえは14。</p>
+</div>
+
+<div class="flag fix">
+  <h4>訂正② 1FL は GL+550</h4>
+  <p>基礎の立ち上がりは地面から30cm以上必要です（平12建告1347号）。
+  そこに 基礎パッキン20 ＋ 土台105 ＋ 構造用合板24 ＋ フローリング15 を積むので、
+  1階の床は <b>GL+400 では物理的に納まりません</b>。</p>
+  <p>GL+550 にすると、軒高 <b class="num">9,350</b>、最高高さ
+  <b class="num">10,806</b>。GL+400 のままなら 9,200 と 10,656 です。
+  <b>どちらでもいいので、全部の図面で同じ数字にそろえてください。</b>
+  バラバラだとランクⅣの「図面相互の重大な不整合」になります。</p>
+</div>
+
+<h2><span class="kicker">合格の条件</span>うまく描くより、全部描く</h2>
+<p>採点はランクⅠ〜Ⅳで、<b>ランクⅠだけが合格</b>。合格率は例年46〜50%です。
+そして落ちる人の多くは、設計が下手だからではなく
+<span class="mark">描き終わらなかったから</span>落ちます。</p>
+
+<div class="flag no">
+  <h4>ランクⅣ ＝ 一発不合格の6項目</h4>
+  <ol>
+    <li>指定された構造・階数で建てていない</li>
+    <li><b>図面が1枚でも描き終わっていない</b></li>
+    <li>図面どうしがひどく食い違っている</li>
+    <li>面積が条件に合っていない</li>
+    <li>要求された部屋がない／階を間違えた</li>
+    <li>常識では考えられない計画（階段がない等）</li>
+  </ol>
+  <p>この6つは実力ではなく「うっかり」で起きます。だから最後の15分は、
+  描き足す時間ではなく<b>この6つを指差し確認する時間</b>にしてください。</p>
+</div>
+
+<h2><span class="kicker">なぜ型か</span>考える時間をゼロに近づける</h2>
+<p>設計の答えは本来いくらでもあります。でも残り20日で
+「どんな条件でも設計できる力」はつきません。だから逆に考えます。</p>
+<div class="flag yes">
+  <h4>作戦</h4>
+  <p>建物の形を1つに固定して、それを何十回も描く。そうすると本番で
+  「考える」時間がほとんどいらなくなり、その分を
+  <b>「問題文どおりに直す」時間</b>に回せます。</p>
+</div>
+<ul>
+  <li><b>建物はただの長方形の箱</b>。出っ張りも引っ込みもなし</li>
+  <li><b>階段は3階とも西側の同じ位置</b>。ここを動かさないだけで全部が楽になる</li>
+  <li><b>柱は3階とも同じ16本</b>。上の柱の真下に必ず下の柱がある</li>
+</ul>
+
+<h2><span class="kicker">提出物</span>7つの図書と目安時間</h2>
+<div class="tw"><table>
+<tr><th class="n">#</th><th class="wrap">名前</th><th>縮尺</th>
+    <th class="wrap">ひとことで言うと</th><th class="n">分</th></tr>
+<tr><td class="n">1</td><td class="wrap">1階平面図 兼 配置図</td><td>1/100</td>
+    <td class="wrap">1階を真上から見た絵＋敷地のどこに建てるか</td><td class="n">40</td></tr>
+<tr><td class="n">2</td><td class="wrap">各階平面図（2階・3階）</td><td>1/100</td>
+    <td class="wrap">2階と3階を真上から見た絵</td><td class="n">55</td></tr>
+<tr><td class="n">3</td><td class="wrap">床伏図 兼 小屋伏図</td><td>1/100</td>
+    <td class="wrap">床と屋根の骨組みの絵</td><td class="n">35</td></tr>
+<tr><td class="n">4</td><td class="wrap">立面図</td><td>1/100</td>
+    <td class="wrap">建物を横から見た絵</td><td class="n">20</td></tr>
+<tr><td class="n">5</td><td class="wrap">部分詳細図（断面）</td><td>1/20</td>
+    <td class="wrap">壁を包丁で切った断面の拡大図</td><td class="n">25</td></tr>
+<tr><td class="n">6</td><td class="wrap">面積表</td><td>—</td>
+    <td class="wrap">各階の広さの計算</td><td class="n">5</td></tr>
+<tr><td class="n">7</td><td class="wrap">計画の要点等（記述）</td><td>—</td>
+    <td class="wrap">なぜそうしたかを文章で書く</td><td class="n">25</td></tr>
+<tr class="sum"><td colspan="4">合計（読み取り25＋エスキス60を足すと290）</td>
+    <td class="n">205</td></tr>
+</table></div>
+<p>5時間＝300分。<b>余りは10分しかありません。</b>
+悩む時間の余裕はゼロだと思ってください。</p>
+</section>
+
+<!-- ============ 02 道具 ============ -->
+<section role="tabpanel" id="p2">
+<h2><span class="kicker">最優先</span>平行定規だけは、今日注文する</h2>
+<div class="flag no">
+  <h4>いま動く理由</h4>
+  <p>平行定規は毎年8〜9月に全国の受験生が一斉に買うので、
+  <b>品切れ・入荷待ちが起きます</b>。他の道具は最悪あとからでも間に合いますが、
+  これだけは代わりがありません。8月24日から手を動かし始めるには、
+  <b>遅くとも8月20日には注文</b>が必要です。</p>
+</div>
+<p>製図板に定規がくっついていて、まっすぐ水平な線が何本でも一瞬で引ける道具です。
+試験ではA2の用紙を使うので、<b>必ずA2用</b>を買ってください。</p>
+<div class="tw"><table>
+<tr><th class="wrap">候補</th><th class="n">目安</th><th class="wrap">ひとこと</th></tr>
+<tr><td class="wrap">マックス MP-400FL2</td><td class="n">30,000〜38,000</td>
+    <td class="wrap">いちばん定番。軽くて運びやすい</td></tr>
+<tr><td class="wrap">ドラパス DXM-501</td><td class="n">28,000〜35,000</td>
+    <td class="wrap">これも定番。好みで選んでよい</td></tr>
+<tr><td class="wrap">中古（フリマ）</td><td class="n">10,000〜20,000</td>
+    <td class="wrap">安いが定規のガタつきを必ず確認</td></tr>
+</table></div>
+<ul>
+  <li>A2サイズ用であること（A3用は試験で使えません）</li>
+  <li>持ち運びケースが付いているか。会場まで運びます</li>
+  <li>中古なら「定規が上下にスムーズに動くか」を確認</li>
+</ul>
+
+<h2><span class="kicker">同時に注文</span>その他一式（8,000〜12,000円）</h2>
+<div class="tw"><table>
+<tr><th class="wrap">道具</th><th class="n">数</th><th class="wrap">何に使うか</th></tr>
+<tr><td class="wrap">三角定規（大30cm）</td><td class="n">1組</td>
+    <td class="wrap">たて線と斜め線。平行定規に当てて使う</td></tr>
+<tr><td class="wrap">三角スケール15cm</td><td class="n">1</td>
+    <td class="wrap">1/100や1/20をそのまま測れるものさし</td></tr>
+<tr><td class="wrap">テンプレート（円・だ円）</td><td class="n">1</td>
+    <td class="wrap">柱の丸印や小さな円</td></tr>
+<tr><td class="wrap">シャープペン0.5mm</td><td class="n">3</td>
+    <td class="wrap">持ち替えが速さになる</td></tr>
+<tr><td class="wrap">シャープペン0.7mm</td><td class="n">1</td>
+    <td class="wrap">壁などの太い線を一発で</td></tr>
+<tr><td class="wrap">替芯 HB・B</td><td class="n">各2</td>
+    <td class="wrap">薄い線はHB、濃い線はB</td></tr>
+<tr><td class="wrap">消しゴム・字消し板</td><td class="n">各1</td>
+    <td class="wrap">消したい線だけ消すための金属板</td></tr>
+<tr><td class="wrap">製図用ブラシ</td><td class="n">1</td>
+    <td class="wrap">手で払うと図面が汚れる</td></tr>
+<tr><td class="wrap">ドラフティングテープ</td><td class="n">1</td>
+    <td class="wrap">はがしても紙が破れない</td></tr>
+<tr><td class="wrap">電卓（四則演算のみ）</td><td class="n">1</td>
+    <td class="wrap">関数電卓は持ち込めません</td></tr>
+<tr><td class="wrap">時計</td><td class="n">1</td>
+    <td class="wrap">会場に時計がないことがあります</td></tr>
+<tr><td class="wrap">蛍光ペン3色</td><td class="n">1</td>
+    <td class="wrap">問題文の読み落とし防止</td></tr>
+<tr><td class="wrap">A2製図用紙</td><td class="n">30〜50</td>
+    <td class="wrap">本番と同じ大きさで練習しないと時間感覚がつかない</td></tr>
+<tr><td class="wrap">A3方眼紙</td><td class="n">50</td>
+    <td class="wrap">エスキス用</td></tr>
+</table></div>
+<div class="flag no">
+  <h4>持ち込みのルールは受験票で確認を</h4>
+  <p>年によって「使えるテンプレートは円・だ円のみ」「家具の形をしたものは不可」
+  などの制限があります。<b>建築技術教育普及センターの案内と受験票の記載が正</b>です。
+  上の表は一般的な目安にすぎません。</p>
+</div>
+
+<h2><span class="kicker">届いた日にやる</span>三角スケールを体に入れる</h2>
+<p>これが最強の時短です。1/100 では <b class="num">910mm ＝ 9.1mm</b>。
+つまり<span class="mark">1マスは約1cm</span>。</p>
+<div class="tw"><table>
+<tr><th class="n">実寸</th><th class="n">1/100</th><th class="wrap">この型での意味</th></tr>
+<tr><td class="n">910</td><td class="n">9.1</td><td class="wrap">1マス</td></tr>
+<tr><td class="n">1,820</td><td class="n">18.2</td><td class="wrap">2マス・廊下や小部屋の幅</td></tr>
+<tr><td class="n">2,730</td><td class="n">27.3</td><td class="wrap">3マス</td></tr>
+<tr><td class="n">3,640</td><td class="n">36.4</td><td class="wrap">4マス・梁の最大スパン</td></tr>
+<tr><td class="n">7,280</td><td class="n">72.8</td><td class="wrap">建物の間口</td></tr>
+<tr><td class="n">9,100</td><td class="n">91.0</td><td class="wrap">建物の奥行</td></tr>
+</table></div>
+<p>建物ぜんぶで <b class="num">72.8 × 91mm</b>。名刺より少し大きいくらいです。
+A2用紙の中で意外と小さいことを、目で覚えておいてください。
+部分詳細図の1/20も同じ考えで、<b class="num">105→5.25 / 300→15 / 910→45.5</b>。</p>
+
+<h3>線の描き分け（15分で身につく）</h3>
+<div class="tw"><table>
+<tr><th>線</th><th class="wrap">道具</th><th class="wrap">使うところ</th></tr>
+<tr><td>太</td><td class="wrap">0.7mm ＋ B</td><td class="wrap">切れている壁・柱</td></tr>
+<tr><td>中</td><td class="wrap">0.5mm ＋ B</td><td class="wrap">家具・階段・建具</td></tr>
+<tr><td>細</td><td class="wrap">0.5mm ＋ HB</td><td class="wrap">寸法線・下書き・ハッチング</td></tr>
+</table></div>
+
+<h3>買い物チェックリスト</h3>
+<div class="panel"><ul class="check" data-store="buy">
+<li><label><input type="checkbox"><span><b>平行定規 A2（ケース付き）── 今日中に注文</b></span></label></li>
+<li><label><input type="checkbox"><span>三角定規（大）／三角スケール／テンプレート</span></label></li>
+<li><label><input type="checkbox"><span>シャープペン 0.5mm×3・0.7mm×1／替芯 HB・B</span></label></li>
+<li><label><input type="checkbox"><span>消しゴム／字消し板／製図用ブラシ／テープ</span></label></li>
+<li><label><input type="checkbox"><span>電卓（四則演算のみ）／時計／蛍光ペン</span></label></li>
+<li><label><input type="checkbox"><span>A2製図用紙 30〜50枚／A3方眼紙 50枚</span></label></li>
+<li><label><input type="checkbox"><span>届いたら：平行定規のガタつき確認</span></label></li>
+<li><label><input type="checkbox"><span>届いたら：用紙位置に目印をつける</span></label></li>
+<li><label><input type="checkbox"><span>届いたら：線の描き分け練習</span></label></li>
+<li><label><input type="checkbox"><span>届いたら：1/100 の感覚づくり</span></label></li>
+</ul></div>
+</section>
+
+<!-- ============ 03 型 ============ -->
+<section role="tabpanel" id="p3">
+<h2><span class="kicker">基本の数字</span>910mm を1マスにする</h2>
+<p>木造の家は <b class="num">910mm</b> という単位で作られています。畳の短いほうの辺です。
+これを1マスとして、方眼紙のように建物を区切ります。部屋の広さは全部マスの数で決まり、
+面積表は<span class="mark">マスの数 × 0.8281</span>で終わりです。</p>
+<div class="chips">
+  <div class="chip">1マス <b>910</b>mm（0.83㎡）</div>
+  <div class="chip">間口 <b>8</b>マス＝<b>7,280</b></div>
+  <div class="chip">奥行 <b>10</b>マス＝<b>9,100</b></div>
+  <div class="chip">各階 <b>80</b>マス＝<b>66.25</b>㎡</div>
+  <div class="chip">延べ <b>198.74</b>㎡</div>
+  <div class="chip">階高 <b>3,100 / 2,900 / 2,800</b></div>
+</div>
+
+<h3>通り（壁が並ぶ線）は8本だけ</h3>
+<p>たて（南北）に <b>A・B・C・D</b>、よこ（東西）に <b>1・2・3・4</b>。
+この8本を覚えれば、平面図も伏図も同じ骨格で描けます。</p>
+<div class="tw"><table>
+<tr><th>通り</th><th class="n">位置</th><th class="wrap">そこにあるもの</th></tr>
+<tr><td>A</td><td class="n">0</td><td class="wrap">西の外壁</td></tr>
+<tr><td>B</td><td class="n">1,820</td><td class="wrap">階段の東側の壁</td></tr>
+<tr><td>C</td><td class="n">4,550</td><td class="wrap">建物の中の間仕切り</td></tr>
+<tr><td>D</td><td class="n">7,280</td><td class="wrap">東の外壁</td></tr>
+<tr><td>1</td><td class="n">0</td><td class="wrap">南の外壁（道路側）</td></tr>
+<tr><td>2</td><td class="n">1,820</td><td class="wrap">玄関の奥の壁</td></tr>
+<tr><td>3</td><td class="n">5,460</td><td class="wrap">建物の中の間仕切り</td></tr>
+<tr><td>4</td><td class="n">9,100</td><td class="wrap">北の外壁</td></tr>
+</table></div>
+
+<h2><span class="kicker">1階</span>お店が主役。南いっぱいに売場</h2>
+<figure><div class="sheet"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 660 842" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif" style="max-width:660px;margin:0 auto" role="img"><rect width="660" height="842" fill="#ffffff"/><text x="330" y="36" font-size="21" text-anchor="middle" fill="#111" font-weight="700" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">1階平面図 兼 配置図</text><text x="330" y="60" font-size="12" text-anchor="middle" fill="#666" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">1マス = 910mm ／ 間口 7,280 × 奥行 9,100 ／ 床面積 66.25㎡</text><line x1="100" y1="120" x2="100" y2="680" stroke="#e8e8e8" stroke-width="0.7"/><line x1="156" y1="120" x2="156" y2="680" stroke="#e8e8e8" stroke-width="0.7"/><line x1="212" y1="120" x2="212" y2="680" stroke="#e8e8e8" stroke-width="0.7"/><line x1="268" y1="120" x2="268" y2="680" stroke="#e8e8e8" stroke-width="0.7"/><line x1="324" y1="120" x2="324" y2="680" stroke="#e8e8e8" stroke-width="0.7"/><line x1="380" y1="120" x2="380" y2="680" stroke="#e8e8e8" stroke-width="0.7"/><line x1="436" y1="120" x2="436" y2="680" stroke="#e8e8e8" stroke-width="0.7"/><line x1="492" y1="120" x2="492" y2="680" stroke="#e8e8e8" stroke-width="0.7"/><line x1="548" y1="120" x2="548" y2="680" stroke="#e8e8e8" stroke-width="0.7"/><line x1="100" y1="680" x2="548" y2="680" stroke="#e8e8e8" stroke-width="0.7"/><line x1="100" y1="624" x2="548" y2="624" stroke="#e8e8e8" stroke-width="0.7"/><line x1="100" y1="568" x2="548" y2="568" stroke="#e8e8e8" stroke-width="0.7"/><line x1="100" y1="512" x2="548" y2="512" stroke="#e8e8e8" stroke-width="0.7"/><line x1="100" y1="456" x2="548" y2="456" stroke="#e8e8e8" stroke-width="0.7"/><line x1="100" y1="400" x2="548" y2="400" stroke="#e8e8e8" stroke-width="0.7"/><line x1="100" y1="344" x2="548" y2="344" stroke="#e8e8e8" stroke-width="0.7"/><line x1="100" y1="288" x2="548" y2="288" stroke="#e8e8e8" stroke-width="0.7"/><line x1="100" y1="232" x2="548" y2="232" stroke="#e8e8e8" stroke-width="0.7"/><line x1="100" y1="176" x2="548" y2="176" stroke="#e8e8e8" stroke-width="0.7"/><line x1="100" y1="120" x2="548" y2="120" stroke="#e8e8e8" stroke-width="0.7"/><rect x="100" y="568" width="112" height="112" fill="#f1e6fa" stroke="#8b62b5" stroke-width="1.2" opacity="0.95"/><text x="156" y="622" font-size="13" text-anchor="middle" fill="#1a1a1a" font-weight="700" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">住宅玄関</text><text x="156" y="639" font-size="11" text-anchor="middle" fill="#555" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">3.31 ㎡</text><rect x="100" y="344" width="112" height="224" fill="#fff3c4" stroke="#bb9508" stroke-width="1.2" opacity="0.95"/><text x="156" y="454" font-size="13" text-anchor="middle" fill="#1a1a1a" font-weight="700" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">階　段</text><text x="156" y="471" font-size="11" text-anchor="middle" fill="#555" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">6.62 ㎡</text><rect x="100" y="232" width="112" height="112" fill="#d5f0e7" stroke="#2f9077" stroke-width="1.2" opacity="0.95"/><text x="156" y="286" font-size="13" text-anchor="middle" fill="#1a1a1a" font-weight="700" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">店舗用便所</text><text x="156" y="303" font-size="11" text-anchor="middle" fill="#555" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">3.31 ㎡</text><rect x="100" y="120" width="112" height="112" fill="#ececec" stroke="#8a8a8a" stroke-width="1.2" opacity="0.95"/><text x="156" y="174" font-size="13" text-anchor="middle" fill="#1a1a1a" font-weight="700" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">倉　庫</text><text x="156" y="191" font-size="11" text-anchor="middle" fill="#555" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">3.31 ㎡</text><rect x="212" y="344" width="336" height="336" fill="#ffe6d0" stroke="#c9762f" stroke-width="1.2" opacity="0.95"/><text x="380" y="510" font-size="16" text-anchor="middle" fill="#1a1a1a" font-weight="700" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">店舗売場</text><text x="380" y="529" font-size="12" text-anchor="middle" fill="#555" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">29.81 ㎡</text><rect x="212" y="120" width="168" height="224" fill="#ffe6d0" stroke="#c9762f" stroke-width="1.2" opacity="0.95"/><text x="296" y="230" font-size="13" text-anchor="middle" fill="#1a1a1a" font-weight="700" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">厨房・作業場</text><text x="296" y="247" font-size="11" text-anchor="middle" fill="#555" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">9.94 ㎡</text><rect x="380" y="120" width="168" height="224" fill="#ffe6d0" stroke="#c9762f" stroke-width="1.2" opacity="0.95"/><text x="464" y="230" font-size="13" text-anchor="middle" fill="#1a1a1a" font-weight="700" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">スタッフルーム</text><text x="464" y="247" font-size="11" text-anchor="middle" fill="#555" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">9.94 ㎡</text><line x1="100" y1="102" x2="100" y2="706" stroke="#b03060" stroke-width="0.9" stroke-dasharray="9 3 2 3" opacity="0.55"/><line x1="212" y1="102" x2="212" y2="706" stroke="#b03060" stroke-width="0.9" stroke-dasharray="9 3 2 3" opacity="0.55"/><line x1="380" y1="102" x2="380" y2="706" stroke="#b03060" stroke-width="0.9" stroke-dasharray="9 3 2 3" opacity="0.55"/><line x1="548" y1="102" x2="548" y2="706" stroke="#b03060" stroke-width="0.9" stroke-dasharray="9 3 2 3" opacity="0.55"/><line x1="82" y1="680" x2="574" y2="680" stroke="#b03060" stroke-width="0.9" stroke-dasharray="9 3 2 3" opacity="0.55"/><line x1="82" y1="568" x2="574" y2="568" stroke="#b03060" stroke-width="0.9" stroke-dasharray="9 3 2 3" opacity="0.55"/><line x1="82" y1="344" x2="574" y2="344" stroke="#b03060" stroke-width="0.9" stroke-dasharray="9 3 2 3" opacity="0.55"/><line x1="82" y1="120" x2="574" y2="120" stroke="#b03060" stroke-width="0.9" stroke-dasharray="9 3 2 3" opacity="0.55"/><rect x="100" y="120" width="448" height="560" stroke="#111" stroke-width="3.4" fill="none"/><line x1="240" y1="680" x2="408" y2="680" stroke="#ffffff" stroke-width="4.2"/><line x1="240" y1="680" x2="408" y2="680" stroke="#d0342f" stroke-width="5.0"/><text x="324" y="700" font-size="11" text-anchor="middle" fill="#d0342f" font-weight="700" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">店舗出入口</text><line x1="116.8" y1="680" x2="195.2" y2="680" stroke="#ffffff" stroke-width="4.2"/><line x1="116.8" y1="680" x2="195.2" y2="680" stroke="#d0342f" stroke-width="5.0"/><text x="156" y="700" font-size="11" text-anchor="middle" fill="#d0342f" font-weight="700" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">住宅玄関</text><line x1="436" y1="680" x2="520" y2="680" stroke="#ffffff" stroke-width="4.2"/><line x1="436" y1="680" x2="520" y2="680" stroke="#2f7fd0" stroke-width="5.0"/><line x1="548" y1="652" x2="548" y2="568" stroke="#ffffff" stroke-width="4.2"/><line x1="548" y1="652" x2="548" y2="568" stroke="#2f7fd0" stroke-width="5.0"/><line x1="548" y1="512" x2="548" y2="400" stroke="#ffffff" stroke-width="4.2"/><line x1="548" y1="512" x2="548" y2="400" stroke="#2f7fd0" stroke-width="5.0"/><line x1="548" y1="316" x2="548" y2="176" stroke="#ffffff" stroke-width="4.2"/><line x1="548" y1="316" x2="548" y2="176" stroke="#2f7fd0" stroke-width="5.0"/><line x1="240" y1="120" x2="352" y2="120" stroke="#ffffff" stroke-width="4.2"/><line x1="240" y1="120" x2="352" y2="120" stroke="#d0342f" stroke-width="5.0"/><text x="296" y="110" font-size="11" text-anchor="middle" fill="#d0342f" font-weight="700" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">勝手口</text><line x1="408" y1="120" x2="520" y2="120" stroke="#ffffff" stroke-width="4.2"/><line x1="408" y1="120" x2="520" y2="120" stroke="#2f7fd0" stroke-width="5.0"/><line x1="100" y1="209.6" x2="100" y2="142.4" stroke="#ffffff" stroke-width="4.2"/><line x1="100" y1="209.6" x2="100" y2="142.4" stroke="#2f7fd0" stroke-width="5.0"/><line x1="212" y1="344" x2="212" y2="120" stroke="#111" stroke-width="2.0"/><line x1="212" y1="680" x2="212" y2="344" stroke="#111" stroke-width="2.0"/><line x1="212" y1="568" x2="212" y2="344" stroke="#111" stroke-width="2.0"/><line x1="100" y1="568" x2="212" y2="568" stroke="#111" stroke-width="2.0"/><line x1="212" y1="232" x2="212" y2="120" stroke="#111" stroke-width="2.0"/><line x1="380" y1="344" x2="548" y2="344" stroke="#111" stroke-width="2.0"/><line x1="212" y1="680" x2="212" y2="568" stroke="#111" stroke-width="2.0"/><line x1="100" y1="344" x2="212" y2="344" stroke="#111" stroke-width="2.0"/><line x1="212" y1="344" x2="380" y2="344" stroke="#111" stroke-width="2.0"/><line x1="212" y1="344" x2="548" y2="344" stroke="#111" stroke-width="2.0"/><line x1="100" y1="232" x2="212" y2="232" stroke="#111" stroke-width="2.0"/><line x1="212" y1="344" x2="212" y2="232" stroke="#111" stroke-width="2.0"/><line x1="380" y1="344" x2="380" y2="120" stroke="#111" stroke-width="2.0"/><line x1="122.4" y1="568" x2="189.6" y2="568" stroke="#ffffff" stroke-width="3.4"/><line x1="122.4" y1="568" x2="122.4" y2="613.92" stroke="#777" stroke-width="0.9"/><path d="M 122.4 613.9 A 45.9 45.9 0 0 1 168.3 568.0" stroke="#aaa" stroke-width="0.8" fill="none"/><line x1="212" y1="500.8" x2="212" y2="444.8" stroke="#ffffff" stroke-width="3.4"/><line x1="212" y1="500.8" x2="252.32" y2="500.8" stroke="#777" stroke-width="0.9"/><path d="M 252.3 500.8 A 40.3 40.3 0 0 1 212.0 460.5" stroke="#aaa" stroke-width="0.8" fill="none"/><line x1="268" y1="344" x2="357.6" y2="344" stroke="#ffffff" stroke-width="3.4"/><line x1="268" y1="342" x2="357.6" y2="342" stroke="#777" stroke-width="1.0"/><line x1="268" y1="346" x2="357.6" y2="346" stroke="#777" stroke-width="1.0"/><line x1="212" y1="316" x2="212" y2="260" stroke="#ffffff" stroke-width="3.4"/><line x1="212" y1="316" x2="252.32" y2="316" stroke="#777" stroke-width="0.9"/><path d="M 252.3 316.0 A 40.3 40.3 0 0 1 212.0 275.7" stroke="#aaa" stroke-width="0.8" fill="none"/><line x1="212" y1="204" x2="212" y2="148" stroke="#ffffff" stroke-width="3.4"/><line x1="212" y1="204" x2="252.32" y2="204" stroke="#777" stroke-width="0.9"/><path d="M 252.3 204.0 A 40.3 40.3 0 0 1 212.0 163.7" stroke="#aaa" stroke-width="0.8" fill="none"/><line x1="380" y1="260" x2="380" y2="192.8" stroke="#ffffff" stroke-width="3.4"/><line x1="380" y1="260" x2="425.92" y2="260" stroke="#777" stroke-width="0.9"/><path d="M 425.9 260.0 A 45.9 45.9 0 0 1 380.0 214.1" stroke="#aaa" stroke-width="0.8" fill="none"/><rect x="104" y="348" width="104" height="216" fill="none" stroke="#c0392b" stroke-width="1.6" stroke-dasharray="6 4"/><line x1="156" y1="568" x2="156" y2="400" stroke="#8a6d00" stroke-width="1.6"/><line x1="103" y1="547" x2="156" y2="547" stroke="#8a6d00" stroke-width="0.9"/><line x1="156" y1="547" x2="209" y2="547" stroke="#8a6d00" stroke-width="0.9"/><line x1="103" y1="526" x2="156" y2="526" stroke="#8a6d00" stroke-width="0.9"/><line x1="156" y1="526" x2="209" y2="526" stroke="#8a6d00" stroke-width="0.9"/><line x1="103" y1="505" x2="156" y2="505" stroke="#8a6d00" stroke-width="0.9"/><line x1="156" y1="505" x2="209" y2="505" stroke="#8a6d00" stroke-width="0.9"/><line x1="103" y1="484" x2="156" y2="484" stroke="#8a6d00" stroke-width="0.9"/><line x1="156" y1="484" x2="209" y2="484" stroke="#8a6d00" stroke-width="0.9"/><line x1="103" y1="463" x2="156" y2="463" stroke="#8a6d00" stroke-width="0.9"/><line x1="156" y1="463" x2="209" y2="463" stroke="#8a6d00" stroke-width="0.9"/><line x1="103" y1="442" x2="156" y2="442" stroke="#8a6d00" stroke-width="0.9"/><line x1="156" y1="442" x2="209" y2="442" stroke="#8a6d00" stroke-width="0.9"/><line x1="103" y1="421" x2="156" y2="421" stroke="#8a6d00" stroke-width="0.9"/><line x1="156" y1="421" x2="209" y2="421" stroke="#8a6d00" stroke-width="0.9"/><line x1="103" y1="400" x2="209" y2="400" stroke="#8a6d00" stroke-width="1.6"/><text x="156" y="369.2" font-size="10" text-anchor="middle" fill="#8a6d00" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">踊り場</text><line x1="128" y1="551.2" x2="128" y2="405.6" stroke="#8a6d00" stroke-width="1.6"/><polygon points="128,391.6 123,408.4 133,408.4" fill="#8a6d00"/><text x="156" y="512" font-size="13" text-anchor="middle" fill="#8a6d00" font-weight="700" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">UP</text><rect x="208" y="676" width="8" height="8" fill="#111"/><rect x="376" y="676" width="8" height="8" fill="#111"/><rect x="96" y="564" width="8" height="8" fill="#111"/><rect x="544" y="564" width="8" height="8" fill="#111"/><rect x="96" y="340" width="8" height="8" fill="#111"/><rect x="544" y="340" width="8" height="8" fill="#111"/><rect x="208" y="116" width="8" height="8" fill="#111"/><rect x="376" y="116" width="8" height="8" fill="#111"/><rect x="208" y="564" width="8" height="8" fill="#111"/><rect x="376" y="564" width="8" height="8" fill="#111"/><rect x="208" y="340" width="8" height="8" fill="#111"/><rect x="376" y="340" width="8" height="8" fill="#111"/><circle cx="100" cy="680" r="8" fill="#ffffff" stroke="#c0392b" stroke-width="2.4"/><circle cx="100" cy="680" r="4" fill="#c0392b"/><circle cx="548" cy="680" r="8" fill="#ffffff" stroke="#c0392b" stroke-width="2.4"/><circle cx="548" cy="680" r="4" fill="#c0392b"/><circle cx="100" cy="120" r="8" fill="#ffffff" stroke="#c0392b" stroke-width="2.4"/><circle cx="100" cy="120" r="4" fill="#c0392b"/><circle cx="548" cy="120" r="8" fill="#ffffff" stroke="#c0392b" stroke-width="2.4"/><circle cx="548" cy="120" r="4" fill="#c0392b"/><circle cx="100" cy="84" r="11" fill="#ffffff" stroke="#b03060" stroke-width="1.2"/><text x="100" y="88" font-size="12" text-anchor="middle" fill="#b03060" font-weight="700" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">A</text><circle cx="212" cy="84" r="11" fill="#ffffff" stroke="#b03060" stroke-width="1.2"/><text x="212" y="88" font-size="12" text-anchor="middle" fill="#b03060" font-weight="700" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">B</text><circle cx="380" cy="84" r="11" fill="#ffffff" stroke="#b03060" stroke-width="1.2"/><text x="380" y="88" font-size="12" text-anchor="middle" fill="#b03060" font-weight="700" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">C</text><circle cx="548" cy="84" r="11" fill="#ffffff" stroke="#b03060" stroke-width="1.2"/><text x="548" y="88" font-size="12" text-anchor="middle" fill="#b03060" font-weight="700" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">D</text><circle cx="60" cy="680" r="11" fill="#ffffff" stroke="#b03060" stroke-width="1.2"/><text x="60" y="684" font-size="12" text-anchor="middle" fill="#b03060" font-weight="700" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">1</text><circle cx="60" cy="568" r="11" fill="#ffffff" stroke="#b03060" stroke-width="1.2"/><text x="60" y="572" font-size="12" text-anchor="middle" fill="#b03060" font-weight="700" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">2</text><circle cx="60" cy="344" r="11" fill="#ffffff" stroke="#b03060" stroke-width="1.2"/><text x="60" y="348" font-size="12" text-anchor="middle" fill="#b03060" font-weight="700" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">3</text><circle cx="60" cy="120" r="11" fill="#ffffff" stroke="#b03060" stroke-width="1.2"/><text x="60" y="124" font-size="12" text-anchor="middle" fill="#b03060" font-weight="700" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">4</text><line x1="100" y1="732" x2="548" y2="732" stroke="#444" stroke-width="0.8"/><line x1="100" y1="728" x2="100" y2="736" stroke="#444" stroke-width="0.8"/><line x1="548" y1="728" x2="548" y2="736" stroke="#444" stroke-width="0.8"/><text x="324" y="727" font-size="11" text-anchor="middle" fill="#444" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">7,280  ( 910 × 8マス )</text><line x1="594" y1="680" x2="594" y2="120" stroke="#444" stroke-width="0.8"/><line x1="590" y1="680" x2="598" y2="680" stroke="#444" stroke-width="0.8"/><line x1="590" y1="120" x2="598" y2="120" stroke="#444" stroke-width="0.8"/><g transform="translate(588,400) rotate(-90)"><text x="0" y="0" font-size="11" text-anchor="middle" fill="#444" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">9,100  ( 910 × 10マス )</text></g><circle cx="614" cy="146" r="19" fill="#ffffff" stroke="#444" stroke-width="1.1"/><polygon points="614,132 608,153 614,148 620,153" fill="#c0392b"/><text x="614" y="165" font-size="11" text-anchor="middle" fill="#444" font-weight="700" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">N</text><rect x="66.4" y="740" width="515.2" height="26" fill="#f2f2f2" stroke="#bbb" stroke-width="0.8"/><text x="330" y="757" font-size="12" text-anchor="middle" fill="#666" font-weight="700" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">道　路（商店街の通り）</text><circle cx="108" cy="792" r="7" fill="#ffffff" stroke="#c0392b" stroke-width="2.0"/><circle cx="108" cy="792" r="3.5" fill="#c0392b"/><text x="120" y="796" font-size="11" text-anchor="start" fill="#444" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">通し柱 120角</text><rect x="216" y="788" width="8" height="8" fill="#111"/><text x="230" y="796" font-size="11" text-anchor="start" fill="#444" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">管柱 105角</text><line x1="316" y1="792" x2="338" y2="792" stroke="#2f7fd0" stroke-width="5"/><text x="344" y="796" font-size="11" text-anchor="start" fill="#444" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">窓</text><line x1="372" y1="792" x2="394" y2="792" stroke="#d0342f" stroke-width="5"/><text x="400" y="796" font-size="11" text-anchor="start" fill="#444" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">出入口</text><rect x="452" y="787" width="20" height="10" fill="none" stroke="#c0392b" stroke-width="1.4" stroke-dasharray="4 3"/><text x="478" y="796" font-size="11" text-anchor="start" fill="#444" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">竪穴区画</text><text x="330" y="824" font-size="11.5" text-anchor="middle" fill="#555" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">南＝商店街の通り。売場を道路に面して最大に取る。　／　階段 UP 15段（蹴上206.7 / 踏面210）</text></svg></div>
+<figcaption>売場は6×6マス＝36マス。西の列に 玄関・階段・便所・倉庫 を積む。</figcaption></figure>
+<ul>
+<li><b>売場を南いっぱいに</b> ── 商店街のお店なので、道路から見えて入りやすいことが最優先</li>
+<li><b>住宅の玄関は南西の角</b> ── 住む人も道路から直接入れる。お店の入口とは別にする</li>
+<li><b>階段は玄関のすぐ北隣</b> ── 玄関を入ってすぐ2階へ。お店を通らずに済む</li>
+<li><b>厨房とスタッフルームは北</b> ── お客さんが入らない裏方は奥にまとめる</li>
+</ul>
+<div class="flag info">
+  <h4>問題文に「客用便所」と書いてあったら</h4>
+  <p>この型では店舗用便所を厨房の側から入る形にしています。
+  客用と指定されたら、<b>便所と倉庫を入れかえて、売場のとなり（通りBの南寄り）に
+  持ってくる</b>のがいちばん傷が浅いです。</p>
+</div>
+
+<h2><span class="kicker">2階</span>水まわりを西に一直線</h2>
+<figure><div class="sheet"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 660 842" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif" style="max-width:660px;margin:0 auto" role="img"><rect width="660" height="842" fill="#ffffff"/><text x="330" y="36" font-size="21" text-anchor="middle" fill="#111" font-weight="700" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">2階平面図</text><text x="330" y="60" font-size="12" text-anchor="middle" fill="#666" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">1マス = 910mm ／ 間口 7,280 × 奥行 9,100 ／ 床面積 66.25㎡</text><line x1="100" y1="120" x2="100" y2="680" stroke="#e8e8e8" stroke-width="0.7"/><line x1="156" y1="120" x2="156" y2="680" stroke="#e8e8e8" stroke-width="0.7"/><line x1="212" y1="120" x2="212" y2="680" stroke="#e8e8e8" stroke-width="0.7"/><line x1="268" y1="120" x2="268" y2="680" stroke="#e8e8e8" stroke-width="0.7"/><line x1="324" y1="120" x2="324" y2="680" stroke="#e8e8e8" stroke-width="0.7"/><line x1="380" y1="120" x2="380" y2="680" stroke="#e8e8e8" stroke-width="0.7"/><line x1="436" y1="120" x2="436" y2="680" stroke="#e8e8e8" stroke-width="0.7"/><line x1="492" y1="120" x2="492" y2="680" stroke="#e8e8e8" stroke-width="0.7"/><line x1="548" y1="120" x2="548" y2="680" stroke="#e8e8e8" stroke-width="0.7"/><line x1="100" y1="680" x2="548" y2="680" stroke="#e8e8e8" stroke-width="0.7"/><line x1="100" y1="624" x2="548" y2="624" stroke="#e8e8e8" stroke-width="0.7"/><line x1="100" y1="568" x2="548" y2="568" stroke="#e8e8e8" stroke-width="0.7"/><line x1="100" y1="512" x2="548" y2="512" stroke="#e8e8e8" stroke-width="0.7"/><line x1="100" y1="456" x2="548" y2="456" stroke="#e8e8e8" stroke-width="0.7"/><line x1="100" y1="400" x2="548" y2="400" stroke="#e8e8e8" stroke-width="0.7"/><line x1="100" y1="344" x2="548" y2="344" stroke="#e8e8e8" stroke-width="0.7"/><line x1="100" y1="288" x2="548" y2="288" stroke="#e8e8e8" stroke-width="0.7"/><line x1="100" y1="232" x2="548" y2="232" stroke="#e8e8e8" stroke-width="0.7"/><line x1="100" y1="176" x2="548" y2="176" stroke="#e8e8e8" stroke-width="0.7"/><line x1="100" y1="120" x2="548" y2="120" stroke="#e8e8e8" stroke-width="0.7"/><rect x="100" y="568" width="112" height="112" fill="#d5f0e7" stroke="#2f9077" stroke-width="1.2" opacity="0.95"/><text x="156" y="622" font-size="13" text-anchor="middle" fill="#1a1a1a" font-weight="700" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">便　所</text><text x="156" y="639" font-size="11" text-anchor="middle" fill="#555" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">3.31 ㎡</text><rect x="100" y="344" width="112" height="224" fill="#fff3c4" stroke="#bb9508" stroke-width="1.2" opacity="0.95"/><text x="156" y="454" font-size="13" text-anchor="middle" fill="#1a1a1a" font-weight="700" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">階　段</text><text x="156" y="471" font-size="11" text-anchor="middle" fill="#555" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">6.62 ㎡</text><rect x="100" y="232" width="112" height="112" fill="#d5f0e7" stroke="#2f9077" stroke-width="1.2" opacity="0.95"/><text x="156" y="286" font-size="13" text-anchor="middle" fill="#1a1a1a" font-weight="700" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">洗面脱衣室</text><text x="156" y="303" font-size="11" text-anchor="middle" fill="#555" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">3.31 ㎡</text><rect x="100" y="120" width="112" height="112" fill="#d5f0e7" stroke="#2f9077" stroke-width="1.2" opacity="0.95"/><text x="156" y="174" font-size="13" text-anchor="middle" fill="#1a1a1a" font-weight="700" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">浴　室</text><text x="156" y="191" font-size="11" text-anchor="middle" fill="#555" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">3.31 ㎡</text><rect x="212" y="344" width="336" height="336" fill="#dce9fb" stroke="#4a76b8" stroke-width="1.2" opacity="0.95"/><text x="380" y="510" font-size="16" text-anchor="middle" fill="#1a1a1a" font-weight="700" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">居間・食事室・台所</text><text x="380" y="529" font-size="12" text-anchor="middle" fill="#555" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">29.81 ㎡</text><rect x="212" y="120" width="168" height="224" fill="#dce9fb" stroke="#4a76b8" stroke-width="1.2" opacity="0.95"/><text x="296" y="230" font-size="13" text-anchor="middle" fill="#1a1a1a" font-weight="700" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">和室 6帖</text><text x="296" y="247" font-size="11" text-anchor="middle" fill="#555" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">9.94 ㎡</text><rect x="380" y="120" width="168" height="224" fill="#ececec" stroke="#8a8a8a" stroke-width="1.2" opacity="0.95"/><text x="464" y="230" font-size="13" text-anchor="middle" fill="#1a1a1a" font-weight="700" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">家事室・納戸</text><text x="464" y="247" font-size="11" text-anchor="middle" fill="#555" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">9.94 ㎡</text><line x1="100" y1="102" x2="100" y2="706" stroke="#b03060" stroke-width="0.9" stroke-dasharray="9 3 2 3" opacity="0.55"/><line x1="212" y1="102" x2="212" y2="706" stroke="#b03060" stroke-width="0.9" stroke-dasharray="9 3 2 3" opacity="0.55"/><line x1="380" y1="102" x2="380" y2="706" stroke="#b03060" stroke-width="0.9" stroke-dasharray="9 3 2 3" opacity="0.55"/><line x1="548" y1="102" x2="548" y2="706" stroke="#b03060" stroke-width="0.9" stroke-dasharray="9 3 2 3" opacity="0.55"/><line x1="82" y1="680" x2="574" y2="680" stroke="#b03060" stroke-width="0.9" stroke-dasharray="9 3 2 3" opacity="0.55"/><line x1="82" y1="568" x2="574" y2="568" stroke="#b03060" stroke-width="0.9" stroke-dasharray="9 3 2 3" opacity="0.55"/><line x1="82" y1="344" x2="574" y2="344" stroke="#b03060" stroke-width="0.9" stroke-dasharray="9 3 2 3" opacity="0.55"/><line x1="82" y1="120" x2="574" y2="120" stroke="#b03060" stroke-width="0.9" stroke-dasharray="9 3 2 3" opacity="0.55"/><rect x="100" y="120" width="448" height="560" stroke="#111" stroke-width="3.4" fill="none"/><line x1="240" y1="680" x2="408" y2="680" stroke="#ffffff" stroke-width="4.2"/><line x1="240" y1="680" x2="408" y2="680" stroke="#2f7fd0" stroke-width="5.0"/><text x="324" y="700" font-size="11" text-anchor="middle" fill="#2f7fd0" font-weight="700" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">バルコニー</text><line x1="447.2" y1="680" x2="531.2" y2="680" stroke="#ffffff" stroke-width="4.2"/><line x1="447.2" y1="680" x2="531.2" y2="680" stroke="#2f7fd0" stroke-width="5.0"/><line x1="122.4" y1="680" x2="189.6" y2="680" stroke="#ffffff" stroke-width="4.2"/><line x1="122.4" y1="680" x2="189.6" y2="680" stroke="#2f7fd0" stroke-width="5.0"/><line x1="548" y1="652" x2="548" y2="568" stroke="#ffffff" stroke-width="4.2"/><line x1="548" y1="652" x2="548" y2="568" stroke="#2f7fd0" stroke-width="5.0"/><line x1="548" y1="512" x2="548" y2="400" stroke="#ffffff" stroke-width="4.2"/><line x1="548" y1="512" x2="548" y2="400" stroke="#2f7fd0" stroke-width="5.0"/><line x1="548" y1="316" x2="548" y2="176" stroke="#ffffff" stroke-width="4.2"/><line x1="548" y1="316" x2="548" y2="176" stroke="#2f7fd0" stroke-width="5.0"/><line x1="245.6" y1="120" x2="357.6" y2="120" stroke="#ffffff" stroke-width="4.2"/><line x1="245.6" y1="120" x2="357.6" y2="120" stroke="#2f7fd0" stroke-width="5.0"/><line x1="413.6" y1="120" x2="514.4" y2="120" stroke="#ffffff" stroke-width="4.2"/><line x1="413.6" y1="120" x2="514.4" y2="120" stroke="#2f7fd0" stroke-width="5.0"/><line x1="100" y1="657.6" x2="100" y2="590.4" stroke="#ffffff" stroke-width="4.2"/><line x1="100" y1="657.6" x2="100" y2="590.4" stroke="#2f7fd0" stroke-width="5.0"/><line x1="100" y1="321.6" x2="100" y2="254.4" stroke="#ffffff" stroke-width="4.2"/><line x1="100" y1="321.6" x2="100" y2="254.4" stroke="#2f7fd0" stroke-width="5.0"/><line x1="100" y1="209.6" x2="100" y2="142.4" stroke="#ffffff" stroke-width="4.2"/><line x1="100" y1="209.6" x2="100" y2="142.4" stroke="#2f7fd0" stroke-width="5.0"/><line x1="212" y1="344" x2="212" y2="120" stroke="#111" stroke-width="2.0"/><line x1="212" y1="680" x2="212" y2="344" stroke="#111" stroke-width="2.0"/><line x1="212" y1="568" x2="212" y2="344" stroke="#111" stroke-width="2.0"/><line x1="100" y1="568" x2="212" y2="568" stroke="#111" stroke-width="2.0"/><line x1="212" y1="232" x2="212" y2="120" stroke="#111" stroke-width="2.0"/><line x1="380" y1="344" x2="548" y2="344" stroke="#111" stroke-width="2.0"/><line x1="212" y1="680" x2="212" y2="568" stroke="#111" stroke-width="2.0"/><line x1="100" y1="344" x2="212" y2="344" stroke="#111" stroke-width="2.0"/><line x1="212" y1="344" x2="380" y2="344" stroke="#111" stroke-width="2.0"/><line x1="212" y1="344" x2="548" y2="344" stroke="#111" stroke-width="2.0"/><line x1="100" y1="232" x2="212" y2="232" stroke="#111" stroke-width="2.0"/><line x1="212" y1="344" x2="212" y2="232" stroke="#111" stroke-width="2.0"/><line x1="380" y1="344" x2="380" y2="120" stroke="#111" stroke-width="2.0"/><line x1="122.4" y1="568" x2="189.6" y2="568" stroke="#ffffff" stroke-width="3.4"/><line x1="122.4" y1="568" x2="122.4" y2="613.92" stroke="#777" stroke-width="0.9"/><path d="M 122.4 613.9 A 45.9 45.9 0 0 1 168.3 568.0" stroke="#aaa" stroke-width="0.8" fill="none"/><line x1="212" y1="500.8" x2="212" y2="444.8" stroke="#ffffff" stroke-width="3.4"/><line x1="212" y1="500.8" x2="252.32" y2="500.8" stroke="#777" stroke-width="0.9"/><path d="M 252.3 500.8 A 40.3 40.3 0 0 1 212.0 460.5" stroke="#aaa" stroke-width="0.8" fill="none"/><line x1="122.4" y1="344" x2="189.6" y2="344" stroke="#ffffff" stroke-width="3.4"/><line x1="122.4" y1="344" x2="122.4" y2="389.92" stroke="#777" stroke-width="0.9"/><path d="M 122.4 389.9 A 45.9 45.9 0 0 1 168.3 344.0" stroke="#aaa" stroke-width="0.8" fill="none"/><line x1="122.4" y1="232" x2="189.6" y2="232" stroke="#ffffff" stroke-width="3.4"/><line x1="122.4" y1="232" x2="122.4" y2="277.92" stroke="#777" stroke-width="0.9"/><path d="M 122.4 277.9 A 45.9 45.9 0 0 1 168.3 232.0" stroke="#aaa" stroke-width="0.8" fill="none"/><line x1="268" y1="344" x2="380" y2="344" stroke="#ffffff" stroke-width="3.4"/><line x1="268" y1="342" x2="380" y2="342" stroke="#777" stroke-width="1.0"/><line x1="268" y1="346" x2="380" y2="346" stroke="#777" stroke-width="1.0"/><line x1="380" y1="260" x2="380" y2="192.8" stroke="#ffffff" stroke-width="3.4"/><line x1="380" y1="260" x2="425.92" y2="260" stroke="#777" stroke-width="0.9"/><path d="M 425.9 260.0 A 45.9 45.9 0 0 1 380.0 214.1" stroke="#aaa" stroke-width="0.8" fill="none"/><rect x="104" y="348" width="104" height="216" fill="none" stroke="#c0392b" stroke-width="1.6" stroke-dasharray="6 4"/><line x1="156" y1="568" x2="156" y2="400" stroke="#8a6d00" stroke-width="1.6"/><line x1="103" y1="547" x2="156" y2="547" stroke="#8a6d00" stroke-width="0.9"/><line x1="156" y1="547" x2="209" y2="547" stroke="#8a6d00" stroke-width="0.9"/><line x1="103" y1="526" x2="156" y2="526" stroke="#8a6d00" stroke-width="0.9"/><line x1="156" y1="526" x2="209" y2="526" stroke="#8a6d00" stroke-width="0.9"/><line x1="103" y1="505" x2="156" y2="505" stroke="#8a6d00" stroke-width="0.9"/><line x1="156" y1="505" x2="209" y2="505" stroke="#8a6d00" stroke-width="0.9"/><line x1="103" y1="484" x2="156" y2="484" stroke="#8a6d00" stroke-width="0.9"/><line x1="156" y1="484" x2="209" y2="484" stroke="#8a6d00" stroke-width="0.9"/><line x1="103" y1="463" x2="156" y2="463" stroke="#8a6d00" stroke-width="0.9"/><line x1="156" y1="463" x2="209" y2="463" stroke="#8a6d00" stroke-width="0.9"/><line x1="103" y1="442" x2="156" y2="442" stroke="#8a6d00" stroke-width="0.9"/><line x1="156" y1="442" x2="209" y2="442" stroke="#8a6d00" stroke-width="0.9"/><line x1="103" y1="421" x2="156" y2="421" stroke="#8a6d00" stroke-width="0.9"/><line x1="156" y1="421" x2="209" y2="421" stroke="#8a6d00" stroke-width="0.9"/><line x1="103" y1="400" x2="209" y2="400" stroke="#8a6d00" stroke-width="1.6"/><text x="156" y="369.2" font-size="10" text-anchor="middle" fill="#8a6d00" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">踊り場</text><line x1="128" y1="551.2" x2="128" y2="405.6" stroke="#8a6d00" stroke-width="1.6"/><polygon points="128,391.6 123,408.4 133,408.4" fill="#8a6d00"/><text x="156" y="512" font-size="13" text-anchor="middle" fill="#8a6d00" font-weight="700" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">UP</text><rect x="208" y="676" width="8" height="8" fill="#111"/><rect x="376" y="676" width="8" height="8" fill="#111"/><rect x="96" y="564" width="8" height="8" fill="#111"/><rect x="544" y="564" width="8" height="8" fill="#111"/><rect x="96" y="340" width="8" height="8" fill="#111"/><rect x="544" y="340" width="8" height="8" fill="#111"/><rect x="208" y="116" width="8" height="8" fill="#111"/><rect x="376" y="116" width="8" height="8" fill="#111"/><rect x="208" y="564" width="8" height="8" fill="#111"/><rect x="376" y="564" width="8" height="8" fill="#111"/><rect x="208" y="340" width="8" height="8" fill="#111"/><rect x="376" y="340" width="8" height="8" fill="#111"/><circle cx="100" cy="680" r="8" fill="#ffffff" stroke="#c0392b" stroke-width="2.4"/><circle cx="100" cy="680" r="4" fill="#c0392b"/><circle cx="548" cy="680" r="8" fill="#ffffff" stroke="#c0392b" stroke-width="2.4"/><circle cx="548" cy="680" r="4" fill="#c0392b"/><circle cx="100" cy="120" r="8" fill="#ffffff" stroke="#c0392b" stroke-width="2.4"/><circle cx="100" cy="120" r="4" fill="#c0392b"/><circle cx="548" cy="120" r="8" fill="#ffffff" stroke="#c0392b" stroke-width="2.4"/><circle cx="548" cy="120" r="4" fill="#c0392b"/><circle cx="100" cy="84" r="11" fill="#ffffff" stroke="#b03060" stroke-width="1.2"/><text x="100" y="88" font-size="12" text-anchor="middle" fill="#b03060" font-weight="700" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">A</text><circle cx="212" cy="84" r="11" fill="#ffffff" stroke="#b03060" stroke-width="1.2"/><text x="212" y="88" font-size="12" text-anchor="middle" fill="#b03060" font-weight="700" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">B</text><circle cx="380" cy="84" r="11" fill="#ffffff" stroke="#b03060" stroke-width="1.2"/><text x="380" y="88" font-size="12" text-anchor="middle" fill="#b03060" font-weight="700" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">C</text><circle cx="548" cy="84" r="11" fill="#ffffff" stroke="#b03060" stroke-width="1.2"/><text x="548" y="88" font-size="12" text-anchor="middle" fill="#b03060" font-weight="700" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">D</text><circle cx="60" cy="680" r="11" fill="#ffffff" stroke="#b03060" stroke-width="1.2"/><text x="60" y="684" font-size="12" text-anchor="middle" fill="#b03060" font-weight="700" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">1</text><circle cx="60" cy="568" r="11" fill="#ffffff" stroke="#b03060" stroke-width="1.2"/><text x="60" y="572" font-size="12" text-anchor="middle" fill="#b03060" font-weight="700" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">2</text><circle cx="60" cy="344" r="11" fill="#ffffff" stroke="#b03060" stroke-width="1.2"/><text x="60" y="348" font-size="12" text-anchor="middle" fill="#b03060" font-weight="700" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">3</text><circle cx="60" cy="120" r="11" fill="#ffffff" stroke="#b03060" stroke-width="1.2"/><text x="60" y="124" font-size="12" text-anchor="middle" fill="#b03060" font-weight="700" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">4</text><line x1="100" y1="732" x2="548" y2="732" stroke="#444" stroke-width="0.8"/><line x1="100" y1="728" x2="100" y2="736" stroke="#444" stroke-width="0.8"/><line x1="548" y1="728" x2="548" y2="736" stroke="#444" stroke-width="0.8"/><text x="324" y="727" font-size="11" text-anchor="middle" fill="#444" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">7,280  ( 910 × 8マス )</text><line x1="594" y1="680" x2="594" y2="120" stroke="#444" stroke-width="0.8"/><line x1="590" y1="680" x2="598" y2="680" stroke="#444" stroke-width="0.8"/><line x1="590" y1="120" x2="598" y2="120" stroke="#444" stroke-width="0.8"/><g transform="translate(588,400) rotate(-90)"><text x="0" y="0" font-size="11" text-anchor="middle" fill="#444" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">9,100  ( 910 × 10マス )</text></g><circle cx="614" cy="146" r="19" fill="#ffffff" stroke="#444" stroke-width="1.1"/><polygon points="614,132 608,153 614,148 620,153" fill="#c0392b"/><text x="614" y="165" font-size="11" text-anchor="middle" fill="#444" font-weight="700" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">N</text><text x="330" y="757" font-size="11" text-anchor="middle" fill="#999" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">↓ こちらが道路（南）</text><circle cx="108" cy="792" r="7" fill="#ffffff" stroke="#c0392b" stroke-width="2.0"/><circle cx="108" cy="792" r="3.5" fill="#c0392b"/><text x="120" y="796" font-size="11" text-anchor="start" fill="#444" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">通し柱 120角</text><rect x="216" y="788" width="8" height="8" fill="#111"/><text x="230" y="796" font-size="11" text-anchor="start" fill="#444" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">管柱 105角</text><line x1="316" y1="792" x2="338" y2="792" stroke="#2f7fd0" stroke-width="5"/><text x="344" y="796" font-size="11" text-anchor="start" fill="#444" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">窓</text><line x1="372" y1="792" x2="394" y2="792" stroke="#d0342f" stroke-width="5"/><text x="400" y="796" font-size="11" text-anchor="start" fill="#444" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">出入口</text><rect x="452" y="787" width="20" height="10" fill="none" stroke="#c0392b" stroke-width="1.4" stroke-dasharray="4 3"/><text x="478" y="796" font-size="11" text-anchor="start" fill="#444" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">竪穴区画</text><text x="330" y="824" font-size="11.5" text-anchor="middle" fill="#555" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">水まわりを西側にまとめて、1階・3階と配管の位置をそろえる。　／　階段 UP 14段（蹴上207.1 / 踏面210）</text></svg></div>
+<figcaption>便所・洗面脱衣室・浴室を西の列にそろえる。配管がまっすぐ下に降りる。</figcaption></figure>
+<ul>
+<li><b>居間・食事室・台所を南に</b> ── 1階の売場とまったく同じ位置・同じ大きさ。
+だから柱と壁がそのまま上下でそろう</li>
+<li><b>水まわりを西の列に集約</b> ── <span class="mark">記述で必ず書ける材料</span>になります</li>
+<li><b>和室は居間の北隣</b> ── 引戸でつなげば来客時に広く使える</li>
+</ul>
+
+<h2><span class="kicker">3階</span>廊下を東西に1本通す</h2>
+<figure><div class="sheet"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 660 842" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif" style="max-width:660px;margin:0 auto" role="img"><rect width="660" height="842" fill="#ffffff"/><text x="330" y="36" font-size="21" text-anchor="middle" fill="#111" font-weight="700" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">3階平面図</text><text x="330" y="60" font-size="12" text-anchor="middle" fill="#666" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">1マス = 910mm ／ 間口 7,280 × 奥行 9,100 ／ 床面積 66.25㎡</text><line x1="100" y1="120" x2="100" y2="680" stroke="#e8e8e8" stroke-width="0.7"/><line x1="156" y1="120" x2="156" y2="680" stroke="#e8e8e8" stroke-width="0.7"/><line x1="212" y1="120" x2="212" y2="680" stroke="#e8e8e8" stroke-width="0.7"/><line x1="268" y1="120" x2="268" y2="680" stroke="#e8e8e8" stroke-width="0.7"/><line x1="324" y1="120" x2="324" y2="680" stroke="#e8e8e8" stroke-width="0.7"/><line x1="380" y1="120" x2="380" y2="680" stroke="#e8e8e8" stroke-width="0.7"/><line x1="436" y1="120" x2="436" y2="680" stroke="#e8e8e8" stroke-width="0.7"/><line x1="492" y1="120" x2="492" y2="680" stroke="#e8e8e8" stroke-width="0.7"/><line x1="548" y1="120" x2="548" y2="680" stroke="#e8e8e8" stroke-width="0.7"/><line x1="100" y1="680" x2="548" y2="680" stroke="#e8e8e8" stroke-width="0.7"/><line x1="100" y1="624" x2="548" y2="624" stroke="#e8e8e8" stroke-width="0.7"/><line x1="100" y1="568" x2="548" y2="568" stroke="#e8e8e8" stroke-width="0.7"/><line x1="100" y1="512" x2="548" y2="512" stroke="#e8e8e8" stroke-width="0.7"/><line x1="100" y1="456" x2="548" y2="456" stroke="#e8e8e8" stroke-width="0.7"/><line x1="100" y1="400" x2="548" y2="400" stroke="#e8e8e8" stroke-width="0.7"/><line x1="100" y1="344" x2="548" y2="344" stroke="#e8e8e8" stroke-width="0.7"/><line x1="100" y1="288" x2="548" y2="288" stroke="#e8e8e8" stroke-width="0.7"/><line x1="100" y1="232" x2="548" y2="232" stroke="#e8e8e8" stroke-width="0.7"/><line x1="100" y1="176" x2="548" y2="176" stroke="#e8e8e8" stroke-width="0.7"/><line x1="100" y1="120" x2="548" y2="120" stroke="#e8e8e8" stroke-width="0.7"/><rect x="100" y="568" width="112" height="112" fill="#d5f0e7" stroke="#2f9077" stroke-width="1.2" opacity="0.95"/><text x="156" y="622" font-size="13" text-anchor="middle" fill="#1a1a1a" font-weight="700" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">便　所</text><text x="156" y="639" font-size="11" text-anchor="middle" fill="#555" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">3.31 ㎡</text><rect x="100" y="344" width="112" height="224" fill="#fff3c4" stroke="#bb9508" stroke-width="1.2" opacity="0.95"/><text x="156" y="454" font-size="13" text-anchor="middle" fill="#1a1a1a" font-weight="700" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">階　段</text><text x="156" y="471" font-size="11" text-anchor="middle" fill="#555" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">6.62 ㎡</text><rect x="100" y="120" width="112" height="224" fill="#ececec" stroke="#8a8a8a" stroke-width="1.2" opacity="0.95"/><text x="156" y="230" font-size="13" text-anchor="middle" fill="#1a1a1a" font-weight="700" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">納　戸</text><text x="156" y="247" font-size="11" text-anchor="middle" fill="#555" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">6.62 ㎡</text><rect x="212" y="400" width="168" height="280" fill="#dce9fb" stroke="#4a76b8" stroke-width="1.2" opacity="0.95"/><text x="296" y="538" font-size="13" text-anchor="middle" fill="#1a1a1a" font-weight="700" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">子供室A</text><text x="296" y="555" font-size="11" text-anchor="middle" fill="#555" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">12.42 ㎡</text><rect x="380" y="400" width="168" height="280" fill="#dce9fb" stroke="#4a76b8" stroke-width="1.2" opacity="0.95"/><text x="464" y="538" font-size="13" text-anchor="middle" fill="#1a1a1a" font-weight="700" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">子供室B</text><text x="464" y="555" font-size="11" text-anchor="middle" fill="#555" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">12.42 ㎡</text><rect x="212" y="344" width="336" height="56" fill="#f1e6fa" stroke="#8b62b5" stroke-width="1.2" opacity="0.95"/><text x="380" y="370" font-size="16" text-anchor="middle" fill="#1a1a1a" font-weight="700" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">廊　下</text><text x="380" y="389" font-size="12" text-anchor="middle" fill="#555" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">4.97 ㎡</text><rect x="212" y="120" width="336" height="224" fill="#dce9fb" stroke="#4a76b8" stroke-width="1.2" opacity="0.95"/><text x="380" y="230" font-size="16" text-anchor="middle" fill="#1a1a1a" font-weight="700" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">夫婦寝室</text><text x="380" y="249" font-size="12" text-anchor="middle" fill="#555" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">19.87 ㎡</text><line x1="100" y1="102" x2="100" y2="706" stroke="#b03060" stroke-width="0.9" stroke-dasharray="9 3 2 3" opacity="0.55"/><line x1="212" y1="102" x2="212" y2="706" stroke="#b03060" stroke-width="0.9" stroke-dasharray="9 3 2 3" opacity="0.55"/><line x1="380" y1="102" x2="380" y2="706" stroke="#b03060" stroke-width="0.9" stroke-dasharray="9 3 2 3" opacity="0.55"/><line x1="548" y1="102" x2="548" y2="706" stroke="#b03060" stroke-width="0.9" stroke-dasharray="9 3 2 3" opacity="0.55"/><line x1="82" y1="680" x2="574" y2="680" stroke="#b03060" stroke-width="0.9" stroke-dasharray="9 3 2 3" opacity="0.55"/><line x1="82" y1="568" x2="574" y2="568" stroke="#b03060" stroke-width="0.9" stroke-dasharray="9 3 2 3" opacity="0.55"/><line x1="82" y1="344" x2="574" y2="344" stroke="#b03060" stroke-width="0.9" stroke-dasharray="9 3 2 3" opacity="0.55"/><line x1="82" y1="120" x2="574" y2="120" stroke="#b03060" stroke-width="0.9" stroke-dasharray="9 3 2 3" opacity="0.55"/><rect x="100" y="120" width="448" height="560" stroke="#111" stroke-width="3.4" fill="none"/><line x1="245.6" y1="680" x2="346.4" y2="680" stroke="#ffffff" stroke-width="4.2"/><line x1="245.6" y1="680" x2="346.4" y2="680" stroke="#2f7fd0" stroke-width="5.0"/><line x1="413.6" y1="680" x2="514.4" y2="680" stroke="#ffffff" stroke-width="4.2"/><line x1="413.6" y1="680" x2="514.4" y2="680" stroke="#2f7fd0" stroke-width="5.0"/><line x1="122.4" y1="680" x2="189.6" y2="680" stroke="#ffffff" stroke-width="4.2"/><line x1="122.4" y1="680" x2="189.6" y2="680" stroke="#2f7fd0" stroke-width="5.0"/><line x1="548" y1="624" x2="548" y2="484" stroke="#ffffff" stroke-width="4.2"/><line x1="548" y1="624" x2="548" y2="484" stroke="#2f7fd0" stroke-width="5.0"/><line x1="548" y1="288" x2="548" y2="176" stroke="#ffffff" stroke-width="4.2"/><line x1="548" y1="288" x2="548" y2="176" stroke="#2f7fd0" stroke-width="5.0"/><line x1="245.6" y1="120" x2="368.8" y2="120" stroke="#ffffff" stroke-width="4.2"/><line x1="245.6" y1="120" x2="368.8" y2="120" stroke="#2f7fd0" stroke-width="5.0"/><line x1="413.6" y1="120" x2="536.8" y2="120" stroke="#ffffff" stroke-width="4.2"/><line x1="413.6" y1="120" x2="536.8" y2="120" stroke="#2f7fd0" stroke-width="5.0"/><line x1="100" y1="624" x2="100" y2="484" stroke="#ffffff" stroke-width="4.2"/><line x1="100" y1="624" x2="100" y2="484" stroke="#2f7fd0" stroke-width="5.0"/><line x1="100" y1="288" x2="100" y2="176" stroke="#ffffff" stroke-width="4.2"/><line x1="100" y1="288" x2="100" y2="176" stroke="#2f7fd0" stroke-width="5.0"/><line x1="212" y1="344" x2="212" y2="120" stroke="#111" stroke-width="2.0"/><line x1="212" y1="568" x2="212" y2="344" stroke="#111" stroke-width="2.0"/><line x1="380" y1="680" x2="380" y2="400" stroke="#111" stroke-width="2.0"/><line x1="212" y1="680" x2="212" y2="400" stroke="#111" stroke-width="2.0"/><line x1="212" y1="680" x2="212" y2="568" stroke="#111" stroke-width="2.0"/><line x1="100" y1="344" x2="212" y2="344" stroke="#111" stroke-width="2.0"/><line x1="380" y1="400" x2="548" y2="400" stroke="#111" stroke-width="2.0"/><line x1="212" y1="344" x2="548" y2="344" stroke="#111" stroke-width="2.0"/><line x1="212" y1="400" x2="380" y2="400" stroke="#111" stroke-width="2.0"/><line x1="212" y1="400" x2="548" y2="400" stroke="#111" stroke-width="2.0"/><line x1="100" y1="568" x2="212" y2="568" stroke="#111" stroke-width="2.0"/><line x1="212" y1="400" x2="212" y2="344" stroke="#111" stroke-width="2.0"/><line x1="122.4" y1="568" x2="189.6" y2="568" stroke="#ffffff" stroke-width="3.4"/><line x1="122.4" y1="568" x2="122.4" y2="613.92" stroke="#777" stroke-width="0.9"/><path d="M 122.4 613.9 A 45.9 45.9 0 0 1 168.3 568.0" stroke="#aaa" stroke-width="0.8" fill="none"/><line x1="212" y1="388.8" x2="212" y2="344" stroke="#ffffff" stroke-width="3.4"/><line x1="212" y1="388.8" x2="244.26" y2="388.8" stroke="#777" stroke-width="0.9"/><path d="M 244.3 388.8 A 32.3 32.3 0 0 1 212.0 356.5" stroke="#aaa" stroke-width="0.8" fill="none"/><line x1="122.4" y1="344" x2="189.6" y2="344" stroke="#ffffff" stroke-width="3.4"/><line x1="122.4" y1="344" x2="122.4" y2="389.92" stroke="#777" stroke-width="0.9"/><path d="M 122.4 389.9 A 45.9 45.9 0 0 1 168.3 344.0" stroke="#aaa" stroke-width="0.8" fill="none"/><line x1="268" y1="400" x2="324" y2="400" stroke="#ffffff" stroke-width="3.4"/><line x1="268" y1="400" x2="268" y2="440.32" stroke="#777" stroke-width="0.9"/><path d="M 268.0 440.3 A 40.3 40.3 0 0 1 308.3 400.0" stroke="#aaa" stroke-width="0.8" fill="none"/><line x1="436" y1="400" x2="492" y2="400" stroke="#ffffff" stroke-width="3.4"/><line x1="436" y1="400" x2="436" y2="440.32" stroke="#777" stroke-width="0.9"/><path d="M 436.0 440.3 A 40.3 40.3 0 0 1 476.3 400.0" stroke="#aaa" stroke-width="0.8" fill="none"/><line x1="324" y1="344" x2="380" y2="344" stroke="#ffffff" stroke-width="3.4"/><line x1="324" y1="344" x2="324" y2="384.32" stroke="#777" stroke-width="0.9"/><path d="M 324.0 384.3 A 40.3 40.3 0 0 1 364.3 344.0" stroke="#aaa" stroke-width="0.8" fill="none"/><rect x="104" y="348" width="104" height="216" fill="none" stroke="#c0392b" stroke-width="1.6" stroke-dasharray="6 4"/><line x1="156" y1="568" x2="156" y2="400" stroke="#8a6d00" stroke-width="1.6"/><line x1="103" y1="547" x2="156" y2="547" stroke="#8a6d00" stroke-width="0.9"/><line x1="156" y1="547" x2="209" y2="547" stroke="#8a6d00" stroke-width="0.9"/><line x1="103" y1="526" x2="156" y2="526" stroke="#8a6d00" stroke-width="0.9"/><line x1="156" y1="526" x2="209" y2="526" stroke="#8a6d00" stroke-width="0.9"/><line x1="103" y1="505" x2="156" y2="505" stroke="#8a6d00" stroke-width="0.9"/><line x1="156" y1="505" x2="209" y2="505" stroke="#8a6d00" stroke-width="0.9"/><line x1="103" y1="484" x2="156" y2="484" stroke="#8a6d00" stroke-width="0.9"/><line x1="156" y1="484" x2="209" y2="484" stroke="#8a6d00" stroke-width="0.9"/><line x1="103" y1="463" x2="156" y2="463" stroke="#8a6d00" stroke-width="0.9"/><line x1="156" y1="463" x2="209" y2="463" stroke="#8a6d00" stroke-width="0.9"/><line x1="103" y1="442" x2="156" y2="442" stroke="#8a6d00" stroke-width="0.9"/><line x1="156" y1="442" x2="209" y2="442" stroke="#8a6d00" stroke-width="0.9"/><line x1="103" y1="421" x2="156" y2="421" stroke="#8a6d00" stroke-width="0.9"/><line x1="156" y1="421" x2="209" y2="421" stroke="#8a6d00" stroke-width="0.9"/><line x1="103" y1="400" x2="209" y2="400" stroke="#8a6d00" stroke-width="1.6"/><text x="156" y="369.2" font-size="10" text-anchor="middle" fill="#8a6d00" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">踊り場</text><line x1="128" y1="551.2" x2="128" y2="405.6" stroke="#8a6d00" stroke-width="1.6"/><polygon points="128,391.6 123,408.4 133,408.4" fill="#8a6d00"/><text x="156" y="512" font-size="13" text-anchor="middle" fill="#8a6d00" font-weight="700" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">UP</text><rect x="208" y="676" width="8" height="8" fill="#111"/><rect x="376" y="676" width="8" height="8" fill="#111"/><rect x="96" y="564" width="8" height="8" fill="#111"/><rect x="544" y="564" width="8" height="8" fill="#111"/><rect x="96" y="340" width="8" height="8" fill="#111"/><rect x="544" y="340" width="8" height="8" fill="#111"/><rect x="208" y="116" width="8" height="8" fill="#111"/><rect x="376" y="116" width="8" height="8" fill="#111"/><rect x="208" y="564" width="8" height="8" fill="#111"/><rect x="376" y="564" width="8" height="8" fill="#111"/><rect x="208" y="340" width="8" height="8" fill="#111"/><rect x="376" y="340" width="8" height="8" fill="#111"/><circle cx="100" cy="680" r="8" fill="#ffffff" stroke="#c0392b" stroke-width="2.4"/><circle cx="100" cy="680" r="4" fill="#c0392b"/><circle cx="548" cy="680" r="8" fill="#ffffff" stroke="#c0392b" stroke-width="2.4"/><circle cx="548" cy="680" r="4" fill="#c0392b"/><circle cx="100" cy="120" r="8" fill="#ffffff" stroke="#c0392b" stroke-width="2.4"/><circle cx="100" cy="120" r="4" fill="#c0392b"/><circle cx="548" cy="120" r="8" fill="#ffffff" stroke="#c0392b" stroke-width="2.4"/><circle cx="548" cy="120" r="4" fill="#c0392b"/><circle cx="100" cy="84" r="11" fill="#ffffff" stroke="#b03060" stroke-width="1.2"/><text x="100" y="88" font-size="12" text-anchor="middle" fill="#b03060" font-weight="700" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">A</text><circle cx="212" cy="84" r="11" fill="#ffffff" stroke="#b03060" stroke-width="1.2"/><text x="212" y="88" font-size="12" text-anchor="middle" fill="#b03060" font-weight="700" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">B</text><circle cx="380" cy="84" r="11" fill="#ffffff" stroke="#b03060" stroke-width="1.2"/><text x="380" y="88" font-size="12" text-anchor="middle" fill="#b03060" font-weight="700" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">C</text><circle cx="548" cy="84" r="11" fill="#ffffff" stroke="#b03060" stroke-width="1.2"/><text x="548" y="88" font-size="12" text-anchor="middle" fill="#b03060" font-weight="700" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">D</text><circle cx="60" cy="680" r="11" fill="#ffffff" stroke="#b03060" stroke-width="1.2"/><text x="60" y="684" font-size="12" text-anchor="middle" fill="#b03060" font-weight="700" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">1</text><circle cx="60" cy="568" r="11" fill="#ffffff" stroke="#b03060" stroke-width="1.2"/><text x="60" y="572" font-size="12" text-anchor="middle" fill="#b03060" font-weight="700" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">2</text><circle cx="60" cy="344" r="11" fill="#ffffff" stroke="#b03060" stroke-width="1.2"/><text x="60" y="348" font-size="12" text-anchor="middle" fill="#b03060" font-weight="700" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">3</text><circle cx="60" cy="120" r="11" fill="#ffffff" stroke="#b03060" stroke-width="1.2"/><text x="60" y="124" font-size="12" text-anchor="middle" fill="#b03060" font-weight="700" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">4</text><line x1="100" y1="732" x2="548" y2="732" stroke="#444" stroke-width="0.8"/><line x1="100" y1="728" x2="100" y2="736" stroke="#444" stroke-width="0.8"/><line x1="548" y1="728" x2="548" y2="736" stroke="#444" stroke-width="0.8"/><text x="324" y="727" font-size="11" text-anchor="middle" fill="#444" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">7,280  ( 910 × 8マス )</text><line x1="594" y1="680" x2="594" y2="120" stroke="#444" stroke-width="0.8"/><line x1="590" y1="680" x2="598" y2="680" stroke="#444" stroke-width="0.8"/><line x1="590" y1="120" x2="598" y2="120" stroke="#444" stroke-width="0.8"/><g transform="translate(588,400) rotate(-90)"><text x="0" y="0" font-size="11" text-anchor="middle" fill="#444" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">9,100  ( 910 × 10マス )</text></g><circle cx="614" cy="146" r="19" fill="#ffffff" stroke="#444" stroke-width="1.1"/><polygon points="614,132 608,153 614,148 620,153" fill="#c0392b"/><text x="614" y="165" font-size="11" text-anchor="middle" fill="#444" font-weight="700" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">N</text><text x="330" y="757" font-size="11" text-anchor="middle" fill="#999" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">↓ こちらが道路（南）</text><circle cx="108" cy="792" r="7" fill="#ffffff" stroke="#c0392b" stroke-width="2.0"/><circle cx="108" cy="792" r="3.5" fill="#c0392b"/><text x="120" y="796" font-size="11" text-anchor="start" fill="#444" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">通し柱 120角</text><rect x="216" y="788" width="8" height="8" fill="#111"/><text x="230" y="796" font-size="11" text-anchor="start" fill="#444" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">管柱 105角</text><line x1="316" y1="792" x2="338" y2="792" stroke="#2f7fd0" stroke-width="5"/><text x="344" y="796" font-size="11" text-anchor="start" fill="#444" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">窓</text><line x1="372" y1="792" x2="394" y2="792" stroke="#d0342f" stroke-width="5"/><text x="400" y="796" font-size="11" text-anchor="start" fill="#444" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">出入口</text><rect x="452" y="787" width="20" height="10" fill="none" stroke="#c0392b" stroke-width="1.4" stroke-dasharray="4 3"/><text x="478" y="796" font-size="11" text-anchor="start" fill="#444" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">竪穴区画</text><text x="330" y="824" font-size="11.5" text-anchor="middle" fill="#555" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">廊下を東西に1本通して、階段から全部屋へ行けるようにする。　／　階段 DN（下り）</text></svg></div>
+<figcaption>階段を出たら廊下1本で全部屋へ。子供室2つは同じ大きさにして描くのを速く。</figcaption></figure>
+
+<h2><span class="kicker">面積表</span>マスを数えて掛けるだけ</h2>
+<div class="tw"><table>
+<tr><th>階</th><th class="wrap">室名</th><th class="n">マス</th><th class="n">㎡</th></tr>
+<tr><td rowspan="7">1</td><td class="wrap">店舗売場</td><td class="n">36</td><td class="n">29.81</td></tr>
+<tr><td class="wrap">厨房・作業場</td><td class="n">12</td><td class="n">9.94</td></tr>
+<tr><td class="wrap">スタッフルーム</td><td class="n">12</td><td class="n">9.94</td></tr>
+<tr><td class="wrap">階段</td><td class="n">8</td><td class="n">6.62</td></tr>
+<tr><td class="wrap">住宅玄関</td><td class="n">4</td><td class="n">3.31</td></tr>
+<tr><td class="wrap">店舗用便所</td><td class="n">4</td><td class="n">3.31</td></tr>
+<tr><td class="wrap">倉庫</td><td class="n">4</td><td class="n">3.31</td></tr>
+<tr class="sum"><td colspan="2">1階 合計</td><td class="n">80</td><td class="n">66.25</td></tr>
+<tr><td rowspan="7">2</td><td class="wrap">居間・食事室・台所</td><td class="n">36</td><td class="n">29.81</td></tr>
+<tr><td class="wrap">和室 6帖</td><td class="n">12</td><td class="n">9.94</td></tr>
+<tr><td class="wrap">家事室・納戸</td><td class="n">12</td><td class="n">9.94</td></tr>
+<tr><td class="wrap">階段</td><td class="n">8</td><td class="n">6.62</td></tr>
+<tr><td class="wrap">浴室</td><td class="n">4</td><td class="n">3.31</td></tr>
+<tr><td class="wrap">洗面脱衣室</td><td class="n">4</td><td class="n">3.31</td></tr>
+<tr><td class="wrap">便所</td><td class="n">4</td><td class="n">3.31</td></tr>
+<tr class="sum"><td colspan="2">2階 合計</td><td class="n">80</td><td class="n">66.25</td></tr>
+<tr><td rowspan="7">3</td><td class="wrap">夫婦寝室</td><td class="n">24</td><td class="n">19.87</td></tr>
+<tr><td class="wrap">子供室A</td><td class="n">15</td><td class="n">12.42</td></tr>
+<tr><td class="wrap">子供室B</td><td class="n">15</td><td class="n">12.42</td></tr>
+<tr><td class="wrap">階段</td><td class="n">8</td><td class="n">6.62</td></tr>
+<tr><td class="wrap">納戸</td><td class="n">8</td><td class="n">6.62</td></tr>
+<tr><td class="wrap">廊下</td><td class="n">6</td><td class="n">4.97</td></tr>
+<tr><td class="wrap">便所</td><td class="n">4</td><td class="n">3.31</td></tr>
+<tr class="sum"><td colspan="2">3階 合計</td><td class="n">80</td><td class="n">66.25</td></tr>
+<tr class="sum"><td colspan="2">延べ面積</td><td class="n">240</td><td class="n">198.74</td></tr>
+</table></div>
+<p>建築面積は 7.28 × 9.10 ＝ 66.248 → <b class="num">66.25㎡</b>。
+延べは ×3 で <b class="num">198.74㎡</b>、200㎡以内におさまります。</p>
+
+<h2><span class="kicker">構造の要</span>柱は3階とも同じ16本</h2>
+<p>木造3階建てでいちばん大事なのが、<b>上の階の柱の真下に下の階の柱があること</b>です。
+ずれていると上の重さを梁だけで支えることになり危険です。
+この割合を<b>直下率</b>といいます。</p>
+<div class="tw"><table>
+<tr><th class="wrap">種類</th><th class="n">本数</th><th class="wrap">位置</th><th>寸法</th></tr>
+<tr><td class="wrap">通し柱</td><td class="n">4</td><td class="wrap">建物の四隅</td><td>120×120</td></tr>
+<tr><td class="wrap">管柱</td><td class="n">12</td><td class="wrap">A・B・C・D と 1・2・3・4 の交点</td><td>105×105</td></tr>
+</table></div>
+<div class="flag info">
+  <h4>記述で聞かれたら</h4>
+  <p>「柱の位置を全階でそろえ直下率を高めた。四隅は通し柱として建物のねじれに備えた」。
+  <b>1階の管柱を105角にできる根拠</b>は、木造3階建てが構造計算をする建物だからです
+  （原則は13.5cm角以上だが、通し柱にするか構造計算で確かめれば下げられる）。
+  条文番号は必ず法令集で確認してください。</p>
+</div>
+
+<h2><span class="kicker">訂正した箇所</span>階段の段数</h2>
+<figure><div class="sheet"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 512" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif" style="max-width:760px;margin:0 auto" role="img"><rect width="760" height="512" fill="#ffffff"/><text x="380" y="34" font-size="20" text-anchor="middle" fill="#111" font-weight="700" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">階段の段数の割付（ここを間違えると不適合）</text><text x="380" y="57" font-size="11.5" text-anchor="middle" fill="#666" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">階高 ÷ 段数 ＝ 蹴上（1段の高さ）。踏面はどちらも 210mm でそろえる</text><polyline points="110,340 110,325.53 124.7,325.53 124.7,311.07 139.4,311.07 139.4,296.6 154.1,296.6 154.1,282.13 168.8,282.13 168.8,267.67 183.5,267.67 183.5,253.2 198.2,253.2 198.2,238.73 212.9,238.73 212.9,224.27 227.6,224.27 227.6,209.8 242.3,209.8 242.3,195.33 257,195.33 257,180.87 271.7,180.87 271.7,166.4 286.4,166.4 286.4,151.93 301.1,151.93 301.1,137.47 315.8,137.47 315.8,123" stroke="#8a6d00" stroke-width="2.0" fill="none"/><line x1="110" y1="340" x2="315.8" y2="340" stroke="#ccc" stroke-width="0.8"/><line x1="110" y1="340" x2="110" y2="123" stroke="#ccc" stroke-width="0.8"/><line x1="80" y1="340" x2="110" y2="340" stroke="#333" stroke-width="2.4"/><line x1="315.8" y1="123" x2="349.8" y2="123" stroke="#333" stroke-width="2.4"/><text x="212.9" y="374" font-size="13" text-anchor="middle" fill="#111" font-weight="700" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">1階 → 2階（階高 3,100）</text><line x1="64" y1="340" x2="64" y2="123" stroke="#444" stroke-width="0.8"/><line x1="60" y1="340" x2="68" y2="340" stroke="#444" stroke-width="0.8"/><line x1="60" y1="123" x2="68" y2="123" stroke="#444" stroke-width="0.8"/><text x="58" y="235.5" font-size="11" text-anchor="end" fill="#444" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">階高 3,100</text><text x="212.9" y="109" font-size="13" text-anchor="middle" fill="#8a6d00" font-weight="700" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">15段　／　蹴上 206.7　／　踏面 210</text><text x="212.9" y="396" font-size="11.5" text-anchor="middle" fill="#1e7e34" font-weight="700" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">蹴上 206.7 ≦ 220　→ 店舗の基準もOK</text><polyline points="430,340 430,325.5 444.7,325.5 444.7,311 459.4,311 459.4,296.5 474.1,296.5 474.1,282 488.8,282 488.8,267.5 503.5,267.5 503.5,253 518.2,253 518.2,238.5 532.9,238.5 532.9,224 547.6,224 547.6,209.5 562.3,209.5 562.3,195 577,195 577,180.5 591.7,180.5 591.7,166 606.4,166 606.4,151.5 621.1,151.5 621.1,137" stroke="#8a6d00" stroke-width="2.0" fill="none"/><line x1="430" y1="340" x2="621.1" y2="340" stroke="#ccc" stroke-width="0.8"/><line x1="430" y1="340" x2="430" y2="137" stroke="#ccc" stroke-width="0.8"/><line x1="400" y1="340" x2="430" y2="340" stroke="#333" stroke-width="2.4"/><line x1="621.1" y1="137" x2="655.1" y2="137" stroke="#333" stroke-width="2.4"/><text x="525.55" y="374" font-size="13" text-anchor="middle" fill="#111" font-weight="700" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">2階 → 3階（階高 2,900）</text><line x1="384" y1="340" x2="384" y2="137" stroke="#444" stroke-width="0.8"/><line x1="380" y1="340" x2="388" y2="340" stroke="#444" stroke-width="0.8"/><line x1="380" y1="137" x2="388" y2="137" stroke="#444" stroke-width="0.8"/><text x="378" y="242.5" font-size="11" text-anchor="end" fill="#444" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">階高 2,900</text><text x="525.55" y="123" font-size="13" text-anchor="middle" fill="#8a6d00" font-weight="700" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">14段　／　蹴上 207.1　／　踏面 210</text><text x="525.55" y="396" font-size="11.5" text-anchor="middle" fill="#1e7e34" font-weight="700" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">蹴上 207.1 ≦ 220　→ 店舗の基準もOK</text><rect x="40" y="414" width="680" height="82" fill="#f6f9f4" stroke="#bcd4bc" stroke-width="1" rx="6"/><text x="56" y="436" font-size="11.5" text-anchor="start" fill="#245a2c" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">住宅の階段　　： 幅 750以上 ／ 蹴上 230以下 ／ 踏面 150以上</text><text x="56" y="458" font-size="11.5" text-anchor="start" fill="#245a2c" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">店舗の階段　　： 幅 750以上 ／ 蹴上 220以下 ／ 踏面 210以上（物品販売 1,500㎡以下）</text><text x="56" y="482" font-size="11.5" text-anchor="start" fill="#c0392b" font-weight="700" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">★ 1階を14段にすると 3,100÷14＝221.4 で店舗の220を超える。だから1階だけ15段にする。</text></svg></div>
+<figcaption>踏面はどちらも210でそろえる。段数だけ変える。</figcaption></figure>
+<div class="tw"><table>
+<tr><th class="wrap">どこ</th><th class="n">階高</th><th class="n">段数</th>
+    <th class="n">蹴上</th><th class="n">踏面</th></tr>
+<tr><td class="wrap">1階 → 2階</td><td class="n">3,100</td><td class="n">15</td>
+    <td class="n">206.7</td><td class="n">210</td></tr>
+<tr><td class="wrap">2階 → 3階</td><td class="n">2,900</td><td class="n">14</td>
+    <td class="n">207.1</td><td class="n">210</td></tr>
+</table></div>
+<p>階段室は2×4マス（1,820 × 3,640）の折り返し。15段なら段鼻から段鼻まで
+210 × 14 ＝ <b class="num">2,940mm</b> なので、折り返せば十分入ります。</p>
+
+<h2><span class="kicker">いちばんの山</span>床伏図</h2>
+<figure><div class="sheet"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 660 948" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif" style="max-width:660px;margin:0 auto" role="img"><rect width="660" height="948" fill="#ffffff"/><text x="330" y="36" font-size="21" text-anchor="middle" fill="#111" font-weight="700" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">床伏図の型（2階床伏図／3階床伏図 共通）</text><text x="330" y="60" font-size="12" text-anchor="middle" fill="#666" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">1マス = 910mm　／　梁は「東西方向」に910ピッチで並べ、それを「南北方向」の4本の大梁で受ける</text><line x1="100" y1="120" x2="100" y2="680" stroke="#ededed" stroke-width="0.7"/><line x1="156" y1="120" x2="156" y2="680" stroke="#ededed" stroke-width="0.7"/><line x1="212" y1="120" x2="212" y2="680" stroke="#ededed" stroke-width="0.7"/><line x1="268" y1="120" x2="268" y2="680" stroke="#ededed" stroke-width="0.7"/><line x1="324" y1="120" x2="324" y2="680" stroke="#ededed" stroke-width="0.7"/><line x1="380" y1="120" x2="380" y2="680" stroke="#ededed" stroke-width="0.7"/><line x1="436" y1="120" x2="436" y2="680" stroke="#ededed" stroke-width="0.7"/><line x1="492" y1="120" x2="492" y2="680" stroke="#ededed" stroke-width="0.7"/><line x1="548" y1="120" x2="548" y2="680" stroke="#ededed" stroke-width="0.7"/><line x1="100" y1="680" x2="548" y2="680" stroke="#ededed" stroke-width="0.7"/><line x1="100" y1="624" x2="548" y2="624" stroke="#ededed" stroke-width="0.7"/><line x1="100" y1="568" x2="548" y2="568" stroke="#ededed" stroke-width="0.7"/><line x1="100" y1="512" x2="548" y2="512" stroke="#ededed" stroke-width="0.7"/><line x1="100" y1="456" x2="548" y2="456" stroke="#ededed" stroke-width="0.7"/><line x1="100" y1="400" x2="548" y2="400" stroke="#ededed" stroke-width="0.7"/><line x1="100" y1="344" x2="548" y2="344" stroke="#ededed" stroke-width="0.7"/><line x1="100" y1="288" x2="548" y2="288" stroke="#ededed" stroke-width="0.7"/><line x1="100" y1="232" x2="548" y2="232" stroke="#ededed" stroke-width="0.7"/><line x1="100" y1="176" x2="548" y2="176" stroke="#ededed" stroke-width="0.7"/><line x1="100" y1="120" x2="548" y2="120" stroke="#ededed" stroke-width="0.7"/><circle cx="100" cy="84" r="11" fill="#fff" stroke="#b03060" stroke-width="1.2"/><text x="100" y="88" font-size="12" text-anchor="middle" fill="#b03060" font-weight="700" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">A</text><circle cx="212" cy="84" r="11" fill="#fff" stroke="#b03060" stroke-width="1.2"/><text x="212" y="88" font-size="12" text-anchor="middle" fill="#b03060" font-weight="700" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">B</text><circle cx="380" cy="84" r="11" fill="#fff" stroke="#b03060" stroke-width="1.2"/><text x="380" y="88" font-size="12" text-anchor="middle" fill="#b03060" font-weight="700" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">C</text><circle cx="548" cy="84" r="11" fill="#fff" stroke="#b03060" stroke-width="1.2"/><text x="548" y="88" font-size="12" text-anchor="middle" fill="#b03060" font-weight="700" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">D</text><circle cx="60" cy="680" r="11" fill="#fff" stroke="#b03060" stroke-width="1.2"/><text x="60" y="684" font-size="12" text-anchor="middle" fill="#b03060" font-weight="700" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">1</text><circle cx="60" cy="568" r="11" fill="#fff" stroke="#b03060" stroke-width="1.2"/><text x="60" y="572" font-size="12" text-anchor="middle" fill="#b03060" font-weight="700" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">2</text><circle cx="60" cy="344" r="11" fill="#fff" stroke="#b03060" stroke-width="1.2"/><text x="60" y="348" font-size="12" text-anchor="middle" fill="#b03060" font-weight="700" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">3</text><circle cx="60" cy="120" r="11" fill="#fff" stroke="#b03060" stroke-width="1.2"/><text x="60" y="124" font-size="12" text-anchor="middle" fill="#b03060" font-weight="700" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">4</text><line x1="100" y1="624" x2="548" y2="624" stroke="#2e8b57" stroke-width="2.0"/><line x1="100" y1="512" x2="548" y2="512" stroke="#2e8b57" stroke-width="2.0"/><line x1="100" y1="456" x2="548" y2="456" stroke="#2e8b57" stroke-width="2.0"/><line x1="100" y1="400" x2="548" y2="400" stroke="#2e8b57" stroke-width="2.0"/><line x1="100" y1="288" x2="548" y2="288" stroke="#2e8b57" stroke-width="2.0"/><line x1="100" y1="232" x2="548" y2="232" stroke="#2e8b57" stroke-width="2.0"/><line x1="100" y1="176" x2="548" y2="176" stroke="#2e8b57" stroke-width="2.0"/><line x1="100" y1="568" x2="548" y2="568" stroke="#1f6fb2" stroke-width="4.2"/><line x1="100" y1="344" x2="548" y2="344" stroke="#1f6fb2" stroke-width="4.2"/><line x1="212" y1="680" x2="212" y2="120" stroke="#1f6fb2" stroke-width="4.8"/><line x1="380" y1="680" x2="380" y2="120" stroke="#1f6fb2" stroke-width="4.8"/><rect x="100" y="120" width="448" height="560" fill="none" stroke="#c0392b" stroke-width="5.4"/><line x1="156" y1="680" x2="100" y2="624" stroke="#e67e22" stroke-width="2.6"/><line x1="492" y1="680" x2="548" y2="624" stroke="#e67e22" stroke-width="2.6"/><line x1="156" y1="120" x2="100" y2="176" stroke="#e67e22" stroke-width="2.6"/><line x1="492" y1="120" x2="548" y2="176" stroke="#e67e22" stroke-width="2.6"/><line x1="268" y1="568" x2="212" y2="512" stroke="#e67e22" stroke-width="2.6"/><line x1="324" y1="568" x2="380" y2="512" stroke="#e67e22" stroke-width="2.6"/><line x1="268" y1="344" x2="212" y2="400" stroke="#e67e22" stroke-width="2.6"/><line x1="324" y1="344" x2="380" y2="400" stroke="#e67e22" stroke-width="2.6"/><rect x="207.5" y="675.5" width="9" height="9" fill="#111"/><rect x="375.5" y="675.5" width="9" height="9" fill="#111"/><rect x="95.5" y="563.5" width="9" height="9" fill="#111"/><rect x="543.5" y="563.5" width="9" height="9" fill="#111"/><rect x="95.5" y="339.5" width="9" height="9" fill="#111"/><rect x="543.5" y="339.5" width="9" height="9" fill="#111"/><rect x="207.5" y="115.5" width="9" height="9" fill="#111"/><rect x="375.5" y="115.5" width="9" height="9" fill="#111"/><rect x="207.5" y="563.5" width="9" height="9" fill="#111"/><rect x="375.5" y="563.5" width="9" height="9" fill="#111"/><rect x="207.5" y="339.5" width="9" height="9" fill="#111"/><rect x="375.5" y="339.5" width="9" height="9" fill="#111"/><circle cx="100" cy="680" r="8.5" fill="#fff" stroke="#c0392b" stroke-width="2.4"/><circle cx="100" cy="680" r="4" fill="#c0392b"/><circle cx="548" cy="680" r="8.5" fill="#fff" stroke="#c0392b" stroke-width="2.4"/><circle cx="548" cy="680" r="4" fill="#c0392b"/><circle cx="100" cy="120" r="8.5" fill="#fff" stroke="#c0392b" stroke-width="2.4"/><circle cx="100" cy="120" r="4" fill="#c0392b"/><circle cx="548" cy="120" r="8.5" fill="#fff" stroke="#c0392b" stroke-width="2.4"/><circle cx="548" cy="120" r="4" fill="#c0392b"/><text x="324" y="108" font-size="11" text-anchor="middle" fill="#c0392b" font-weight="700" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">胴差 105×300</text><g transform="translate(202,232) rotate(-90)"><text x="0" y="0" font-size="11" text-anchor="middle" fill="#1f6fb2" font-weight="700" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">大梁 105×300</text></g><text x="464" y="560" font-size="11" text-anchor="middle" fill="#1f6fb2" font-weight="700" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">大梁 105×240</text><text x="464" y="448" font-size="11" text-anchor="middle" fill="#2e8b57" font-weight="700" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">床小梁 105×180 @910</text><text x="164.4" y="649.2" font-size="10.5" text-anchor="start" fill="#e67e22" font-weight="700" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">火打梁 90×90</text><line x1="100" y1="714" x2="212" y2="714" stroke="#444" stroke-width="0.8"/><line x1="100" y1="710" x2="100" y2="718" stroke="#444" stroke-width="0.8"/><line x1="212" y1="710" x2="212" y2="718" stroke="#444" stroke-width="0.8"/><text x="156" y="709" font-size="11" text-anchor="middle" fill="#444" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">1,820</text><line x1="212" y1="714" x2="380" y2="714" stroke="#444" stroke-width="0.8"/><line x1="212" y1="710" x2="212" y2="718" stroke="#444" stroke-width="0.8"/><line x1="380" y1="710" x2="380" y2="718" stroke="#444" stroke-width="0.8"/><text x="296" y="709" font-size="11" text-anchor="middle" fill="#444" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">2,730</text><line x1="380" y1="714" x2="548" y2="714" stroke="#444" stroke-width="0.8"/><line x1="380" y1="710" x2="380" y2="718" stroke="#444" stroke-width="0.8"/><line x1="548" y1="710" x2="548" y2="718" stroke="#444" stroke-width="0.8"/><text x="464" y="709" font-size="11" text-anchor="middle" fill="#444" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">2,730</text><line x1="594" y1="680" x2="594" y2="120" stroke="#444" stroke-width="0.8"/><line x1="590" y1="680" x2="598" y2="680" stroke="#444" stroke-width="0.8"/><line x1="590" y1="568" x2="598" y2="568" stroke="#444" stroke-width="0.8"/><line x1="590" y1="344" x2="598" y2="344" stroke="#444" stroke-width="0.8"/><line x1="590" y1="120" x2="598" y2="120" stroke="#444" stroke-width="0.8"/><g transform="translate(588,624) rotate(-90)"><text x="0" y="0" font-size="10.5" text-anchor="middle" fill="#444" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">1,820</text></g><g transform="translate(588,456) rotate(-90)"><text x="0" y="0" font-size="10.5" text-anchor="middle" fill="#444" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">3,640</text></g><g transform="translate(588,232) rotate(-90)"><text x="0" y="0" font-size="10.5" text-anchor="middle" fill="#444" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">3,640</text></g><rect x="92" y="742" width="464" height="150" fill="#fafafa" stroke="#ddd" stroke-width="0.8" rx="6"/><circle cx="123" cy="760" r="7" fill="#fff" stroke="#c0392b" stroke-width="2.0"/><circle cx="123" cy="760" r="3.5" fill="#c0392b"/><text x="152" y="764" font-size="12" text-anchor="start" fill="#333" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">通し柱 120×120（建物の四隅・1階から3階まで1本）</text><rect x="119" y="778" width="9" height="9" fill="#111"/><text x="152" y="786" font-size="12" text-anchor="start" fill="#333" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">管柱 105×105（各階ごとの柱・16か所すべて上下でそろう）</text><line x1="106" y1="804" x2="140" y2="804" stroke="#c0392b" stroke-width="5.4"/><text x="152" y="808" font-size="12" text-anchor="start" fill="#333" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">胴差 105×300（外周をぐるり1周）</text><line x1="106" y1="826" x2="140" y2="826" stroke="#1f6fb2" stroke-width="4.8"/><text x="152" y="830" font-size="12" text-anchor="start" fill="#333" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">大梁 105×300／105×240（B・C通り と 2・3通り）</text><line x1="106" y1="848" x2="140" y2="848" stroke="#2e8b57" stroke-width="2.0"/><text x="152" y="852" font-size="12" text-anchor="start" fill="#333" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">床小梁 105×180 ＠910（東西方向に並べる）</text><line x1="106" y1="870" x2="140" y2="870" stroke="#e67e22" stroke-width="2.6"/><text x="152" y="874" font-size="12" text-anchor="start" fill="#333" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">火打梁 90×90（隅8か所・水平のゆがみ止め）</text><text x="330" y="934" font-size="11.5" text-anchor="middle" fill="#555" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">床は構造用合板 t=24 を梁に直接張る（根太レス＝剛床）。梁の最大スパンは 3,640mm におさえている。</text></svg></div>
+<figcaption>2階の床も3階の床も同じ骨組みでいける。覚えるのは1つだけ。</figcaption></figure>
+<p>伏図は、床を作っている<b>木の棒（梁）の並べ方を真上から見た絵</b>です。
+床板をはがして骨だけにした状態、と思ってください。</p>
+<h3>掛け方は5手順だけ</h3>
+<ol>
+<li>外周をぐるり1周、<b>胴差 105×300</b> で囲む</li>
+<li>南北方向に、B通りとC通りへ<b>大梁 105×300</b></li>
+<li>東西方向に、2通りと3通りへ<b>大梁 105×240</b></li>
+<li>そのすき間に<b>床小梁 105×180 を910mmおき</b>（東西方向）</li>
+<li>隅8か所に<b>火打梁 90×90</b> を斜めに</li>
+</ol>
+<div class="flag yes">
+  <h4>なぜこの掛け方か</h4>
+  <p>木の梁は長く飛ばせません。この型なら最大スパンは <b class="num">3,640mm</b>。
+  東西は 1,820 / 2,730 / 2,730、南北は 1,820 / 3,640 / 3,640 に区切られていて、
+  どれも木造で無理なく持ちます。</p>
+</div>
+<div class="flag fix">
+  <h4>売場の中の柱は、正直に描く</h4>
+  <p>C通りと2通りの交点（売場の中）に<b>柱が1本立ちます</b>。
+  「格好悪い」と思って省くと5.46mも梁を飛ばすことになり、構造として成立しません。
+  <b>描いてください。</b>木造3階建てを分かっている証拠になります。</p>
+</div>
+<p><b>火打梁って何？</b> 四角い枠は押すと平行四辺形にゆがみます。
+角に斜めの棒を入れるとゆがまなくなる ── それが火打梁です。</p>
+
+<h2><span class="kicker">屋根の骨</span>小屋伏図</h2>
+<figure><div class="sheet"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 660 948" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif" style="max-width:660px;margin:0 auto" role="img"><rect width="660" height="948" fill="#ffffff"/><text x="330" y="36" font-size="21" text-anchor="middle" fill="#111" font-weight="700" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">小屋伏図の型（切妻・棟は南北方向・4寸勾配）</text><text x="330" y="60" font-size="12" text-anchor="middle" fill="#666" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">1マス = 910mm　／　棟木は建物の中央（X=3,640）。屋根は東西の2方向へ流れる</text><line x1="100" y1="120" x2="100" y2="680" stroke="#ededed" stroke-width="0.7"/><line x1="156" y1="120" x2="156" y2="680" stroke="#ededed" stroke-width="0.7"/><line x1="212" y1="120" x2="212" y2="680" stroke="#ededed" stroke-width="0.7"/><line x1="268" y1="120" x2="268" y2="680" stroke="#ededed" stroke-width="0.7"/><line x1="324" y1="120" x2="324" y2="680" stroke="#ededed" stroke-width="0.7"/><line x1="380" y1="120" x2="380" y2="680" stroke="#ededed" stroke-width="0.7"/><line x1="436" y1="120" x2="436" y2="680" stroke="#ededed" stroke-width="0.7"/><line x1="492" y1="120" x2="492" y2="680" stroke="#ededed" stroke-width="0.7"/><line x1="548" y1="120" x2="548" y2="680" stroke="#ededed" stroke-width="0.7"/><line x1="100" y1="680" x2="548" y2="680" stroke="#ededed" stroke-width="0.7"/><line x1="100" y1="624" x2="548" y2="624" stroke="#ededed" stroke-width="0.7"/><line x1="100" y1="568" x2="548" y2="568" stroke="#ededed" stroke-width="0.7"/><line x1="100" y1="512" x2="548" y2="512" stroke="#ededed" stroke-width="0.7"/><line x1="100" y1="456" x2="548" y2="456" stroke="#ededed" stroke-width="0.7"/><line x1="100" y1="400" x2="548" y2="400" stroke="#ededed" stroke-width="0.7"/><line x1="100" y1="344" x2="548" y2="344" stroke="#ededed" stroke-width="0.7"/><line x1="100" y1="288" x2="548" y2="288" stroke="#ededed" stroke-width="0.7"/><line x1="100" y1="232" x2="548" y2="232" stroke="#ededed" stroke-width="0.7"/><line x1="100" y1="176" x2="548" y2="176" stroke="#ededed" stroke-width="0.7"/><line x1="100" y1="120" x2="548" y2="120" stroke="#ededed" stroke-width="0.7"/><circle cx="100" cy="84" r="11" fill="#fff" stroke="#b03060" stroke-width="1.2"/><text x="100" y="88" font-size="12" text-anchor="middle" fill="#b03060" font-weight="700" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">A</text><circle cx="212" cy="84" r="11" fill="#fff" stroke="#b03060" stroke-width="1.2"/><text x="212" y="88" font-size="12" text-anchor="middle" fill="#b03060" font-weight="700" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">B</text><circle cx="380" cy="84" r="11" fill="#fff" stroke="#b03060" stroke-width="1.2"/><text x="380" y="88" font-size="12" text-anchor="middle" fill="#b03060" font-weight="700" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">C</text><circle cx="548" cy="84" r="11" fill="#fff" stroke="#b03060" stroke-width="1.2"/><text x="548" y="88" font-size="12" text-anchor="middle" fill="#b03060" font-weight="700" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">D</text><circle cx="60" cy="680" r="11" fill="#fff" stroke="#b03060" stroke-width="1.2"/><text x="60" y="684" font-size="12" text-anchor="middle" fill="#b03060" font-weight="700" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">1</text><circle cx="60" cy="568" r="11" fill="#fff" stroke="#b03060" stroke-width="1.2"/><text x="60" y="572" font-size="12" text-anchor="middle" fill="#b03060" font-weight="700" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">2</text><circle cx="60" cy="344" r="11" fill="#fff" stroke="#b03060" stroke-width="1.2"/><text x="60" y="348" font-size="12" text-anchor="middle" fill="#b03060" font-weight="700" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">3</text><circle cx="60" cy="120" r="11" fill="#fff" stroke="#b03060" stroke-width="1.2"/><text x="60" y="124" font-size="12" text-anchor="middle" fill="#b03060" font-weight="700" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">4</text><rect x="63.08" y="92" width="521.85" height="616" fill="none" stroke="#999" stroke-width="1.2" stroke-dasharray="7 4"/><text x="59.08" y="400" font-size="10" text-anchor="middle" fill="#111" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif"></text><text x="324" y="730" font-size="10.5" text-anchor="middle" fill="#888" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">屋根の外形（軒の出600・けらば455）</text><line x1="156" y1="708" x2="156" y2="92" stroke="#2e8b57" stroke-width="2.0"/><line x1="212" y1="708" x2="212" y2="92" stroke="#2e8b57" stroke-width="2.0"/><line x1="268" y1="708" x2="268" y2="92" stroke="#2e8b57" stroke-width="2.0"/><line x1="380" y1="708" x2="380" y2="92" stroke="#2e8b57" stroke-width="2.0"/><line x1="436" y1="708" x2="436" y2="92" stroke="#2e8b57" stroke-width="2.0"/><line x1="492" y1="708" x2="492" y2="92" stroke="#2e8b57" stroke-width="2.0"/><line x1="324" y1="708" x2="324" y2="92" stroke="#7d3c98" stroke-width="4.6"/><line x1="100" y1="680" x2="548" y2="680" stroke="#1f6fb2" stroke-width="4.2"/><line x1="100" y1="568" x2="548" y2="568" stroke="#1f6fb2" stroke-width="4.2"/><line x1="100" y1="344" x2="548" y2="344" stroke="#1f6fb2" stroke-width="4.2"/><line x1="100" y1="120" x2="548" y2="120" stroke="#1f6fb2" stroke-width="4.2"/><line x1="100" y1="680" x2="100" y2="120" stroke="#c0392b" stroke-width="5.4"/><line x1="548" y1="680" x2="548" y2="120" stroke="#c0392b" stroke-width="5.4"/><line x1="156" y1="680" x2="100" y2="624" stroke="#e67e22" stroke-width="2.6"/><line x1="492" y1="680" x2="548" y2="624" stroke="#e67e22" stroke-width="2.6"/><line x1="156" y1="120" x2="100" y2="176" stroke="#e67e22" stroke-width="2.6"/><line x1="492" y1="120" x2="548" y2="176" stroke="#e67e22" stroke-width="2.6"/><line x1="268" y1="568" x2="212" y2="512" stroke="#e67e22" stroke-width="2.6"/><line x1="324" y1="568" x2="380" y2="512" stroke="#e67e22" stroke-width="2.6"/><line x1="268" y1="344" x2="212" y2="400" stroke="#e67e22" stroke-width="2.6"/><line x1="324" y1="344" x2="380" y2="400" stroke="#e67e22" stroke-width="2.6"/><circle cx="156" cy="680" r="5" fill="#fff" stroke="#7d3c98" stroke-width="1.8"/><circle cx="156" cy="568" r="5" fill="#fff" stroke="#7d3c98" stroke-width="1.8"/><circle cx="156" cy="344" r="5" fill="#fff" stroke="#7d3c98" stroke-width="1.8"/><circle cx="156" cy="120" r="5" fill="#fff" stroke="#7d3c98" stroke-width="1.8"/><circle cx="212" cy="680" r="5" fill="#fff" stroke="#7d3c98" stroke-width="1.8"/><circle cx="212" cy="568" r="5" fill="#fff" stroke="#7d3c98" stroke-width="1.8"/><circle cx="212" cy="344" r="5" fill="#fff" stroke="#7d3c98" stroke-width="1.8"/><circle cx="212" cy="120" r="5" fill="#fff" stroke="#7d3c98" stroke-width="1.8"/><circle cx="268" cy="680" r="5" fill="#fff" stroke="#7d3c98" stroke-width="1.8"/><circle cx="268" cy="568" r="5" fill="#fff" stroke="#7d3c98" stroke-width="1.8"/><circle cx="268" cy="344" r="5" fill="#fff" stroke="#7d3c98" stroke-width="1.8"/><circle cx="268" cy="120" r="5" fill="#fff" stroke="#7d3c98" stroke-width="1.8"/><circle cx="324" cy="680" r="5" fill="#fff" stroke="#7d3c98" stroke-width="1.8"/><circle cx="324" cy="568" r="5" fill="#fff" stroke="#7d3c98" stroke-width="1.8"/><circle cx="324" cy="344" r="5" fill="#fff" stroke="#7d3c98" stroke-width="1.8"/><circle cx="324" cy="120" r="5" fill="#fff" stroke="#7d3c98" stroke-width="1.8"/><circle cx="380" cy="680" r="5" fill="#fff" stroke="#7d3c98" stroke-width="1.8"/><circle cx="380" cy="568" r="5" fill="#fff" stroke="#7d3c98" stroke-width="1.8"/><circle cx="380" cy="344" r="5" fill="#fff" stroke="#7d3c98" stroke-width="1.8"/><circle cx="380" cy="120" r="5" fill="#fff" stroke="#7d3c98" stroke-width="1.8"/><circle cx="436" cy="680" r="5" fill="#fff" stroke="#7d3c98" stroke-width="1.8"/><circle cx="436" cy="568" r="5" fill="#fff" stroke="#7d3c98" stroke-width="1.8"/><circle cx="436" cy="344" r="5" fill="#fff" stroke="#7d3c98" stroke-width="1.8"/><circle cx="436" cy="120" r="5" fill="#fff" stroke="#7d3c98" stroke-width="1.8"/><circle cx="492" cy="680" r="5" fill="#fff" stroke="#7d3c98" stroke-width="1.8"/><circle cx="492" cy="568" r="5" fill="#fff" stroke="#7d3c98" stroke-width="1.8"/><circle cx="492" cy="344" r="5" fill="#fff" stroke="#7d3c98" stroke-width="1.8"/><circle cx="492" cy="120" r="5" fill="#fff" stroke="#7d3c98" stroke-width="1.8"/><rect x="207.5" y="675.5" width="9" height="9" fill="#111"/><rect x="375.5" y="675.5" width="9" height="9" fill="#111"/><rect x="95.5" y="563.5" width="9" height="9" fill="#111"/><rect x="543.5" y="563.5" width="9" height="9" fill="#111"/><rect x="95.5" y="339.5" width="9" height="9" fill="#111"/><rect x="543.5" y="339.5" width="9" height="9" fill="#111"/><rect x="207.5" y="115.5" width="9" height="9" fill="#111"/><rect x="375.5" y="115.5" width="9" height="9" fill="#111"/><rect x="207.5" y="563.5" width="9" height="9" fill="#111"/><rect x="375.5" y="563.5" width="9" height="9" fill="#111"/><rect x="207.5" y="339.5" width="9" height="9" fill="#111"/><rect x="375.5" y="339.5" width="9" height="9" fill="#111"/><circle cx="100" cy="680" r="8.5" fill="#fff" stroke="#c0392b" stroke-width="2.4"/><circle cx="100" cy="680" r="4" fill="#c0392b"/><circle cx="548" cy="680" r="8.5" fill="#fff" stroke="#c0392b" stroke-width="2.4"/><circle cx="548" cy="680" r="4" fill="#c0392b"/><circle cx="100" cy="120" r="8.5" fill="#fff" stroke="#c0392b" stroke-width="2.4"/><circle cx="100" cy="120" r="4" fill="#c0392b"/><circle cx="548" cy="120" r="8.5" fill="#fff" stroke="#c0392b" stroke-width="2.4"/><circle cx="548" cy="120" r="4" fill="#c0392b"/><line x1="307.2" y1="428" x2="116.8" y2="428" stroke="#b0651a" stroke-width="1.2" stroke-dasharray="4 3"/><polygon points="116.8,428 125.8,424 125.8,432" fill="#b0651a"/><line x1="340.8" y1="428" x2="531.2" y2="428" stroke="#b0651a" stroke-width="1.2" stroke-dasharray="4 3"/><polygon points="531.2,428 522.2,424 522.2,432" fill="#b0651a"/><line x1="307.2" y1="204" x2="116.8" y2="204" stroke="#b0651a" stroke-width="1.2" stroke-dasharray="4 3"/><polygon points="116.8,204 125.8,200 125.8,208" fill="#b0651a"/><line x1="340.8" y1="204" x2="531.2" y2="204" stroke="#b0651a" stroke-width="1.2" stroke-dasharray="4 3"/><polygon points="531.2,204 522.2,200 522.2,208" fill="#b0651a"/><text x="212" y="420" font-size="10.5" text-anchor="middle" fill="#b0651a" font-weight="700" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">垂木 45×105 @455</text><g transform="translate(314,232) rotate(-90)"><text x="0" y="0" font-size="11" text-anchor="middle" fill="#7d3c98" font-weight="700" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">棟木 105×105</text></g><g transform="translate(88,456) rotate(-90)"><text x="0" y="0" font-size="11" text-anchor="middle" fill="#c0392b" font-weight="700" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">軒桁 105×240</text></g><text x="458.4" y="336" font-size="11" text-anchor="middle" fill="#1f6fb2" font-weight="700" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">小屋梁 105×240</text><text x="447.2" y="220" font-size="11" text-anchor="middle" fill="#2e8b57" font-weight="700" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">母屋 90×90 @910</text><rect x="92" y="742" width="464" height="150" fill="#fafafa" stroke="#ddd" stroke-width="0.8" rx="6"/><line x1="106" y1="760" x2="140" y2="760" stroke="#7d3c98" stroke-width="4.6"/><text x="152" y="764" font-size="12" text-anchor="start" fill="#333" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">棟木 105×105（建物の中央・南北方向に1本）</text><line x1="106" y1="782" x2="140" y2="782" stroke="#2e8b57" stroke-width="2.0"/><text x="152" y="786" font-size="12" text-anchor="start" fill="#333" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">母屋 90×90 ＠910（棟木と平行に6本）</text><circle cx="123" cy="804" r="5" fill="#fff" stroke="#7d3c98" stroke-width="2.0"/><text x="152" y="808" font-size="12" text-anchor="start" fill="#333" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">小屋束 90×90（母屋と小屋梁の交点に立てる）</text><line x1="106" y1="826" x2="140" y2="826" stroke="#1f6fb2" stroke-width="4.2"/><text x="152" y="830" font-size="12" text-anchor="start" fill="#333" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">小屋梁 105×240（東西方向・柱のある通りに）</text><line x1="106" y1="848" x2="140" y2="848" stroke="#c0392b" stroke-width="5.4"/><text x="152" y="852" font-size="12" text-anchor="start" fill="#333" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">軒桁 105×240（A通り・D通り）</text><line x1="106" y1="870" x2="140" y2="870" stroke="#b0651a" stroke-width="1.6" stroke-dasharray="6 4"/><text x="152" y="874" font-size="12" text-anchor="start" fill="#333" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">垂木 45×105 ＠455（棟から軒へ東西に流す）</text><text x="330" y="934" font-size="11.5" text-anchor="middle" fill="#555" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">4寸勾配 → 棟までの高さ 3,640 × 0.4 ＝ 1,456mm。軒桁天端＋1,456 が屋根のいちばん高いところ。</text></svg></div>
+<figcaption>棟は南北方向。屋根は東西の2方向へ流れる。</figcaption></figure>
+<div class="tw"><table>
+<tr><th class="wrap">名前</th><th class="wrap">よみ</th>
+    <th class="wrap">どんな棒か</th><th>寸法</th></tr>
+<tr><td class="wrap">棟木</td><td class="wrap">むなぎ</td>
+    <td class="wrap">屋根のてっぺんに1本</td><td>105×105</td></tr>
+<tr><td class="wrap">母屋</td><td class="wrap">もや</td>
+    <td class="wrap">棟木と平行に910mmおき</td><td>90×90</td></tr>
+<tr><td class="wrap">軒桁</td><td class="wrap">のきげた</td>
+    <td class="wrap">屋根の下端で壁の上に載る</td><td>105×240</td></tr>
+<tr><td class="wrap">垂木</td><td class="wrap">たるき</td>
+    <td class="wrap">棟から軒へ流れる細い棒</td><td>45×105</td></tr>
+<tr><td class="wrap">小屋束</td><td class="wrap">こやづか</td>
+    <td class="wrap">母屋を支える短い柱</td><td>90×90</td></tr>
+<tr><td class="wrap">小屋梁</td><td class="wrap">こやばり</td>
+    <td class="wrap">束を載せる水平の梁</td><td>105×240</td></tr>
+</table></div>
+<p>4寸勾配は「よこ10進むとたて4上がる」。建物の幅7,280の半分＝3,640なので、
+<b class="num">3,640 × 0.4 ＝ 1,456mm</b> が軒桁の上から棟までの高さです。</p>
+
+<h2><span class="kicker">高さ</span>立面図は足し算だけ</h2>
+<figure><div class="sheet"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 836 850" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif" style="max-width:836px;margin:0 auto" role="img"><rect width="836" height="850" fill="#ffffff"/><text x="418" y="36" font-size="21" text-anchor="middle" fill="#111" font-weight="700" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">南立面図（妻面） 1/100</text><text x="418" y="58" font-size="11.5" text-anchor="middle" fill="#666" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">棟が南北方向なので、南から見ると屋根は三角形に見える</text><text x="418" y="78" font-size="11.5" text-anchor="middle" fill="#666" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">切妻・4寸勾配　／　軒の出 600</text><rect x="110" y="710.33" width="546.4" height="26" fill="#f2ece0" stroke="none"/><line x1="110" y1="710.33" x2="656.4" y2="710.33" stroke="#333" stroke-width="2.0"/><polygon points="150,209.28 383.2,116 616.4,209.28 616.4,215.88 383.2,122.6 150,215.88" fill="#5b6b7a" stroke="#33414d" stroke-width="1.4"/><polygon points="183,196.08 383.2,123.15 583.4,196.08" fill="#e9e4da" stroke="#8b8377" stroke-width="1.2"/><rect x="183" y="196.08" width="400.4" height="514.25" fill="#f3efe7" stroke="#8b8377" stroke-width="1.6"/><line x1="183" y1="680.08" x2="583.4" y2="680.08" stroke="#c7bfb2" stroke-width="0.9" stroke-dasharray="6 4"/><line x1="183" y1="509.58" x2="583.4" y2="509.58" stroke="#c7bfb2" stroke-width="0.9" stroke-dasharray="6 4"/><line x1="183" y1="350.08" x2="583.4" y2="350.08" stroke="#c7bfb2" stroke-width="0.9" stroke-dasharray="6 4"/><rect x="283.1" y="553.58" width="200.2" height="121" fill="#dff0fb" stroke="#d0342f" stroke-width="1.4"/><rect x="199.5" y="564.58" width="66" height="77" fill="#dff0fb" stroke="#2f7fd0" stroke-width="1.4"/><rect x="507.5" y="564.58" width="60.5" height="71.5" fill="#dff0fb" stroke="#2f7fd0" stroke-width="1.4"/><rect x="238" y="394.08" width="121" height="99" fill="#dff0fb" stroke="#2f7fd0" stroke-width="1.4"/><rect x="386.5" y="394.08" width="121" height="71.5" fill="#dff0fb" stroke="#2f7fd0" stroke-width="1.4"/><rect x="524" y="405.08" width="44" height="60.5" fill="#dff0fb" stroke="#2f7fd0" stroke-width="1.4"/><rect x="232.5" y="240.08" width="110" height="66" fill="#dff0fb" stroke="#2f7fd0" stroke-width="1.4"/><rect x="419.5" y="240.08" width="110" height="66" fill="#dff0fb" stroke="#2f7fd0" stroke-width="1.4"/><rect x="227" y="449.08" width="143" height="60.5" fill="none" stroke="#6b8fa8" stroke-width="1.6"/><line x1="662.4" y1="710.33" x2="662.4" y2="680.08" stroke="#444" stroke-width="0.8"/><line x1="658.4" y1="710.33" x2="666.4" y2="710.33" stroke="#444" stroke-width="0.8"/><line x1="658.4" y1="680.08" x2="666.4" y2="680.08" stroke="#444" stroke-width="0.8"/><g transform="translate(656.4,695.21) rotate(-90)"><text x="0" y="0" font-size="10.5" text-anchor="middle" fill="#444" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">550</text></g><line x1="662.4" y1="680.08" x2="662.4" y2="509.58" stroke="#444" stroke-width="0.8"/><line x1="658.4" y1="680.08" x2="666.4" y2="680.08" stroke="#444" stroke-width="0.8"/><line x1="658.4" y1="509.58" x2="666.4" y2="509.58" stroke="#444" stroke-width="0.8"/><g transform="translate(656.4,594.83) rotate(-90)"><text x="0" y="0" font-size="10.5" text-anchor="middle" fill="#444" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">3,100</text></g><line x1="662.4" y1="509.58" x2="662.4" y2="350.08" stroke="#444" stroke-width="0.8"/><line x1="658.4" y1="509.58" x2="666.4" y2="509.58" stroke="#444" stroke-width="0.8"/><line x1="658.4" y1="350.08" x2="666.4" y2="350.08" stroke="#444" stroke-width="0.8"/><g transform="translate(656.4,429.83) rotate(-90)"><text x="0" y="0" font-size="10.5" text-anchor="middle" fill="#444" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">2,900</text></g><line x1="662.4" y1="350.08" x2="662.4" y2="196.08" stroke="#444" stroke-width="0.8"/><line x1="658.4" y1="350.08" x2="666.4" y2="350.08" stroke="#444" stroke-width="0.8"/><line x1="658.4" y1="196.08" x2="666.4" y2="196.08" stroke="#444" stroke-width="0.8"/><g transform="translate(656.4,273.08) rotate(-90)"><text x="0" y="0" font-size="10.5" text-anchor="middle" fill="#444" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">2,800</text></g><line x1="714.4" y1="710.33" x2="714.4" y2="196.08" stroke="#b03060" stroke-width="1.0"/><line x1="710.4" y1="710.33" x2="718.4" y2="710.33" stroke="#b03060" stroke-width="1.0"/><line x1="710.4" y1="196.08" x2="718.4" y2="196.08" stroke="#b03060" stroke-width="1.0"/><g transform="translate(708.4,453.21) rotate(-90)"><text x="0" y="0" font-size="11" text-anchor="middle" fill="#b03060" font-weight="700" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">軒高 9,350</text></g><line x1="770.4" y1="710.33" x2="770.4" y2="116" stroke="#1f6fb2" stroke-width="1.0"/><line x1="766.4" y1="710.33" x2="774.4" y2="710.33" stroke="#1f6fb2" stroke-width="1.0"/><line x1="766.4" y1="116" x2="774.4" y2="116" stroke="#1f6fb2" stroke-width="1.0"/><g transform="translate(764.4,413.17) rotate(-90)"><text x="0" y="0" font-size="11" text-anchor="middle" fill="#1f6fb2" font-weight="700" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">最高高さ 10,806</text></g><line x1="116" y1="710.33" x2="183" y2="710.33" stroke="#b03060" stroke-width="0.7" stroke-dasharray="8 3 2 3"/><text x="112" y="706.33" font-size="10.5" text-anchor="end" fill="#b03060" font-weight="700" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">GL ±0</text><line x1="116" y1="680.08" x2="183" y2="680.08" stroke="#b03060" stroke-width="0.7" stroke-dasharray="8 3 2 3"/><text x="112" y="676.08" font-size="10.5" text-anchor="end" fill="#b03060" font-weight="700" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">1FL  +550</text><line x1="116" y1="509.58" x2="183" y2="509.58" stroke="#b03060" stroke-width="0.7" stroke-dasharray="8 3 2 3"/><text x="112" y="505.58" font-size="10.5" text-anchor="end" fill="#b03060" font-weight="700" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">2FL  +3,650</text><line x1="116" y1="350.08" x2="183" y2="350.08" stroke="#b03060" stroke-width="0.7" stroke-dasharray="8 3 2 3"/><text x="112" y="346.08" font-size="10.5" text-anchor="end" fill="#b03060" font-weight="700" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">3FL  +6,550</text><line x1="116" y1="196.08" x2="183" y2="196.08" stroke="#b03060" stroke-width="0.7" stroke-dasharray="8 3 2 3"/><text x="112" y="192.08" font-size="10.5" text-anchor="end" fill="#b03060" font-weight="700" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">軒桁天端  +9,350</text><line x1="116" y1="116" x2="183" y2="116" stroke="#b03060" stroke-width="0.7" stroke-dasharray="8 3 2 3"/><text x="112" y="112" font-size="10.5" text-anchor="end" fill="#b03060" font-weight="700" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">最高  +10,806</text><line x1="183" y1="756.33" x2="583.4" y2="756.33" stroke="#444" stroke-width="0.8"/><line x1="183" y1="752.33" x2="183" y2="760.33" stroke="#444" stroke-width="0.8"/><line x1="583.4" y1="752.33" x2="583.4" y2="760.33" stroke="#444" stroke-width="0.8"/><text x="383.2" y="751.33" font-size="11" text-anchor="middle" fill="#444" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">7,280</text><polyline points="413.2,142 463.2,162 413.2,162 413.2,142" stroke="#33414d" stroke-width="1.2" fill="none"/><text x="439.2" y="176" font-size="10.5" text-anchor="middle" fill="#33414d" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">4 / 10（4寸勾配）</text><text x="418" y="816" font-size="11.5" text-anchor="middle" fill="#555" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">棟までの高さ ＝ 3,640 × 0.4 ＝ 1,456 → 9,350 ＋ 1,456 ＝ 10,806</text><text x="418" y="836" font-size="11" text-anchor="middle" fill="#999" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">※ 1FL を GL+400 とする型では 軒高 9,200 / 最高 10,656 になる。どちらか一方に必ずそろえること。</text></svg></div>
+<figcaption>南から見た姿。棟が南北方向なので三角形に見える（妻面）。</figcaption></figure>
+<div class="tw"><table>
+<tr><th class="wrap">高さ</th><th class="n">GLから</th><th class="wrap">計算</th></tr>
+<tr><td class="wrap">1FL</td><td class="n">+550</td><td class="wrap">基礎の上に土台・床を積んだ高さ</td></tr>
+<tr><td class="wrap">2FL</td><td class="n">+3,650</td><td class="wrap">550 ＋ 3,100</td></tr>
+<tr><td class="wrap">3FL</td><td class="n">+6,550</td><td class="wrap">3,650 ＋ 2,900</td></tr>
+<tr><td class="wrap">軒高</td><td class="n">+9,350</td><td class="wrap">6,550 ＋ 2,800</td></tr>
+<tr class="sum"><td class="wrap">最高高さ</td><td class="n">+10,806</td><td class="wrap">9,350 ＋ 1,456</td></tr>
+</table></div>
+
+<h2><span class="kicker">1/20</span>部分詳細図</h2>
+<figure><div class="sheet"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 865" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif" style="max-width:700px;margin:0 auto" role="img"><rect width="700" height="865" fill="#ffffff"/><defs>
+<pattern id="pWood" width="7" height="7" patternUnits="userSpaceOnUse"
+ patternTransform="rotate(45)">
+ <rect width="7" height="7" fill="#efdcbb"/>
+ <line x1="0" y1="0" x2="0" y2="7" stroke="#c9a86c" stroke-width="1"/>
+</pattern>
+<pattern id="pConc" width="10" height="10" patternUnits="userSpaceOnUse">
+ <rect width="10" height="10" fill="#e2e2e2"/>
+ <circle cx="2.5" cy="3" r="1.1" fill="#a8a8a8"/>
+ <circle cx="7.5" cy="7.5" r="0.9" fill="#b8b8b8"/>
+ <path d="M5 1 L6.4 3.6 L3.6 3.6 Z" fill="#bdbdbd"/>
+</pattern>
+<pattern id="pIns" width="8" height="8" patternUnits="userSpaceOnUse">
+ <rect width="8" height="8" fill="#fde8f0"/>
+ <path d="M0 4 Q2 1 4 4 T8 4" stroke="#e79bbb" stroke-width="0.9"
+  fill="none"/>
+</pattern>
+<pattern id="pGrav" width="9" height="9" patternUnits="userSpaceOnUse">
+ <rect width="9" height="9" fill="#ece5d8"/>
+ <circle cx="2" cy="2.5" r="1.6" fill="none" stroke="#b9ab8e"
+  stroke-width="0.8"/>
+ <circle cx="6.5" cy="6" r="1.9" fill="none" stroke="#b9ab8e"
+  stroke-width="0.8"/>
+</pattern>
+<pattern id="pGround" width="8" height="8" patternUnits="userSpaceOnUse"
+ patternTransform="rotate(45)">
+ <rect width="8" height="8" fill="#f2ece0"/>
+ <line x1="0" y1="0" x2="0" y2="8" stroke="#cbbfa5" stroke-width="0.8"/>
+</pattern>
+</defs><text x="350" y="34" font-size="21" text-anchor="middle" fill="#111" font-weight="700" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">部分詳細図（外壁 断面） 1/20</text><text x="350" y="57" font-size="11.5" text-anchor="middle" fill="#666" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">左が室内・右が屋外　／　準防火地域の準耐火建築物（45分）を想定</text><text x="350" y="76" font-size="11.5" text-anchor="middle" fill="#666" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">基礎まわり ～ 2階床（胴差）まわり</text><rect x="286.25" y="108" width="31.5" height="41.7" fill="url(#pIns)" stroke="#8a6a35" stroke-width="1.4"/><rect x="286.25" y="149.7" width="31.5" height="90" fill="url(#pWood)" stroke="#8a6a35" stroke-width="1.4"/><rect x="176" y="142.5" width="141.75" height="7.2" fill="#f5e7cb" stroke="#555" stroke-width="0.9"/><rect x="176" y="138" width="141.75" height="4.5" fill="#e6d3ad" stroke="#555" stroke-width="0.9"/><rect x="317.75" y="108" width="2.7" height="131.7" fill="#f0e2c8" stroke="#555" stroke-width="0.9"/><line x1="320.45" y1="108" x2="320.45" y2="303" stroke="#2f7fd0" stroke-width="1.6"/><rect x="320.45" y="108" width="5.4" height="195" fill="#f7f7f7" stroke="#555" stroke-width="0.9"/><rect x="325.85" y="108" width="4.8" height="195" fill="#cfd8dc" stroke="#555" stroke-width="0.9"/><rect x="281.75" y="108" width="4.5" height="150" fill="#ebebeb" stroke="#555" stroke-width="0.9"/><rect x="176" y="258" width="110.25" height="2.85" fill="#ebebeb" stroke="#555" stroke-width="0.9"/><rect x="188" y="246" width="12" height="12" fill="#efdcbb" stroke="#c9a86c" stroke-width="0.7"/><rect x="206.6" y="246" width="12" height="12" fill="#efdcbb" stroke="#c9a86c" stroke-width="0.7"/><rect x="225.2" y="246" width="12" height="12" fill="#efdcbb" stroke="#c9a86c" stroke-width="0.7"/><rect x="243.8" y="246" width="12" height="12" fill="#efdcbb" stroke="#c9a86c" stroke-width="0.7"/><rect x="262.4" y="246" width="12" height="12" fill="#efdcbb" stroke="#c9a86c" stroke-width="0.7"/><rect x="281" y="246" width="12" height="12" fill="#efdcbb" stroke="#c9a86c" stroke-width="0.7"/><line x1="323.15" y1="297" x2="323.15" y2="114" stroke="#4aa3df" stroke-width="1.0" stroke-dasharray="5 3"/><line x1="150" y1="138" x2="335" y2="138" stroke="#b03060" stroke-width="0.8" stroke-dasharray="9 3 2 3"/><text x="148" y="133" font-size="10.5" text-anchor="end" fill="#b03060" font-weight="700" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">2FL  GL+3,650</text><line x1="150" y1="258" x2="335" y2="258" stroke="#b03060" stroke-width="0.8" stroke-dasharray="9 3 2 3"/><text x="148" y="253" font-size="10.5" text-anchor="end" fill="#b03060" font-weight="700" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">天井 GL+3,250</text><path d="M 146.0 321.0 L 162.0 331.0 L 178.0 321.0 L 194.0 331.0 L 210.0 321.0 L 226.0 331.0 L 242.0 321.0 L 258.0 331.0 L 274.0 321.0 L 290.0 331.0 L 306.0 321.0 L 322.0 331.0 L 338.0 321.0 L 354.0 331.0 L 370.0 321.0 L 386.0 331.0 L 402.0 321.0" stroke="#888" stroke-width="1.1" fill="none"/><text x="411" y="330" font-size="10.5" text-anchor="start" fill="#888" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">（中間は省略）</text><rect x="330.65" y="649" width="40.35" height="120" fill="url(#pGround)" stroke="none" stroke-width="0.9"/><line x1="324.5" y1="649" x2="371" y2="649" stroke="#333" stroke-width="1.6"/><text x="365" y="643" font-size="11" text-anchor="end" fill="#333" font-weight="700" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">GL</text><rect x="176" y="739" width="148.5" height="18" fill="url(#pGrav)" stroke="#aa9" stroke-width="0.8"/><line x1="176" y1="739" x2="324.5" y2="739" stroke="#2f7fd0" stroke-width="1.4"/><rect x="176" y="694" width="148.5" height="45" fill="url(#pConc)" stroke="#666" stroke-width="1.2"/><rect x="279.5" y="533.2" width="45" height="160.8" fill="url(#pConc)" stroke="#666" stroke-width="1.2"/><text x="224" y="625" font-size="10.5" text-anchor="middle" fill="#999" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">床下</text><rect x="286.25" y="527.2" width="31.5" height="6" fill="#d9d9d9" stroke="#555" stroke-width="1.0"/><rect x="286.25" y="495.7" width="31.5" height="31.5" fill="url(#pWood)" stroke="#8a6a35" stroke-width="1.4"/><rect x="176" y="488.5" width="141.75" height="7.2" fill="#f5e7cb" stroke="#555" stroke-width="0.9"/><rect x="176" y="484" width="291" height="4.5" fill="#e6d3ad" stroke="#555" stroke-width="0.9"/><rect x="176" y="495.7" width="110.25" height="15" fill="url(#pIns)" stroke="#d98cae" stroke-width="0.8"/><rect x="286.25" y="349" width="31.5" height="146.7" fill="url(#pIns)" stroke="none" stroke-width="0.9"/><rect x="286.25" y="349" width="31.5" height="146.7" fill="none" stroke="#8a6a35" stroke-width="1.4"/><rect x="317.75" y="349" width="2.7" height="146.7" fill="#f0e2c8" stroke="#555" stroke-width="0.9"/><line x1="320.45" y1="349" x2="320.45" y2="520" stroke="#2f7fd0" stroke-width="1.6"/><rect x="320.45" y="349" width="5.4" height="171" fill="#f7f7f7" stroke="#555" stroke-width="0.9"/><rect x="325.85" y="349" width="4.8" height="174" fill="#cfd8dc" stroke="#555" stroke-width="0.9"/><rect x="281.75" y="349" width="4.5" height="135" fill="#ebebeb" stroke="#555" stroke-width="0.9"/><polyline points="320.45,520 332,529 335.6,537.4" stroke="#607d8b" stroke-width="2.2" fill="none"/><line x1="323.15" y1="514" x2="323.15" y2="355" stroke="#4aa3df" stroke-width="1.0" stroke-dasharray="5 3"/><polygon points="323.15,352 319.65,362.8 326.65,362.8" fill="#4aa3df"/><line x1="287.6" y1="493" x2="316.4" y2="352" stroke="#8a6a35" stroke-width="3.2" stroke-dasharray="9 5" opacity="0.85"/><line x1="296" y1="613" x2="296" y2="481" stroke="#444" stroke-width="2.0"/><line x1="290.6" y1="613" x2="296" y2="613" stroke="#444" stroke-width="2.0"/><circle cx="296" cy="484.6" r="4.5" fill="none" stroke="#444" stroke-width="1.4"/><line x1="150" y1="484" x2="338" y2="484" stroke="#b03060" stroke-width="0.8" stroke-dasharray="9 3 2 3"/><text x="148" y="479" font-size="10.5" text-anchor="end" fill="#b03060" font-weight="700" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">1FL  GL+550</text><line x1="150" y1="533.2" x2="338" y2="533.2" stroke="#b03060" stroke-width="0.8" stroke-dasharray="9 3 2 3"/><text x="148" y="528.2" font-size="10.5" text-anchor="end" fill="#b03060" font-weight="700" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">基礎天端 GL+386</text><line x1="150" y1="739" x2="338" y2="739" stroke="#b03060" stroke-width="0.8" stroke-dasharray="9 3 2 3"/><text x="148" y="734" font-size="10.5" text-anchor="end" fill="#b03060" font-weight="700" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">基礎の底 GL−300</text><line x1="50" y1="757" x2="50" y2="739" stroke="#444" stroke-width="0.8"/><line x1="46.5" y1="757" x2="53.5" y2="757" stroke="#444" stroke-width="0.8"/><line x1="46.5" y1="739" x2="53.5" y2="739" stroke="#444" stroke-width="0.8"/><g transform="translate(44,748) rotate(-90)"><text x="0" y="0" font-size="9.5" text-anchor="middle" fill="#444" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">60</text></g><line x1="50" y1="739" x2="50" y2="694" stroke="#444" stroke-width="0.8"/><line x1="46.5" y1="739" x2="53.5" y2="739" stroke="#444" stroke-width="0.8"/><line x1="46.5" y1="694" x2="53.5" y2="694" stroke="#444" stroke-width="0.8"/><g transform="translate(44,716.5) rotate(-90)"><text x="0" y="0" font-size="9.5" text-anchor="middle" fill="#444" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">150</text></g><line x1="50" y1="694" x2="50" y2="533.2" stroke="#444" stroke-width="0.8"/><line x1="46.5" y1="694" x2="53.5" y2="694" stroke="#444" stroke-width="0.8"/><line x1="46.5" y1="533.2" x2="53.5" y2="533.2" stroke="#444" stroke-width="0.8"/><g transform="translate(44,613.6) rotate(-90)"><text x="0" y="0" font-size="9.5" text-anchor="middle" fill="#444" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">536</text></g><line x1="50" y1="533.2" x2="50" y2="527.2" stroke="#444" stroke-width="0.8"/><line x1="46.5" y1="533.2" x2="53.5" y2="533.2" stroke="#444" stroke-width="0.8"/><line x1="46.5" y1="527.2" x2="53.5" y2="527.2" stroke="#444" stroke-width="0.8"/><g transform="translate(44,530.2) rotate(-90)"><text x="0" y="0" font-size="9.5" text-anchor="middle" fill="#444" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">20</text></g><line x1="50" y1="527.2" x2="50" y2="495.7" stroke="#444" stroke-width="0.8"/><line x1="46.5" y1="527.2" x2="53.5" y2="527.2" stroke="#444" stroke-width="0.8"/><line x1="46.5" y1="495.7" x2="53.5" y2="495.7" stroke="#444" stroke-width="0.8"/><g transform="translate(44,511.45) rotate(-90)"><text x="0" y="0" font-size="9.5" text-anchor="middle" fill="#444" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">105</text></g><line x1="50" y1="495.7" x2="50" y2="484" stroke="#444" stroke-width="0.8"/><line x1="46.5" y1="495.7" x2="53.5" y2="495.7" stroke="#444" stroke-width="0.8"/><line x1="46.5" y1="484" x2="53.5" y2="484" stroke="#444" stroke-width="0.8"/><g transform="translate(44,489.85) rotate(-90)"><text x="0" y="0" font-size="9.5" text-anchor="middle" fill="#444" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">39</text></g><g transform="translate(26,620.5) rotate(-90)"><text x="0" y="0" font-size="10" text-anchor="middle" fill="#888" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">各部の寸法(mm)</text></g><line x1="50" y1="258" x2="50" y2="303" stroke="#444" stroke-width="0.8"/><g transform="translate(44,279) rotate(-90)"><text x="0" y="0" font-size="10" text-anchor="middle" fill="#444" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">天井高 2,700</text></g><line x1="368" y1="104" x2="368" y2="769" stroke="#eee" stroke-width="0.8"/><circle cx="302" cy="139.8" r="2" fill="#333"/><polyline points="302,139.8 372,124 382,124" stroke="#333" stroke-width="0.7" fill="none"/><text x="388" y="128" font-size="11" text-anchor="start" fill="#222" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">フローリング t=15</text><circle cx="242" cy="146.1" r="2" fill="#333"/><polyline points="242,146.1 372,146 382,146" stroke="#333" stroke-width="0.7" fill="none"/><text x="388" y="150" font-size="11" text-anchor="start" fill="#222" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">構造用合板 t=24（根太レス＝剛床）</text><circle cx="302" cy="195" r="2" fill="#333"/><polyline points="302,195 372,192 382,192" stroke="#333" stroke-width="0.7" fill="none"/><text x="388" y="196" font-size="11" text-anchor="start" fill="#222" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">胴差 105×300</text><circle cx="328.1" cy="213" r="2" fill="#333"/><polyline points="328.1,213 372,214 382,214" stroke="#333" stroke-width="0.7" fill="none"/><text x="388" y="218" font-size="11" text-anchor="start" fill="#222" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">窯業系サイディング t=16</text><circle cx="323" cy="228" r="2" fill="#333"/><polyline points="323,228 372,236 382,236" stroke="#333" stroke-width="0.7" fill="none"/><text x="388" y="240" font-size="11" text-anchor="start" fill="#222" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">通気胴縁 t=18（通気層）</text><circle cx="242" cy="259.5" r="2" fill="#333"/><polyline points="242,259.5 372,264 382,264" stroke="#333" stroke-width="0.7" fill="none"/><text x="388" y="268" font-size="11" text-anchor="start" fill="#222" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">天井 石膏ボード t=9.5 ＋ 野縁 40×45 @455</text><circle cx="328.1" cy="379" r="2" fill="#333"/><polyline points="328.1,379 372,368 382,368" stroke="#333" stroke-width="0.7" fill="none"/><text x="388" y="372" font-size="11" text-anchor="start" fill="#222" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">窯業系サイディング t=16（外壁の仕上げ）</text><circle cx="323" cy="392.5" r="2" fill="#333"/><polyline points="323,392.5 372,390 382,390" stroke="#333" stroke-width="0.7" fill="none"/><text x="388" y="394" font-size="11" text-anchor="start" fill="#222" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">通気胴縁 t=18 → 通気層（湿気を上へ逃がす）</text><circle cx="320.3" cy="406" r="2" fill="#333"/><polyline points="320.3,406 372,412 382,412" stroke="#333" stroke-width="0.7" fill="none"/><text x="388" y="416" font-size="11" text-anchor="start" fill="#222" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">透湿防水シート（雨は止め、湿気は通す）</text><circle cx="319.1" cy="419.5" r="2" fill="#333"/><polyline points="319.1,419.5 372,434 382,434" stroke="#333" stroke-width="0.7" fill="none"/><text x="388" y="438" font-size="11" text-anchor="start" fill="#222" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">構造用合板 t=9（N50 @150以下・壁倍率2.5）</text><circle cx="302" cy="434.5" r="2" fill="#333"/><polyline points="302,434.5 372,456 382,456" stroke="#333" stroke-width="0.7" fill="none"/><text x="388" y="460" font-size="11" text-anchor="start" fill="#222" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">柱 105×105 ＋ グラスウール16K t=100</text><circle cx="284" cy="449.5" r="2" fill="#333"/><polyline points="284,449.5 372,478 382,478" stroke="#333" stroke-width="0.7" fill="none"/><text x="388" y="482" font-size="11" text-anchor="start" fill="#222" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">強化石膏ボード t=15（準耐火45分の要）</text><circle cx="299" cy="451" r="2" fill="#333"/><polyline points="299,451 372,500 382,500" stroke="#333" stroke-width="0.7" fill="none"/><text x="388" y="504" font-size="11" text-anchor="start" fill="#222" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">筋かい 45×90 たすき掛け（壁倍率4.0・破線）</text><circle cx="242" cy="486.4" r="2" fill="#333"/><polyline points="242,486.4 372,522 382,522" stroke="#333" stroke-width="0.7" fill="none"/><text x="388" y="526" font-size="11" text-anchor="start" fill="#222" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">フローリング t=15 ＋ 構造用合板 t=24</text><circle cx="227" cy="503.2" r="2" fill="#333"/><polyline points="227,503.2 372,544 382,544" stroke="#333" stroke-width="0.7" fill="none"/><text x="388" y="548" font-size="11" text-anchor="start" fill="#222" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">床断熱 押出法ポリスチレンフォーム t=50</text><circle cx="302" cy="511.6" r="2" fill="#333"/><polyline points="302,511.6 372,566 382,566" stroke="#333" stroke-width="0.7" fill="none"/><text x="388" y="570" font-size="11" text-anchor="start" fill="#222" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">土台 105×105（防腐防蟻処理）</text><circle cx="302" cy="530.2" r="2" fill="#333"/><polyline points="302,530.2 372,588 382,588" stroke="#333" stroke-width="0.7" fill="none"/><text x="388" y="592" font-size="11" text-anchor="start" fill="#222" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">基礎パッキン t=20（床下の換気口をかねる）</text><circle cx="296" cy="559" r="2" fill="#333"/><polyline points="296,559 372,610 382,610" stroke="#333" stroke-width="0.7" fill="none"/><text x="388" y="614" font-size="11" text-anchor="start" fill="#222" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">アンカーボルト M12 @2,730以下（埋込み250以上）</text><circle cx="332" cy="529" r="2" fill="#333"/><polyline points="332,529 372,632 382,632" stroke="#333" stroke-width="0.7" fill="none"/><text x="388" y="636" font-size="11" text-anchor="start" fill="#222" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">水切り（雨を外へ落とす）</text><circle cx="302" cy="619" r="2" fill="#333"/><polyline points="302,619 372,658 382,658" stroke="#333" stroke-width="0.7" fill="none"/><text x="388" y="662" font-size="11" text-anchor="start" fill="#222" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">べた基礎 立上り 厚150（地上386mm ＝ 300mm以上）</text><circle cx="242" cy="716.5" r="2" fill="#333"/><polyline points="242,716.5 372,686 382,686" stroke="#333" stroke-width="0.7" fill="none"/><text x="388" y="690" font-size="11" text-anchor="start" fill="#222" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">べた基礎 底盤 厚150（根入れ300mm ＝ 240mm以上）</text><circle cx="242" cy="748" r="2" fill="#333"/><polyline points="242,748 372,712 382,712" stroke="#333" stroke-width="0.7" fill="none"/><text x="388" y="716" font-size="11" text-anchor="start" fill="#222" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">砕石 t=60 ＋ 防湿フィルム</text><rect x="30" y="775" width="640" height="62" fill="#fff8e1" stroke="#e0c060" stroke-width="1" rx="6"/><text x="44" y="793" font-size="11" text-anchor="start" fill="#6b5200" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">★ 外壁の厚さ 15＋105＋9＋18＋16 ＝ 163mm。この6層を「内から外へ」の順で覚える。</text><text x="44" y="811" font-size="11" text-anchor="start" fill="#6b5200" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">★ 1FL は GL+550。基礎の立上りを地上300mm以上とるため、GL+400 では納まらない（本文の解説を参照）。</text><text x="44" y="829" font-size="11" text-anchor="start" fill="#6b5200" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">★ 数値は必ず法令集・告示（平12建告1347号ほか）で確認すること。</text></svg></div>
+<figcaption>外壁を包丁で切った断面。基礎まわりと2階床（胴差）まわり。</figcaption></figure>
+<h3>外壁の6層 ── 内から外へ</h3>
+<div class="tw"><table>
+<tr><th class="n">順</th><th class="wrap">材料</th><th class="n">厚</th><th class="wrap">役目</th></tr>
+<tr><td class="n">1</td><td class="wrap">強化石膏ボード</td><td class="n">15</td>
+    <td class="wrap">火に耐える（準耐火45分の要）</td></tr>
+<tr><td class="n">2</td><td class="wrap">柱＋グラスウール16K</td><td class="n">105</td>
+    <td class="wrap">構造＋断熱</td></tr>
+<tr><td class="n">3</td><td class="wrap">構造用合板</td><td class="n">9</td>
+    <td class="wrap">地震・風に耐える（壁倍率2.5）</td></tr>
+<tr><td class="n">4</td><td class="wrap">透湿防水シート</td><td class="n">—</td>
+    <td class="wrap">雨は止め、湿気は通す</td></tr>
+<tr><td class="n">5</td><td class="wrap">通気胴縁</td><td class="n">18</td>
+    <td class="wrap">すき間を作り湿気を上へ逃がす</td></tr>
+<tr><td class="n">6</td><td class="wrap">窯業系サイディング</td><td class="n">16</td>
+    <td class="wrap">外側の仕上げ</td></tr>
+<tr class="sum"><td colspan="2">合計</td><td class="n">163</td><td class="wrap">外壁の厚さ</td></tr>
+</table></div>
+<p><b class="num">15・105・9・18・16</b>。この5つの数字だけ、歌うように覚えてください。</p>
+<h3>基礎まわりの数字</h3>
+<div class="tw"><table>
+<tr><th class="wrap">部位</th><th class="n">寸法</th><th class="wrap">決まりの目安</th></tr>
+<tr><td class="wrap">根入れの深さ</td><td class="n">300</td><td class="wrap">240mm以上が必要</td></tr>
+<tr><td class="wrap">底盤の厚さ</td><td class="n">150</td><td class="wrap">べた基礎</td></tr>
+<tr><td class="wrap">立上りの厚さ</td><td class="n">150</td><td class="wrap">120mm以上が必要</td></tr>
+<tr><td class="wrap">立上りの地上部分</td><td class="n">386</td><td class="wrap">300mm以上が必要</td></tr>
+<tr><td class="wrap">アンカーボルト</td><td class="n">M12</td><td class="wrap">2,730以下・埋込み250以上</td></tr>
+<tr><td class="wrap">砕石</td><td class="n">60</td><td class="wrap">＋ 防湿フィルム</td></tr>
+</table></div>
+</section>
+
+<!-- ============ 04 カード ============ -->
+<section role="tabpanel" id="p4">
+<h2><span class="kicker">すきま時間</span>記述の暗記カード 20問</h2>
+<p>カードを押すと解答例が出ます。「言えた／まだ」で仕分けすると、
+次からは「まだ」だけを回せます。記録はこの端末に残ります。</p>
+<div class="deck">
+  <div class="bar2">
+    <div class="track"><i id="pbar"></i></div>
+    <span class="stat" id="stat">0 / 20</span>
+  </div>
+  <div class="ctrl">
+    <button id="fAll" aria-pressed="true">全部</button>
+    <button id="fLeft" aria-pressed="false">まだだけ</button>
+    <button id="bShuf">シャッフル</button>
+    <button id="bReset">記録を消す</button>
+  </div>
+  <div id="stage"></div>
+</div>
+<p style="font-size:13.5px;color:var(--ink3)">
+解答例は「そう書けば必ず正解」ではなく<b>書く材料</b>です。
+自分の図面に合わせて言い換えてください。</p>
+</section>
+
+<!-- ============ 05 本番 ============ -->
+<section role="tabpanel" id="p5">
+<h2><span class="kicker">9月13日</span>5時間の流れ</h2>
+<ol class="tl">
+  <li><span class="t">11:00</span><span class="w">問題文を読む・条件を書き出す<em>25分 → 11:25</em></span></li>
+  <li><span class="t">11:25</span><span class="w">エスキス（間取りを決める）<em>60分 → 12:25</em></span></li>
+  <li class="key"><span class="t">12:25</span><span class="w"><b>記述を先に片づける</b><em>25分 → 12:50</em></span></li>
+  <li><span class="t">12:50</span><span class="w">1階平面図 兼 配置図<em>40分 → 13:30</em></span></li>
+  <li><span class="t">13:30</span><span class="w">2階平面図<em>30分 → 14:00</em></span></li>
+  <li><span class="t">14:00</span><span class="w">3階平面図<em>25分 → 14:25</em></span></li>
+  <li><span class="t">14:25</span><span class="w">床伏図 兼 小屋伏図<em>35分 → 15:00</em></span></li>
+  <li><span class="t">15:00</span><span class="w">立面図<em>20分 → 15:20</em></span></li>
+  <li><span class="t">15:20</span><span class="w">部分詳細図 1/20<em>25分 → 15:45</em></span></li>
+  <li><span class="t">15:45</span><span class="w">最終確認<em>15分 → 16:00</em></span></li>
+</ol>
+<div class="flag info">
+  <h4>なぜ記述を先にやるのか</h4>
+  <p>あとに回すと必ず時間が足りなくなるからです。
+  図面は多少雑でも点は残りますが、<b>記述の白紙はまるごと失点</b>です。</p>
+</div>
+
+<h2><span class="kicker">最後の15分</span>指差し確認</h2>
+<div class="panel"><ul class="check" data-store="final">
+<li><label><input type="checkbox"><span>木造3階建てになっているか（構造・階数の指定どおりか）</span></label></li>
+<li><label><input type="checkbox"><span><b>7枚すべて描き終わっているか</b></span></label></li>
+<li><label><input type="checkbox"><span>平面図と伏図で柱の位置が合っているか</span></label></li>
+<li><label><input type="checkbox"><span>面積表の数字が条件に合っているか</span></label></li>
+<li><label><input type="checkbox"><span>要求された部屋がすべてあるか・階を間違えていないか</span></label></li>
+<li><label><input type="checkbox"><span>各階に階段があるか／全部の部屋に入れるか</span></label></li>
+<li><label><input type="checkbox"><span>室名・寸法・方位・縮尺を書き忘れていないか</span></label></li>
+<li><label><input type="checkbox"><span>1FL・軒高・最高高さが全図面で同じ数字か</span></label></li>
+</ul></div>
+
+<h2><span class="kicker">想定外が来たら</span>型の崩し方</h2>
+<p>本番で型どおりに置けないことは必ず起きます。そのときの優先順位です。</p>
+<div class="tw"><table>
+<tr><th class="wrap">起きたこと</th><th class="wrap">どう直すか</th></tr>
+<tr><td class="wrap">敷地が細長くて入らない</td>
+    <td class="wrap">マスの数を変える（7×11など）。<b>910の倍数は絶対に崩さない</b></td></tr>
+<tr><td class="wrap">要求室が1つ増えた</td>
+    <td class="wrap">納戸・倉庫をつぶす。売場と居間は最後まで削らない</td></tr>
+<tr><td class="wrap">「客用便所」と指定された</td>
+    <td class="wrap">便所と倉庫を入れかえて売場のとなりへ</td></tr>
+<tr><td class="wrap">駐車場・駐輪場が要求された</td>
+    <td class="wrap">建物を北へ寄せて南に空地。建物の形は変えない</td></tr>
+<tr><td class="wrap">階段の位置を指定された</td>
+    <td class="wrap">指定に従う。ただし<b>3階とも同じ位置</b>だけは死守</td></tr>
+<tr><td class="wrap">どうしても収まらない</td>
+    <td class="wrap"><b>要求室を全部入れるのが最優先。</b>不格好でも欠落よりマシ</td></tr>
+</table></div>
+
+<div class="flag no">
+  <h4>この資料を使うときの約束</h4>
+  <p><b>型は予想であって正解ではありません。</b>正解は当日の問題文だけです。
+  型どおりに置けない条件が出たら、迷わず問題文に従ってください。</p>
+  <p><b>法令の数値は必ず自分で法令集を引いて確かめてください。</b>
+  階段の寸法・基礎の寸法・壁倍率などは目安です。
+  2025年4月から木造の構造の決まりが変わっているので、
+  古い参考書の数字が今も正しいとは限りません。</p>
+</div>
+</section>
+
+<footer>
+作成 2026年8月18日　／　図面はすべて 910mm グリッドから生成。<br>
+合格発表 2026年12月3日。
+</footer>
+</div>
+
+<script>
+/* ---------- タブ ---------- */
+const tabs=[...document.querySelectorAll('.tabs button')];
+const panels=[...document.querySelectorAll('section[role=tabpanel]')];
+const pos={};
+function show(id,push){
+  const cur=panels.find(p=>p.classList.contains('on'));
+  if(cur) pos[cur.id]=window.scrollY;
+  tabs.forEach(t=>t.setAttribute('aria-selected',String(t.dataset.p===id)));
+  panels.forEach(p=>p.classList.toggle('on',p.id===id));
+  window.scrollTo(0,pos[id]||0);
+  if(push) history.replaceState(null,'','#'+id);
+}
+tabs.forEach(t=>t.onclick=()=>show(t.dataset.p,true));
+if(location.hash && document.getElementById(location.hash.slice(1)))
+  show(location.hash.slice(1),false);
+
+/* ---------- カウントダウン ---------- */
+(function(){
+  const exam=new Date('2026-09-13T11:00:00+09:00');
+  const now=new Date();
+  const d=Math.max(0,Math.ceil((exam-now)/86400000));
+  const el=document.getElementById('cdtext');
+  el.textContent = d>0 ? ('あと ' + d + ' 日') : '本番';
+  const w = el.getComputedTextLength ? el.getComputedTextLength()+26 : 140;
+  const bg=document.getElementById('cdbg');
+  bg.setAttribute('width',w); bg.setAttribute('x',320-w/2);
+})();
+
+/* ---------- チェックリストの保存 ---------- */
+document.querySelectorAll('.check[data-store]').forEach(list=>{
+  const key='seizu-'+list.dataset.store;
+  const saved=JSON.parse(localStorage.getItem(key)||'[]');
+  const boxes=[...list.querySelectorAll('input')];
+  boxes.forEach((b,i)=>{
+    b.checked=!!saved[i];
+    b.onchange=()=>localStorage.setItem(key,
+      JSON.stringify(boxes.map(x=>x.checked)));
+  });
+});
+
+/* ---------- 暗記カード ---------- */
+const CARDS=[
+ {c:'構造', q:'木造3階建てとするにあたり、構造上配慮したことを述べなさい。',
+  a:'柱の位置を1階から3階まで同じ位置にそろえ、直下率を高めた。建物の四隅には通し柱120×120を設け、その他は管柱105×105とした。梁の最大スパンは3,640mmに抑え、床は構造用合板t=24を直張りした剛床として水平力を耐力壁へ確実に伝達させた。',
+  k:'直下率／通し柱／スパン3,640／剛床'},
+ {c:'構造', q:'通し柱を設けた位置と、その理由を述べなさい。',
+  a:'建物の四隅4か所に120×120の通し柱を設けた。四隅は地震時や強風時に建物がねじれようとするときに最も大きな力を受ける位置であり、ここを1本の材で1階から3階まで通すことで、階ごとの接合部の弱点をなくし、建物全体の一体性を確保できるためである。',
+  k:'四隅／120角／ねじれ／一体性'},
+ {c:'構造', q:'耐力壁の配置について配慮したことを述べなさい。',
+  a:'筋かい45×90のたすき掛け（壁倍率4.0）と構造用合板t=9（壁倍率2.5）を用い、X方向・Y方向の双方に必要な壁量を確保した。あわせて平面を4分割し、外周部の壁量が偏らないよう配置して、剛心と重心のずれ（偏心）を小さくした。',
+  k:'たすき掛け4.0／合板2.5／四分割法／偏心'},
+ {c:'構造', q:'床を剛床（根太レス）とした理由を述べなさい。',
+  a:'構造用合板t=24を梁に直接張ることで床面を一体の板として働かせ、地震力や風圧力を耐力壁へ確実に伝えられるようにするためである。根太を省けるため床の懐が小さくなり、階高を抑えられる利点もある。',
+  k:'合板t=24／水平構面／耐力壁へ伝達'},
+ {c:'構造', q:'火打梁を設けた理由を述べなさい。',
+  a:'水平面の四隅は、水平力を受けたときに直角が崩れて平行四辺形状に変形しやすい。火打梁90×90を隅部に斜めに入れることで、この変形を抑え、床面・小屋面を水平構面として確実に機能させるためである。',
+  k:'隅部／90×90／変形防止／水平構面'},
+ {c:'防火', q:'準防火地域における防火上の措置について述べなさい。',
+  a:'延べ面積198.74㎡・地上3階の木造であるため、45分準耐火建築物とした。外壁は屋内側から強化石膏ボードt=15、柱105、構造用合板t=9、透湿防水シート、通気胴縁t=18、窯業系サイディングt=16の構成とし、軒裏はケイ酸カルシウム板とした。開口部には防火設備を設けた。',
+  k:'45分準耐火／強化石膏15／軒裏／防火設備'},
+ {c:'防火', q:'竪穴区画について配慮したことを述べなさい。',
+  a:'3階以上の階に居室があるため、階段室を準耐火構造の床・壁で囲み、階段室に面する開口部には防火設備を設けて竪穴区画とした。併用住宅は一戸建て住宅の緩和が受けられないため、店舗部分と住宅部分の間も区画したうえで、延べ面積を200㎡以内に抑えている。',
+  k:'階段室を区画／防火設備／併用住宅は緩和なし'},
+ {c:'計画', q:'店舗部分と住宅部分の動線の分け方について述べなさい。',
+  a:'店舗の出入口は南面の道路側に大きく設け、来客は売場から厨房・スタッフルームへ至る動線とした。住宅の玄関は南西の角に別に設け、玄関からすぐ階段へ上がることで、住まい手が売場を通らずに2階・3階へ行けるようにした。',
+  k:'出入口を別／玄関→階段直結／売場を通らない'},
+ {c:'計画', q:'住宅部分の採光の確保について述べなさい。',
+  a:'住宅の居室については、それぞれの床面積の1/7以上の有効採光面積を確保した。2階の居間・食事室・台所は南面に大きな開口を設け、3階の子供室2室も南面に、夫婦寝室は北面に開口を設けた。階段室にも西面から採光を取り、昼間の照明を減らせるようにした。',
+  k:'1/7以上／南面に大開口／各室に開口'},
+ {c:'計画', q:'階段の寸法をどのように決めたか述べなさい。',
+  a:'幅は有効750mm以上を確保した。1階から2階は階高3,100mmを15段割りとして蹴上206.7mm、2階から3階は階高2,900mmを14段割りとして蹴上207.1mm、踏面はいずれも210mmとした。これにより住宅の基準（蹴上230以下・踏面150以上）と店舗の基準（蹴上220以下・踏面210以上）の双方を満たしている。',
+  k:'1階15段／2階14段／踏面210／両方の基準'},
+ {c:'計画', q:'3階の廊下の計画について述べなさい。',
+  a:'階段から東西方向に有効910mmの廊下を1本通し、南側の子供室2室と北側の夫婦寝室、および納戸・便所へ、他室を通らずに行けるようにした。廊下を1本にまとめることで動線が短くなり、居室の面積を確保しやすくなる。',
+  k:'910mm／東西に1本／他室を通らない'},
+ {c:'環境', q:'外壁に通気層を設けた理由を述べなさい。',
+  a:'構造用合板の外側に透湿防水シートを張り、通気胴縁t=18により18mmの通気層を確保した。壁体内に入った湿気を上部へ排出し、結露による木材の腐朽を防ぐためである。通気層の下端には水切りと防虫網を設け、上端は小屋裏で排気させる。',
+  k:'18mm通気層／結露防止／腐朽防止／水切り'},
+ {c:'環境', q:'断熱・省エネルギーへの配慮について述べなさい。',
+  a:'外壁は柱間にグラスウール16K t=100を充填し、床下は押出法ポリスチレンフォームt=50、屋根（天井）にも断熱材を設けた。開口部は複層ガラス入りのアルミ樹脂複合サッシとした。南面の開口には庇・バルコニーを設け、夏の日射を遮りつつ冬の日射は取り込めるようにした。',
+  k:'GW16K t=100／複層ガラス／庇で日射調整'},
+ {c:'構造', q:'基礎の形式とその理由を述べなさい。',
+  a:'べた基礎とした。底盤t=150、立上りt=150、根入れ300mm、立上りの地上部分は300mm以上を確保している。木造3階建ては2階建てより建物重量が大きく、基礎全体で荷重を地盤に分散させられるべた基礎が有利であること、防湿コンクリートを兼ねられることによる。',
+  k:'べた基礎／底盤150／根入れ／荷重分散'},
+ {c:'計画', q:'屋根の形状と勾配について述べなさい。',
+  a:'切妻屋根とし、棟は南北方向、勾配は4寸（4/10）とした。形状が単純で雨仕舞いが確実であること、小屋組が簡明で施工しやすいことによる。棟までの高さは3,640×0.4＝1,456mmで、軒高9,350mmに対し最高高さは10,806mmとなる。',
+  k:'切妻／棟は南北／4寸／1,456'},
+ {c:'計画', q:'高齢者や障がいのある人への配慮について述べなさい。',
+  a:'店舗の出入口は道路面と段差が生じないよう配慮し、有効幅を広く確保した。1階に店舗用便所を設け、車椅子でも利用できる広さとした。住宅部分は階段の幅を750mm以上とし、両側に手すりを設けられる計画とした。廊下・出入口の有効幅は780mm以上を確保している。',
+  k:'段差解消／便所を1階／手すり／有効幅'},
+ {c:'計画', q:'店舗の使いやすさについて配慮したことを述べなさい。',
+  a:'売場は5,460×5,460の整形な無柱に近い空間とし、什器のレイアウトを自由にできるようにした。売場の北側に厨房・作業場とスタッフルームをまとめ、勝手口から商品の搬入ができるようにした。倉庫を厨房に隣接させ、商品の補充動線を短くしている。',
+  k:'整形な売場／裏方を北にまとめる／勝手口／搬入動線'},
+ {c:'環境', q:'設備（給排水）の計画について述べなさい。',
+  a:'2階の便所・洗面脱衣室・浴室と3階の便所を建物西側の同じ通りに配置し、1階の店舗用便所ともあわせて水まわりを平面上の同じ位置に集約した。これにより排水管を鉛直に下ろすことができ、配管経路が短く、点検・改修もしやすくなる。',
+  k:'水まわりを西側に集約／鉛直に配管／点検性'},
+ {c:'防火', q:'避難および防火安全について述べなさい。',
+  a:'各階から階段までの歩行距離を短くし、居室から廊下・階段を経て地上へ至る避難経路を単純にした。階段室は竪穴区画とし、開口部には防火設備を設けている。3階の各居室には道路側または隣地側に面する開口部を設け、消防隊の進入・救助に配慮した。',
+  k:'歩行距離／単純な経路／竪穴区画／進入口'},
+ {c:'計画', q:'敷地および外構の計画について述べなさい。',
+  a:'商店街の通りに面する南側に店舗の出入口を設け、来店しやすい配置とした。建物を敷地の北寄りに配置して南側に空地を確保し、来客の滞留スペースと自転車置場を設けた。北側または側面に住宅用の通路を設け、住宅玄関へのアプローチを店舗と分離している。',
+  k:'南に店舗／北寄せで前面空地／駐輪／住宅アプローチ分離'}
+];
+const KEY='seizu-cards-v2';
+let state=JSON.parse(localStorage.getItem(KEY)||'{}');
+let order=CARDS.map((_,i)=>i), onlyLeft=false, idx=0, flip=false;
+const $=s=>document.querySelector(s);
+const stage=$('#stage');
+const deck=()=>onlyLeft?order.filter(i=>state[i]!=='ok'):order;
+const save=()=>localStorage.setItem(KEY,JSON.stringify(state));
+function esc(t){return t.replace(/&/g,'&amp;').replace(/</g,'&lt;');}
+function draw(){
+  const d=deck();
+  const known=CARDS.filter((_,i)=>state[i]==='ok').length;
+  $('#pbar').style.width=(known/CARDS.length*100)+'%';
+  $('#stat').textContent=known+' / '+CARDS.length;
+  if(!d.length){
+    stage.innerHTML='<div class="fin"><h3>ぜんぶ言えました</h3>'
+      +'<p>「全部」に戻すと、もう一度回せます。</p></div>';return;
+  }
+  if(idx>=d.length) idx=0;
+  const i=d[idx], c=CARDS[i];
+  const mk=state[i]==='ok'?' ✓ 言えた':(state[i]==='ng'?' … まだ':'');
+  stage.innerHTML=
+    '<div class="qcard" id="qc" role="button" tabindex="0">'
+    +'<span class="tag">'+c.c+'</span>'
+    +'<span style="font-size:12px;color:var(--ink3);margin-left:8px">'+mk+'</span>'
+    +'<p class="qt">'+esc(c.q)+'</p>'
+    +(flip?'<div class="at">'+esc(c.a)+'</div>'
+          +'<p class="kw">キーワード <b>'+esc(c.k)+'</b></p>'
+        :'<p class="tip">押すと解答例が出ます</p>')
+    +'</div>'
+    +(flip?'<div class="acts"><button class="ng" data-v="ng">まだ</button>'
+          +'<button class="ok" data-v="ok">言えた</button></div>':'')
+    +'<div class="step"><button data-m="-1">← 前</button>'
+    +'<button data-m="1">次 →</button><span class="stat" style="grid-column:1/-1;'
+    +'text-align:center;padding-top:4px">'+(idx+1)+' / '+d.length+'</span></div>';
+  const qc=$('#qc');
+  qc.onclick=()=>{flip=!flip;draw();};
+  qc.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();
+    flip=!flip;draw();}};
+  stage.querySelectorAll('[data-v]').forEach(b=>b.onclick=()=>{
+    state[i]=b.dataset.v;save();flip=false;
+    if(!(onlyLeft&&b.dataset.v==='ok'))idx++;draw();});
+  stage.querySelectorAll('[data-m]').forEach(b=>b.onclick=()=>{
+    const n=deck().length;idx=(idx+Number(b.dataset.m)+n)%n;flip=false;draw();});
+}
+$('#fAll').onclick=()=>{onlyLeft=false;idx=0;flip=false;
+  $('#fAll').setAttribute('aria-pressed','true');
+  $('#fLeft').setAttribute('aria-pressed','false');draw();};
+$('#fLeft').onclick=()=>{onlyLeft=true;idx=0;flip=false;
+  $('#fLeft').setAttribute('aria-pressed','true');
+  $('#fAll').setAttribute('aria-pressed','false');draw();};
+$('#bShuf').onclick=()=>{for(let i=order.length-1;i>0;i--){
+  const j=Math.floor(Math.random()*(i+1));[order[i],order[j]]=[order[j],order[i]];}
+  idx=0;flip=false;draw();};
+$('#bReset').onclick=()=>{if(confirm('「言えた／まだ」の記録を消します。'))
+  {state={};save();idx=0;flip=false;draw();}};
+draw();
+</script>
