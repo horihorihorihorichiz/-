@@ -82,6 +82,9 @@ python predict.py race_xxx.json --race-id <id> --cart --cap 5000 # キャップ�
 ```bash
 cd keiba
 python3 selfcheck.py                    # ALL GREEN必須(JRA公式オッズ到達確認を含む・非開催日は⏭)
+# ★朝いちばん(1R発走の3時間前=6:30-7:00 JST)に常駐で起動: オッズ時系列の収集
+python3 odds_timeline.py watch --dry    #   まず予定を目視(3場36R=684時点が目安)
+nohup python3 odds_timeline.py watch > logs/odds_timeline_$(date +%Y%m%d).log 2>&1 &
 python3 day_board.py                    # ボード生成
 python3 paper_rank.py run               # 凍結ルールの発火を紙上記帳(何度でも)
 python3 watch_log.py run                # ★W10/W11を賭け金ゼロで記録(全JRAレース・day_board の後だと速い)
@@ -92,7 +95,26 @@ python3 notify.py --heartbeat           # ★心拍のたび: 停止ギャップ
 # ── 全レース終了後 ──
 python3 paper_rank.py settle && python3 paper_rank.py stats
 python3 watch_log.py settle  && python3 watch_log.py stats
+python3 odds_timeline.py settle && python3 odds_timeline.py stats   # ★確定オッズ+着順を追記→ドリフト集計
 ```
+
+## odds_timeline.py（オッズ時系列の自作収集・2026-08-18新設／8/22から本番）
+「過去時点のオッズ」はnetkeibaにもJRA公式にも存在しない＝**自分でポーリングしないと永久に手に入らない**
+唯一の独自データ。設計判断と実測は `ODDS_TIMELINE_NOTES.md`、分析の事前登録は `ODDS_DRIFT_PROTOCOL.md`。
+
+- **主系列はJRA公式(1-2分毎更新)**。netkeiba無料は40-50分遅れで**直前1時間が存在しない**ので主系列に使わない
+  （T-25/T-6 に併走サンプルとしてだけ記録し、`odds_time` で遅延を毎レース実測する）。
+- 収集時点: light(単勝・複勝・ワイド) `180/90/60/45/30/20/15/10/7/5/3/2`、
+  heavy(三連複) `60/30/15/7/3`、netkeiba `25/6`。**T-15＝paper_rankの直前判定、T-3＝凍結**と同時刻に合わせてある。
+- **落ちたら同じコマンドで上げ直すだけ**（取得済みの時点はスキップ）。二重起動はロックで自動的に止まる。
+  心拍から回すなら「生きていなければ起こす」だけにする（コマンドは ODDS_TIMELINE_NOTES §5）。
+- **見送りではなく欠測を隠さない**: 取れなかった時点は `ok=false`+`reason` で行が残る。
+  `stats` の「時点別」件数が各タグ30件前後あればその日は健全。
+- **買い目・通知・予想ロジックには一切触れない**。書き込むのは `odds_timeline/` だけ。
+- ★分析上の注意（PROTOCOL §0）: **パリミュチュエルなので払戻は確定オッズで決まる**。
+  「直前に買うと配当が伸びる」は起きない。測っているのは
+  「判定時に見えているオッズが最終オッズの偏った推定になっている度合い」＝EV計算の系統誤差と、
+  `hist_odds`(最終オッズ)ベースの過去ROIに含まれる**先読みバイアスの実測値**。
 
 ## paper_rank.py 直前判定モード（実測はここからしか生まれない）
 - `judged_tminus` = 判定時点の発走までの分数。`confirmed=true` は **0 < tminus <= 25** で発火が

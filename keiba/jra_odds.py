@@ -162,11 +162,26 @@ def _nav_day_page(p, race_pat, log):
     return _fetch_expect(mv.group(1), race_pat, log=log), None
 
 
-def fetch_official(race_id, debug=False):
+def fetch_day_page(race_id, kind_t=1, debug=False):
+    """開催(場・日)ページのHTMLを1回だけ取りたい呼び出し側のための公開入口。
+    返り値 (html or None, reason or None)。odds_timeline.py がポーリングのたびに
+    インデックス→開催ページの2リクエストを払わないようキャッシュするのに使う。
+    ※ページ内には当該開催の全レース×全券種のcnameが載っているので、
+      1枚あれば fetch_official / fetch_official_combo の day_html= に使い回せる。"""
+    p = _parse_race_id(race_id)
+    if not p:
+        return None, "race_id が JRA 12桁形式でない(場コード01-10): %s" % race_id
+    rkey = p["vv"] + p["year"] + p["kk"] + p["dd"] + p["rr"]
+    return _nav_day_page(p, _race_link_pat(rkey, kind_t), _logger(debug))
+
+
+def fetch_official(race_id, debug=False, day_html=None):
     """JRA公式(sp.jra.jp)から単勝・複勝オッズ。
     返り値: dict(tan={馬番int:float}, fuku={馬番int:下限float}, fuku_max=...,
                  names={馬番int:馬名}, asof=更新時刻表示, kai_nichi="2回新潟8日",
-                 source="sp.jra.jp", reason=None or 失敗理由)"""
+                 source="sp.jra.jp", reason=None or 失敗理由)
+    day_html: fetch_day_page() で取った開催ページHTML。渡すとナビ2リクエストを省く
+              (既定 None = 従来どおり毎回ナビする。既存呼び出しの挙動は不変)。"""
     empty = dict(tan={}, fuku={}, fuku_max={}, names={}, asof=None,
                  kai_nichi=None, source="sp.jra.jp", reason=None)
     p = _parse_race_id(race_id)
@@ -181,7 +196,10 @@ def fetch_official(race_id, debug=False):
     key = p["vv"] + p["year"] + p["kk"] + p["dd"]
     rkey = key + p["rr"]                                    # 例 042026020812
     race_pat = _race_link_pat(rkey, 1)
-    day, reason = _nav_day_page(p, race_pat, log)
+    if day_html:
+        day, reason = day_html, None
+    else:
+        day, reason = _nav_day_page(p, race_pat, log)
     if reason:
         empty["reason"] = reason
         return empty
@@ -277,7 +295,7 @@ def _parse_trios(html):
 
 
 def fetch_official_combo(race_id, kinds=("wide", "sanrenpuku"), debug=False,
-                         max_axis=None):
+                         max_axis=None, day_html=None, axis_cnames=None):
     """JRA公式(sp.jra.jp)から組合せ馬券のオッズを取る。ログイン不要・公開ページのみ。
 
     kinds: "wide"(ワイド) / "sanrenpuku"(三連複) / "umaren"(馬連) の任意の組合せ。
@@ -287,9 +305,16 @@ def fetch_official_combo(race_id, kinds=("wide", "sanrenpuku"), debug=False,
                 source="sp.jra.jp", reason=None or 失敗理由)
     注: JRA公式は当日+直近開催しか掲載しない(過去日は取れない)。
         過去レースは netkeiba(predict.fetch_jra) / harvest_odds_combo.py を使う。
-    リクエスト数: ワイド/馬連=各1、三連複=(出走頭数-2)+1。1秒間隔。"""
+    リクエスト数: ワイド/馬連=各1、三連複=(出走頭数-2)+1。1秒間隔。
+    day_html:    fetch_day_page() の結果。渡すとナビ2リクエストを省く。
+    axis_cnames: 前回の戻りの out["axis_cnames"]（[(cname, 軸馬番), ...]）。渡すと
+                 三連複の軸未選択ページ(=セレクト取得)1リクエストも省く。
+                 ※取消が出るとセレクトの中身が変わる。連続失敗したら None で取り直すこと。
+    戻りに out["axis_cnames"] / out["trio_axes"](実際に叩いた軸ページ数) を含む。
+    既定は両方 None ＝ 従来どおりの挙動(既存呼び出しに影響なし)。"""
     out = dict(wide={}, wide_max={}, sanrenpuku={}, umaren={}, asof=None,
-               kai_nichi=None, source="sp.jra.jp", reason=None)
+               kai_nichi=None, source="sp.jra.jp", reason=None,
+               axis_cnames=None, trio_axes=0)
     p = _parse_race_id(race_id)
     if not p:
         out["reason"] = "race_id が JRA 12桁形式でない(場コード01-10): %s" % race_id
@@ -302,13 +327,17 @@ def fetch_official_combo(race_id, kinds=("wide", "sanrenpuku"), debug=False,
 
     rkey = p["vv"] + p["year"] + p["kk"] + p["dd"] + p["rr"]
     first_pat = _race_link_pat(rkey, KIND_TYPE[kinds[0]])
-    day, reason = _nav_day_page(p, first_pat, log)
+    if day_html:
+        day, reason = day_html, None
+    else:
+        day, reason = _nav_day_page(p, first_pat, log)
     if reason:
         out["reason"] = reason
         return out
     day = day or ""
 
     got_header = False
+    last_page = ""
     for kind in kinds:
         t = KIND_TYPE[kind]
         mr = re.search(_race_link_pat(rkey, t), day)
@@ -321,6 +350,7 @@ def fetch_official_combo(race_id, kinds=("wide", "sanrenpuku"), debug=False,
         if kind in ("wide", "umaren"):
             marker = r'class="kumiNo"'
             page = _fetch_expect(mr.group(1), marker, log=log)
+            last_page = page or last_page
             if not re.search(marker, page):
                 out["reason"] = "%sページのパース失敗(表が無い)" % kind
                 continue
@@ -330,10 +360,14 @@ def fetch_official_combo(race_id, kinds=("wide", "sanrenpuku"), debug=False,
                 out["wide_max"] = hi
         else:
             # 三連複: 軸未選択ページ → <option> から軸別cnameを取得
-            base = _fetch_expect(mr.group(1), r'id="jikuuma"', log=log)
-            opts = re.findall(
-                r'<option value="(sw157ou\w*Z(\d{2})/[0-9A-F]{2})"', base)
-            opts = [(c, int(n)) for c, n in opts if n != "99"]   # Z99=軸未選択
+            # (axis_cnames を渡された時はこの1リクエストを省く)
+            opts = list(axis_cnames or [])
+            if not opts:
+                base = _fetch_expect(mr.group(1), r'id="jikuuma"', log=log)
+                last_page = base or last_page
+                found = re.findall(
+                    r'<option value="(sw157ou\w*Z(\d{2})/[0-9A-F]{2})"', base)
+                opts = [(c, int(n)) for c, n in found if n != "99"]   # Z99=軸未選択
             if not opts:
                 out["reason"] = "三連複の軸馬セレクトが見つからない(発売前/構造変更?)"
                 continue
@@ -341,23 +375,28 @@ def fetch_official_combo(race_id, kinds=("wide", "sanrenpuku"), debug=False,
             # 組合せは必ず他の軸ページに現れるので、末尾2頭分は取らなくてよい。
             # (馬番に欠番があっても「順番の末尾2つ」で正しく網羅できる)
             opts.sort(key=lambda x: x[1])
+            out["axis_cnames"] = [(c, n) for c, n in opts]
             need = opts[:-2] if len(opts) > 2 else opts
             if max_axis:
                 need = need[:max_axis]
             log("三連複 出走%d頭 → 軸ページ%d本" % (len(opts), len(need)))
-            trio = {}
+            trio, n_ok = {}, 0
             for cn, n in need:
                 time.sleep(SLEEP)
                 pg = _fetch_expect(cn, r'class="kumi"', log=log)
+                last_page = pg or last_page
                 got = _parse_trios(pg)
                 if not got:
                     log("軸%d のパース失敗" % n)
+                else:
+                    n_ok += 1
                 trio.update(got)
                 if not got_header:
                     got_header = _grab_header(pg, out)
             out["sanrenpuku"] = trio
+            out["trio_axes"] = n_ok
         if not got_header:
-            got_header = _grab_header(locals().get("page") or locals().get("base") or "", out)
+            got_header = _grab_header(last_page, out)
     if not any(out[k] for k in ("wide", "sanrenpuku", "umaren")) and not out["reason"]:
         out["reason"] = "組合せオッズを1件も取得できなかった"
     return out

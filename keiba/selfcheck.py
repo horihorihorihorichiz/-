@@ -253,6 +253,18 @@ check("watch台帳(W10/W11)", watch_log_health,
       fix="python3 watch_log.py probe で詳細。台帳が壊れていたら watch_log.jsonl の該当行を確認")
 
 
+# 8b. オッズ時系列の収集器(2026-08-18新設・odds_timeline.py) -------------------
+#     開催日にポーリングしなければその日のオッズ変化は永久に失われる＝作り直しが効かない。
+#     週末に「実は壊れていた」を当日発見しないためのロジック回帰(完全オフライン)。
+def odds_timeline_health():
+    import odds_timeline
+    return odds_timeline.health()
+
+
+check("オッズ時系列(odds_timeline)", odds_timeline_health,
+      fix="python3 odds_timeline.py selftest で詳細。実地確認は python3 odds_timeline.py probe")
+
+
 # 9. 通知の欠落・停止ギャップ検出(2026-08-16の28分停止事故の再発防止) -------------
 def notify_health():
     import notify
