@@ -138,7 +138,7 @@ def fetch_horse_results(horse_id, race_date, today_surface, today_dist):
             if hd.startswith(name):
                 return i
         return -1
-    I = {k: idx(k) for k in ["日付", "開催", "天気", "頭数", "馬番", "着順", "斤量", "距離", "馬場", "レース名", "通過", "ペース", "上り", "馬体重"]}
+    I = {k: idx(k) for k in ["日付", "開催", "天気", "頭数", "馬番", "着順", "斤量", "距離", "馬場", "レース名", "通過", "ペース", "上り", "馬体重", "タイム", "着差"]}
     i_tsi = idx("ﾀｲﾑ指数")  # JRAは前走のみ無料で数値、それ以前は ** (会員限定)
     rows = re.findall(r'<tr[^>]*>(.*?)</tr>', tbl, re.S)
     out = []
@@ -164,6 +164,20 @@ def fetch_horse_results(horse_id, race_date, today_surface, today_dist):
         um = int(re.match(r"\d+", g("馬番")).group()) if re.match(r"\d+", g("馬番")) else 0
         corners = re.findall(r"\d+", g("通過"))
         c4 = int(corners[-1]) if corners else 0
+        # 2026-08-18: 通過順の全区間とペース前後半3F・タイム・着差を保存する。
+        # 従来は4角だけ残して捨てていたが、道中の動き(位置を上げたか下げたか・
+        # 4角で外を回したか)は全区間が無いと復元できない。ペース前後半3Fは
+        # 「そのレースが速い流れだったか」を示し、脚質の評価に必要。
+        corner_all = [int(x) for x in corners] if corners else []
+        pace_raw = g("ペース")
+        pace_first = pace_last = None
+        pm = re.match(r"([\d.]+)\s*-\s*([\d.]+)", pace_raw.strip())
+        if pm:
+            pace_first, pace_last = float(pm.group(1)), float(pm.group(2))
+        tm = re.search(r"(\d+):([\d.]+)", g("タイム")) if "タイム" in I and I["タイム"] >= 0 else None
+        run_time = (int(tm.group(1))*60 + float(tm.group(2))) if tm else None
+        dm = re.search(r"-?[\d.]+", g("着差")) if "着差" in I and I["着差"] >= 0 else None
+        margin = float(dm.group()) if dm else None
         ag = re.search(r"[\d.]+", g("上り"))
         agari = float(ag.group()) if ag else 40.0
         baba = next((b for b in ["良", "稍", "重", "不"] if b in g("馬場")), "良")
@@ -178,6 +192,8 @@ def fetch_horse_results(horse_id, race_date, today_surface, today_dist):
             "umaban": um, "corner4": c4, "agari": agari,
             "vg": course.course_vg(course.extract_venue(g("開催")), surf, dist), "tier": tier,
             "days": days, "pace": pace_label(g("ペース")), "baba_idx": None, "tsi": tsi,
+            "corner_all": corner_all, "pace_first": pace_first, "pace_last": pace_last,
+            "run_time": run_time, "margin": margin,
             "_baba": baba, "_venue": g("開催"),
         })
     return out   # 全キャリアを返す（truncateは呼び出し側。csi/道悪はキャリア全走で判定）
