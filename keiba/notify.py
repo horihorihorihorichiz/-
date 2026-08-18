@@ -210,11 +210,18 @@ def sweep(source="cron", record=True):
 
 def selftest():
     """自己診断(selfcheck.pyが呼ぶ)。実台帳には触れず一時ファイルで検査する。"""
-    global LOG, STATE
+    global LOG, STATE, _now
     import tempfile
     keep = (LOG, STATE)
     d = tempfile.mkdtemp(prefix="notify_selftest_")
     LOG, STATE = os.path.join(d, "l.jsonl"), os.path.join(d, "s.json")
+    # 2026-08-18: 検査用の現在時刻を当日02:00に固定する。
+    # 実時刻のまま回すと JST 00:00〜00:40 の間だけ past(=40分前)が前日の時刻になり、
+    # plan() が当日日付で刻むため「未来の予定」と解釈されて誤って失敗していた
+    # (実測: 00:27で失敗、12:00固定で通過)。検査対象はロジックであって時計ではない。
+    keep_now = _now
+    _fixed = keep_now().replace(hour=2, minute=0, second=0, microsecond=0)
+    _now = lambda: _fixed
     try:
         today = _now().strftime("%Y%m%d")
         now = _now()
@@ -254,6 +261,7 @@ def selftest():
         return "欠落検出/日跨ぎ/close/28分ギャップ検出OK"
     finally:
         LOG, STATE = keep
+        _now = keep_now
         import shutil
         shutil.rmtree(d, ignore_errors=True)
 
