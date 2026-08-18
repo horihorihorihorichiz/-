@@ -1,0 +1,311 @@
+<!DOCTYPE html><html lang="ja"><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>型のすべて（図面集）｜二級建築士 設計製図</title>
+<link rel="stylesheet" href="style.css">
+</head><body><div class="wrap">
+<a class="back" href="index.html">← もくじにもどる</a>
+
+<header class="top">
+  <div class="kicker">② 型のすべて</div>
+  <h1>図面集：平面・伏図・立面・部分詳細</h1>
+  <p>この1ページに、本番で描くもの全部が入っています。
+  毎日ここを開いて、見ないで描けるまでくり返してください。</p>
+</header>
+
+<h2>0. なぜ「1つの型」でいくのか</h2>
+<p>設計は本来いくらでも答えがあります。でも残り20日で「どんな条件でも設計できる力」は
+つきません。だから逆に考えます。</p>
+<div class="note good"><b>作戦：</b>
+<b>建物の形を1つに固定して、それを何十回も描く。</b>
+そうすると、本番では「考える」時間がほとんどいらなくなり、
+その分を「問題文どおりに直す」時間に回せます。
+合格に必要なのは<b>うまい設計</b>ではなく<b>描き切ること</b>だからです。</div>
+
+<h3>型の3つのルール</h3>
+<ol>
+<li><b>建物はただの長方形の箱</b>（間口7,280 × 奥行9,100）。出っ張りも引っ込みもなし</li>
+<li><b>階段は3階とも建物の西側の同じ位置</b>。ここを動かさないだけで全部が楽になる</li>
+<li><b>柱の位置は3階とも同じ16本</b>。上の階の柱がそのまま下の階の柱の真上にある</li>
+</ol>
+
+<h2>1. グリッド（マス目）の考え方</h2>
+<p>木造の家は <b>910mm</b> という単位で作られています。畳の短いほうの辺の長さです。
+この910mmを1マスとして、方眼紙のように建物を区切ります。</p>
+<div class="kv">
+  <div>1マス <b>910mm</b>（0.83㎡）</div>
+  <div>間口 <b>8マス</b> = 7,280</div>
+  <div>奥行 <b>10マス</b> = 9,100</div>
+  <div>1階あたり <b>80マス</b> = 66.25㎡</div>
+</div>
+<p>部屋の広さは、ぜんぶこのマスの数で決まります。
+たとえば <b>4マス = 3.31㎡</b>（トイレ）、<b>8マス = 6.62㎡</b>（階段）、
+<b>36マス = 29.81㎡</b>（お店の売場）。
+面積表を計算するときも、<strong>マスの数 × 0.8281</strong> でおしまいです。</p>
+
+<h3>通り（壁が通っている線）に名前をつける</h3>
+<p>図面では、柱と壁が並ぶ線を「通り」と呼びます。この型では
+<b>たて（南北）に A・B・C・D の4本</b>、<b>よこ（東西）に 1・2・3・4 の4本</b>だけ。
+この8本を覚えれば、平面図も伏図も同じ骨格で描けます。</p>
+<table>
+<tr><th>通り</th><th>位置</th><th>建物の端からの距離</th></tr>
+<tr><td>A</td><td>西の外壁</td><td class="num">0</td></tr>
+<tr><td>B</td><td>階段の東側の壁</td><td class="num">1,820（2マス）</td></tr>
+<tr><td>C</td><td>建物の中の間仕切り</td><td class="num">4,550（5マス）</td></tr>
+<tr><td>D</td><td>東の外壁</td><td class="num">7,280（8マス）</td></tr>
+<tr><td>1</td><td>南の外壁（道路側）</td><td class="num">0</td></tr>
+<tr><td>2</td><td>玄関の奥の壁</td><td class="num">1,820（2マス）</td></tr>
+<tr><td>3</td><td>建物の中の間仕切り</td><td class="num">5,460（6マス）</td></tr>
+<tr><td>4</td><td>北の外壁</td><td class="num">9,100（10マス）</td></tr>
+</table>
+
+<h2>2. 1階平面図 兼 配置図</h2>
+<figure>
+  <img src="figures/plan1f.svg" alt="1階平面図の型">
+  <figcaption>1階：お店が主役。南（道路）に売場を大きく取る。</figcaption>
+</figure>
+<h3>なぜこの配置なのか</h3>
+<ul>
+<li><b>売場を南いっぱいに置く</b>… 商店街のお店なので、道路から見えて入りやすいことが
+いちばん大事。売場は6マス×6マス＝36マスの正方形</li>
+<li><b>住宅の玄関は南西の角</b>… 住む人も道路から直接入れる。お店の入口とは別にする</li>
+<li><b>階段は玄関のすぐ北隣</b>… 玄関を入ってすぐ2階へ上がれる。お店を通らずに済む</li>
+<li><b>厨房とスタッフルームは北側</b>… お客さんが入らない裏方は奥にまとめる</li>
+</ul>
+<div class="note"><b>気をつけるところ：</b>
+この型では<b>店舗用便所を厨房の側から入る</b>形にしています。
+もし問題文に「<b>客用の</b>便所」と書いてあったら、
+売場から直接入れる位置に動かす必要があります。
+そのときは <b>便所と倉庫を入れかえて、便所を通りBの南寄り（売場のとなり）に置く</b>
+のがいちばん傷が浅いです。</div>
+
+<h2>3. 2階平面図</h2>
+<figure>
+  <img src="figures/plan2f.svg" alt="2階平面図の型">
+  <figcaption>2階：家族が集まる階。水まわりを西側に一直線に並べる。</figcaption>
+</figure>
+<h3>なぜこの配置なのか</h3>
+<ul>
+<li><b>居間・食事室・台所を南に</b>… 日当たりのいい場所を、いちばん長くいる部屋にあてる。
+1階の売場とぴったり同じ位置・同じ大きさなので、柱と壁がそのまま上下でそろう</li>
+<li><b>便所・洗面脱衣室・浴室を西の列に</b>… 水を使う部屋を1か所に集めると、
+配管がまっすぐ下に降ろせる。<b>記述で必ず書ける材料</b>になります</li>
+<li><b>和室は居間の北隣</b>… 引戸でつなげば、来客時に広く使える</li>
+</ul>
+
+<h2>4. 3階平面図</h2>
+<figure>
+  <img src="figures/plan3f.svg" alt="3階平面図の型">
+  <figcaption>3階：寝る階。廊下を東西に1本通して全部屋につなぐ。</figcaption>
+</figure>
+<h3>なぜこの配置なのか</h3>
+<ul>
+<li><b>子供室2つを南に並べる</b>… 同じ大きさ（3マス×5マス）にすると公平だし、描くのも速い</li>
+<li><b>夫婦寝室は北の一列全部</b>… 6マス×4マス。南向きは子供に譲る、という説明ができる</li>
+<li><b>廊下は幅910mmを東西に1本</b>… 階段から出て、南の子供室2つと北の寝室に
+まっすぐ行ける。廊下が1本だけなので描くのが速い</li>
+</ul>
+
+<h2>5. 面積表</h2>
+<p>面積表は<strong>マスの数を数えて掛け算するだけ</strong>です。
+1マス＝0.910 × 0.910 ＝ <b>0.8281㎡</b>。</p>
+<table>
+<tr><th>階</th><th>室名</th><th class="num">マス</th><th class="num">面積(㎡)</th></tr>
+<tr><td rowspan="7">1階</td><td>店舗売場</td><td class="num">36</td><td class="num">29.81</td></tr>
+<tr><td>厨房・作業場</td><td class="num">12</td><td class="num">9.94</td></tr>
+<tr><td>スタッフルーム</td><td class="num">12</td><td class="num">9.94</td></tr>
+<tr><td>階段</td><td class="num">8</td><td class="num">6.62</td></tr>
+<tr><td>住宅玄関</td><td class="num">4</td><td class="num">3.31</td></tr>
+<tr><td>店舗用便所</td><td class="num">4</td><td class="num">3.31</td></tr>
+<tr><td>倉庫</td><td class="num">4</td><td class="num">3.31</td></tr>
+<tr class="total"><td colspan="2">1階 合計</td><td class="num">80</td><td class="num">66.25</td></tr>
+<tr><td rowspan="7">2階</td><td>居間・食事室・台所</td><td class="num">36</td><td class="num">29.81</td></tr>
+<tr><td>和室 6帖</td><td class="num">12</td><td class="num">9.94</td></tr>
+<tr><td>家事室・納戸</td><td class="num">12</td><td class="num">9.94</td></tr>
+<tr><td>階段</td><td class="num">8</td><td class="num">6.62</td></tr>
+<tr><td>浴室</td><td class="num">4</td><td class="num">3.31</td></tr>
+<tr><td>洗面脱衣室</td><td class="num">4</td><td class="num">3.31</td></tr>
+<tr><td>便所</td><td class="num">4</td><td class="num">3.31</td></tr>
+<tr class="total"><td colspan="2">2階 合計</td><td class="num">80</td><td class="num">66.25</td></tr>
+<tr><td rowspan="7">3階</td><td>夫婦寝室</td><td class="num">24</td><td class="num">19.87</td></tr>
+<tr><td>子供室A</td><td class="num">15</td><td class="num">12.42</td></tr>
+<tr><td>子供室B</td><td class="num">15</td><td class="num">12.42</td></tr>
+<tr><td>階段</td><td class="num">8</td><td class="num">6.62</td></tr>
+<tr><td>納戸</td><td class="num">8</td><td class="num">6.62</td></tr>
+<tr><td>廊下</td><td class="num">6</td><td class="num">4.97</td></tr>
+<tr><td>便所</td><td class="num">4</td><td class="num">3.31</td></tr>
+<tr class="total"><td colspan="2">3階 合計</td><td class="num">80</td><td class="num">66.25</td></tr>
+<tr class="total"><td colspan="2">延べ面積</td><td class="num">240</td><td class="num">198.74</td></tr>
+</table>
+<div class="note"><b>建築面積は 7.28 × 9.10 ＝ 66.248 → 66.25㎡</b>。
+延べ面積は 66.25 × 3 ＝ 198.74㎡ で <b>200㎡以内</b>におさまります。
+面積表は電卓を使わなくても、この表を覚えていれば書けます。</div>
+
+<h2>6. 柱が3階ともそろっている（直下率）</h2>
+<p>木造3階建てでいちばん大事なのが、<strong>上の階の柱の真下に、下の階の柱があること</strong>
+です。ずれていると、上の重さが梁だけで支えられて危険になります。
+この割合を「直下率」といい、高いほど良い構造です。</p>
+<p>この型では、柱は<strong>3階とも同じ16本</strong>です。</p>
+<table>
+<tr><th>種類</th><th>本数</th><th>位置</th><th>大きさ</th></tr>
+<tr><td>通し柱</td><td class="num">4</td><td>建物の四隅（A1・D1・A4・D4）</td><td>120×120</td></tr>
+<tr><td>管柱</td><td class="num">12</td><td>A・B・C・D と 1・2・3・4 の交点</td><td>105×105</td></tr>
+</table>
+<p><b>通し柱</b>は1階から3階まで1本の木で通っている柱、<b>管柱</b>は各階ごとの柱です。
+四隅を通し柱にするのは、建物のねじれに対していちばん効くからです。</p>
+<div class="note"><b>記述で出たら：</b>
+「柱の位置を全階でそろえ、直下率を高くした。四隅は通し柱として建物のねじれに備えた」
+と書けます。<b>1階の管柱を105角にできる根拠</b>は、木造3階建てが構造計算をする建物
+だからです（原則は13.5cm角以上ですが、通し柱にするか構造計算で確かめれば
+それ以下にできます）。条文の番号は必ず法令集で確認してください。</div>
+
+<h2>7. 階段 ── ここだけは数字を直してください</h2>
+<figure>
+  <img src="figures/stair.svg" alt="階段の段数の割付">
+  <figcaption>1階だけ15段。2階は14段。踏面はどちらも210でそろえる。</figcaption>
+</figure>
+<div class="note warn">
+<p><b>もともとの型では「14段割りで蹴上207」となっていましたが、
+これは2階→3階だけの話です。</b></p>
+<p>1階→2階は階高が3,100mmあるので、14段だと 3,100 ÷ 14 ＝ <b>221.4mm</b>。
+お店の階段の基準（蹴上220mm以下）を超えてしまいます。</p>
+<p><b>だから1階だけ15段にします。</b>3,100 ÷ 15 ＝ 206.7mm。
+これなら住宅の基準（230mm以下）もお店の基準（220mm以下）も両方クリアするので、
+当日どんな条件が出ても直さずに済みます。</p>
+</div>
+<table>
+<tr><th>どこ</th><th class="num">階高</th><th class="num">段数</th><th class="num">蹴上</th><th class="num">踏面</th><th>判定</th></tr>
+<tr><td>1階 → 2階</td><td class="num">3,100</td><td class="num">15</td><td class="num">206.7</td><td class="num">210</td><td>住宅も店舗もOK</td></tr>
+<tr><td>2階 → 3階</td><td class="num">2,900</td><td class="num">14</td><td class="num">207.1</td><td class="num">210</td><td>住宅も店舗もOK</td></tr>
+</table>
+<p>階段室は2マス×4マス（1,820 × 3,640）の折り返し階段。
+15段なら段鼻から段鼻までの長さは 210 × 14 ＝ 2,940mm なので、折り返せば十分入ります。</p>
+<div class="note"><b>覚え方：「したは15、うえは14」</b>。
+下の階のほうが階高が高いから段数も多い、と考えると忘れません。</div>
+
+<h2>8. 床伏図（骨組みの絵・その1）</h2>
+<figure>
+  <img src="figures/framing_floor.svg" alt="床伏図の型">
+  <figcaption>2階の床も3階の床も、同じ骨組みでいける。</figcaption>
+</figure>
+<h3>伏図って何？</h3>
+<p>床を作っている<strong>木の棒（梁）の並べ方を、真上から見た絵</strong>です。
+床板をはがして骨だけにした状態、と思ってください。</p>
+<h3>この型の掛け方（覚えるのはこれだけ）</h3>
+<ol>
+<li><b>外周をぐるり1周、太い梁（胴差 105×300）で囲む</b></li>
+<li><b>南北方向に、B通りとC通りに大梁（105×300）を通す</b></li>
+<li><b>東西方向に、2通りと3通りに大梁（105×240）を通す</b></li>
+<li><b>そのすき間に、東西方向の小梁（105×180）を910mmおきに並べる</b></li>
+<li><b>隅8か所に火打梁（90×90）を斜めに入れる</b></li>
+</ol>
+<div class="note good"><b>なぜこの掛け方か：</b>
+木の梁は長く飛ばせません。この型だと梁の最大スパンは <b>3,640mm</b>。
+東西方向は 1,820 / 2,730 / 2,730、南北方向は 1,820 / 3,640 / 3,640 に区切られていて、
+どれも木造で無理なく持たせられる長さです。</div>
+<div class="note"><b>正直に描くべきこと：</b>
+C通りと2通りの交点（売場の中）に<b>柱が1本立ちます</b>。
+「お店の中に柱があるのは格好悪い」と思って省くと、
+5.46mも梁を飛ばすことになり構造として成立しません。
+<b>柱は正直に描いてください。</b>木造3階建てを分かっている証拠になります。</div>
+<h3>火打梁って何のため？</h3>
+<p>四角い枠は、押すと平行四辺形にゆがみます。その角に斜めの棒を入れると
+ゆがまなくなります。それが火打梁です。<strong>床が水平方向にねじれるのを止める部材</strong>
+と覚えてください。</p>
+
+<h2>9. 小屋伏図（骨組みの絵・その2）</h2>
+<figure>
+  <img src="figures/framing_roof.svg" alt="小屋伏図の型">
+  <figcaption>屋根の骨組み。棟は南北方向、屋根は東西の2方向に流れる。</figcaption>
+</figure>
+<h3>屋根の骨の名前（上から順に）</h3>
+<table>
+<tr><th>名前</th><th>読み</th><th>何をする棒か</th><th>大きさ</th></tr>
+<tr><td>棟木</td><td>むなぎ</td><td>屋根のてっぺんに1本通る棒</td><td>105×105</td></tr>
+<tr><td>母屋</td><td>もや</td><td>棟木と平行に910mmおきに並ぶ棒</td><td>90×90</td></tr>
+<tr><td>軒桁</td><td>のきげた</td><td>屋根の下の端で壁の上に載る棒</td><td>105×240</td></tr>
+<tr><td>垂木</td><td>たるき</td><td>棟から軒へ流れる細い棒（455mmおき）</td><td>45×105</td></tr>
+<tr><td>小屋束</td><td>こやづか</td><td>小屋梁の上に立てて母屋を支える短い柱</td><td>90×90</td></tr>
+<tr><td>小屋梁</td><td>こやばり</td><td>束を載せるための水平の梁</td><td>105×240</td></tr>
+</table>
+<h3>屋根の高さの計算</h3>
+<p>切妻屋根で、棟が南北方向。屋根は東西の2方向に流れます。
+建物の幅は7,280mmなので、端から棟までは半分の <b>3,640mm</b>。
+4寸勾配とは「よこ10進むとたて4上がる」という意味なので、</p>
+<div class="note"><b>3,640 × 0.4 ＝ 1,456mm</b>　←　軒桁の上から棟までの高さ</div>
+
+<h2>10. 立面図と高さの数字</h2>
+<figure>
+  <img src="figures/elevation_s.svg" alt="南立面図">
+  <figcaption>南から見た姿。棟が南北方向なので三角形に見える（妻面）。</figcaption>
+</figure>
+<h3>高さは足し算だけ</h3>
+<table>
+<tr><th>高さ</th><th class="num">GLから</th><th>計算</th></tr>
+<tr><td>1FL（1階の床）</td><td class="num">+550</td><td>基礎の上に土台・床板を積んだ高さ</td></tr>
+<tr><td>2FL</td><td class="num">+3,650</td><td>550 ＋ 3,100</td></tr>
+<tr><td>3FL</td><td class="num">+6,550</td><td>3,650 ＋ 2,900</td></tr>
+<tr><td>軒高（軒桁の上）</td><td class="num">+9,350</td><td>6,550 ＋ 2,800</td></tr>
+<tr><td>最高の高さ（棟）</td><td class="num">+10,806</td><td>9,350 ＋ 1,456</td></tr>
+</table>
+<div class="note warn"><b>1FL を GL+400 から GL+550 に変えています。</b>
+基礎の立ち上がりは<b>地面から30cm以上</b>にする決まりがあります（平12建告1347号）。
+そこから 基礎パッキン20 ＋ 土台105 ＋ 構造用合板24 ＋ フローリング15 を積むと、
+1階の床は最低でも GL+500 くらいになり、<b>GL+400 では物理的に納まりません</b>。<br>
+もし GL+400 のままでいくなら、軒高は9,200・最高は10,656になります。
+<b>どちらでもいいですが、平面図・立面図・断面図・部分詳細図の全部で同じ数字に
+そろえてください。</b>バラバラだとランクⅣの「図面相互の重大な不整合」になります。</div>
+
+<h2>11. 部分詳細図 1/20</h2>
+<figure>
+  <img src="figures/detail.svg" alt="部分詳細図">
+  <figcaption>外壁を包丁で切った断面。基礎まわりと2階床まわり。</figcaption>
+</figure>
+<h3>外壁の6層（内から外へ）── これは呪文のように覚える</h3>
+<table>
+<tr><th class="num">順</th><th>材料</th><th class="num">厚さ</th><th>役目</th></tr>
+<tr><td class="num">1</td><td>強化石膏ボード</td><td class="num">15</td><td>火に耐える（準耐火45分の要）</td></tr>
+<tr><td class="num">2</td><td>柱 ＋ グラスウール16K</td><td class="num">105</td><td>構造 ＋ 断熱</td></tr>
+<tr><td class="num">3</td><td>構造用合板</td><td class="num">9</td><td>地震・風に耐える（壁倍率2.5）</td></tr>
+<tr><td class="num">4</td><td>透湿防水シート</td><td class="num">—</td><td>雨は止め、湿気は通す</td></tr>
+<tr><td class="num">5</td><td>通気胴縁</td><td class="num">18</td><td>すき間を作って湿気を上に逃がす</td></tr>
+<tr><td class="num">6</td><td>窯業系サイディング</td><td class="num">16</td><td>外側の仕上げ</td></tr>
+<tr class="total"><td colspan="2">合計</td><td class="num">163</td><td>外壁の厚さ</td></tr>
+</table>
+<p class=""><b>15・105・9・18・16</b>。この5つの数字だけ、
+歌うように覚えてください。<strong>「いちご・とうご・きゅう・じゅうはち・じゅうろく」</strong></p>
+
+<h3>基礎まわりの数字</h3>
+<table>
+<tr><th>部位</th><th class="num">寸法</th><th>決まりの目安</th></tr>
+<tr><td>根入れの深さ</td><td class="num">300</td><td>240mm以上が必要</td></tr>
+<tr><td>底盤の厚さ</td><td class="num">150</td><td>べた基礎</td></tr>
+<tr><td>立ち上がりの厚さ</td><td class="num">150</td><td>120mm以上が必要</td></tr>
+<tr><td>立ち上がりの地上部分</td><td class="num">386</td><td>300mm以上が必要</td></tr>
+<tr><td>アンカーボルト</td><td class="num">M12</td><td>間隔2,730mm以下・埋込み250以上</td></tr>
+<tr><td>砕石</td><td class="num">60</td><td>＋ 防湿フィルム</td></tr>
+</table>
+<div class="note">数字はすべて<b>法令集と告示で必ず確認</b>してください。
+特に2025年4月から木造の構造の決まりが変わっているので、
+壁倍率などは最新のものを見てください。</div>
+
+<h2>12. 型が通じないときの直し方</h2>
+<p>本番でこの型どおりに置けないことは必ず起きます。そのときの優先順位です。</p>
+<table>
+<tr><th>起きたこと</th><th>どう直すか</th></tr>
+<tr><td>敷地が細長くて7,280×9,100が入らない</td>
+    <td>マスの数を変える（例：7マス×11マス）。<b>910の倍数は絶対に崩さない</b></td></tr>
+<tr><td>要求室が1つ増えた</td>
+    <td>納戸・倉庫をつぶして入れる。売場と居間は最後まで削らない</td></tr>
+<tr><td>「客用便所」と指定された</td>
+    <td>便所と倉庫を入れかえて、売場のとなりに持ってくる</td></tr>
+<tr><td>駐車場・駐輪場が要求された</td>
+    <td>建物を敷地の北に寄せて、南に空地を作る。建物の形は変えない</td></tr>
+<tr><td>階段の位置を指定された</td>
+    <td>指定に従う。ただし<b>3階とも同じ位置</b>だけは死守する</td></tr>
+<tr><td>どうしても収まらない</td>
+    <td><b>要求室を全部入れることを最優先</b>。多少不格好でも欠落よりはるかにマシ</td></tr>
+</table>
+
+<footer>この型は予想です。正解は当日の問題文だけ。法令の数値は必ず法令集で確認を。</footer>
+</div></body></html>

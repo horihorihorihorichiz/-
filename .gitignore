@@ -3,3 +3,6 @@ node_modules/
 slides/exports/*.pptx
 slides/exports/*.pdf
 slides/exports/*.png
+
+__pycache__/
+*.pyc

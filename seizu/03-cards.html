@@ -1,0 +1,212 @@
+<!DOCTYPE html><html lang="ja"><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>記述の暗記カード｜二級建築士 設計製図</title>
+<link rel="stylesheet" href="style.css">
+<style>
+.bar{position:sticky;top:0;z-index:9;background:var(--bg);
+  padding:10px 0 12px;border-bottom:1px solid var(--line)}
+.prog{height:8px;background:#eae5db;border-radius:4px;overflow:hidden}
+.prog i{display:block;height:100%;background:var(--ok);width:0;
+  transition:width .3s}
+.meta{display:flex;justify-content:space-between;font-size:12.5px;
+  color:var(--dim);margin-top:6px}
+.tools{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;
+  margin-top:10px}
+@media(max-width:520px){.tools{grid-template-columns:repeat(2,1fr)}}
+.tools button{font:inherit;font-size:13px;padding:8px 10px;
+  border:1px solid var(--line);background:#fff;border-radius:8px;
+  cursor:pointer;color:var(--ink)}
+.tools button.on{background:var(--accent);color:#fff;border-color:var(--accent)}
+.q{background:#fff;border:1px solid var(--line);border-radius:14px;
+  padding:22px 20px;margin:18px 0;min-height:200px;cursor:pointer;
+  box-shadow:0 1px 3px rgba(0,0,0,.04)}
+.q .tag{font-size:11.5px;color:#fff;background:var(--accent2);
+  border-radius:99px;padding:3px 10px;display:inline-block}
+.q .qt{font-size:17px;font-weight:700;line-height:1.75;margin:14px 0 0}
+.q .hint{font-size:12.5px;color:var(--dim);margin-top:22px;text-align:center}
+.q .at{margin-top:16px;padding-top:16px;border-top:2px dashed var(--line);
+  font-size:15px;line-height:1.95}
+.q .kw{font-size:13px;color:var(--dim);margin-top:12px}
+.q .kw b{color:var(--accent);background:none}
+.acts{display:flex;gap:10px}
+.acts button{flex:1;font:inherit;font-size:15px;font-weight:700;padding:14px;
+  border-radius:10px;border:none;cursor:pointer}
+.acts .no{background:#fdeeee;color:var(--warn)}
+.acts .yes{background:#e8f5e9;color:var(--ok)}
+.nav2{display:flex;gap:10px;margin-top:12px}
+.nav2 button{flex:1;font:inherit;font-size:14px;padding:10px;border-radius:8px;
+  border:1px solid var(--line);background:#fff;cursor:pointer;color:var(--ink)}
+.done{text-align:center;padding:50px 20px}
+.done h3{font-size:22px;color:var(--ok)}
+</style>
+</head><body><div class="wrap">
+<a class="back" href="index.html">← もくじにもどる</a>
+
+<header class="top">
+  <div class="kicker">③ すきま時間用</div>
+  <h1>記述の暗記カード（20問）</h1>
+  <p>カードをタップすると答えが出ます。「言えた」「まだ」で仕分けすると、
+  次からは「まだ」だけを回せます。記録はこの端末に保存されます。</p>
+</header>
+
+<div class="bar">
+  <div class="prog"><i id="pbar"></i></div>
+  <div class="meta"><span id="pos">-</span><span id="cnt">-</span></div>
+  <div class="tools">
+    <button id="fAll" class="on">全部</button>
+    <button id="fLeft">まだだけ</button>
+    <button id="bShuf">シャッフル</button>
+    <button id="bReset">記録を消す</button>
+  </div>
+</div>
+
+<div id="stage"></div>
+
+<footer>解答例は「そう書けば必ず正解」ではなく、<b>書く材料</b>です。
+自分の図面に合わせて言い換えてください。法令の数値は法令集で確認を。</footer>
+</div>
+
+<script>
+const CARDS = [
+ {c:'構造', q:'木造3階建てとするにあたり、構造上配慮したことを述べなさい。',
+  a:'柱の位置を1階から3階まで同じ位置にそろえ、直下率を高めた。建物の四隅には通し柱120×120を設け、その他は管柱105×105とした。梁の最大スパンは3,640mmに抑え、床は構造用合板t=24を直張りした剛床として水平力を耐力壁へ確実に伝達させた。',
+  k:'直下率／通し柱／スパン3,640／剛床'},
+ {c:'構造', q:'通し柱を設けた位置と、その理由を述べなさい。',
+  a:'建物の四隅4か所に120×120の通し柱を設けた。四隅は地震時や強風時に建物がねじれようとするときに最も大きな力を受ける位置であり、ここを1本の材で1階から3階まで通すことで、階ごとの接合部の弱点をなくし、建物全体の一体性を確保できるためである。',
+  k:'四隅／120角／ねじれ／一体性'},
+ {c:'構造', q:'耐力壁の配置について配慮したことを述べなさい。',
+  a:'筋かい45×90のたすき掛け（壁倍率4.0）と構造用合板t=9（壁倍率2.5）を用い、X方向・Y方向の双方に必要な壁量を確保した。あわせて平面を4分割し、外周部の壁量が偏らないよう配置して、剛心と重心のずれ（偏心）を小さくした。',
+  k:'たすき掛け4.0／合板2.5／四分割法／偏心'},
+ {c:'構造', q:'床を剛床（根太レス）とした理由を述べなさい。',
+  a:'構造用合板t=24を梁に直接張ることで床面を一体の板として働かせ、地震力や風圧力を耐力壁へ確実に伝えられるようにするためである。根太を省けるため床の懐が小さくなり、階高を抑えられる利点もある。',
+  k:'合板t=24／水平構面／耐力壁へ伝達'},
+ {c:'構造', q:'火打梁を設けた理由を述べなさい。',
+  a:'水平面の四隅は、水平力を受けたときに直角が崩れて平行四辺形状に変形しやすい。火打梁90×90を隅部に斜めに入れることで、この変形を抑え、床面・小屋面を水平構面として確実に機能させるためである。',
+  k:'隅部／90×90／変形防止／水平構面'},
+ {c:'防火', q:'準防火地域における防火上の措置について述べなさい。',
+  a:'延べ面積198.74㎡・地上3階の木造であるため、45分準耐火建築物とした。外壁は屋内側から強化石膏ボードt=15、柱105、構造用合板t=9、透湿防水シート、通気胴縁t=18、窯業系サイディングt=16の構成とし、軒裏はケイ酸カルシウム板とした。開口部には防火設備を設けた。',
+  k:'45分準耐火／強化石膏15／軒裏／防火設備'},
+ {c:'防火', q:'竪穴区画について配慮したことを述べなさい。',
+  a:'3階以上の階に居室があるため、階段室を準耐火構造の床・壁で囲み、階段室に面する開口部には防火設備を設けて竪穴区画とした。併用住宅は一戸建て住宅の緩和が受けられないため、店舗部分と住宅部分の間も区画したうえで、延べ面積を200㎡以内に抑えている。',
+  k:'階段室を区画／防火設備／併用住宅は緩和なし'},
+ {c:'計画', q:'店舗部分と住宅部分の動線の分け方について述べなさい。',
+  a:'店舗の出入口は南面の道路側に大きく設け、来客は売場から厨房・スタッフルームへ至る動線とした。住宅の玄関は南西の角に別に設け、玄関からすぐ階段へ上がることで、住まい手が売場を通らずに2階・3階へ行けるようにした。',
+  k:'出入口を別／玄関→階段直結／売場を通らない'},
+ {c:'計画', q:'住宅部分の採光の確保について述べなさい。',
+  a:'住宅の居室については、それぞれの床面積の1/7以上の有効採光面積を確保した。2階の居間・食事室・台所は南面に大きな開口を設け、3階の子供室2室も南面に、夫婦寝室は北面に開口を設けた。階段室にも西面から採光を取り、昼間の照明を減らせるようにした。',
+  k:'1/7以上／南面に大開口／各室に開口'},
+ {c:'計画', q:'階段の寸法をどのように決めたか述べなさい。',
+  a:'幅は有効750mm以上を確保した。1階から2階は階高3,100mmを15段割りとして蹴上206.7mm、2階から3階は階高2,900mmを14段割りとして蹴上207.1mm、踏面はいずれも210mmとした。これにより住宅の基準（蹴上230以下・踏面150以上）と店舗の基準（蹴上220以下・踏面210以上）の双方を満たしている。',
+  k:'1階15段／2階14段／踏面210／両方の基準'},
+ {c:'計画', q:'3階の廊下の計画について述べなさい。',
+  a:'階段から東西方向に有効910mmの廊下を1本通し、南側の子供室2室と北側の夫婦寝室、および納戸・便所へ、他室を通らずに行けるようにした。廊下を1本にまとめることで動線が短くなり、居室の面積を確保しやすくなる。',
+  k:'910mm／東西に1本／他室を通らない'},
+ {c:'環境', q:'外壁に通気層を設けた理由を述べなさい。',
+  a:'構造用合板の外側に透湿防水シートを張り、通気胴縁t=18により18mmの通気層を確保した。壁体内に入った湿気を上部へ排出し、結露による木材の腐朽を防ぐためである。通気層の下端には水切りと防虫網を設け、上端は小屋裏で排気させる。',
+  k:'18mm通気層／結露防止／腐朽防止／水切り'},
+ {c:'環境', q:'断熱・省エネルギーへの配慮について述べなさい。',
+  a:'外壁は柱間にグラスウール16K t=100を充填し、床下は押出法ポリスチレンフォームt=50、屋根（天井）にも断熱材を設けた。開口部は複層ガラス入りのアルミ樹脂複合サッシとした。南面の開口には庇・バルコニーを設け、夏の日射を遮りつつ冬の日射は取り込めるようにした。',
+  k:'GW16K t=100／複層ガラス／庇で日射調整'},
+ {c:'構造', q:'基礎の形式とその理由を述べなさい。',
+  a:'べた基礎とした。底盤t=150、立上りt=150、根入れ300mm、立上りの地上部分は300mm以上を確保している。木造3階建ては2階建てより建物重量が大きく、基礎全体で荷重を地盤に分散させられるべた基礎が有利であること、防湿コンクリートを兼ねられることによる。',
+  k:'べた基礎／底盤150／根入れ／荷重分散'},
+ {c:'計画', q:'屋根の形状と勾配について述べなさい。',
+  a:'切妻屋根とし、棟は南北方向、勾配は4寸（4/10）とした。形状が単純で雨仕舞いが確実であること、小屋組が簡明で施工しやすいことによる。棟までの高さは3,640×0.4＝1,456mmで、軒高9,350mmに対し最高高さは10,806mmとなる。',
+  k:'切妻／棟は南北／4寸／1,456'},
+ {c:'計画', q:'高齢者や障がいのある人への配慮について述べなさい。',
+  a:'店舗の出入口は道路面と段差が生じないよう配慮し、有効幅を広く確保した。1階に店舗用便所を設け、車椅子でも利用できる広さとした。住宅部分は階段の幅を750mm以上とし、両側に手すりを設けられる計画とした。廊下・出入口の有効幅は780mm以上を確保している。',
+  k:'段差解消／便所を1階／手すり／有効幅'},
+ {c:'計画', q:'店舗の使いやすさについて配慮したことを述べなさい。',
+  a:'売場は5,460×5,460の整形な無柱に近い空間とし、什器のレイアウトを自由にできるようにした。売場の北側に厨房・作業場とスタッフルームをまとめ、勝手口から商品の搬入ができるようにした。倉庫を厨房に隣接させ、商品の補充動線を短くしている。',
+  k:'整形な売場／裏方を北にまとめる／勝手口／搬入動線'},
+ {c:'環境', q:'設備（給排水）の計画について述べなさい。',
+  a:'2階の便所・洗面脱衣室・浴室と3階の便所を建物西側の同じ通りに配置し、1階の店舗用便所ともあわせて水まわりを平面上の同じ位置に集約した。これにより排水管を鉛直に下ろすことができ、配管経路が短く、点検・改修もしやすくなる。',
+  k:'水まわりを西側に集約／鉛直に配管／点検性'},
+ {c:'防火', q:'避難および防火安全について述べなさい。',
+  a:'各階から階段までの歩行距離を短くし、居室から廊下・階段を経て地上へ至る避難経路を単純にした。階段室は竪穴区画とし、開口部には防火設備を設けている。3階の各居室には道路側または隣地側に面する開口部を設け、消防隊の進入・救助に配慮した。',
+  k:'歩行距離／単純な経路／竪穴区画／進入口'},
+ {c:'計画', q:'敷地および外構の計画について述べなさい。',
+  a:'商店街の通りに面する南側に店舗の出入口を設け、来店しやすい配置とした。建物を敷地の北寄りに配置して南側に空地を確保し、来客の滞留スペースと自転車置場を設けた。北側または側面に住宅用の通路を設け、住宅玄関へのアプローチを店舗と分離している。',
+  k:'南に店舗／北寄せで前面空地／駐輪／住宅アプローチ分離'}
+];
+
+const KEY='seizu-cards-v1';
+let state = JSON.parse(localStorage.getItem(KEY) || '{}');
+let order = CARDS.map((_,i)=>i);
+let filterLeft = false, idx = 0, flipped = false;
+
+const $ = s => document.querySelector(s);
+const stage = $('#stage');
+
+function deck(){
+  return filterLeft ? order.filter(i => state[i] !== 'ok') : order;
+}
+function save(){ localStorage.setItem(KEY, JSON.stringify(state)); }
+
+function render(){
+  const d = deck();
+  const known = CARDS.filter((_,i)=>state[i]==='ok').length;
+  $('#pbar').style.width = (known/CARDS.length*100)+'%';
+  $('#cnt').textContent = '言えた '+known+' / '+CARDS.length;
+  if(!d.length){
+    $('#pos').textContent = '';
+    stage.innerHTML = '<div class="done"><h3>ぜんぶ言えました</h3>'
+      + '<p>「全部」に切り替えると、もう一度回せます。</p></div>';
+    return;
+  }
+  if(idx >= d.length) idx = 0;
+  const i = d[idx], c = CARDS[i];
+  $('#pos').textContent = (idx+1)+' / '+d.length+' 枚目';
+  const mark = state[i]==='ok' ? '　✓ 言えた' : (state[i]==='ng' ? '　… まだ' : '');
+  stage.innerHTML =
+   '<div class="q" id="qc"><span class="tag">'+c.c+'</span>'
+   + '<span style="font-size:12px;color:#6b6459">'+mark+'</span>'
+   + '<p class="qt">'+c.q+'</p>'
+   + (flipped
+      ? '<div class="at">'+c.a+'</div><div class="kw">キーワード：<b>'+c.k+'</b></div>'
+      : '<p class="hint">タップすると解答例が出ます</p>')
+   + '</div>'
+   + (flipped
+      ? '<div class="acts"><button class="no" data-v="ng">まだ</button>'
+        + '<button class="yes" data-v="ok">言えた</button></div>'
+      : '')
+   + '<div class="nav2"><button data-m="-1">← 前</button>'
+     + '<button data-m="1">次 →</button></div>';
+
+  $('#qc').onclick = () => { flipped = !flipped; render(); };
+  stage.querySelectorAll('[data-v]').forEach(b => b.onclick = e => {
+    e.stopPropagation();
+    state[i] = b.dataset.v; save(); flipped = false;
+    if(!(filterLeft && b.dataset.v==='ok')) idx++;
+    render();
+  });
+  stage.querySelectorAll('[data-m]').forEach(b => b.onclick = () => {
+    const n = deck().length;
+    idx = (idx + Number(b.dataset.m) + n) % n; flipped = false; render();
+  });
+}
+
+$('#fAll').onclick = () => { filterLeft=false; idx=0; flipped=false;
+  $('#fAll').classList.add('on'); $('#fLeft').classList.remove('on'); render(); };
+$('#fLeft').onclick = () => { filterLeft=true; idx=0; flipped=false;
+  $('#fLeft').classList.add('on'); $('#fAll').classList.remove('on'); render(); };
+$('#bShuf').onclick = () => {
+  for(let i=order.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1));
+    [order[i],order[j]]=[order[j],order[i]]; }
+  idx=0; flipped=false; render();
+};
+$('#bReset').onclick = () => {
+  if(confirm('「言えた／まだ」の記録をすべて消します。よろしいですか？')){
+    state={}; save(); idx=0; flipped=false; render(); }
+};
+document.addEventListener('keydown', e => {
+  if(e.key===' '){ e.preventDefault(); flipped=!flipped; render(); }
+  if(e.key==='ArrowRight'){ const n=deck().length; if(n){idx=(idx+1)%n;
+    flipped=false; render();} }
+  if(e.key==='ArrowLeft'){ const n=deck().length; if(n){idx=(idx-1+n)%n;
+    flipped=false; render();} }
+});
+render();
+</script>
+</body></html>
