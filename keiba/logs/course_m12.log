@@ -1,12 +1,14 @@
 M1/M2: targets=28 folds=28
 [202403] done (0s)
-Traceback (most recent call last):
-  File "/home/user/-/keiba/course_system.py", line 499, in <module>
-    {"gen": run_gen, "m12": run_m12, "m3": run_m3, "eval": evaluate}[cmd]()
-  File "/home/user/-/keiba/course_system.py", line 219, in run_m12
-    rows, pr = predict_rows(mod, D, fo, extra_col=gcol[obj])
-               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/user/-/keiba/course_system.py", line 121, in predict_rows
-    return rows, model.predict(Xp)
-                 ^^^^^^^^^^^^^
-AttributeError: 'NoneType' object has no attribute 'predict'
+[202404] done (1s)
+[202407] done (1s)
+[202408] done (1s)
+[202409] done (3s)
+[202410] done (3s)
+[202411] done (6s)
+[202412] done (9s)
+[202501] done (11s)
+[202502] done (13s)
+[202503] done (16s)
+[202504] done (22s)
+[202505] done (24s)
