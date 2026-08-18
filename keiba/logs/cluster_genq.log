@@ -1,0 +1,13 @@
+[2024Q1] skip (train=0 fold=328)
+GENQ: folds=[np.str_('2024Q2'), np.str_('2024Q3'), np.str_('2024Q4'), np.str_('2025Q1'), np.str_('2025Q2'), np.str_('2025Q3'), np.str_('2025Q4'), np.str_('2026Q1'), np.str_('2026Q2'), np.str_('2026Q3')]
+[2024Q2] 153R train=328R (152s)
+[2024Q3] 627R train=481R (168s)
+[2024Q4] 694R train=1108R (172s)
+[2025Q1] 793R train=1802R (177s)
+[2025Q2] 804R train=2595R (182s)
+[2025Q3] 760R train=3399R (189s)
+[2025Q4] 689R train=4159R (196s)
+[2026Q1] 788R train=4848R (206s)
+[2026Q2] 810R train=5636R (216s)
+[2026Q3] 445R train=6446R (229s)
+GENQ done (3.8min)

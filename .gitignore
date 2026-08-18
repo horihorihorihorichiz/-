@@ -8,3 +8,4 @@ __pycache__/
 
 # i-PAT認証情報（本物だけ無視・.exampleは可）
 keiba/ipat_secret.local
+keiba/horse_cache/
