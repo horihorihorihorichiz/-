@@ -1,0 +1,31 @@
+[g2] groups=18 folds=28 (202403..202608)
+   ダ|中|MID: 999R
+   芝|中|SHORT: 699R
+   ダ|短|SHORT: 557R
+   ダ|マ|SHORT: 544R
+   芝|短|SHORT: 523R
+   芝|マ|MID: 481R
+   ダ|短|MID: 455R
+   ダ|マ|MID: 437R
+   ダ|マ|LONG: 402R
+   芝|中|LONG: 389R
+   芝|中|MID: 377R
+   芝|マ|LONG: 369R
+   ダ|中|SHORT: 330R
+   芝|長|MID: 193R
+   芝|マ|SHORT: 191R
+   芝|長|SHORT: 178R
+   芝|短|MID: 171R
+   芝|長|LONG: 114R
+  [202403] done trainings=22 (2s)
+  [202404] done trainings=58 (5s)
+  [202407] done trainings=86 (7s)
+  [202408] done trainings=126 (10s)
+  [202409] done trainings=180 (16s)
+  [202410] done trainings=214 (19s)
+  [202411] done trainings=276 (31s)
+  [202412] done trainings=328 (38s)
+  [202501] done trainings=384 (45s)
+  [202502] done trainings=444 (54s)
+  [202503] done trainings=510 (63s)
+  [202504] done trainings=582 (74s)
