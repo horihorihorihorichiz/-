@@ -1,0 +1,5856 @@
+{
+ "grid": {
+  "baseline": {
+   "M12|1.0": {
+    "MINE": {
+     "n": 1032,
+     "tickets": 2064,
+     "roi": 92.6,
+     "hit": 94.3
+    },
+    "VALIDATE": {
+     "n": 237,
+     "tickets": 474,
+     "roi": 93.5,
+     "hit": 96.2
+    },
+    "CONFIRM": {
+     "n": 225,
+     "tickets": 450,
+     "roi": 91.3,
+     "hit": 94.2
+    }
+   },
+   "M12|1.1": {
+    "MINE": {
+     "n": 1004,
+     "tickets": 1927,
+     "roi": 92.4,
+     "hit": 91.4
+    },
+    "VALIDATE": {
+     "n": 230,
+     "tickets": 427,
+     "roi": 93.0,
+     "hit": 90.0
+    },
+    "CONFIRM": {
+     "n": 218,
+     "tickets": 422,
+     "roi": 90.4,
+     "hit": 90.8
+    }
+   },
+   "M12|1.2": {
+    "MINE": {
+     "n": 784,
+     "tickets": 839,
+     "roi": 96.0,
+     "hit": 56.6
+    },
+    "VALIDATE": {
+     "n": 169,
+     "tickets": 171,
+     "roi": 93.3,
+     "hit": 55.0
+    },
+    "CONFIRM": {
+     "n": 160,
+     "tickets": 167,
+     "roi": 88.8,
+     "hit": 54.4
+    }
+   },
+   "M12|1.3": {
+    "MINE": {
+     "n": 566,
+     "tickets": 574,
+     "roi": 98.2,
+     "hit": 51.9
+    },
+    "VALIDATE": {
+     "n": 112,
+     "tickets": 113,
+     "roi": 97.9,
+     "hit": 54.5
+    },
+    "CONFIRM": {
+     "n": 117,
+     "tickets": 117,
+     "roi": 92.9,
+     "hit": 53.0
+    }
+   },
+   "M12|1.4": {
+    "MINE": {
+     "n": 371,
+     "tickets": 373,
+     "roi": 106.2,
+     "hit": 52.3
+    },
+    "VALIDATE": {
+     "n": 62,
+     "tickets": 62,
+     "roi": 107.7,
+     "hit": 51.6
+    },
+    "CONFIRM": {
+     "n": 81,
+     "tickets": 81,
+     "roi": 92.6,
+     "hit": 50.6
+    }
+   },
+   "M12|1.5": {
+    "MINE": {
+     "n": 217,
+     "tickets": 218,
+     "roi": 106.0,
+     "hit": 46.1
+    },
+    "VALIDATE": {
+     "n": 38,
+     "tickets": 38,
+     "roi": 104.5,
+     "hit": 55.3
+    },
+    "CONFIRM": {
+     "n": 40,
+     "tickets": 40,
+     "roi": 95.8,
+     "hit": 47.5
+    }
+   },
+   "M12|1.6": {
+    "MINE": {
+     "n": 119,
+     "tickets": 119,
+     "roi": 111.3,
+     "hit": 42.9
+    },
+    "VALIDATE": {
+     "n": 16,
+     "tickets": 16,
+     "roi": 96.2,
+     "hit": 50.0
+    },
+    "CONFIRM": {
+     "n": 20,
+     "tickets": 20,
+     "roi": 96.0,
+     "hit": 50.0
+    }
+   },
+   "M12|1.7": {
+    "MINE": {
+     "n": 64,
+     "tickets": 64,
+     "roi": 116.9,
+     "hit": 39.1
+    },
+    "VALIDATE": {
+     "n": 8,
+     "tickets": 8,
+     "roi": 28.7,
+     "hit": 12.5
+    },
+    "CONFIRM": {
+     "n": 8,
+     "tickets": 8,
+     "roi": 110.0,
+     "hit": 50.0
+    }
+   },
+   "M12|1.8": {
+    "MINE": {
+     "n": 34,
+     "tickets": 34,
+     "roi": 134.4,
+     "hit": 38.2
+    },
+    "VALIDATE": {
+     "n": 7,
+     "tickets": 7,
+     "roi": 32.9,
+     "hit": 14.3
+    },
+    "CONFIRM": {
+     "n": 6,
+     "tickets": 6,
+     "roi": 106.7,
+     "hit": 50.0
+    }
+   },
+   "M12|1.9": {
+    "MINE": {
+     "n": 19,
+     "tickets": 19,
+     "roi": 166.8,
+     "hit": 47.4
+    },
+    "VALIDATE": {
+     "n": 4,
+     "tickets": 4,
+     "roi": 0.0,
+     "hit": 0.0
+    },
+    "CONFIRM": {
+     "n": 6,
+     "tickets": 6,
+     "roi": 106.7,
+     "hit": 50.0
+    }
+   },
+   "M12|2.0": {
+    "MINE": {
+     "n": 12,
+     "tickets": 12,
+     "roi": 226.7,
+     "hit": 58.3
+    },
+    "VALIDATE": {
+     "n": 2,
+     "tickets": 2,
+     "roi": 0.0,
+     "hit": 0.0
+    },
+    "CONFIRM": {
+     "n": 5,
+     "tickets": 5,
+     "roi": 88.0,
+     "hit": 40.0
+    }
+   },
+   "M12|2.1": {
+    "MINE": {
+     "n": 10,
+     "tickets": 10,
+     "roi": 240.0,
+     "hit": 60.0
+    },
+    "VALIDATE": {
+     "n": 2,
+     "tickets": 2,
+     "roi": 0.0,
+     "hit": 0.0
+    },
+    "CONFIRM": {
+     "n": 2,
+     "tickets": 2,
+     "roi": 120.0,
+     "hit": 50.0
+    }
+   },
+   "M12|2.2": {
+    "MINE": {
+     "n": 3,
+     "tickets": 3,
+     "roi": 136.7,
+     "hit": 33.3
+    },
+    "VALIDATE": {
+     "n": 1,
+     "tickets": 1,
+     "roi": 0.0,
+     "hit": 0.0
+    },
+    "CONFIRM": {
+     "n": 1,
+     "tickets": 1,
+     "roi": 240.0,
+     "hit": 100.0
+    }
+   },
+   "M12|2.3": {
+    "MINE": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    },
+    "VALIDATE": {
+     "n": 1,
+     "tickets": 1,
+     "roi": 0.0,
+     "hit": 0.0
+    },
+    "CONFIRM": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    }
+   },
+   "M12|2.4": {
+    "MINE": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    },
+    "VALIDATE": {
+     "n": 1,
+     "tickets": 1,
+     "roi": 0.0,
+     "hit": 0.0
+    },
+    "CONFIRM": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    }
+   },
+   "M12|2.5": {
+    "MINE": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    },
+    "VALIDATE": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    },
+    "CONFIRM": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    }
+   },
+   "M1|1.0": {
+    "MINE": {
+     "n": 1032,
+     "tickets": 1032,
+     "roi": 88.8,
+     "hit": 79.7
+    },
+    "VALIDATE": {
+     "n": 237,
+     "tickets": 237,
+     "roi": 92.9,
+     "hit": 84.4
+    },
+    "CONFIRM": {
+     "n": 225,
+     "tickets": 225,
+     "roi": 93.2,
+     "hit": 83.6
+    }
+   },
+   "M1|1.1": {
+    "MINE": {
+     "n": 923,
+     "tickets": 923,
+     "roi": 88.0,
+     "hit": 78.1
+    },
+    "VALIDATE": {
+     "n": 197,
+     "tickets": 197,
+     "roi": 91.8,
+     "hit": 82.2
+    },
+    "CONFIRM": {
+     "n": 204,
+     "tickets": 204,
+     "roi": 92.1,
+     "hit": 81.9
+    }
+   },
+   "M1|1.2": {
+    "MINE": {
+     "n": 60,
+     "tickets": 60,
+     "roi": 97.3,
+     "hit": 75.0
+    },
+    "VALIDATE": {
+     "n": 3,
+     "tickets": 3,
+     "roi": 96.7,
+     "hit": 66.7
+    },
+    "CONFIRM": {
+     "n": 9,
+     "tickets": 9,
+     "roi": 100.0,
+     "hit": 77.8
+    }
+   },
+   "M1|1.3": {
+    "MINE": {
+     "n": 8,
+     "tickets": 8,
+     "roi": 91.2,
+     "hit": 62.5
+    },
+    "VALIDATE": {
+     "n": 1,
+     "tickets": 1,
+     "roi": 0.0,
+     "hit": 0.0
+    },
+    "CONFIRM": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    }
+   },
+   "M1|1.4": {
+    "MINE": {
+     "n": 2,
+     "tickets": 2,
+     "roi": 150.0,
+     "hit": 100.0
+    },
+    "VALIDATE": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    },
+    "CONFIRM": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    }
+   },
+   "M1|1.5": {
+    "MINE": {
+     "n": 1,
+     "tickets": 1,
+     "roi": 150.0,
+     "hit": 100.0
+    },
+    "VALIDATE": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    },
+    "CONFIRM": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    }
+   },
+   "M1|1.6": {
+    "MINE": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    },
+    "VALIDATE": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    },
+    "CONFIRM": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    }
+   },
+   "M1|1.7": {
+    "MINE": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    },
+    "VALIDATE": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    },
+    "CONFIRM": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    }
+   },
+   "M1|1.8": {
+    "MINE": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    },
+    "VALIDATE": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    },
+    "CONFIRM": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    }
+   },
+   "M1|1.9": {
+    "MINE": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    },
+    "VALIDATE": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    },
+    "CONFIRM": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    }
+   },
+   "M1|2.0": {
+    "MINE": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    },
+    "VALIDATE": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    },
+    "CONFIRM": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    }
+   },
+   "M1|2.1": {
+    "MINE": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    },
+    "VALIDATE": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    },
+    "CONFIRM": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    }
+   },
+   "M1|2.2": {
+    "MINE": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    },
+    "VALIDATE": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    },
+    "CONFIRM": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    }
+   },
+   "M1|2.3": {
+    "MINE": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    },
+    "VALIDATE": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    },
+    "CONFIRM": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    }
+   },
+   "M1|2.4": {
+    "MINE": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    },
+    "VALIDATE": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    },
+    "CONFIRM": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    }
+   },
+   "M1|2.5": {
+    "MINE": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    },
+    "VALIDATE": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    },
+    "CONFIRM": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    }
+   },
+   "M2|1.0": {
+    "MINE": {
+     "n": 1032,
+     "tickets": 1032,
+     "roi": 96.4,
+     "hit": 60.3
+    },
+    "VALIDATE": {
+     "n": 237,
+     "tickets": 237,
+     "roi": 94.1,
+     "hit": 60.8
+    },
+    "CONFIRM": {
+     "n": 225,
+     "tickets": 225,
+     "roi": 89.3,
+     "hit": 59.6
+    }
+   },
+   "M2|1.1": {
+    "MINE": {
+     "n": 1004,
+     "tickets": 1004,
+     "roi": 96.5,
+     "hit": 59.5
+    },
+    "VALIDATE": {
+     "n": 230,
+     "tickets": 230,
+     "roi": 94.1,
+     "hit": 60.4
+    },
+    "CONFIRM": {
+     "n": 218,
+     "tickets": 218,
+     "roi": 88.8,
+     "hit": 58.3
+    }
+   },
+   "M2|1.2": {
+    "MINE": {
+     "n": 779,
+     "tickets": 779,
+     "roi": 95.9,
+     "hit": 54.2
+    },
+    "VALIDATE": {
+     "n": 168,
+     "tickets": 168,
+     "roi": 93.2,
+     "hit": 54.8
+    },
+    "CONFIRM": {
+     "n": 158,
+     "tickets": 158,
+     "roi": 88.2,
+     "hit": 52.5
+    }
+   },
+   "M2|1.3": {
+    "MINE": {
+     "n": 566,
+     "tickets": 566,
+     "roi": 98.3,
+     "hit": 51.2
+    },
+    "VALIDATE": {
+     "n": 112,
+     "tickets": 112,
+     "roi": 98.8,
+     "hit": 54.5
+    },
+    "CONFIRM": {
+     "n": 117,
+     "tickets": 117,
+     "roi": 92.9,
+     "hit": 53.0
+    }
+   },
+   "M2|1.4": {
+    "MINE": {
+     "n": 371,
+     "tickets": 371,
+     "roi": 106.0,
+     "hit": 51.8
+    },
+    "VALIDATE": {
+     "n": 62,
+     "tickets": 62,
+     "roi": 107.7,
+     "hit": 51.6
+    },
+    "CONFIRM": {
+     "n": 81,
+     "tickets": 81,
+     "roi": 92.6,
+     "hit": 50.6
+    }
+   },
+   "M2|1.5": {
+    "MINE": {
+     "n": 217,
+     "tickets": 217,
+     "roi": 105.8,
+     "hit": 45.6
+    },
+    "VALIDATE": {
+     "n": 38,
+     "tickets": 38,
+     "roi": 104.5,
+     "hit": 55.3
+    },
+    "CONFIRM": {
+     "n": 40,
+     "tickets": 40,
+     "roi": 95.8,
+     "hit": 47.5
+    }
+   },
+   "M2|1.6": {
+    "MINE": {
+     "n": 119,
+     "tickets": 119,
+     "roi": 111.3,
+     "hit": 42.9
+    },
+    "VALIDATE": {
+     "n": 16,
+     "tickets": 16,
+     "roi": 96.2,
+     "hit": 50.0
+    },
+    "CONFIRM": {
+     "n": 20,
+     "tickets": 20,
+     "roi": 96.0,
+     "hit": 50.0
+    }
+   },
+   "M2|1.7": {
+    "MINE": {
+     "n": 64,
+     "tickets": 64,
+     "roi": 116.9,
+     "hit": 39.1
+    },
+    "VALIDATE": {
+     "n": 8,
+     "tickets": 8,
+     "roi": 28.7,
+     "hit": 12.5
+    },
+    "CONFIRM": {
+     "n": 8,
+     "tickets": 8,
+     "roi": 110.0,
+     "hit": 50.0
+    }
+   },
+   "M2|1.8": {
+    "MINE": {
+     "n": 34,
+     "tickets": 34,
+     "roi": 134.4,
+     "hit": 38.2
+    },
+    "VALIDATE": {
+     "n": 7,
+     "tickets": 7,
+     "roi": 32.9,
+     "hit": 14.3
+    },
+    "CONFIRM": {
+     "n": 6,
+     "tickets": 6,
+     "roi": 106.7,
+     "hit": 50.0
+    }
+   },
+   "M2|1.9": {
+    "MINE": {
+     "n": 19,
+     "tickets": 19,
+     "roi": 166.8,
+     "hit": 47.4
+    },
+    "VALIDATE": {
+     "n": 4,
+     "tickets": 4,
+     "roi": 0.0,
+     "hit": 0.0
+    },
+    "CONFIRM": {
+     "n": 6,
+     "tickets": 6,
+     "roi": 106.7,
+     "hit": 50.0
+    }
+   },
+   "M2|2.0": {
+    "MINE": {
+     "n": 12,
+     "tickets": 12,
+     "roi": 226.7,
+     "hit": 58.3
+    },
+    "VALIDATE": {
+     "n": 2,
+     "tickets": 2,
+     "roi": 0.0,
+     "hit": 0.0
+    },
+    "CONFIRM": {
+     "n": 5,
+     "tickets": 5,
+     "roi": 88.0,
+     "hit": 40.0
+    }
+   },
+   "M2|2.1": {
+    "MINE": {
+     "n": 10,
+     "tickets": 10,
+     "roi": 240.0,
+     "hit": 60.0
+    },
+    "VALIDATE": {
+     "n": 2,
+     "tickets": 2,
+     "roi": 0.0,
+     "hit": 0.0
+    },
+    "CONFIRM": {
+     "n": 2,
+     "tickets": 2,
+     "roi": 120.0,
+     "hit": 50.0
+    }
+   },
+   "M2|2.2": {
+    "MINE": {
+     "n": 3,
+     "tickets": 3,
+     "roi": 136.7,
+     "hit": 33.3
+    },
+    "VALIDATE": {
+     "n": 1,
+     "tickets": 1,
+     "roi": 0.0,
+     "hit": 0.0
+    },
+    "CONFIRM": {
+     "n": 1,
+     "tickets": 1,
+     "roi": 240.0,
+     "hit": 100.0
+    }
+   },
+   "M2|2.3": {
+    "MINE": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    },
+    "VALIDATE": {
+     "n": 1,
+     "tickets": 1,
+     "roi": 0.0,
+     "hit": 0.0
+    },
+    "CONFIRM": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    }
+   },
+   "M2|2.4": {
+    "MINE": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    },
+    "VALIDATE": {
+     "n": 1,
+     "tickets": 1,
+     "roi": 0.0,
+     "hit": 0.0
+    },
+    "CONFIRM": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    }
+   },
+   "M2|2.5": {
+    "MINE": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    },
+    "VALIDATE": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    },
+    "CONFIRM": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    }
+   },
+   "M3|1.0": {
+    "MINE": {
+     "n": 1032,
+     "tickets": 1032,
+     "roi": 81.3,
+     "hit": 41.2
+    },
+    "VALIDATE": {
+     "n": 237,
+     "tickets": 237,
+     "roi": 81.6,
+     "hit": 40.9
+    },
+    "CONFIRM": {
+     "n": 225,
+     "tickets": 225,
+     "roi": 78.9,
+     "hit": 37.3
+    }
+   },
+   "M3|1.1": {
+    "MINE": {
+     "n": 1031,
+     "tickets": 1031,
+     "roi": 81.3,
+     "hit": 41.1
+    },
+    "VALIDATE": {
+     "n": 234,
+     "tickets": 234,
+     "roi": 79.9,
+     "hit": 40.2
+    },
+    "CONFIRM": {
+     "n": 225,
+     "tickets": 225,
+     "roi": 78.9,
+     "hit": 37.3
+    }
+   },
+   "M3|1.2": {
+    "MINE": {
+     "n": 986,
+     "tickets": 986,
+     "roi": 81.0,
+     "hit": 40.4
+    },
+    "VALIDATE": {
+     "n": 226,
+     "tickets": 226,
+     "roi": 78.5,
+     "hit": 38.9
+    },
+    "CONFIRM": {
+     "n": 215,
+     "tickets": 215,
+     "roi": 80.9,
+     "hit": 37.7
+    }
+   },
+   "M3|1.3": {
+    "MINE": {
+     "n": 915,
+     "tickets": 915,
+     "roi": 79.2,
+     "hit": 39.2
+    },
+    "VALIDATE": {
+     "n": 209,
+     "tickets": 209,
+     "roi": 77.4,
+     "hit": 36.8
+    },
+    "CONFIRM": {
+     "n": 196,
+     "tickets": 196,
+     "roi": 80.6,
+     "hit": 35.7
+    }
+   },
+   "M3|1.4": {
+    "MINE": {
+     "n": 793,
+     "tickets": 793,
+     "roi": 79.8,
+     "hit": 38.5
+    },
+    "VALIDATE": {
+     "n": 164,
+     "tickets": 164,
+     "roi": 74.2,
+     "hit": 31.7
+    },
+    "CONFIRM": {
+     "n": 159,
+     "tickets": 159,
+     "roi": 85.5,
+     "hit": 36.5
+    }
+   },
+   "M3|1.5": {
+    "MINE": {
+     "n": 611,
+     "tickets": 611,
+     "roi": 79.9,
+     "hit": 36.8
+    },
+    "VALIDATE": {
+     "n": 128,
+     "tickets": 128,
+     "roi": 76.5,
+     "hit": 28.9
+    },
+    "CONFIRM": {
+     "n": 119,
+     "tickets": 119,
+     "roi": 88.5,
+     "hit": 34.5
+    }
+   },
+   "M3|1.6": {
+    "MINE": {
+     "n": 452,
+     "tickets": 452,
+     "roi": 80.4,
+     "hit": 35.6
+    },
+    "VALIDATE": {
+     "n": 95,
+     "tickets": 95,
+     "roi": 80.5,
+     "hit": 27.4
+    },
+    "CONFIRM": {
+     "n": 92,
+     "tickets": 92,
+     "roi": 90.2,
+     "hit": 32.6
+    }
+   },
+   "M3|1.7": {
+    "MINE": {
+     "n": 300,
+     "tickets": 300,
+     "roi": 77.8,
+     "hit": 32.3
+    },
+    "VALIDATE": {
+     "n": 76,
+     "tickets": 76,
+     "roi": 78.2,
+     "hit": 26.3
+    },
+    "CONFIRM": {
+     "n": 62,
+     "tickets": 62,
+     "roi": 108.2,
+     "hit": 35.5
+    }
+   },
+   "M3|1.8": {
+    "MINE": {
+     "n": 202,
+     "tickets": 202,
+     "roi": 71.0,
+     "hit": 28.7
+    },
+    "VALIDATE": {
+     "n": 47,
+     "tickets": 47,
+     "roi": 81.5,
+     "hit": 25.5
+    },
+    "CONFIRM": {
+     "n": 42,
+     "tickets": 42,
+     "roi": 121.9,
+     "hit": 33.3
+    }
+   },
+   "M3|1.9": {
+    "MINE": {
+     "n": 134,
+     "tickets": 134,
+     "roi": 72.8,
+     "hit": 26.9
+    },
+    "VALIDATE": {
+     "n": 32,
+     "tickets": 32,
+     "roi": 87.2,
+     "hit": 25.0
+    },
+    "CONFIRM": {
+     "n": 29,
+     "tickets": 29,
+     "roi": 117.9,
+     "hit": 34.5
+    }
+   },
+   "M3|2.0": {
+    "MINE": {
+     "n": 82,
+     "tickets": 82,
+     "roi": 61.8,
+     "hit": 19.5
+    },
+    "VALIDATE": {
+     "n": 21,
+     "tickets": 21,
+     "roi": 60.0,
+     "hit": 19.0
+    },
+    "CONFIRM": {
+     "n": 20,
+     "tickets": 20,
+     "roi": 136.0,
+     "hit": 35.0
+    }
+   },
+   "M3|2.1": {
+    "MINE": {
+     "n": 53,
+     "tickets": 53,
+     "roi": 61.9,
+     "hit": 17.0
+    },
+    "VALIDATE": {
+     "n": 16,
+     "tickets": 16,
+     "roi": 30.0,
+     "hit": 12.5
+    },
+    "CONFIRM": {
+     "n": 12,
+     "tickets": 12,
+     "roi": 205.8,
+     "hit": 50.0
+    }
+   },
+   "M3|2.2": {
+    "MINE": {
+     "n": 34,
+     "tickets": 34,
+     "roi": 52.4,
+     "hit": 11.8
+    },
+    "VALIDATE": {
+     "n": 12,
+     "tickets": 12,
+     "roi": 40.0,
+     "hit": 16.7
+    },
+    "CONFIRM": {
+     "n": 7,
+     "tickets": 7,
+     "roi": 270.0,
+     "hit": 71.4
+    }
+   },
+   "M3|2.3": {
+    "MINE": {
+     "n": 23,
+     "tickets": 23,
+     "roi": 57.0,
+     "hit": 8.7
+    },
+    "VALIDATE": {
+     "n": 10,
+     "tickets": 10,
+     "roi": 23.0,
+     "hit": 10.0
+    },
+    "CONFIRM": {
+     "n": 1,
+     "tickets": 1,
+     "roi": 280.0,
+     "hit": 100.0
+    }
+   },
+   "M3|2.4": {
+    "MINE": {
+     "n": 16,
+     "tickets": 16,
+     "roi": 60.0,
+     "hit": 6.2
+    },
+    "VALIDATE": {
+     "n": 6,
+     "tickets": 6,
+     "roi": 0.0,
+     "hit": 0.0
+    },
+    "CONFIRM": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    }
+   },
+   "M3|2.5": {
+    "MINE": {
+     "n": 14,
+     "tickets": 14,
+     "roi": 68.6,
+     "hit": 7.1
+    },
+    "VALIDATE": {
+     "n": 5,
+     "tickets": 5,
+     "roi": 0.0,
+     "hit": 0.0
+    },
+    "CONFIRM": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    }
+   },
+   "G1|1.0": {
+    "MINE": {
+     "n": 1032,
+     "tickets": 1032,
+     "roi": 88.6,
+     "hit": 76.2
+    },
+    "VALIDATE": {
+     "n": 237,
+     "tickets": 237,
+     "roi": 91.1,
+     "hit": 80.6
+    },
+    "CONFIRM": {
+     "n": 225,
+     "tickets": 225,
+     "roi": 87.9,
+     "hit": 76.9
+    }
+   },
+   "G1|1.1": {
+    "MINE": {
+     "n": 926,
+     "tickets": 926,
+     "roi": 87.7,
+     "hit": 74.2
+    },
+    "VALIDATE": {
+     "n": 197,
+     "tickets": 197,
+     "roi": 89.6,
+     "hit": 77.7
+    },
+    "CONFIRM": {
+     "n": 204,
+     "tickets": 204,
+     "roi": 86.2,
+     "hit": 74.5
+    }
+   },
+   "G1|1.2": {
+    "MINE": {
+     "n": 158,
+     "tickets": 158,
+     "roi": 88.4,
+     "hit": 55.1
+    },
+    "VALIDATE": {
+     "n": 22,
+     "tickets": 22,
+     "roi": 79.5,
+     "hit": 45.5
+    },
+    "CONFIRM": {
+     "n": 27,
+     "tickets": 27,
+     "roi": 68.1,
+     "hit": 44.4
+    }
+   },
+   "G1|1.3": {
+    "MINE": {
+     "n": 97,
+     "tickets": 97,
+     "roi": 83.0,
+     "hit": 43.3
+    },
+    "VALIDATE": {
+     "n": 12,
+     "tickets": 12,
+     "roi": 90.0,
+     "hit": 41.7
+    },
+    "CONFIRM": {
+     "n": 15,
+     "tickets": 15,
+     "roi": 43.3,
+     "hit": 26.7
+    }
+   },
+   "G1|1.4": {
+    "MINE": {
+     "n": 70,
+     "tickets": 70,
+     "roi": 78.9,
+     "hit": 37.1
+    },
+    "VALIDATE": {
+     "n": 7,
+     "tickets": 7,
+     "roi": 61.4,
+     "hit": 28.6
+    },
+    "CONFIRM": {
+     "n": 10,
+     "tickets": 10,
+     "roi": 37.0,
+     "hit": 20.0
+    }
+   },
+   "G1|1.5": {
+    "MINE": {
+     "n": 52,
+     "tickets": 52,
+     "roi": 82.3,
+     "hit": 34.6
+    },
+    "VALIDATE": {
+     "n": 6,
+     "tickets": 6,
+     "roi": 71.7,
+     "hit": 33.3
+    },
+    "CONFIRM": {
+     "n": 7,
+     "tickets": 7,
+     "roi": 52.9,
+     "hit": 28.6
+    }
+   },
+   "G1|1.6": {
+    "MINE": {
+     "n": 38,
+     "tickets": 38,
+     "roi": 65.8,
+     "hit": 28.9
+    },
+    "VALIDATE": {
+     "n": 2,
+     "tickets": 2,
+     "roi": 115.0,
+     "hit": 50.0
+    },
+    "CONFIRM": {
+     "n": 5,
+     "tickets": 5,
+     "roi": 74.0,
+     "hit": 40.0
+    }
+   },
+   "G1|1.7": {
+    "MINE": {
+     "n": 30,
+     "tickets": 30,
+     "roi": 59.7,
+     "hit": 23.3
+    },
+    "VALIDATE": {
+     "n": 2,
+     "tickets": 2,
+     "roi": 115.0,
+     "hit": 50.0
+    },
+    "CONFIRM": {
+     "n": 3,
+     "tickets": 3,
+     "roi": 123.3,
+     "hit": 66.7
+    }
+   },
+   "G1|1.8": {
+    "MINE": {
+     "n": 22,
+     "tickets": 22,
+     "roi": 34.1,
+     "hit": 13.6
+    },
+    "VALIDATE": {
+     "n": 2,
+     "tickets": 2,
+     "roi": 115.0,
+     "hit": 50.0
+    },
+    "CONFIRM": {
+     "n": 2,
+     "tickets": 2,
+     "roi": 100.0,
+     "hit": 50.0
+    }
+   },
+   "G1|1.9": {
+    "MINE": {
+     "n": 19,
+     "tickets": 19,
+     "roi": 27.9,
+     "hit": 10.5
+    },
+    "VALIDATE": {
+     "n": 1,
+     "tickets": 1,
+     "roi": 0.0,
+     "hit": 0.0
+    },
+    "CONFIRM": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    }
+   },
+   "G1|2.0": {
+    "MINE": {
+     "n": 17,
+     "tickets": 17,
+     "roi": 15.9,
+     "hit": 5.9
+    },
+    "VALIDATE": {
+     "n": 1,
+     "tickets": 1,
+     "roi": 0.0,
+     "hit": 0.0
+    },
+    "CONFIRM": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    }
+   },
+   "G1|2.1": {
+    "MINE": {
+     "n": 15,
+     "tickets": 15,
+     "roi": 18.0,
+     "hit": 6.7
+    },
+    "VALIDATE": {
+     "n": 1,
+     "tickets": 1,
+     "roi": 0.0,
+     "hit": 0.0
+    },
+    "CONFIRM": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    }
+   },
+   "G1|2.2": {
+    "MINE": {
+     "n": 14,
+     "tickets": 14,
+     "roi": 19.3,
+     "hit": 7.1
+    },
+    "VALIDATE": {
+     "n": 1,
+     "tickets": 1,
+     "roi": 0.0,
+     "hit": 0.0
+    },
+    "CONFIRM": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    }
+   },
+   "G1|2.3": {
+    "MINE": {
+     "n": 13,
+     "tickets": 13,
+     "roi": 20.8,
+     "hit": 7.7
+    },
+    "VALIDATE": {
+     "n": 1,
+     "tickets": 1,
+     "roi": 0.0,
+     "hit": 0.0
+    },
+    "CONFIRM": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    }
+   },
+   "G1|2.4": {
+    "MINE": {
+     "n": 12,
+     "tickets": 12,
+     "roi": 22.5,
+     "hit": 8.3
+    },
+    "VALIDATE": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    },
+    "CONFIRM": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    }
+   },
+   "G1|2.5": {
+    "MINE": {
+     "n": 12,
+     "tickets": 12,
+     "roi": 22.5,
+     "hit": 8.3
+    },
+    "VALIDATE": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    },
+    "CONFIRM": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    }
+   },
+   "G1L|1.0": {
+    "MINE": {
+     "n": 67,
+     "tickets": 67,
+     "roi": 76.7,
+     "hit": 38.8
+    },
+    "VALIDATE": {
+     "n": 7,
+     "tickets": 7,
+     "roi": 74.3,
+     "hit": 28.6
+    },
+    "CONFIRM": {
+     "n": 13,
+     "tickets": 13,
+     "roi": 50.0,
+     "hit": 23.1
+    }
+   },
+   "G1L|1.1": {
+    "MINE": {
+     "n": 67,
+     "tickets": 67,
+     "roi": 76.7,
+     "hit": 38.8
+    },
+    "VALIDATE": {
+     "n": 7,
+     "tickets": 7,
+     "roi": 74.3,
+     "hit": 28.6
+    },
+    "CONFIRM": {
+     "n": 13,
+     "tickets": 13,
+     "roi": 50.0,
+     "hit": 23.1
+    }
+   },
+   "G1L|1.2": {
+    "MINE": {
+     "n": 64,
+     "tickets": 64,
+     "roi": 75.8,
+     "hit": 37.5
+    },
+    "VALIDATE": {
+     "n": 7,
+     "tickets": 7,
+     "roi": 74.3,
+     "hit": 28.6
+    },
+    "CONFIRM": {
+     "n": 12,
+     "tickets": 12,
+     "roi": 54.2,
+     "hit": 25.0
+    }
+   },
+   "G1L|1.3": {
+    "MINE": {
+     "n": 61,
+     "tickets": 61,
+     "roi": 72.6,
+     "hit": 36.1
+    },
+    "VALIDATE": {
+     "n": 6,
+     "tickets": 6,
+     "roi": 86.7,
+     "hit": 33.3
+    },
+    "CONFIRM": {
+     "n": 11,
+     "tickets": 11,
+     "roi": 33.6,
+     "hit": 18.2
+    }
+   },
+   "G1L|1.4": {
+    "MINE": {
+     "n": 53,
+     "tickets": 53,
+     "roi": 66.8,
+     "hit": 32.1
+    },
+    "VALIDATE": {
+     "n": 4,
+     "tickets": 4,
+     "roi": 0.0,
+     "hit": 0.0
+    },
+    "CONFIRM": {
+     "n": 9,
+     "tickets": 9,
+     "roi": 41.1,
+     "hit": 22.2
+    }
+   },
+   "G1L|1.5": {
+    "MINE": {
+     "n": 42,
+     "tickets": 42,
+     "roi": 65.7,
+     "hit": 28.6
+    },
+    "VALIDATE": {
+     "n": 3,
+     "tickets": 3,
+     "roi": 0.0,
+     "hit": 0.0
+    },
+    "CONFIRM": {
+     "n": 7,
+     "tickets": 7,
+     "roi": 52.9,
+     "hit": 28.6
+    }
+   },
+   "G1L|1.6": {
+    "MINE": {
+     "n": 32,
+     "tickets": 32,
+     "roi": 58.4,
+     "hit": 25.0
+    },
+    "VALIDATE": {
+     "n": 1,
+     "tickets": 1,
+     "roi": 0.0,
+     "hit": 0.0
+    },
+    "CONFIRM": {
+     "n": 5,
+     "tickets": 5,
+     "roi": 74.0,
+     "hit": 40.0
+    }
+   },
+   "G1L|1.7": {
+    "MINE": {
+     "n": 27,
+     "tickets": 27,
+     "roi": 56.7,
+     "hit": 22.2
+    },
+    "VALIDATE": {
+     "n": 1,
+     "tickets": 1,
+     "roi": 0.0,
+     "hit": 0.0
+    },
+    "CONFIRM": {
+     "n": 3,
+     "tickets": 3,
+     "roi": 123.3,
+     "hit": 66.7
+    }
+   },
+   "G1L|1.8": {
+    "MINE": {
+     "n": 20,
+     "tickets": 20,
+     "roi": 24.5,
+     "hit": 10.0
+    },
+    "VALIDATE": {
+     "n": 1,
+     "tickets": 1,
+     "roi": 0.0,
+     "hit": 0.0
+    },
+    "CONFIRM": {
+     "n": 2,
+     "tickets": 2,
+     "roi": 100.0,
+     "hit": 50.0
+    }
+   },
+   "G1L|1.9": {
+    "MINE": {
+     "n": 18,
+     "tickets": 18,
+     "roi": 15.0,
+     "hit": 5.6
+    },
+    "VALIDATE": {
+     "n": 1,
+     "tickets": 1,
+     "roi": 0.0,
+     "hit": 0.0
+    },
+    "CONFIRM": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    }
+   },
+   "G1L|2.0": {
+    "MINE": {
+     "n": 17,
+     "tickets": 17,
+     "roi": 15.9,
+     "hit": 5.9
+    },
+    "VALIDATE": {
+     "n": 1,
+     "tickets": 1,
+     "roi": 0.0,
+     "hit": 0.0
+    },
+    "CONFIRM": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    }
+   },
+   "G1L|2.1": {
+    "MINE": {
+     "n": 15,
+     "tickets": 15,
+     "roi": 18.0,
+     "hit": 6.7
+    },
+    "VALIDATE": {
+     "n": 1,
+     "tickets": 1,
+     "roi": 0.0,
+     "hit": 0.0
+    },
+    "CONFIRM": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    }
+   },
+   "G1L|2.2": {
+    "MINE": {
+     "n": 14,
+     "tickets": 14,
+     "roi": 19.3,
+     "hit": 7.1
+    },
+    "VALIDATE": {
+     "n": 1,
+     "tickets": 1,
+     "roi": 0.0,
+     "hit": 0.0
+    },
+    "CONFIRM": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    }
+   },
+   "G1L|2.3": {
+    "MINE": {
+     "n": 13,
+     "tickets": 13,
+     "roi": 20.8,
+     "hit": 7.7
+    },
+    "VALIDATE": {
+     "n": 1,
+     "tickets": 1,
+     "roi": 0.0,
+     "hit": 0.0
+    },
+    "CONFIRM": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    }
+   },
+   "G1L|2.4": {
+    "MINE": {
+     "n": 12,
+     "tickets": 12,
+     "roi": 22.5,
+     "hit": 8.3
+    },
+    "VALIDATE": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    },
+    "CONFIRM": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    }
+   },
+   "G1L|2.5": {
+    "MINE": {
+     "n": 12,
+     "tickets": 12,
+     "roi": 22.5,
+     "hit": 8.3
+    },
+    "VALIDATE": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    },
+    "CONFIRM": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    }
+   }
+  },
+  "all": {
+   "M12|1.0": {
+    "MINE": {
+     "n": 4823,
+     "tickets": 9646,
+     "roi": 84.1,
+     "hit": 84.7
+    },
+    "VALIDATE": {
+     "n": 1034,
+     "tickets": 2068,
+     "roi": 86.2,
+     "hit": 87.2
+    },
+    "CONFIRM": {
+     "n": 1033,
+     "tickets": 2066,
+     "roi": 83.6,
+     "hit": 84.5
+    }
+   },
+   "M12|1.1": {
+    "MINE": {
+     "n": 4782,
+     "tickets": 9473,
+     "roi": 83.9,
+     "hit": 84.0
+    },
+    "VALIDATE": {
+     "n": 1024,
+     "tickets": 2012,
+     "roi": 86.0,
+     "hit": 85.6
+    },
+    "CONFIRM": {
+     "n": 1024,
+     "tickets": 2033,
+     "roi": 83.4,
+     "hit": 83.7
+    }
+   },
+   "M12|1.2": {
+    "MINE": {
+     "n": 4354,
+     "tickets": 7192,
+     "roi": 83.1,
+     "hit": 70.0
+    },
+    "VALIDATE": {
+     "n": 904,
+     "tickets": 1435,
+     "roi": 84.5,
+     "hit": 70.8
+    },
+    "CONFIRM": {
+     "n": 914,
+     "tickets": 1502,
+     "roi": 82.8,
+     "hit": 70.6
+    }
+   },
+   "M12|1.3": {
+    "MINE": {
+     "n": 3777,
+     "tickets": 5764,
+     "roi": 82.3,
+     "hit": 63.4
+    },
+    "VALIDATE": {
+     "n": 759,
+     "tickets": 1133,
+     "roi": 83.6,
+     "hit": 64.2
+    },
+    "CONFIRM": {
+     "n": 795,
+     "tickets": 1202,
+     "roi": 84.1,
+     "hit": 65.9
+    }
+   },
+   "M12|1.4": {
+    "MINE": {
+     "n": 3078,
+     "tickets": 4303,
+     "roi": 83.1,
+     "hit": 58.6
+    },
+    "VALIDATE": {
+     "n": 577,
+     "tickets": 801,
+     "roi": 83.6,
+     "hit": 57.4
+    },
+    "CONFIRM": {
+     "n": 645,
+     "tickets": 888,
+     "roi": 82.0,
+     "hit": 57.8
+    }
+   },
+   "M12|1.5": {
+    "MINE": {
+     "n": 2218,
+     "tickets": 2889,
+     "roi": 82.3,
+     "hit": 52.3
+    },
+    "VALIDATE": {
+     "n": 424,
+     "tickets": 557,
+     "roi": 80.2,
+     "hit": 51.4
+    },
+    "CONFIRM": {
+     "n": 473,
+     "tickets": 597,
+     "roi": 81.0,
+     "hit": 51.6
+    }
+   },
+   "M12|1.6": {
+    "MINE": {
+     "n": 1530,
+     "tickets": 1858,
+     "roi": 80.9,
+     "hit": 46.8
+    },
+    "VALIDATE": {
+     "n": 305,
+     "tickets": 375,
+     "roi": 83.2,
+     "hit": 48.2
+    },
+    "CONFIRM": {
+     "n": 333,
+     "tickets": 387,
+     "roi": 86.6,
+     "hit": 49.8
+    }
+   },
+   "M12|1.7": {
+    "MINE": {
+     "n": 977,
+     "tickets": 1112,
+     "roi": 82.5,
+     "hit": 43.1
+    },
+    "VALIDATE": {
+     "n": 213,
+     "tickets": 251,
+     "roi": 82.6,
+     "hit": 44.1
+    },
+    "CONFIRM": {
+     "n": 204,
+     "tickets": 228,
+     "roi": 86.0,
+     "hit": 45.1
+    }
+   },
+   "M12|1.8": {
+    "MINE": {
+     "n": 572,
+     "tickets": 625,
+     "roi": 83.2,
+     "hit": 39.7
+    },
+    "VALIDATE": {
+     "n": 138,
+     "tickets": 158,
+     "roi": 80.0,
+     "hit": 39.9
+    },
+    "CONFIRM": {
+     "n": 118,
+     "tickets": 128,
+     "roi": 90.5,
+     "hit": 43.2
+    }
+   },
+   "M12|1.9": {
+    "MINE": {
+     "n": 339,
+     "tickets": 364,
+     "roi": 86.1,
+     "hit": 38.1
+    },
+    "VALIDATE": {
+     "n": 88,
+     "tickets": 98,
+     "roi": 91.7,
+     "hit": 44.3
+    },
+    "CONFIRM": {
+     "n": 73,
+     "tickets": 77,
+     "roi": 104.7,
+     "hit": 46.6
+    }
+   },
+   "M12|2.0": {
+    "MINE": {
+     "n": 215,
+     "tickets": 225,
+     "roi": 93.4,
+     "hit": 38.1
+    },
+    "VALIDATE": {
+     "n": 53,
+     "tickets": 57,
+     "roi": 103.7,
+     "hit": 47.2
+    },
+    "CONFIRM": {
+     "n": 46,
+     "tickets": 47,
+     "roi": 106.6,
+     "hit": 45.7
+    }
+   },
+   "M12|2.1": {
+    "MINE": {
+     "n": 120,
+     "tickets": 122,
+     "roi": 96.2,
+     "hit": 35.0
+    },
+    "VALIDATE": {
+     "n": 29,
+     "tickets": 31,
+     "roi": 104.5,
+     "hit": 44.8
+    },
+    "CONFIRM": {
+     "n": 24,
+     "tickets": 24,
+     "roi": 80.4,
+     "hit": 33.3
+    }
+   },
+   "M12|2.2": {
+    "MINE": {
+     "n": 61,
+     "tickets": 62,
+     "roi": 85.0,
+     "hit": 29.5
+    },
+    "VALIDATE": {
+     "n": 18,
+     "tickets": 20,
+     "roi": 116.0,
+     "hit": 50.0
+    },
+    "CONFIRM": {
+     "n": 14,
+     "tickets": 14,
+     "roi": 106.4,
+     "hit": 42.9
+    }
+   },
+   "M12|2.3": {
+    "MINE": {
+     "n": 30,
+     "tickets": 30,
+     "roi": 98.3,
+     "hit": 33.3
+    },
+    "VALIDATE": {
+     "n": 10,
+     "tickets": 11,
+     "roi": 78.2,
+     "hit": 30.0
+    },
+    "CONFIRM": {
+     "n": 8,
+     "tickets": 8,
+     "roi": 60.0,
+     "hit": 25.0
+    }
+   },
+   "M12|2.4": {
+    "MINE": {
+     "n": 20,
+     "tickets": 20,
+     "roi": 89.5,
+     "hit": 30.0
+    },
+    "VALIDATE": {
+     "n": 6,
+     "tickets": 7,
+     "roi": 44.3,
+     "hit": 16.7
+    },
+    "CONFIRM": {
+     "n": 4,
+     "tickets": 4,
+     "roi": 0.0,
+     "hit": 0.0
+    }
+   },
+   "M12|2.5": {
+    "MINE": {
+     "n": 10,
+     "tickets": 10,
+     "roi": 94.0,
+     "hit": 30.0
+    },
+    "VALIDATE": {
+     "n": 3,
+     "tickets": 4,
+     "roi": 77.5,
+     "hit": 33.3
+    },
+    "CONFIRM": {
+     "n": 1,
+     "tickets": 1,
+     "roi": 0.0,
+     "hit": 0.0
+    }
+   },
+   "M1|1.0": {
+    "MINE": {
+     "n": 4823,
+     "tickets": 4823,
+     "roi": 85.1,
+     "hit": 64.9
+    },
+    "VALIDATE": {
+     "n": 1034,
+     "tickets": 1034,
+     "roi": 86.5,
+     "hit": 67.1
+    },
+    "CONFIRM": {
+     "n": 1033,
+     "tickets": 1033,
+     "roi": 83.8,
+     "hit": 64.1
+    }
+   },
+   "M1|1.1": {
+    "MINE": {
+     "n": 4691,
+     "tickets": 4691,
+     "roi": 84.8,
+     "hit": 64.1
+    },
+    "VALIDATE": {
+     "n": 988,
+     "tickets": 988,
+     "roi": 86.0,
+     "hit": 65.9
+    },
+    "CONFIRM": {
+     "n": 1009,
+     "tickets": 1009,
+     "roi": 83.3,
+     "hit": 63.2
+    }
+   },
+   "M1|1.2": {
+    "MINE": {
+     "n": 2884,
+     "tickets": 2884,
+     "roi": 84.4,
+     "hit": 57.0
+    },
+    "VALIDATE": {
+     "n": 539,
+     "tickets": 539,
+     "roi": 82.6,
+     "hit": 54.7
+    },
+    "CONFIRM": {
+     "n": 599,
+     "tickets": 599,
+     "roi": 81.7,
+     "hit": 55.3
+    }
+   },
+   "M1|1.3": {
+    "MINE": {
+     "n": 2046,
+     "tickets": 2046,
+     "roi": 82.8,
+     "hit": 52.8
+    },
+    "VALIDATE": {
+     "n": 396,
+     "tickets": 396,
+     "roi": 81.1,
+     "hit": 50.8
+    },
+    "CONFIRM": {
+     "n": 430,
+     "tickets": 430,
+     "roi": 84.6,
+     "hit": 54.4
+    }
+   },
+   "M1|1.4": {
+    "MINE": {
+     "n": 1346,
+     "tickets": 1346,
+     "roi": 83.8,
+     "hit": 50.7
+    },
+    "VALIDATE": {
+     "n": 257,
+     "tickets": 257,
+     "roi": 80.9,
+     "hit": 47.1
+    },
+    "CONFIRM": {
+     "n": 265,
+     "tickets": 265,
+     "roi": 83.4,
+     "hit": 50.6
+    }
+   },
+   "M1|1.5": {
+    "MINE": {
+     "n": 771,
+     "tickets": 771,
+     "roi": 83.7,
+     "hit": 48.0
+    },
+    "VALIDATE": {
+     "n": 158,
+     "tickets": 158,
+     "roi": 79.0,
+     "hit": 43.0
+    },
+    "CONFIRM": {
+     "n": 150,
+     "tickets": 150,
+     "roi": 79.7,
+     "hit": 45.3
+    }
+   },
+   "M1|1.6": {
+    "MINE": {
+     "n": 407,
+     "tickets": 407,
+     "roi": 77.5,
+     "hit": 42.0
+    },
+    "VALIDATE": {
+     "n": 91,
+     "tickets": 91,
+     "roi": 82.5,
+     "hit": 41.8
+    },
+    "CONFIRM": {
+     "n": 78,
+     "tickets": 78,
+     "roi": 82.8,
+     "hit": 44.9
+    }
+   },
+   "M1|1.7": {
+    "MINE": {
+     "n": 193,
+     "tickets": 193,
+     "roi": 74.9,
+     "hit": 37.8
+    },
+    "VALIDATE": {
+     "n": 60,
+     "tickets": 60,
+     "roi": 90.0,
+     "hit": 43.3
+    },
+    "CONFIRM": {
+     "n": 36,
+     "tickets": 36,
+     "roi": 73.1,
+     "hit": 36.1
+    }
+   },
+   "M1|1.8": {
+    "MINE": {
+     "n": 84,
+     "tickets": 84,
+     "roi": 74.6,
+     "hit": 35.7
+    },
+    "VALIDATE": {
+     "n": 37,
+     "tickets": 37,
+     "roi": 94.6,
+     "hit": 43.2
+    },
+    "CONFIRM": {
+     "n": 16,
+     "tickets": 16,
+     "roi": 105.6,
+     "hit": 50.0
+    }
+   },
+   "M1|1.9": {
+    "MINE": {
+     "n": 47,
+     "tickets": 47,
+     "roi": 75.3,
+     "hit": 34.0
+    },
+    "VALIDATE": {
+     "n": 22,
+     "tickets": 22,
+     "roi": 113.2,
+     "hit": 50.0
+    },
+    "CONFIRM": {
+     "n": 8,
+     "tickets": 8,
+     "roi": 160.0,
+     "hit": 75.0
+    }
+   },
+   "M1|2.0": {
+    "MINE": {
+     "n": 27,
+     "tickets": 27,
+     "roi": 84.1,
+     "hit": 37.0
+    },
+    "VALIDATE": {
+     "n": 9,
+     "tickets": 9,
+     "roi": 157.8,
+     "hit": 66.7
+    },
+    "CONFIRM": {
+     "n": 2,
+     "tickets": 2,
+     "roi": 115.0,
+     "hit": 50.0
+    }
+   },
+   "M1|2.1": {
+    "MINE": {
+     "n": 11,
+     "tickets": 11,
+     "roi": 62.7,
+     "hit": 27.3
+    },
+    "VALIDATE": {
+     "n": 6,
+     "tickets": 6,
+     "roi": 165.0,
+     "hit": 66.7
+    },
+    "CONFIRM": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    }
+   },
+   "M1|2.2": {
+    "MINE": {
+     "n": 5,
+     "tickets": 5,
+     "roi": 54.0,
+     "hit": 20.0
+    },
+    "VALIDATE": {
+     "n": 4,
+     "tickets": 4,
+     "roi": 185.0,
+     "hit": 75.0
+    },
+    "CONFIRM": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    }
+   },
+   "M1|2.3": {
+    "MINE": {
+     "n": 2,
+     "tickets": 2,
+     "roi": 135.0,
+     "hit": 50.0
+    },
+    "VALIDATE": {
+     "n": 1,
+     "tickets": 1,
+     "roi": 0.0,
+     "hit": 0.0
+    },
+    "CONFIRM": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    }
+   },
+   "M1|2.4": {
+    "MINE": {
+     "n": 1,
+     "tickets": 1,
+     "roi": 270.0,
+     "hit": 100.0
+    },
+    "VALIDATE": {
+     "n": 1,
+     "tickets": 1,
+     "roi": 0.0,
+     "hit": 0.0
+    },
+    "CONFIRM": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    }
+   },
+   "M1|2.5": {
+    "MINE": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    },
+    "VALIDATE": {
+     "n": 1,
+     "tickets": 1,
+     "roi": 0.0,
+     "hit": 0.0
+    },
+    "CONFIRM": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    }
+   },
+   "M2|1.0": {
+    "MINE": {
+     "n": 4823,
+     "tickets": 4823,
+     "roi": 83.2,
+     "hit": 51.0
+    },
+    "VALIDATE": {
+     "n": 1034,
+     "tickets": 1034,
+     "roi": 85.9,
+     "hit": 54.0
+    },
+    "CONFIRM": {
+     "n": 1033,
+     "tickets": 1033,
+     "roi": 83.5,
+     "hit": 51.9
+    }
+   },
+   "M2|1.1": {
+    "MINE": {
+     "n": 4782,
+     "tickets": 4782,
+     "roi": 83.1,
+     "hit": 50.7
+    },
+    "VALIDATE": {
+     "n": 1024,
+     "tickets": 1024,
+     "roi": 85.9,
+     "hit": 53.8
+    },
+    "CONFIRM": {
+     "n": 1024,
+     "tickets": 1024,
+     "roi": 83.4,
+     "hit": 51.6
+    }
+   },
+   "M2|1.2": {
+    "MINE": {
+     "n": 4308,
+     "tickets": 4308,
+     "roi": 82.2,
+     "hit": 48.2
+    },
+    "VALIDATE": {
+     "n": 896,
+     "tickets": 896,
+     "roi": 85.7,
+     "hit": 51.5
+    },
+    "CONFIRM": {
+     "n": 903,
+     "tickets": 903,
+     "roi": 83.5,
+     "hit": 49.5
+    }
+   },
+   "M2|1.3": {
+    "MINE": {
+     "n": 3718,
+     "tickets": 3718,
+     "roi": 82.0,
+     "hit": 46.4
+    },
+    "VALIDATE": {
+     "n": 737,
+     "tickets": 737,
+     "roi": 85.0,
+     "hit": 48.7
+    },
+    "CONFIRM": {
+     "n": 772,
+     "tickets": 772,
+     "roi": 83.8,
+     "hit": 47.9
+    }
+   },
+   "M2|1.4": {
+    "MINE": {
+     "n": 2957,
+     "tickets": 2957,
+     "roi": 82.8,
+     "hit": 45.1
+    },
+    "VALIDATE": {
+     "n": 544,
+     "tickets": 544,
+     "roi": 84.9,
+     "hit": 45.4
+    },
+    "CONFIRM": {
+     "n": 623,
+     "tickets": 623,
+     "roi": 81.5,
+     "hit": 44.6
+    }
+   },
+   "M2|1.5": {
+    "MINE": {
+     "n": 2118,
+     "tickets": 2118,
+     "roi": 81.8,
+     "hit": 42.3
+    },
+    "VALIDATE": {
+     "n": 399,
+     "tickets": 399,
+     "roi": 80.7,
+     "hit": 41.9
+    },
+    "CONFIRM": {
+     "n": 447,
+     "tickets": 447,
+     "roi": 81.5,
+     "hit": 42.5
+    }
+   },
+   "M2|1.6": {
+    "MINE": {
+     "n": 1451,
+     "tickets": 1451,
+     "roi": 81.8,
+     "hit": 40.3
+    },
+    "VALIDATE": {
+     "n": 284,
+     "tickets": 284,
+     "roi": 83.4,
+     "hit": 41.5
+    },
+    "CONFIRM": {
+     "n": 309,
+     "tickets": 309,
+     "roi": 87.5,
+     "hit": 44.0
+    }
+   },
+   "M2|1.7": {
+    "MINE": {
+     "n": 919,
+     "tickets": 919,
+     "roi": 84.1,
+     "hit": 39.1
+    },
+    "VALIDATE": {
+     "n": 191,
+     "tickets": 191,
+     "roi": 80.3,
+     "hit": 37.7
+    },
+    "CONFIRM": {
+     "n": 192,
+     "tickets": 192,
+     "roi": 88.4,
+     "hit": 41.7
+    }
+   },
+   "M2|1.8": {
+    "MINE": {
+     "n": 541,
+     "tickets": 541,
+     "roi": 84.5,
+     "hit": 36.8
+    },
+    "VALIDATE": {
+     "n": 121,
+     "tickets": 121,
+     "roi": 75.5,
+     "hit": 33.9
+    },
+    "CONFIRM": {
+     "n": 112,
+     "tickets": 112,
+     "roi": 88.3,
+     "hit": 39.3
+    }
+   },
+   "M2|1.9": {
+    "MINE": {
+     "n": 317,
+     "tickets": 317,
+     "roi": 87.7,
+     "hit": 36.0
+    },
+    "VALIDATE": {
+     "n": 76,
+     "tickets": 76,
+     "roi": 85.5,
+     "hit": 36.8
+    },
+    "CONFIRM": {
+     "n": 69,
+     "tickets": 69,
+     "roi": 98.3,
+     "hit": 42.0
+    }
+   },
+   "M2|2.0": {
+    "MINE": {
+     "n": 198,
+     "tickets": 198,
+     "roi": 94.7,
+     "hit": 36.4
+    },
+    "VALIDATE": {
+     "n": 48,
+     "tickets": 48,
+     "roi": 93.5,
+     "hit": 39.6
+    },
+    "CONFIRM": {
+     "n": 45,
+     "tickets": 45,
+     "roi": 106.2,
+     "hit": 44.4
+    }
+   },
+   "M2|2.1": {
+    "MINE": {
+     "n": 111,
+     "tickets": 111,
+     "roi": 99.5,
+     "hit": 35.1
+    },
+    "VALIDATE": {
+     "n": 25,
+     "tickets": 25,
+     "roi": 90.0,
+     "hit": 36.0
+    },
+    "CONFIRM": {
+     "n": 24,
+     "tickets": 24,
+     "roi": 80.4,
+     "hit": 33.3
+    }
+   },
+   "M2|2.2": {
+    "MINE": {
+     "n": 57,
+     "tickets": 57,
+     "roi": 87.7,
+     "hit": 29.8
+    },
+    "VALIDATE": {
+     "n": 16,
+     "tickets": 16,
+     "roi": 98.8,
+     "hit": 37.5
+    },
+    "CONFIRM": {
+     "n": 14,
+     "tickets": 14,
+     "roi": 106.4,
+     "hit": 42.9
+    }
+   },
+   "M2|2.3": {
+    "MINE": {
+     "n": 28,
+     "tickets": 28,
+     "roi": 95.7,
+     "hit": 32.1
+    },
+    "VALIDATE": {
+     "n": 10,
+     "tickets": 10,
+     "roi": 86.0,
+     "hit": 30.0
+    },
+    "CONFIRM": {
+     "n": 8,
+     "tickets": 8,
+     "roi": 60.0,
+     "hit": 25.0
+    }
+   },
+   "M2|2.4": {
+    "MINE": {
+     "n": 19,
+     "tickets": 19,
+     "roi": 80.0,
+     "hit": 26.3
+    },
+    "VALIDATE": {
+     "n": 6,
+     "tickets": 6,
+     "roi": 51.7,
+     "hit": 16.7
+    },
+    "CONFIRM": {
+     "n": 4,
+     "tickets": 4,
+     "roi": 0.0,
+     "hit": 0.0
+    }
+   },
+   "M2|2.5": {
+    "MINE": {
+     "n": 10,
+     "tickets": 10,
+     "roi": 94.0,
+     "hit": 30.0
+    },
+    "VALIDATE": {
+     "n": 3,
+     "tickets": 3,
+     "roi": 103.3,
+     "hit": 33.3
+    },
+    "CONFIRM": {
+     "n": 1,
+     "tickets": 1,
+     "roi": 0.0,
+     "hit": 0.0
+    }
+   },
+   "M3|1.0": {
+    "MINE": {
+     "n": 4823,
+     "tickets": 4823,
+     "roi": 79.6,
+     "hit": 40.7
+    },
+    "VALIDATE": {
+     "n": 1034,
+     "tickets": 1034,
+     "roi": 79.5,
+     "hit": 40.6
+    },
+    "CONFIRM": {
+     "n": 1033,
+     "tickets": 1033,
+     "roi": 80.6,
+     "hit": 40.4
+    }
+   },
+   "M3|1.1": {
+    "MINE": {
+     "n": 4819,
+     "tickets": 4819,
+     "roi": 79.6,
+     "hit": 40.7
+    },
+    "VALIDATE": {
+     "n": 1029,
+     "tickets": 1029,
+     "roi": 79.1,
+     "hit": 40.4
+    },
+    "CONFIRM": {
+     "n": 1032,
+     "tickets": 1032,
+     "roi": 80.6,
+     "hit": 40.3
+    }
+   },
+   "M3|1.2": {
+    "MINE": {
+     "n": 4728,
+     "tickets": 4728,
+     "roi": 79.3,
+     "hit": 40.2
+    },
+    "VALIDATE": {
+     "n": 1011,
+     "tickets": 1011,
+     "roi": 78.8,
+     "hit": 40.0
+    },
+    "CONFIRM": {
+     "n": 1016,
+     "tickets": 1016,
+     "roi": 81.1,
+     "hit": 40.4
+    }
+   },
+   "M3|1.3": {
+    "MINE": {
+     "n": 4539,
+     "tickets": 4539,
+     "roi": 78.9,
+     "hit": 39.5
+    },
+    "VALIDATE": {
+     "n": 952,
+     "tickets": 952,
+     "roi": 78.9,
+     "hit": 39.0
+    },
+    "CONFIRM": {
+     "n": 974,
+     "tickets": 974,
+     "roi": 81.2,
+     "hit": 39.7
+    }
+   },
+   "M3|1.4": {
+    "MINE": {
+     "n": 4182,
+     "tickets": 4182,
+     "roi": 78.9,
+     "hit": 38.6
+    },
+    "VALIDATE": {
+     "n": 842,
+     "tickets": 842,
+     "roi": 77.7,
+     "hit": 37.2
+    },
+    "CONFIRM": {
+     "n": 890,
+     "tickets": 890,
+     "roi": 83.3,
+     "hit": 40.1
+    }
+   },
+   "M3|1.5": {
+    "MINE": {
+     "n": 3614,
+     "tickets": 3614,
+     "roi": 78.8,
+     "hit": 37.4
+    },
+    "VALIDATE": {
+     "n": 736,
+     "tickets": 736,
+     "roi": 77.1,
+     "hit": 35.3
+    },
+    "CONFIRM": {
+     "n": 759,
+     "tickets": 759,
+     "roi": 83.5,
+     "hit": 38.7
+    }
+   },
+   "M3|1.6": {
+    "MINE": {
+     "n": 2935,
+     "tickets": 2935,
+     "roi": 79.8,
+     "hit": 36.4
+    },
+    "VALIDATE": {
+     "n": 606,
+     "tickets": 606,
+     "roi": 80.7,
+     "hit": 35.6
+    },
+    "CONFIRM": {
+     "n": 632,
+     "tickets": 632,
+     "roi": 84.5,
+     "hit": 37.5
+    }
+   },
+   "M3|1.7": {
+    "MINE": {
+     "n": 2249,
+     "tickets": 2249,
+     "roi": 79.7,
+     "hit": 34.7
+    },
+    "VALIDATE": {
+     "n": 471,
+     "tickets": 471,
+     "roi": 80.9,
+     "hit": 34.2
+    },
+    "CONFIRM": {
+     "n": 474,
+     "tickets": 474,
+     "roi": 86.3,
+     "hit": 36.5
+    }
+   },
+   "M3|1.8": {
+    "MINE": {
+     "n": 1661,
+     "tickets": 1661,
+     "roi": 80.9,
+     "hit": 33.8
+    },
+    "VALIDATE": {
+     "n": 338,
+     "tickets": 338,
+     "roi": 78.8,
+     "hit": 31.7
+    },
+    "CONFIRM": {
+     "n": 353,
+     "tickets": 353,
+     "roi": 89.3,
+     "hit": 35.7
+    }
+   },
+   "M3|1.9": {
+    "MINE": {
+     "n": 1201,
+     "tickets": 1201,
+     "roi": 82.4,
+     "hit": 32.7
+    },
+    "VALIDATE": {
+     "n": 241,
+     "tickets": 241,
+     "roi": 76.6,
+     "hit": 29.5
+    },
+    "CONFIRM": {
+     "n": 241,
+     "tickets": 241,
+     "roi": 86.9,
+     "hit": 33.6
+    }
+   },
+   "M3|2.0": {
+    "MINE": {
+     "n": 824,
+     "tickets": 824,
+     "roi": 80.0,
+     "hit": 30.3
+    },
+    "VALIDATE": {
+     "n": 176,
+     "tickets": 176,
+     "roi": 72.7,
+     "hit": 27.3
+    },
+    "CONFIRM": {
+     "n": 163,
+     "tickets": 163,
+     "roi": 102.3,
+     "hit": 38.0
+    }
+   },
+   "M3|2.1": {
+    "MINE": {
+     "n": 562,
+     "tickets": 562,
+     "roi": 83.9,
+     "hit": 30.8
+    },
+    "VALIDATE": {
+     "n": 131,
+     "tickets": 131,
+     "roi": 73.7,
+     "hit": 27.5
+    },
+    "CONFIRM": {
+     "n": 111,
+     "tickets": 111,
+     "roi": 114.4,
+     "hit": 40.5
+    }
+   },
+   "M3|2.2": {
+    "MINE": {
+     "n": 378,
+     "tickets": 378,
+     "roi": 87.1,
+     "hit": 31.0
+    },
+    "VALIDATE": {
+     "n": 105,
+     "tickets": 105,
+     "roi": 77.7,
+     "hit": 28.6
+    },
+    "CONFIRM": {
+     "n": 65,
+     "tickets": 65,
+     "roi": 123.1,
+     "hit": 41.5
+    }
+   },
+   "M3|2.3": {
+    "MINE": {
+     "n": 238,
+     "tickets": 238,
+     "roi": 84.6,
+     "hit": 28.2
+    },
+    "VALIDATE": {
+     "n": 64,
+     "tickets": 64,
+     "roi": 77.2,
+     "hit": 26.6
+    },
+    "CONFIRM": {
+     "n": 41,
+     "tickets": 41,
+     "roi": 108.0,
+     "hit": 39.0
+    }
+   },
+   "M3|2.4": {
+    "MINE": {
+     "n": 147,
+     "tickets": 147,
+     "roi": 81.1,
+     "hit": 24.5
+    },
+    "VALIDATE": {
+     "n": 39,
+     "tickets": 39,
+     "roi": 78.2,
+     "hit": 25.6
+    },
+    "CONFIRM": {
+     "n": 24,
+     "tickets": 24,
+     "roi": 98.3,
+     "hit": 33.3
+    }
+   },
+   "M3|2.5": {
+    "MINE": {
+     "n": 93,
+     "tickets": 93,
+     "roi": 74.9,
+     "hit": 20.4
+    },
+    "VALIDATE": {
+     "n": 28,
+     "tickets": 28,
+     "roi": 82.1,
+     "hit": 25.0
+    },
+    "CONFIRM": {
+     "n": 19,
+     "tickets": 19,
+     "roi": 85.3,
+     "hit": 26.3
+    }
+   },
+   "G1|1.0": {
+    "MINE": {
+     "n": 4823,
+     "tickets": 4823,
+     "roi": 81.6,
+     "hit": 57.3
+    },
+    "VALIDATE": {
+     "n": 1034,
+     "tickets": 1034,
+     "roi": 83.0,
+     "hit": 60.7
+    },
+    "CONFIRM": {
+     "n": 1033,
+     "tickets": 1033,
+     "roi": 79.9,
+     "hit": 57.1
+    }
+   },
+   "G1|1.1": {
+    "MINE": {
+     "n": 4699,
+     "tickets": 4699,
+     "roi": 81.2,
+     "hit": 56.3
+    },
+    "VALIDATE": {
+     "n": 990,
+     "tickets": 990,
+     "roi": 82.3,
+     "hit": 59.2
+    },
+    "CONFIRM": {
+     "n": 1009,
+     "tickets": 1009,
+     "roi": 79.3,
+     "hit": 56.1
+    }
+   },
+   "G1|1.2": {
+    "MINE": {
+     "n": 3263,
+     "tickets": 3263,
+     "roi": 79.2,
+     "hit": 47.8
+    },
+    "VALIDATE": {
+     "n": 621,
+     "tickets": 621,
+     "roi": 77.3,
+     "hit": 47.0
+    },
+    "CONFIRM": {
+     "n": 666,
+     "tickets": 666,
+     "roi": 77.4,
+     "hit": 47.9
+    }
+   },
+   "G1|1.3": {
+    "MINE": {
+     "n": 2635,
+     "tickets": 2635,
+     "roi": 77.4,
+     "hit": 43.5
+    },
+    "VALIDATE": {
+     "n": 495,
+     "tickets": 495,
+     "roi": 74.4,
+     "hit": 42.0
+    },
+    "CONFIRM": {
+     "n": 522,
+     "tickets": 522,
+     "roi": 77.3,
+     "hit": 44.8
+    }
+   },
+   "G1|1.4": {
+    "MINE": {
+     "n": 2021,
+     "tickets": 2021,
+     "roi": 76.1,
+     "hit": 39.8
+    },
+    "VALIDATE": {
+     "n": 370,
+     "tickets": 370,
+     "roi": 70.7,
+     "hit": 37.3
+    },
+    "CONFIRM": {
+     "n": 389,
+     "tickets": 389,
+     "roi": 78.5,
+     "hit": 42.4
+    }
+   },
+   "G1|1.5": {
+    "MINE": {
+     "n": 1510,
+     "tickets": 1510,
+     "roi": 75.8,
+     "hit": 36.4
+    },
+    "VALIDATE": {
+     "n": 275,
+     "tickets": 275,
+     "roi": 63.4,
+     "hit": 30.2
+    },
+    "CONFIRM": {
+     "n": 282,
+     "tickets": 282,
+     "roi": 76.9,
+     "hit": 37.9
+    }
+   },
+   "G1|1.6": {
+    "MINE": {
+     "n": 1084,
+     "tickets": 1084,
+     "roi": 75.2,
+     "hit": 33.0
+    },
+    "VALIDATE": {
+     "n": 199,
+     "tickets": 199,
+     "roi": 66.3,
+     "hit": 29.1
+    },
+    "CONFIRM": {
+     "n": 209,
+     "tickets": 209,
+     "roi": 80.1,
+     "hit": 36.8
+    }
+   },
+   "G1|1.7": {
+    "MINE": {
+     "n": 824,
+     "tickets": 824,
+     "roi": 73.8,
+     "hit": 29.5
+    },
+    "VALIDATE": {
+     "n": 155,
+     "tickets": 155,
+     "roi": 69.0,
+     "hit": 28.4
+    },
+    "CONFIRM": {
+     "n": 151,
+     "tickets": 151,
+     "roi": 90.7,
+     "hit": 39.7
+    }
+   },
+   "G1|1.8": {
+    "MINE": {
+     "n": 632,
+     "tickets": 632,
+     "roi": 75.8,
+     "hit": 28.2
+    },
+    "VALIDATE": {
+     "n": 122,
+     "tickets": 122,
+     "roi": 71.1,
+     "hit": 27.9
+    },
+    "CONFIRM": {
+     "n": 110,
+     "tickets": 110,
+     "roi": 90.5,
+     "hit": 37.3
+    }
+   },
+   "G1|1.9": {
+    "MINE": {
+     "n": 508,
+     "tickets": 508,
+     "roi": 76.2,
+     "hit": 26.2
+    },
+    "VALIDATE": {
+     "n": 93,
+     "tickets": 93,
+     "roi": 82.2,
+     "hit": 31.2
+    },
+    "CONFIRM": {
+     "n": 75,
+     "tickets": 75,
+     "roi": 103.5,
+     "hit": 40.0
+    }
+   },
+   "G1|2.0": {
+    "MINE": {
+     "n": 428,
+     "tickets": 428,
+     "roi": 75.3,
+     "hit": 24.3
+    },
+    "VALIDATE": {
+     "n": 78,
+     "tickets": 78,
+     "roi": 81.4,
+     "hit": 29.5
+    },
+    "CONFIRM": {
+     "n": 55,
+     "tickets": 55,
+     "roi": 106.5,
+     "hit": 38.2
+    }
+   },
+   "G1|2.1": {
+    "MINE": {
+     "n": 353,
+     "tickets": 353,
+     "roi": 76.0,
+     "hit": 23.2
+    },
+    "VALIDATE": {
+     "n": 65,
+     "tickets": 65,
+     "roi": 76.9,
+     "hit": 26.2
+    },
+    "CONFIRM": {
+     "n": 42,
+     "tickets": 42,
+     "roi": 98.6,
+     "hit": 33.3
+    }
+   },
+   "G1|2.2": {
+    "MINE": {
+     "n": 302,
+     "tickets": 302,
+     "roi": 72.8,
+     "hit": 20.5
+    },
+    "VALIDATE": {
+     "n": 58,
+     "tickets": 58,
+     "roi": 73.8,
+     "hit": 24.1
+    },
+    "CONFIRM": {
+     "n": 32,
+     "tickets": 32,
+     "roi": 90.6,
+     "hit": 28.1
+    }
+   },
+   "G1|2.3": {
+    "MINE": {
+     "n": 255,
+     "tickets": 255,
+     "roi": 77.1,
+     "hit": 20.8
+    },
+    "VALIDATE": {
+     "n": 49,
+     "tickets": 49,
+     "roi": 76.9,
+     "hit": 24.5
+    },
+    "CONFIRM": {
+     "n": 29,
+     "tickets": 29,
+     "roi": 81.4,
+     "hit": 24.1
+    }
+   },
+   "G1|2.4": {
+    "MINE": {
+     "n": 229,
+     "tickets": 229,
+     "roi": 80.1,
+     "hit": 21.0
+    },
+    "VALIDATE": {
+     "n": 43,
+     "tickets": 43,
+     "roi": 75.8,
+     "hit": 23.3
+    },
+    "CONFIRM": {
+     "n": 24,
+     "tickets": 24,
+     "roi": 77.1,
+     "hit": 20.8
+    }
+   },
+   "G1|2.5": {
+    "MINE": {
+     "n": 204,
+     "tickets": 204,
+     "roi": 82.7,
+     "hit": 21.1
+    },
+    "VALIDATE": {
+     "n": 36,
+     "tickets": 36,
+     "roi": 75.0,
+     "hit": 22.2
+    },
+    "CONFIRM": {
+     "n": 21,
+     "tickets": 21,
+     "roi": 75.7,
+     "hit": 19.0
+    }
+   },
+   "G1L|1.0": {
+    "MINE": {
+     "n": 1104,
+     "tickets": 1104,
+     "roi": 73.4,
+     "hit": 34.1
+    },
+    "VALIDATE": {
+     "n": 200,
+     "tickets": 200,
+     "roi": 65.2,
+     "hit": 29.5
+    },
+    "CONFIRM": {
+     "n": 201,
+     "tickets": 201,
+     "roi": 80.1,
+     "hit": 38.8
+    }
+   },
+   "G1L|1.1": {
+    "MINE": {
+     "n": 1103,
+     "tickets": 1103,
+     "roi": 73.4,
+     "hit": 34.1
+    },
+    "VALIDATE": {
+     "n": 199,
+     "tickets": 199,
+     "roi": 65.0,
+     "hit": 29.1
+    },
+    "CONFIRM": {
+     "n": 201,
+     "tickets": 201,
+     "roi": 80.1,
+     "hit": 38.8
+    }
+   },
+   "G1L|1.2": {
+    "MINE": {
+     "n": 1088,
+     "tickets": 1088,
+     "roi": 73.1,
+     "hit": 33.5
+    },
+    "VALIDATE": {
+     "n": 198,
+     "tickets": 198,
+     "roi": 64.4,
+     "hit": 28.8
+    },
+    "CONFIRM": {
+     "n": 197,
+     "tickets": 197,
+     "roi": 81.1,
+     "hit": 39.1
+    }
+   },
+   "G1L|1.3": {
+    "MINE": {
+     "n": 1067,
+     "tickets": 1067,
+     "roi": 73.2,
+     "hit": 33.4
+    },
+    "VALIDATE": {
+     "n": 187,
+     "tickets": 187,
+     "roi": 65.3,
+     "hit": 28.3
+    },
+    "CONFIRM": {
+     "n": 192,
+     "tickets": 192,
+     "roi": 81.0,
+     "hit": 39.1
+    }
+   },
+   "G1L|1.4": {
+    "MINE": {
+     "n": 1012,
+     "tickets": 1012,
+     "roi": 72.7,
+     "hit": 32.3
+    },
+    "VALIDATE": {
+     "n": 170,
+     "tickets": 170,
+     "roi": 61.2,
+     "hit": 26.5
+    },
+    "CONFIRM": {
+     "n": 178,
+     "tickets": 178,
+     "roi": 84.8,
+     "hit": 40.4
+    }
+   },
+   "G1L|1.5": {
+    "MINE": {
+     "n": 927,
+     "tickets": 927,
+     "roi": 74.2,
+     "hit": 31.9
+    },
+    "VALIDATE": {
+     "n": 157,
+     "tickets": 157,
+     "roi": 62.0,
+     "hit": 26.1
+    },
+    "CONFIRM": {
+     "n": 159,
+     "tickets": 159,
+     "roi": 86.0,
+     "hit": 39.6
+    }
+   },
+   "G1L|1.6": {
+    "MINE": {
+     "n": 777,
+     "tickets": 777,
+     "roi": 74.7,
+     "hit": 30.2
+    },
+    "VALIDATE": {
+     "n": 129,
+     "tickets": 129,
+     "roi": 64.8,
+     "hit": 25.6
+    },
+    "CONFIRM": {
+     "n": 141,
+     "tickets": 141,
+     "roi": 86.2,
+     "hit": 38.3
+    }
+   },
+   "G1L|1.7": {
+    "MINE": {
+     "n": 670,
+     "tickets": 670,
+     "roi": 75.0,
+     "hit": 28.7
+    },
+    "VALIDATE": {
+     "n": 110,
+     "tickets": 110,
+     "roi": 71.0,
+     "hit": 27.3
+    },
+    "CONFIRM": {
+     "n": 111,
+     "tickets": 111,
+     "roi": 93.5,
+     "hit": 39.6
+    }
+   },
+   "G1L|1.8": {
+    "MINE": {
+     "n": 552,
+     "tickets": 552,
+     "roi": 74.9,
+     "hit": 26.8
+    },
+    "VALIDATE": {
+     "n": 101,
+     "tickets": 101,
+     "roi": 73.5,
+     "hit": 27.7
+    },
+    "CONFIRM": {
+     "n": 91,
+     "tickets": 91,
+     "roi": 89.7,
+     "hit": 36.3
+    }
+   },
+   "G1L|1.9": {
+    "MINE": {
+     "n": 470,
+     "tickets": 470,
+     "roi": 75.8,
+     "hit": 25.5
+    },
+    "VALIDATE": {
+     "n": 86,
+     "tickets": 86,
+     "roi": 83.8,
+     "hit": 31.4
+    },
+    "CONFIRM": {
+     "n": 66,
+     "tickets": 66,
+     "roi": 99.7,
+     "hit": 37.9
+    }
+   },
+   "G1L|2.0": {
+    "MINE": {
+     "n": 404,
+     "tickets": 404,
+     "roi": 75.5,
+     "hit": 24.0
+    },
+    "VALIDATE": {
+     "n": 74,
+     "tickets": 74,
+     "roi": 85.8,
+     "hit": 31.1
+    },
+    "CONFIRM": {
+     "n": 51,
+     "tickets": 51,
+     "roi": 104.5,
+     "hit": 37.3
+    }
+   },
+   "G1L|2.1": {
+    "MINE": {
+     "n": 338,
+     "tickets": 338,
+     "roi": 75.7,
+     "hit": 22.8
+    },
+    "VALIDATE": {
+     "n": 63,
+     "tickets": 63,
+     "roi": 79.4,
+     "hit": 27.0
+    },
+    "CONFIRM": {
+     "n": 41,
+     "tickets": 41,
+     "roi": 94.6,
+     "hit": 31.7
+    }
+   },
+   "G1L|2.2": {
+    "MINE": {
+     "n": 293,
+     "tickets": 293,
+     "roi": 73.2,
+     "hit": 20.5
+    },
+    "VALIDATE": {
+     "n": 56,
+     "tickets": 56,
+     "roi": 76.4,
+     "hit": 25.0
+    },
+    "CONFIRM": {
+     "n": 31,
+     "tickets": 31,
+     "roi": 85.2,
+     "hit": 25.8
+    }
+   },
+   "G1L|2.3": {
+    "MINE": {
+     "n": 251,
+     "tickets": 251,
+     "roi": 77.4,
+     "hit": 20.7
+    },
+    "VALIDATE": {
+     "n": 48,
+     "tickets": 48,
+     "roi": 78.5,
+     "hit": 25.0
+    },
+    "CONFIRM": {
+     "n": 29,
+     "tickets": 29,
+     "roi": 81.4,
+     "hit": 24.1
+    }
+   },
+   "G1L|2.4": {
+    "MINE": {
+     "n": 226,
+     "tickets": 226,
+     "roi": 80.1,
+     "hit": 20.8
+    },
+    "VALIDATE": {
+     "n": 42,
+     "tickets": 42,
+     "roi": 77.6,
+     "hit": 23.8
+    },
+    "CONFIRM": {
+     "n": 24,
+     "tickets": 24,
+     "roi": 77.1,
+     "hit": 20.8
+    }
+   },
+   "G1L|2.5": {
+    "MINE": {
+     "n": 201,
+     "tickets": 201,
+     "roi": 82.7,
+     "hit": 20.9
+    },
+    "VALIDATE": {
+     "n": 35,
+     "tickets": 35,
+     "roi": 77.1,
+     "hit": 22.9
+    },
+    "CONFIRM": {
+     "n": 21,
+     "tickets": 21,
+     "roi": 75.7,
+     "hit": 19.0
+    }
+   }
+  },
+  "KMk8T3": {
+   "M12|1.0": {
+    "MINE": {
+     "n": 526,
+     "tickets": 1052,
+     "roi": 95.5,
+     "hit": 96.0
+    },
+    "VALIDATE": {
+     "n": 145,
+     "tickets": 290,
+     "roi": 98.6,
+     "hit": 97.9
+    },
+    "CONFIRM": {
+     "n": 106,
+     "tickets": 212,
+     "roi": 91.3,
+     "hit": 94.3
+    }
+   },
+   "M12|1.1": {
+    "MINE": {
+     "n": 505,
+     "tickets": 944,
+     "roi": 95.5,
+     "hit": 90.9
+    },
+    "VALIDATE": {
+     "n": 141,
+     "tickets": 255,
+     "roi": 99.0,
+     "hit": 90.8
+    },
+    "CONFIRM": {
+     "n": 100,
+     "tickets": 194,
+     "roi": 90.1,
+     "hit": 91.0
+    }
+   },
+   "M12|1.2": {
+    "MINE": {
+     "n": 369,
+     "tickets": 378,
+     "roi": 104.8,
+     "hit": 56.9
+    },
+    "VALIDATE": {
+     "n": 100,
+     "tickets": 101,
+     "roi": 104.8,
+     "hit": 58.0
+    },
+    "CONFIRM": {
+     "n": 71,
+     "tickets": 73,
+     "roi": 87.5,
+     "hit": 54.9
+    }
+   },
+   "M12|1.3": {
+    "MINE": {
+     "n": 252,
+     "tickets": 252,
+     "roi": 107.7,
+     "hit": 52.4
+    },
+    "VALIDATE": {
+     "n": 69,
+     "tickets": 69,
+     "roi": 111.9,
+     "hit": 58.0
+    },
+    "CONFIRM": {
+     "n": 50,
+     "tickets": 50,
+     "roi": 91.2,
+     "hit": 52.0
+    }
+   },
+   "M12|1.4": {
+    "MINE": {
+     "n": 156,
+     "tickets": 156,
+     "roi": 121.6,
+     "hit": 56.4
+    },
+    "VALIDATE": {
+     "n": 36,
+     "tickets": 36,
+     "roi": 128.1,
+     "hit": 55.6
+    },
+    "CONFIRM": {
+     "n": 39,
+     "tickets": 39,
+     "roi": 97.4,
+     "hit": 53.8
+    }
+   },
+   "M12|1.5": {
+    "MINE": {
+     "n": 86,
+     "tickets": 86,
+     "roi": 116.4,
+     "hit": 48.8
+    },
+    "VALIDATE": {
+     "n": 23,
+     "tickets": 23,
+     "roi": 117.0,
+     "hit": 60.9
+    },
+    "CONFIRM": {
+     "n": 19,
+     "tickets": 19,
+     "roi": 115.3,
+     "hit": 57.9
+    }
+   },
+   "M12|1.6": {
+    "MINE": {
+     "n": 45,
+     "tickets": 45,
+     "roi": 103.8,
+     "hit": 42.2
+    },
+    "VALIDATE": {
+     "n": 9,
+     "tickets": 9,
+     "roi": 120.0,
+     "hit": 66.7
+    },
+    "CONFIRM": {
+     "n": 11,
+     "tickets": 11,
+     "roi": 130.0,
+     "hit": 63.6
+    }
+   },
+   "M12|1.7": {
+    "MINE": {
+     "n": 22,
+     "tickets": 22,
+     "roi": 91.8,
+     "hit": 31.8
+    },
+    "VALIDATE": {
+     "n": 4,
+     "tickets": 4,
+     "roi": 57.5,
+     "hit": 25.0
+    },
+    "CONFIRM": {
+     "n": 6,
+     "tickets": 6,
+     "roi": 146.7,
+     "hit": 66.7
+    }
+   },
+   "M12|1.8": {
+    "MINE": {
+     "n": 9,
+     "tickets": 9,
+     "roi": 162.2,
+     "hit": 44.4
+    },
+    "VALIDATE": {
+     "n": 4,
+     "tickets": 4,
+     "roi": 57.5,
+     "hit": 25.0
+    },
+    "CONFIRM": {
+     "n": 5,
+     "tickets": 5,
+     "roi": 128.0,
+     "hit": 60.0
+    }
+   },
+   "M12|1.9": {
+    "MINE": {
+     "n": 5,
+     "tickets": 5,
+     "roi": 254.0,
+     "hit": 60.0
+    },
+    "VALIDATE": {
+     "n": 2,
+     "tickets": 2,
+     "roi": 0.0,
+     "hit": 0.0
+    },
+    "CONFIRM": {
+     "n": 5,
+     "tickets": 5,
+     "roi": 128.0,
+     "hit": 60.0
+    }
+   },
+   "M12|2.0": {
+    "MINE": {
+     "n": 3,
+     "tickets": 3,
+     "roi": 360.0,
+     "hit": 66.7
+    },
+    "VALIDATE": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    },
+    "CONFIRM": {
+     "n": 4,
+     "tickets": 4,
+     "roi": 110.0,
+     "hit": 50.0
+    }
+   },
+   "M12|2.1": {
+    "MINE": {
+     "n": 3,
+     "tickets": 3,
+     "roi": 360.0,
+     "hit": 66.7
+    },
+    "VALIDATE": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    },
+    "CONFIRM": {
+     "n": 2,
+     "tickets": 2,
+     "roi": 120.0,
+     "hit": 50.0
+    }
+   },
+   "M12|2.2": {
+    "MINE": {
+     "n": 1,
+     "tickets": 1,
+     "roi": 0.0,
+     "hit": 0.0
+    },
+    "VALIDATE": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    },
+    "CONFIRM": {
+     "n": 1,
+     "tickets": 1,
+     "roi": 240.0,
+     "hit": 100.0
+    }
+   },
+   "M12|2.3": {
+    "MINE": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    },
+    "VALIDATE": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    },
+    "CONFIRM": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    }
+   },
+   "M12|2.4": {
+    "MINE": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    },
+    "VALIDATE": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    },
+    "CONFIRM": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    }
+   },
+   "M12|2.5": {
+    "MINE": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    },
+    "VALIDATE": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    },
+    "CONFIRM": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    }
+   },
+   "M1|1.0": {
+    "MINE": {
+     "n": 526,
+     "tickets": 526,
+     "roi": 89.1,
+     "hit": 81.0
+    },
+    "VALIDATE": {
+     "n": 145,
+     "tickets": 145,
+     "roi": 92.8,
+     "hit": 84.8
+    },
+    "CONFIRM": {
+     "n": 106,
+     "tickets": 106,
+     "roi": 94.2,
+     "hit": 84.9
+    }
+   },
+   "M1|1.1": {
+    "MINE": {
+     "n": 439,
+     "tickets": 439,
+     "roi": 87.6,
+     "hit": 78.4
+    },
+    "VALIDATE": {
+     "n": 114,
+     "tickets": 114,
+     "roi": 91.8,
+     "hit": 82.5
+    },
+    "CONFIRM": {
+     "n": 94,
+     "tickets": 94,
+     "roi": 93.0,
+     "hit": 83.0
+    }
+   },
+   "M1|1.2": {
+    "MINE": {
+     "n": 12,
+     "tickets": 12,
+     "roi": 119.2,
+     "hit": 91.7
+    },
+    "VALIDATE": {
+     "n": 2,
+     "tickets": 2,
+     "roi": 145.0,
+     "hit": 100.0
+    },
+    "CONFIRM": {
+     "n": 3,
+     "tickets": 3,
+     "roi": 130.0,
+     "hit": 100.0
+    }
+   },
+   "M1|1.3": {
+    "MINE": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    },
+    "VALIDATE": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    },
+    "CONFIRM": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    }
+   },
+   "M1|1.4": {
+    "MINE": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    },
+    "VALIDATE": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    },
+    "CONFIRM": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    }
+   },
+   "M1|1.5": {
+    "MINE": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    },
+    "VALIDATE": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    },
+    "CONFIRM": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    }
+   },
+   "M1|1.6": {
+    "MINE": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    },
+    "VALIDATE": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    },
+    "CONFIRM": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    }
+   },
+   "M1|1.7": {
+    "MINE": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    },
+    "VALIDATE": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    },
+    "CONFIRM": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    }
+   },
+   "M1|1.8": {
+    "MINE": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    },
+    "VALIDATE": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    },
+    "CONFIRM": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    }
+   },
+   "M1|1.9": {
+    "MINE": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    },
+    "VALIDATE": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    },
+    "CONFIRM": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    }
+   },
+   "M1|2.0": {
+    "MINE": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    },
+    "VALIDATE": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    },
+    "CONFIRM": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    }
+   },
+   "M1|2.1": {
+    "MINE": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    },
+    "VALIDATE": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    },
+    "CONFIRM": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    }
+   },
+   "M1|2.2": {
+    "MINE": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    },
+    "VALIDATE": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    },
+    "CONFIRM": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    }
+   },
+   "M1|2.3": {
+    "MINE": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    },
+    "VALIDATE": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    },
+    "CONFIRM": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    }
+   },
+   "M1|2.4": {
+    "MINE": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    },
+    "VALIDATE": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    },
+    "CONFIRM": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    }
+   },
+   "M1|2.5": {
+    "MINE": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    },
+    "VALIDATE": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    },
+    "CONFIRM": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    }
+   },
+   "M2|1.0": {
+    "MINE": {
+     "n": 526,
+     "tickets": 526,
+     "roi": 101.9,
+     "hit": 62.9
+    },
+    "VALIDATE": {
+     "n": 145,
+     "tickets": 145,
+     "roi": 104.4,
+     "hit": 64.8
+    },
+    "CONFIRM": {
+     "n": 106,
+     "tickets": 106,
+     "roi": 88.4,
+     "hit": 62.3
+    }
+   },
+   "M2|1.1": {
+    "MINE": {
+     "n": 505,
+     "tickets": 505,
+     "roi": 102.4,
+     "hit": 62.0
+    },
+    "VALIDATE": {
+     "n": 141,
+     "tickets": 141,
+     "roi": 104.8,
+     "hit": 65.2
+    },
+    "CONFIRM": {
+     "n": 100,
+     "tickets": 100,
+     "roi": 87.4,
+     "hit": 60.0
+    }
+   },
+   "M2|1.2": {
+    "MINE": {
+     "n": 366,
+     "tickets": 366,
+     "roi": 104.3,
+     "hit": 56.0
+    },
+    "VALIDATE": {
+     "n": 99,
+     "tickets": 99,
+     "roi": 103.9,
+     "hit": 57.6
+    },
+    "CONFIRM": {
+     "n": 70,
+     "tickets": 70,
+     "roi": 85.7,
+     "hit": 52.9
+    }
+   },
+   "M2|1.3": {
+    "MINE": {
+     "n": 252,
+     "tickets": 252,
+     "roi": 107.7,
+     "hit": 52.4
+    },
+    "VALIDATE": {
+     "n": 69,
+     "tickets": 69,
+     "roi": 111.9,
+     "hit": 58.0
+    },
+    "CONFIRM": {
+     "n": 50,
+     "tickets": 50,
+     "roi": 91.2,
+     "hit": 52.0
+    }
+   },
+   "M2|1.4": {
+    "MINE": {
+     "n": 156,
+     "tickets": 156,
+     "roi": 121.6,
+     "hit": 56.4
+    },
+    "VALIDATE": {
+     "n": 36,
+     "tickets": 36,
+     "roi": 128.1,
+     "hit": 55.6
+    },
+    "CONFIRM": {
+     "n": 39,
+     "tickets": 39,
+     "roi": 97.4,
+     "hit": 53.8
+    }
+   },
+   "M2|1.5": {
+    "MINE": {
+     "n": 86,
+     "tickets": 86,
+     "roi": 116.4,
+     "hit": 48.8
+    },
+    "VALIDATE": {
+     "n": 23,
+     "tickets": 23,
+     "roi": 117.0,
+     "hit": 60.9
+    },
+    "CONFIRM": {
+     "n": 19,
+     "tickets": 19,
+     "roi": 115.3,
+     "hit": 57.9
+    }
+   },
+   "M2|1.6": {
+    "MINE": {
+     "n": 45,
+     "tickets": 45,
+     "roi": 103.8,
+     "hit": 42.2
+    },
+    "VALIDATE": {
+     "n": 9,
+     "tickets": 9,
+     "roi": 120.0,
+     "hit": 66.7
+    },
+    "CONFIRM": {
+     "n": 11,
+     "tickets": 11,
+     "roi": 130.0,
+     "hit": 63.6
+    }
+   },
+   "M2|1.7": {
+    "MINE": {
+     "n": 22,
+     "tickets": 22,
+     "roi": 91.8,
+     "hit": 31.8
+    },
+    "VALIDATE": {
+     "n": 4,
+     "tickets": 4,
+     "roi": 57.5,
+     "hit": 25.0
+    },
+    "CONFIRM": {
+     "n": 6,
+     "tickets": 6,
+     "roi": 146.7,
+     "hit": 66.7
+    }
+   },
+   "M2|1.8": {
+    "MINE": {
+     "n": 9,
+     "tickets": 9,
+     "roi": 162.2,
+     "hit": 44.4
+    },
+    "VALIDATE": {
+     "n": 4,
+     "tickets": 4,
+     "roi": 57.5,
+     "hit": 25.0
+    },
+    "CONFIRM": {
+     "n": 5,
+     "tickets": 5,
+     "roi": 128.0,
+     "hit": 60.0
+    }
+   },
+   "M2|1.9": {
+    "MINE": {
+     "n": 5,
+     "tickets": 5,
+     "roi": 254.0,
+     "hit": 60.0
+    },
+    "VALIDATE": {
+     "n": 2,
+     "tickets": 2,
+     "roi": 0.0,
+     "hit": 0.0
+    },
+    "CONFIRM": {
+     "n": 5,
+     "tickets": 5,
+     "roi": 128.0,
+     "hit": 60.0
+    }
+   },
+   "M2|2.0": {
+    "MINE": {
+     "n": 3,
+     "tickets": 3,
+     "roi": 360.0,
+     "hit": 66.7
+    },
+    "VALIDATE": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    },
+    "CONFIRM": {
+     "n": 4,
+     "tickets": 4,
+     "roi": 110.0,
+     "hit": 50.0
+    }
+   },
+   "M2|2.1": {
+    "MINE": {
+     "n": 3,
+     "tickets": 3,
+     "roi": 360.0,
+     "hit": 66.7
+    },
+    "VALIDATE": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    },
+    "CONFIRM": {
+     "n": 2,
+     "tickets": 2,
+     "roi": 120.0,
+     "hit": 50.0
+    }
+   },
+   "M2|2.2": {
+    "MINE": {
+     "n": 1,
+     "tickets": 1,
+     "roi": 0.0,
+     "hit": 0.0
+    },
+    "VALIDATE": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    },
+    "CONFIRM": {
+     "n": 1,
+     "tickets": 1,
+     "roi": 240.0,
+     "hit": 100.0
+    }
+   },
+   "M2|2.3": {
+    "MINE": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    },
+    "VALIDATE": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    },
+    "CONFIRM": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    }
+   },
+   "M2|2.4": {
+    "MINE": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    },
+    "VALIDATE": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    },
+    "CONFIRM": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    }
+   },
+   "M2|2.5": {
+    "MINE": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    },
+    "VALIDATE": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    },
+    "CONFIRM": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    }
+   },
+   "M3|1.0": {
+    "MINE": {
+     "n": 526,
+     "tickets": 526,
+     "roi": 86.2,
+     "hit": 42.4
+    },
+    "VALIDATE": {
+     "n": 145,
+     "tickets": 145,
+     "roi": 81.4,
+     "hit": 42.1
+    },
+    "CONFIRM": {
+     "n": 106,
+     "tickets": 106,
+     "roi": 85.3,
+     "hit": 38.7
+    }
+   },
+   "M3|1.1": {
+    "MINE": {
+     "n": 525,
+     "tickets": 525,
+     "roi": 86.1,
+     "hit": 42.3
+    },
+    "VALIDATE": {
+     "n": 144,
+     "tickets": 144,
+     "roi": 78.8,
+     "hit": 41.7
+    },
+    "CONFIRM": {
+     "n": 106,
+     "tickets": 106,
+     "roi": 85.3,
+     "hit": 38.7
+    }
+   },
+   "M3|1.2": {
+    "MINE": {
+     "n": 501,
+     "tickets": 501,
+     "roi": 85.9,
+     "hit": 41.5
+    },
+    "VALIDATE": {
+     "n": 138,
+     "tickets": 138,
+     "roi": 76.2,
+     "hit": 39.9
+    },
+    "CONFIRM": {
+     "n": 98,
+     "tickets": 98,
+     "roi": 88.7,
+     "hit": 38.8
+    }
+   },
+   "M3|1.3": {
+    "MINE": {
+     "n": 459,
+     "tickets": 459,
+     "roi": 81.6,
+     "hit": 39.7
+    },
+    "VALIDATE": {
+     "n": 127,
+     "tickets": 127,
+     "roi": 75.4,
+     "hit": 38.6
+    },
+    "CONFIRM": {
+     "n": 89,
+     "tickets": 89,
+     "roi": 88.7,
+     "hit": 37.1
+    }
+   },
+   "M3|1.4": {
+    "MINE": {
+     "n": 392,
+     "tickets": 392,
+     "roi": 82.4,
+     "hit": 38.8
+    },
+    "VALIDATE": {
+     "n": 100,
+     "tickets": 100,
+     "roi": 69.5,
+     "hit": 33.0
+    },
+    "CONFIRM": {
+     "n": 70,
+     "tickets": 70,
+     "roi": 100.3,
+     "hit": 38.6
+    }
+   },
+   "M3|1.5": {
+    "MINE": {
+     "n": 300,
+     "tickets": 300,
+     "roi": 87.8,
+     "hit": 38.3
+    },
+    "VALIDATE": {
+     "n": 79,
+     "tickets": 79,
+     "roi": 71.1,
+     "hit": 31.6
+    },
+    "CONFIRM": {
+     "n": 58,
+     "tickets": 58,
+     "roi": 100.0,
+     "hit": 36.2
+    }
+   },
+   "M3|1.6": {
+    "MINE": {
+     "n": 227,
+     "tickets": 227,
+     "roi": 86.8,
+     "hit": 36.1
+    },
+    "VALIDATE": {
+     "n": 61,
+     "tickets": 61,
+     "roi": 66.2,
+     "hit": 27.9
+    },
+    "CONFIRM": {
+     "n": 45,
+     "tickets": 45,
+     "roi": 105.8,
+     "hit": 33.3
+    }
+   },
+   "M3|1.7": {
+    "MINE": {
+     "n": 151,
+     "tickets": 151,
+     "roi": 87.7,
+     "hit": 34.4
+    },
+    "VALIDATE": {
+     "n": 49,
+     "tickets": 49,
+     "roi": 66.1,
+     "hit": 26.5
+    },
+    "CONFIRM": {
+     "n": 30,
+     "tickets": 30,
+     "roi": 140.0,
+     "hit": 40.0
+    }
+   },
+   "M3|1.8": {
+    "MINE": {
+     "n": 99,
+     "tickets": 99,
+     "roi": 79.3,
+     "hit": 30.3
+    },
+    "VALIDATE": {
+     "n": 30,
+     "tickets": 30,
+     "roi": 52.3,
+     "hit": 23.3
+    },
+    "CONFIRM": {
+     "n": 20,
+     "tickets": 20,
+     "roi": 181.0,
+     "hit": 45.0
+    }
+   },
+   "M3|1.9": {
+    "MINE": {
+     "n": 72,
+     "tickets": 72,
+     "roi": 83.9,
+     "hit": 29.2
+    },
+    "VALIDATE": {
+     "n": 19,
+     "tickets": 19,
+     "roi": 57.4,
+     "hit": 26.3
+    },
+    "CONFIRM": {
+     "n": 15,
+     "tickets": 15,
+     "roi": 156.0,
+     "hit": 40.0
+    }
+   },
+   "M3|2.0": {
+    "MINE": {
+     "n": 44,
+     "tickets": 44,
+     "roi": 68.4,
+     "hit": 20.5
+    },
+    "VALIDATE": {
+     "n": 11,
+     "tickets": 11,
+     "roi": 43.6,
+     "hit": 18.2
+    },
+    "CONFIRM": {
+     "n": 10,
+     "tickets": 10,
+     "roi": 191.0,
+     "hit": 40.0
+    }
+   },
+   "M3|2.1": {
+    "MINE": {
+     "n": 30,
+     "tickets": 30,
+     "roi": 54.0,
+     "hit": 13.3
+    },
+    "VALIDATE": {
+     "n": 9,
+     "tickets": 9,
+     "roi": 53.3,
+     "hit": 22.2
+    },
+    "CONFIRM": {
+     "n": 7,
+     "tickets": 7,
+     "roi": 237.1,
+     "hit": 42.9
+    }
+   },
+   "M3|2.2": {
+    "MINE": {
+     "n": 20,
+     "tickets": 20,
+     "roi": 60.0,
+     "hit": 10.0
+    },
+    "VALIDATE": {
+     "n": 8,
+     "tickets": 8,
+     "roi": 60.0,
+     "hit": 25.0
+    },
+    "CONFIRM": {
+     "n": 3,
+     "tickets": 3,
+     "roi": 360.0,
+     "hit": 66.7
+    }
+   },
+   "M3|2.3": {
+    "MINE": {
+     "n": 14,
+     "tickets": 14,
+     "roi": 68.6,
+     "hit": 7.1
+    },
+    "VALIDATE": {
+     "n": 6,
+     "tickets": 6,
+     "roi": 38.3,
+     "hit": 16.7
+    },
+    "CONFIRM": {
+     "n": 1,
+     "tickets": 1,
+     "roi": 280.0,
+     "hit": 100.0
+    }
+   },
+   "M3|2.4": {
+    "MINE": {
+     "n": 12,
+     "tickets": 12,
+     "roi": 80.0,
+     "hit": 8.3
+    },
+    "VALIDATE": {
+     "n": 3,
+     "tickets": 3,
+     "roi": 0.0,
+     "hit": 0.0
+    },
+    "CONFIRM": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    }
+   },
+   "M3|2.5": {
+    "MINE": {
+     "n": 11,
+     "tickets": 11,
+     "roi": 87.3,
+     "hit": 9.1
+    },
+    "VALIDATE": {
+     "n": 2,
+     "tickets": 2,
+     "roi": 0.0,
+     "hit": 0.0
+    },
+    "CONFIRM": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    }
+   },
+   "G1|1.0": {
+    "MINE": {
+     "n": 526,
+     "tickets": 526,
+     "roi": 90.2,
+     "hit": 79.7
+    },
+    "VALIDATE": {
+     "n": 145,
+     "tickets": 145,
+     "roi": 96.2,
+     "hit": 84.8
+    },
+    "CONFIRM": {
+     "n": 106,
+     "tickets": 106,
+     "roi": 94.7,
+     "hit": 84.0
+    }
+   },
+   "G1|1.1": {
+    "MINE": {
+     "n": 440,
+     "tickets": 440,
+     "roi": 89.2,
+     "hit": 77.0
+    },
+    "VALIDATE": {
+     "n": 114,
+     "tickets": 114,
+     "roi": 96.1,
+     "hit": 82.5
+    },
+    "CONFIRM": {
+     "n": 94,
+     "tickets": 94,
+     "roi": 93.6,
+     "hit": 81.9
+    }
+   },
+   "G1|1.2": {
+    "MINE": {
+     "n": 39,
+     "tickets": 39,
+     "roi": 104.1,
+     "hit": 64.1
+    },
+    "VALIDATE": {
+     "n": 9,
+     "tickets": 9,
+     "roi": 145.6,
+     "hit": 77.8
+    },
+    "CONFIRM": {
+     "n": 6,
+     "tickets": 6,
+     "roi": 111.7,
+     "hit": 66.7
+    }
+   },
+   "G1|1.3": {
+    "MINE": {
+     "n": 19,
+     "tickets": 19,
+     "roi": 93.2,
+     "hit": 47.4
+    },
+    "VALIDATE": {
+     "n": 5,
+     "tickets": 5,
+     "roi": 176.0,
+     "hit": 80.0
+    },
+    "CONFIRM": {
+     "n": 1,
+     "tickets": 1,
+     "roi": 0.0,
+     "hit": 0.0
+    }
+   },
+   "G1|1.4": {
+    "MINE": {
+     "n": 12,
+     "tickets": 12,
+     "roi": 101.7,
+     "hit": 41.7
+    },
+    "VALIDATE": {
+     "n": 2,
+     "tickets": 2,
+     "roi": 115.0,
+     "hit": 50.0
+    },
+    "CONFIRM": {
+     "n": 1,
+     "tickets": 1,
+     "roi": 0.0,
+     "hit": 0.0
+    }
+   },
+   "G1|1.5": {
+    "MINE": {
+     "n": 9,
+     "tickets": 9,
+     "roi": 116.7,
+     "hit": 44.4
+    },
+    "VALIDATE": {
+     "n": 2,
+     "tickets": 2,
+     "roi": 115.0,
+     "hit": 50.0
+    },
+    "CONFIRM": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    }
+   },
+   "G1|1.6": {
+    "MINE": {
+     "n": 4,
+     "tickets": 4,
+     "roi": 40.0,
+     "hit": 25.0
+    },
+    "VALIDATE": {
+     "n": 1,
+     "tickets": 1,
+     "roi": 230.0,
+     "hit": 100.0
+    },
+    "CONFIRM": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    }
+   },
+   "G1|1.7": {
+    "MINE": {
+     "n": 3,
+     "tickets": 3,
+     "roi": 0.0,
+     "hit": 0.0
+    },
+    "VALIDATE": {
+     "n": 1,
+     "tickets": 1,
+     "roi": 230.0,
+     "hit": 100.0
+    },
+    "CONFIRM": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    }
+   },
+   "G1|1.8": {
+    "MINE": {
+     "n": 1,
+     "tickets": 1,
+     "roi": 0.0,
+     "hit": 0.0
+    },
+    "VALIDATE": {
+     "n": 1,
+     "tickets": 1,
+     "roi": 230.0,
+     "hit": 100.0
+    },
+    "CONFIRM": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    }
+   },
+   "G1|1.9": {
+    "MINE": {
+     "n": 1,
+     "tickets": 1,
+     "roi": 0.0,
+     "hit": 0.0
+    },
+    "VALIDATE": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    },
+    "CONFIRM": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    }
+   },
+   "G1|2.0": {
+    "MINE": {
+     "n": 1,
+     "tickets": 1,
+     "roi": 0.0,
+     "hit": 0.0
+    },
+    "VALIDATE": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    },
+    "CONFIRM": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    }
+   },
+   "G1|2.1": {
+    "MINE": {
+     "n": 1,
+     "tickets": 1,
+     "roi": 0.0,
+     "hit": 0.0
+    },
+    "VALIDATE": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    },
+    "CONFIRM": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    }
+   },
+   "G1|2.2": {
+    "MINE": {
+     "n": 1,
+     "tickets": 1,
+     "roi": 0.0,
+     "hit": 0.0
+    },
+    "VALIDATE": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    },
+    "CONFIRM": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    }
+   },
+   "G1|2.3": {
+    "MINE": {
+     "n": 1,
+     "tickets": 1,
+     "roi": 0.0,
+     "hit": 0.0
+    },
+    "VALIDATE": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    },
+    "CONFIRM": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    }
+   },
+   "G1|2.4": {
+    "MINE": {
+     "n": 1,
+     "tickets": 1,
+     "roi": 0.0,
+     "hit": 0.0
+    },
+    "VALIDATE": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    },
+    "CONFIRM": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    }
+   },
+   "G1|2.5": {
+    "MINE": {
+     "n": 1,
+     "tickets": 1,
+     "roi": 0.0,
+     "hit": 0.0
+    },
+    "VALIDATE": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    },
+    "CONFIRM": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    }
+   },
+   "G1L|1.0": {
+    "MINE": {
+     "n": 14,
+     "tickets": 14,
+     "roi": 53.6,
+     "hit": 28.6
+    },
+    "VALIDATE": {
+     "n": 3,
+     "tickets": 3,
+     "roi": 173.3,
+     "hit": 66.7
+    },
+    "CONFIRM": {
+     "n": 1,
+     "tickets": 1,
+     "roi": 280.0,
+     "hit": 100.0
+    }
+   },
+   "G1L|1.1": {
+    "MINE": {
+     "n": 14,
+     "tickets": 14,
+     "roi": 53.6,
+     "hit": 28.6
+    },
+    "VALIDATE": {
+     "n": 3,
+     "tickets": 3,
+     "roi": 173.3,
+     "hit": 66.7
+    },
+    "CONFIRM": {
+     "n": 1,
+     "tickets": 1,
+     "roi": 280.0,
+     "hit": 100.0
+    }
+   },
+   "G1L|1.2": {
+    "MINE": {
+     "n": 13,
+     "tickets": 13,
+     "roi": 57.7,
+     "hit": 30.8
+    },
+    "VALIDATE": {
+     "n": 3,
+     "tickets": 3,
+     "roi": 173.3,
+     "hit": 66.7
+    },
+    "CONFIRM": {
+     "n": 1,
+     "tickets": 1,
+     "roi": 280.0,
+     "hit": 100.0
+    }
+   },
+   "G1L|1.3": {
+    "MINE": {
+     "n": 12,
+     "tickets": 12,
+     "roi": 37.5,
+     "hit": 25.0
+    },
+    "VALIDATE": {
+     "n": 2,
+     "tickets": 2,
+     "roi": 260.0,
+     "hit": 100.0
+    },
+    "CONFIRM": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    }
+   },
+   "G1L|1.4": {
+    "MINE": {
+     "n": 9,
+     "tickets": 9,
+     "roi": 35.6,
+     "hit": 22.2
+    },
+    "VALIDATE": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    },
+    "CONFIRM": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    }
+   },
+   "G1L|1.5": {
+    "MINE": {
+     "n": 6,
+     "tickets": 6,
+     "roi": 25.0,
+     "hit": 16.7
+    },
+    "VALIDATE": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    },
+    "CONFIRM": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    }
+   },
+   "G1L|1.6": {
+    "MINE": {
+     "n": 3,
+     "tickets": 3,
+     "roi": 0.0,
+     "hit": 0.0
+    },
+    "VALIDATE": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    },
+    "CONFIRM": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    }
+   },
+   "G1L|1.7": {
+    "MINE": {
+     "n": 3,
+     "tickets": 3,
+     "roi": 0.0,
+     "hit": 0.0
+    },
+    "VALIDATE": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    },
+    "CONFIRM": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    }
+   },
+   "G1L|1.8": {
+    "MINE": {
+     "n": 1,
+     "tickets": 1,
+     "roi": 0.0,
+     "hit": 0.0
+    },
+    "VALIDATE": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    },
+    "CONFIRM": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    }
+   },
+   "G1L|1.9": {
+    "MINE": {
+     "n": 1,
+     "tickets": 1,
+     "roi": 0.0,
+     "hit": 0.0
+    },
+    "VALIDATE": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    },
+    "CONFIRM": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    }
+   },
+   "G1L|2.0": {
+    "MINE": {
+     "n": 1,
+     "tickets": 1,
+     "roi": 0.0,
+     "hit": 0.0
+    },
+    "VALIDATE": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    },
+    "CONFIRM": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    }
+   },
+   "G1L|2.1": {
+    "MINE": {
+     "n": 1,
+     "tickets": 1,
+     "roi": 0.0,
+     "hit": 0.0
+    },
+    "VALIDATE": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    },
+    "CONFIRM": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    }
+   },
+   "G1L|2.2": {
+    "MINE": {
+     "n": 1,
+     "tickets": 1,
+     "roi": 0.0,
+     "hit": 0.0
+    },
+    "VALIDATE": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    },
+    "CONFIRM": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    }
+   },
+   "G1L|2.3": {
+    "MINE": {
+     "n": 1,
+     "tickets": 1,
+     "roi": 0.0,
+     "hit": 0.0
+    },
+    "VALIDATE": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    },
+    "CONFIRM": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    }
+   },
+   "G1L|2.4": {
+    "MINE": {
+     "n": 1,
+     "tickets": 1,
+     "roi": 0.0,
+     "hit": 0.0
+    },
+    "VALIDATE": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    },
+    "CONFIRM": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    }
+   },
+   "G1L|2.5": {
+    "MINE": {
+     "n": 1,
+     "tickets": 1,
+     "roi": 0.0,
+     "hit": 0.0
+    },
+    "VALIDATE": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    },
+    "CONFIRM": {
+     "n": 0,
+     "tickets": 0,
+     "roi": null,
+     "hit": null
+    }
+   }
+  }
+ },
+ "subsets": {
+  "baseline": {
+   "n_cells": 96,
+   "n_candidates": 14,
+   "chosen": "M12|1.4",
+   "cells_pass_both": [],
+   "chosen_result": {
+    "MINE": {
+     "n": 371,
+     "tickets": 373,
+     "roi": 106.2,
+     "hit": 52.3
+    },
+    "VALIDATE": {
+     "n": 62,
+     "tickets": 62,
+     "roi": 107.7,
+     "hit": 51.6
+    },
+    "CONFIRM": {
+     "n": 81,
+     "tickets": 81,
+     "roi": 92.6,
+     "hit": 50.6
+    }
+   },
+   "chosen_pass": false,
+   "mc_expect_chosen": 0.024
+  },
+  "all": {
+   "n_cells": 96,
+   "n_candidates": 15,
+   "chosen": "M1|1.0",
+   "cells_pass_both": [],
+   "chosen_result": {
+    "MINE": {
+     "n": 4823,
+     "tickets": 4823,
+     "roi": 85.1,
+     "hit": 64.9
+    },
+    "VALIDATE": {
+     "n": 1034,
+     "tickets": 1034,
+     "roi": 86.5,
+     "hit": 67.1
+    },
+    "CONFIRM": {
+     "n": 1033,
+     "tickets": 1033,
+     "roi": 83.8,
+     "hit": 64.1
+    }
+   },
+   "chosen_pass": false,
+   "mc_expect_chosen": 0.0
+  },
+  "KMk8T3": {
+   "n_cells": 96,
+   "n_candidates": 10,
+   "chosen": "M12|1.2",
+   "cells_pass_both": [],
+   "chosen_result": {
+    "MINE": {
+     "n": 369,
+     "tickets": 378,
+     "roi": 104.8,
+     "hit": 56.9
+    },
+    "VALIDATE": {
+     "n": 100,
+     "tickets": 101,
+     "roi": 104.8,
+     "hit": 58.0
+    },
+    "CONFIRM": {
+     "n": 71,
+     "tickets": 73,
+     "roi": 87.5,
+     "hit": 54.9
+    }
+   },
+   "chosen_pass": false,
+   "mc_expect_chosen": 0.0025
+  }
+ }
+}

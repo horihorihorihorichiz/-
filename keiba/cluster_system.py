@@ -465,7 +465,10 @@ def evaluate():
         print(f"  {cfg} evaluated ({time.time()-t0:.0f}s)", flush=True)
 
     # ── 三次の偶然期待（MINE選抜込みのMC・単勝のみ・構成ごと）
-    tert_mc = tertiary_mc(U, RM, gen, A, split_of, rng)
+    # §11-4: 三次は cluster_select.py（複勝ベース）で決着済みのため、
+    # 環境変数 CLUSTER_SKIP_MC=1 でこの重いMCを飛ばせる（判定基準は変更していない）。
+    tert_mc = (None if os.environ.get("CLUSTER_SKIP_MC") == "1"
+               else tertiary_mc(U, RM, gen, A, split_of, rng))
 
     # ── 集計 ───────────────────────────────────────────────────────────
     judge = [k for k, v in res.items() if v["judgeable"]]
