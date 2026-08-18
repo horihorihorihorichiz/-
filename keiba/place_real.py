@@ -232,6 +232,33 @@ def _pava(y, w):
     return np.array(out)
 
 
+class BinMap:
+    """分位ビンの平均を線形補間する写像（単調制約なし・クリップなし）。
+       下限オッズ → 期待払戻倍率 のように単調でない量に使う。"""
+
+    def __init__(self, x, y, nbins=40, min_per_bin=200):
+        x = np.asarray(x, dtype=float); y = np.asarray(y, dtype=float)
+        o = np.argsort(x, kind="mergesort")
+        xs, ys = x[o], y[o]
+        n = len(xs)
+        nb = max(1, min(nbins, n // max(min_per_bin, 1)))
+        edges = np.linspace(0, n, nb + 1).astype(int)
+        bx, by = [], []
+        for a, b in zip(edges[:-1], edges[1:]):
+            if b <= a:
+                continue
+            bx.append(xs[a:b].mean()); by.append(ys[a:b].mean())
+        self.bx = np.array(bx); self.by = np.array(by)
+        self.n = n
+        self.mean = float(ys.mean())
+
+    def __call__(self, x):
+        x = np.asarray(x, dtype=float)
+        if len(self.bx) < 2:
+            return np.full(x.shape, self.mean)
+        return np.interp(x, self.bx, self.by)
+
+
 class Iso:
     """分位ビン + PAVA の単調較正器。x（確率）→ 較正済み確率。"""
 
@@ -491,10 +518,12 @@ def main():
                 m = t["hit"] > 0
                 xs.append(np.log(t["odds"][m])); ys.append(t["pay"][m] / t["odds"][m])
             x = np.concatenate(xs); y = np.concatenate(ys)
-            oratio[kind] = Iso(x, y, nbins=40, min_per_bin=200)
-            res.setdefault("odds_ratio", {})[kind] = dict(
-                n=int(len(x)), mean=round(float(y.mean()), 4))
+            oratio[kind] = BinMap(x, y, nbins=40, min_per_bin=200)
             probe = np.array([1.2, 1.5, 2.0, 3.0, 5.0, 10.0, 30.0])
+            res.setdefault("odds_ratio", {})[kind] = dict(
+                n=int(len(x)), mean=round(float(y.mean()), 4),
+                curve=[[float(o), round(float(oratio[kind](np.log([o]))[0]), 4)]
+                       for o in probe])
             print("   %-6s n=%7d 平均比%.3f  写像: %s"
                   % (BET_JP[kind], len(x), y.mean(),
                      " ".join("%.1f→×%.2f" % (o, oratio[kind](np.log([o]))[0]) for o in probe)),
@@ -718,6 +747,12 @@ def selftest():
     g = f(np.linspace(0.01, 0.99, 50))
     assert np.all(np.diff(g) >= -1e-9)
     assert abs(g[-1] - 0.5) < 0.08, g[-1]
+    # BinMap: 単調でない量・1を超える値も返せる（Isoの確率クリップに引っかからない）
+    bm = BinMap(np.log(np.array([1.1] * 500 + [10.0] * 500)),
+                np.array([1.3] * 500 + [1.02] * 500), nbins=4, min_per_bin=100)
+    assert abs(bm(np.log([1.1]))[0] - 1.3) < 1e-6, bm(np.log([1.1]))
+    assert abs(bm(np.log([10.0]))[0] - 1.02) < 1e-6, bm(np.log([10.0]))
+    assert bm(np.log([1.1]))[0] > 1.0
     # ckey
     assert ckey([10, 2, 7]) == "2-7-10"
     # 馬連確率の総和=1（PL）
