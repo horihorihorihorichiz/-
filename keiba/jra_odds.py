@@ -86,6 +86,75 @@ def _parse_race_id(race_id):
     return dict(year=year, vv=vv, kk=kk, dd=dd, rr=rr, venue=JRA_VENUE[vv])
 
 
+def _logger(debug):
+    def log(*a):
+        if debug:
+            print("[jra_odds]", *a, file=sys.stderr)
+    return log
+
+
+def _fetch_expect(cname, marker, tries=3, log=None):
+    """cnameをPOSTし、markerを含むページが返るまで最大tries回試す。
+    (JRADBはまれに目的リンクを含まない中間ページを返すことがある: 実測)"""
+    log = log or (lambda *a: None)
+    last = ""
+    for i in range(tries):
+        if i:
+            time.sleep(2)
+        try:
+            last = _http(ACCESS_O, "cname=" + cname)
+        except Exception as e:
+            log("fetch error:", e)
+            continue
+        if re.search(marker, last):
+            return last
+        log("marker '%s' missing (try %d)" % (marker, i + 1))
+    return last
+
+
+def _race_link_pat(rkey, t):
+    """開催ページ内の「レース×券種」リンク cname にマッチする正規表現。
+    T: 1=単複 3=枠連 4=馬連 5=ワイド 6=馬単 7=三連複 8=三連単。
+    実例 sw155ou 10 012026010801 20260816 Z /78 (三連複はさらに Z99=軸未選択)。"""
+    return r"'(sw15%dou\w{0,2}%s\d{8}Z?\w*/[0-9A-F]{2})'" % (t, rkey)
+
+
+def _nav_day_page(p, race_pat, log):
+    """オッズインデックス→開催(場・日)ページまでナビゲートし、race_pat を含む
+    開催ページHTMLを返す。返り値 (day_html or None, reason or None)。"""
+    # 1) オッズインデックス (開催一覧)。cname sw15oli00/FA が変わった時に備え
+    #    トップページからも拾えるが、まず既定値で直接POSTする。
+    try:
+        idx = _fetch_expect(ODDS_INDEX_CNAME, "sw15orl", log=log)
+    except Exception as e:
+        return None, "sp.jra.jp に到達できない: %s" % e
+    if "sw15orl" not in idx:
+        # 既定cnameが無効化された可能性 → トップページからオッズリンクを再取得
+        log("index cname stale; re-scrape top page")
+        try:
+            time.sleep(SLEEP)
+            top = _http(BASE + "/")
+            m = re.search(r"doAction\('/JRADB/accessO\.html'\s*,\s*'(sw15oli[^']+)'", top)
+            if m:
+                time.sleep(SLEEP)
+                idx = _fetch_expect(m.group(1), "sw15orl", log=log)
+        except Exception:
+            pass
+    if "sw15orl" not in idx:
+        return None, "オッズインデックスに開催リンクが無い(開催日以外/サイト構造変更)"
+
+    # 2) 開催(場・日)リンクを race_id の VV+YYYY+KK+DD で特定
+    key = p["vv"] + p["year"] + p["kk"] + p["dd"]          # 例 0420260208
+    mv = re.search(r"'(sw15orl\d{2}%s\d{8}/[0-9A-F]{2})'" % key, idx)
+    if not mv:
+        have = sorted(set(re.findall(r"sw15orl\d{2}(\d{10})\d{8}/", idx)))
+        return None, ("開催 %s回%s%s日 がJRA公式オッズ一覧に無い(当日/前日のみ掲載)。"
+                      "掲載中=%s" % (int(p["kk"]), p["venue"], int(p["dd"]), have))
+    log("venue-day cname:", mv.group(1))
+    time.sleep(SLEEP)
+    return _fetch_expect(mv.group(1), race_pat, log=log), None
+
+
 def fetch_official(race_id, debug=False):
     """JRA公式(sp.jra.jp)から単勝・複勝オッズ。
     返り値: dict(tan={馬番int:float}, fuku={馬番int:下限float}, fuku_max=...,
@@ -98,72 +167,24 @@ def fetch_official(race_id, debug=False):
         empty["reason"] = "race_id が JRA 12桁形式でない(場コード01-10): %s" % race_id
         return empty
 
-    def log(*a):
-        if debug:
-            print("[jra_odds]", *a, file=sys.stderr)
+    log = _logger(debug)
 
-    def _fetch_expect(cname, marker, tries=3):
-        """cnameをPOSTし、markerを含むページが返るまで最大tries回試す。
-        (JRADBはまれに目的リンクを含まない中間ページを返すことがある: 実測)"""
-        last = ""
-        for i in range(tries):
-            if i:
-                time.sleep(2)
-            try:
-                last = _http(ACCESS_O, "cname=" + cname)
-            except Exception as e:
-                log("fetch error:", e)
-                continue
-            if re.search(marker, last):
-                return last
-            log("marker '%s' missing (try %d)" % (marker, i + 1))
-        return last
-
-    # 1) オッズインデックス (開催一覧)。cname sw15oli00/FA が変わった時に備え
-    #    トップページからも拾えるが、まず既定値で直接POSTする。
-    try:
-        idx = _fetch_expect(ODDS_INDEX_CNAME, "sw15orl")
-    except Exception as e:
-        empty["reason"] = "sp.jra.jp に到達できない: %s" % e
-        return empty
-    if "sw15orl" not in idx:
-        # 既定cnameが無効化された可能性 → トップページからオッズリンクを再取得
-        log("index cname stale; re-scrape top page")
-        try:
-            time.sleep(SLEEP)
-            top = _http(BASE + "/")
-            m = re.search(r"doAction\('/JRADB/accessO\.html'\s*,\s*'(sw15oli[^']+)'", top)
-            if m:
-                time.sleep(SLEEP)
-                idx = _fetch_expect(m.group(1), "sw15orl")
-        except Exception:
-            pass
-    if "sw15orl" not in idx:
-        empty["reason"] = "オッズインデックスに開催リンクが無い(開催日以外/サイト構造変更)"
-        return empty
-
-    # 2) 開催(場・日)リンクを race_id の VV+YYYY+KK+DD で特定
-    key = p["vv"] + p["year"] + p["kk"] + p["dd"]          # 例 0420260208
-    mv = re.search(r"'(sw15orl\d{2}%s\d{8}/[0-9A-F]{2})'" % key, idx)
-    if not mv:
-        have = sorted(set(re.findall(r"sw15orl\d{2}(\d{10})\d{8}/", idx)))
-        empty["reason"] = ("開催 %s回%s%s日 がJRA公式オッズ一覧に無い(当日/前日のみ掲載)。"
-                          "掲載中=%s" % (int(p["kk"]), p["venue"], int(p["dd"]), have))
-        return empty
-    log("venue-day cname:", mv.group(1))
-    time.sleep(SLEEP)
-
+    # 1-2) オッズインデックス → 開催(場・日)ページ
     # 3) 当該レースの「単勝・複勝」リンク (sw151ou...VVYYYYKKDDRR...)
+    key = p["vv"] + p["year"] + p["kk"] + p["dd"]
     rkey = key + p["rr"]                                    # 例 042026020812
-    race_pat = r"'(sw151ou\w{0,2}%s\d{8}Z?\w*/[0-9A-F]{2})'" % rkey
-    day = _fetch_expect(mv.group(1), race_pat)
-    mr = re.search(race_pat, day)
+    race_pat = _race_link_pat(rkey, 1)
+    day, reason = _nav_day_page(p, race_pat, log)
+    if reason:
+        empty["reason"] = reason
+        return empty
+    mr = re.search(race_pat, day or "")
     if not mr:
         empty["reason"] = "%sR の単複オッズリンクが開催ページに無い(発売前/取止め?)" % int(p["rr"])
         return empty
     log("race cname:", mr.group(1))
     time.sleep(SLEEP)
-    page = _fetch_expect(mr.group(1), r'class="umaban"')
+    page = _fetch_expect(mr.group(1), r'class="umaban"', log=log)
     if 'class="umaban"' not in page:
         empty["reason"] = "オッズページ取得失敗(馬番表が無い)"
         return empty
