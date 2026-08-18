@@ -419,7 +419,8 @@ def flat_stats(races, name):
         d["pl_ret"] += pp
         d["ninki"] += r["ninki"][h]
     n = d["n"] or 1
-    return dict(n=d["n"],
+    allw = [wpay(r, top1(r, name)) for r in races]
+    return dict(n=d["n"], win_roi_ci=boot_roi(allw),
                 win_hit=round(d["win_hit"] / n * 100, 2),
                 win_roi=round(d["win_ret"] / (100.0 * n) * 100, 2),
                 win_avg_pay=round(float(np.mean(d["win_pays"])), 1) if d["win_pays"] else 0.0,
@@ -563,7 +564,7 @@ def skip_filters(mine, name):
         t = float(np.quantile(z1, 1 - X / 100.0))
         f[f"a_top{X}%"] = (lambda r, t=t, nm=name: r["z"][nm][top1(r, nm)] >= t)
         t2 = float(np.quantile(gp, 1 - X / 100.0))
-        f[f"b_gap{X}%"] = (lambda r, t=t2, nm=name: top2gap(r, nm) >= t2)
+        f[f"b_gap{X}%"] = (lambda r, t=t2, nm=name: top2gap(r, nm) >= t)
     bands = [("<2", 0.0, 2.0), ("2-4", 2.0, 4.0), ("4-7", 4.0, 7.0),
              ("7-15", 7.0, 15.0), ("15-50", 15.0, 50.0), (">=50", 50.0, 1e9)]
     for lb, lo, hi in bands:
@@ -575,10 +576,23 @@ def skip_filters(mine, name):
     return f
 
 
-def filtered_stats(races, name, fn):
+def boot_roi(pays, n_boot=2000, seed=7):
+    """flat ROI のブートストラップ95%区間。高配当が数本で決まる戦略の不確かさを見る。"""
+    a = np.asarray(pays, dtype=float)
+    if len(a) < 2:
+        return [0.0, 0.0]
+    rng = np.random.default_rng(seed)
+    idx = rng.integers(0, len(a), size=(n_boot, len(a)))
+    r = a[idx].mean(axis=1)
+    return [round(float(np.quantile(r, 0.025)), 1), round(float(np.quantile(r, 0.975)), 1)]
+
+
+def filtered_stats(races, name, fn, boot=False):
     sel = [r for r in races if fn(r)]
     st = flat_stats(sel, name) if sel else dict(n=0)
     st["skip_rate"] = round((1 - len(sel) / max(len(races), 1)) * 100, 1)
+    if boot and sel:
+        st["win_roi_ci"] = boot_roi([wpay(r, top1(r, name)) for r in sel])
     return st
 
 
@@ -615,7 +629,7 @@ def run_eval(path=PREDS):
         fl = skip_filters(mine, name)
         res["filters"][name] = {}
         for lb, fn in fl.items():
-            res["filters"][name][lb] = {sp: filtered_stats(by[sp], name, fn)
+            res["filters"][name][lb] = {sp: filtered_stats(by[sp], name, fn, boot=True)
                                         for sp in ("VALIDATE", "CONFIRM")}
             trials += 1
         print(f"[{name}] tau={tau:.2f} 完了", flush=True)
@@ -625,13 +639,91 @@ def run_eval(path=PREDS):
     return res
 
 
+# ══════════════════════════════════════════════════════════════════════
+#  ヌルスイープ: 「実力ゼロの得点」で同じ採掘をやると何%が基準①を通るか
+# ══════════════════════════════════════════════════════════════════════
+def null_sweep(n_models=300, seed=99, out="payout_obj_null.json"):
+    """28特徴のランダム線形結合(=学習していない=期待実力ゼロ)を n_models 本作り、
+       本編と同じ見送り基準(a/b/c)を当てて「VAL>=95 かつ CONF>=95」が何%出るかを測る。
+       レース・オッズ・払戻の実構造はそのまま＝偽陽性率の実測。"""
+    with open(CACHE, "rb") as f:
+        ds = pickle.load(f)
+    keep = {json.loads(l)["rid"] for l in open(PREDS, encoding="utf-8")}
+    rs = [r for r in ds if r["rid"] in keep]
+    n_r = len(rs)
+    K = max(len(r["ns"]) for r in rs)
+    d = feats_of(rs[0]).shape[1]
+    X3 = np.zeros((n_r, K, d))
+    P2 = np.zeros((n_r, K))
+    O2 = np.full((n_r, K), 9999.0)
+    MASK = np.zeros((n_r, K), dtype=bool)
+    code = {"MINE": 0, "VALIDATE": 1, "CONFIRM": 2}
+    SPL = np.array([code[split_of(r["date"][:6])] for r in rs])
+    for i, r in enumerate(rs):
+        M = feats_of(r).astype(np.float64)
+        mu, sd = M.mean(axis=0), M.std(axis=0)
+        sd[sd == 0] = 1.0
+        kk = len(r["ns"])
+        X3[i, :kk] = (M - mu) / sd
+        P2[i, :kk] = [win_pay(r, n) for n in r["ns"]]
+        O2[i, :kk] = [float((r["odds"] or {}).get(n, 9999.0)) for n in r["ns"]]
+        MASK[i, :kk] = True
+    NEG = np.where(MASK, 0.0, -np.inf)
+    cnt = np.maximum(MASK.sum(axis=1), 1)
+    rowidx = np.arange(n_r)
+    isM, isV, isC = SPL == 0, SPL == 1, SPL == 2
+    bands = [("<2", 0.0, 2.0), ("2-4", 2.0, 4.0), ("4-7", 4.0, 7.0),
+             ("7-15", 7.0, 15.0), ("15-50", 15.0, 50.0), (">=50", 50.0, 1e9)]
+    rng = np.random.default_rng(seed)
+    tot_cells = 0
+    hits = []
+    for it in range(n_models):
+        w = rng.standard_normal(d)
+        S = X3 @ w
+        mean = (np.where(MASK, S, 0.0).sum(axis=1) / cnt)[:, None]
+        var = (np.where(MASK, (S - mean) ** 2, 0.0).sum(axis=1) / cnt)
+        sd = np.sqrt(np.maximum(var, 1e-12))[:, None]
+        Z = np.where(MASK, (S - mean) / sd, -np.inf)
+        i1 = np.argmax(Z, axis=1)
+        z1 = Z[rowidx, i1]
+        Z2 = Z.copy()
+        Z2[rowidx, i1] = -np.inf
+        gap = z1 - np.max(Z2, axis=1)
+        pay = P2[rowidx, i1]
+        od = O2[rowidx, i1]
+        conds = {}
+        for X in (10, 20, 30, 50):
+            conds[f"a_top{X}%"] = z1 >= np.quantile(z1[isM], 1 - X / 100.0)
+            conds[f"b_gap{X}%"] = gap >= np.quantile(gap[isM], 1 - X / 100.0)
+        for lb, lo, hi in bands:
+            conds[f"c_odds{lb}"] = (od >= lo) & (od < hi)
+        for lb, c in conds.items():
+            v, cf = c & isV, c & isC
+            tot_cells += 1
+            if v.sum() == 0 or cf.sum() == 0:
+                continue
+            rv = pay[v].mean()
+            rc = pay[cf].mean()
+            if rv >= 95 and rc >= 95:
+                hits.append(dict(it=it, filt=lb, vn=int(v.sum()), vroi=round(rv, 1),
+                                 cn=int(cf.sum()), croi=round(rc, 1)))
+    res = dict(n_models=n_models, cells=tot_cells, passes=len(hits),
+               rate=round(len(hits) / max(tot_cells, 1) * 100, 2), examples=hits[:20])
+    json.dump(res, open(out, "w", encoding="utf-8"), ensure_ascii=False, indent=1)
+    print(f"ヌルスイープ: {n_models}本 × {tot_cells // max(n_models,1)}基準 = {tot_cells}セル中 "
+          f"{len(hits)}セルが基準①(VAL>=95 ∧ CONF>=95)を通過 = {res['rate']}%")
+    return res
+
+
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("cmd", choices=["wf", "eval"])
+    ap.add_argument("cmd", choices=["wf", "eval", "null"])
     ap.add_argument("--only", default=None, help="学習するモデルをカンマ区切りで限定")
     a = ap.parse_args()
     if a.cmd == "wf":
         run_wf(only=a.only.split(",") if a.only else None)
+    elif a.cmd == "null":
+        null_sweep()
     else:
         run_eval()
 
