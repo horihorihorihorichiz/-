@@ -224,18 +224,35 @@ def v99w_lane():
         raise RuntimeError(f"V99W指紋不一致 腕A={armA[:3]}(want{wantA}) "
                            f"B-sd={bsd[:3]}(want{wantB})。v99w_fit再学習が意図的なら"
                            f"selfcheckの指紋を更新すること")
+    # B-sd16レーン(2026-08-19追加。V99W2_REPORT.mdの最良配点+corner_liveのライブ特徴生成)
+    if not os.path.exists("v99w2_result.pkl"):
+        raise RuntimeError("v99w2_result.pkl が無い(コンテナリセットで消えた可能性)")
+    wg16, ws16 = v99w_rank.load_model16(auto_fit=False)
+    assert len(wg16) == 16, f"B-sd16重みの次元異常: {len(wg16)}"
+    assert len(ws16) == 6, f"B-sd16群数異常: {len(ws16)} (芝ダ×S/M/L=6のはず)"
+    s16, grp16, _nz = v99w_rank.score_bsd16(d["race"], rows, Z, str(d["date"]),
+                                            wg16, ws16)
+    bsd16 = v99w_rank.rank_nums(rows, s16)
+    assert grp16, "B-sd16の群(芝,S)が引けない"
+    want16 = [5, 8, 15]
+    if bsd16[:3] != want16:
+        raise RuntimeError(f"V99W指紋不一致 B-sd16={bsd16[:3]}(want{want16})。"
+                           f"v99w2_fit再学習/corner_live変更が意図的なら"
+                           f"selfcheckの指紋を更新すること")
     if os.path.exists("v99w_live.jsonl"):
         for ln in open("v99w_live.jsonl", encoding="utf-8"):
             if ln.strip():
                 rec = json.loads(ln)
                 assert {"rid", "date", "cur", "armA", "bsd"} <= set(rec), \
                     f"v99w_live.jsonl スキーマ異常: {sorted(rec)}"
-    return "モデルOK(腕A12次元/B-sd6群)・指紋一致"
+    return "モデルOK(腕A12次元/B-sd6群/B-sd16 16次元6群)・指紋一致"
 
 
 check("V99W並走レーン", v99w_lane,
-      fix="python3 build_comps_v99.py && python3 v99w_fit.py --stage final "
-          "(再学習で指紋が正当に変わった場合は selfcheck.py の wantA/wantB を更新)")
+      fix="python3 build_comps_v99.py && python3 v99w_fit.py --stage final && "
+          "python3 corner_eval.py build && python3 v99w2_fit.py --stage mine && "
+          "python3 v99w2_fit.py --stage final "
+          "(再学習で指紋が正当に変わった場合は selfcheck.py の wantA/wantB/want16 を更新)")
 
 # 6. JST -----------------------------------------------------------------
 now = datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=9)))
