@@ -204,6 +204,39 @@ def frozen_check():
 check("ルールブック凍結", frozen_check,
       fix="意図した改定なら PATTERNS_FROZEN.json のsha256と窓端を更新(RULES.md §後知恵禁止)")
 
+# 5.6 V99W並走レーン(2026-08-19新設・学習配点のゼロ掛け金記録。本番エンジン非依存) ----
+#     v99w_result.pkl は.gitignore(コンテナリセットで消える)。土曜ライブで並走させる前に
+#     モデルの存在と腕A/B-sdランキングの指紋をオフラインで確認する。
+def v99w_lane():
+    if not os.path.exists("v99w_result.pkl"):
+        raise RuntimeError("v99w_result.pkl が無い(コンテナリセットで消えた可能性)")
+    import v99w_rank
+    wg, wsd = v99w_rank.load_model(auto_fit=False)
+    assert len(wg) == 12, f"腕A重みの次元異常: {len(wg)}"
+    assert len(wsd) == 6, f"B-sd群数異常: {len(wsd)} (芝ダ×S/M/L=6のはず)"
+    d = json.load(open("hist/202610020612.json", encoding="utf-8"))
+    rows, Z = v99w_rank.scores_for(d["race"])
+    armA = v99w_rank.rank_nums(rows, Z @ wg)
+    bsd = v99w_rank.rank_nums(rows, Z @ wsd[("芝", "S")])
+    assert sorted(armA) == sorted(r["num"] for r in rows), "腕A順位が全頭順列でない"
+    wantA, wantB = [5, 15, 8], [5, 8, 16]
+    if armA[:3] != wantA or bsd[:3] != wantB:
+        raise RuntimeError(f"V99W指紋不一致 腕A={armA[:3]}(want{wantA}) "
+                           f"B-sd={bsd[:3]}(want{wantB})。v99w_fit再学習が意図的なら"
+                           f"selfcheckの指紋を更新すること")
+    if os.path.exists("v99w_live.jsonl"):
+        for ln in open("v99w_live.jsonl", encoding="utf-8"):
+            if ln.strip():
+                rec = json.loads(ln)
+                assert {"rid", "date", "cur", "armA", "bsd"} <= set(rec), \
+                    f"v99w_live.jsonl スキーマ異常: {sorted(rec)}"
+    return "モデルOK(腕A12次元/B-sd6群)・指紋一致"
+
+
+check("V99W並走レーン", v99w_lane,
+      fix="python3 build_comps_v99.py && python3 v99w_fit.py --stage final "
+          "(再学習で指紋が正当に変わった場合は selfcheck.py の wantA/wantB を更新)")
+
 # 6. JST -----------------------------------------------------------------
 now = datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=9)))
 check("JST時刻", lambda: now.strftime("%Y-%m-%d %H:%M JST"))
