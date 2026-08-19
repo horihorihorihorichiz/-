@@ -147,8 +147,8 @@ def py(gy):
     return MT + (NY - gy) * G
 
 
-def draw_floor(n):
-    d = FLOORS[n]
+def draw_floor(n, d=None):
+    d = d or FLOORS[n]
     s = Svg(W, H)
 
     # ---- タイトル ----
@@ -321,7 +321,7 @@ def draw_floor(n):
 
     # ---- 道路 ----
     ry = y1 + 60
-    if n == 1:
+    if d.get('road', n == 1):
         s.rect(px(-0.6), ry, 9.2 * G, 26, fill='#f2f2f2', stroke='#bbb',
                stroke_width=0.8)
         s.text(W / 2.0, ry + 17, '道　路（商店街の通り）', size=12,

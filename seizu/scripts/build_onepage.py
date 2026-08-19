@@ -22,6 +22,12 @@ def inline_svg(name):
     return '<svg' + head + '>' + s[m.end():]
 
 
+def inline_part(name):
+    with io.open(os.path.join(BASE, 'parts', name + '.html'),
+                 encoding='utf-8') as f:
+        return f.read()
+
+
 def cards_literal():
     with io.open(os.path.join(BASE, '03-cards.html'), encoding='utf-8') as f:
         s = f.read()
@@ -33,6 +39,8 @@ def cards_literal():
 def main():
     with io.open(SRC, encoding='utf-8') as f:
         html = f.read()
+    html = re.sub(r'\{\{PART:(\w+)\}\}',
+                  lambda m: inline_part(m.group(1)), html)
     html = re.sub(r'\{\{SVG:([a-z0-9_]+)\}\}',
                   lambda m: inline_svg(m.group(1)), html)
     html = html.replace('{{CARDS}}', cards_literal())

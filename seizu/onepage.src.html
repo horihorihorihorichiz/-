@@ -69,9 +69,9 @@ nav{position:fixed;left:0;right:0;bottom:0;z-index:20;
   border-top:1px solid var(--edge);
   padding:6px 8px calc(6px + env(safe-area-inset-bottom))}
 .tabs{max-width:760px;margin:0 auto;display:grid;
-  grid-template-columns:repeat(5,1fr);gap:4px}
-.tabs button{font:500 12px/1.4 var(--body);color:var(--ink3);
-  background:none;border:0;border-radius:9px;padding:9px 2px 7px;
+  grid-template-columns:repeat(6,1fr);gap:3px}
+.tabs button{font:500 11.5px/1.4 var(--body);color:var(--ink3);
+  background:none;border:0;border-radius:9px;padding:9px 1px 7px;
   cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px}
 .tabs button .n{font:500 10px/1 var(--mono);letter-spacing:.08em;
   color:var(--ink3)}
@@ -203,6 +203,43 @@ figcaption{font-size:13px;color:var(--ink3);margin-top:9px;line-height:1.7}
   cursor:pointer}
 .fin{text-align:center;padding:56px 16px}
 .fin h3{font-family:var(--disp);font-size:21px;color:var(--ok);margin:0 0 6px}
+
+/* 予想問題の「問題用紙」風ブロック */
+.paper{background:var(--panel);border:1px solid var(--edge);border-radius:14px;
+  padding:20px 18px;margin:20px 0;font-size:14.5px;line-height:1.95}
+.paper .ph{font-family:var(--disp);font-size:19px;font-weight:700;
+  text-align:center;margin:0 0 18px;padding-bottom:12px;
+  border-bottom:2px solid var(--ink)}
+.paper .pn{font-family:var(--body);font-size:15.5px;font-weight:700;
+  color:var(--ink);margin:22px 0 6px;padding-left:0;border:0}
+.paper .ps{font-weight:700;margin:16px 0 4px;font-size:14.5px}
+.paper .pl{counter-reset:pli;list-style:none;padding-left:1.6em;margin:6px 0}
+.paper .pl li{counter-increment:pli;position:relative;margin:4px 0}
+.paper .pl li::before{content:counter(pli);position:absolute;left:-1.6em;
+  width:1.25em;height:1.25em;border:1px solid var(--ink3);border-radius:50%;
+  font:500 10px/1.25em var(--mono);text-align:center;color:var(--ink2);
+  top:.42em}
+.paper table{font-size:13.5px}
+/* 記述の問答 */
+.qa{background:var(--panel);border:1px solid var(--edge);border-radius:12px;
+  padding:16px 18px;margin:14px 0}
+.qa .q{font-weight:700;font-size:15px;margin:0 0 10px;color:var(--axis);
+  font-family:var(--disp)}
+.qa .a{margin:0;font-size:14.5px;line-height:2;
+  padding-left:14px;border-left:3px solid var(--rule)}
+/* 用語辞典 */
+.wsearch{width:100%;font:400 16px/1.6 var(--body);padding:12px 14px;
+  border:1px solid var(--edge);border-radius:11px;background:var(--panel);
+  color:var(--ink);margin:14px 0 6px}
+.wsearch:focus{outline:2px solid var(--axis);outline-offset:1px}
+.whit{font:500 12px/1 var(--mono);color:var(--ink3);margin:0 0 14px}
+.wcat{font-family:var(--body);font-size:13px;font-weight:700;color:var(--ink3);
+  letter-spacing:.06em;margin:26px 0 8px;padding-bottom:5px;
+  border-bottom:1px solid var(--edge)}
+.term{padding:11px 0;border-bottom:1px solid var(--edge)}
+.term .tn{margin:0;font-weight:700;font-size:15.5px;font-family:var(--disp)}
+.term .ty{font:400 11.5px/1 var(--mono);color:var(--ink3);margin-left:10px}
+.term .td{margin:4px 0 0;font-size:14px;line-height:1.85;color:var(--ink2)}
 footer{margin:46px 0 26px;padding-top:18px;border-top:1px solid var(--edge);
   font-size:12.5px;color:var(--ink3);line-height:1.85}
 </style>
@@ -237,8 +274,9 @@ footer{margin:46px 0 26px;padding-top:18px;border-top:1px solid var(--edge);
     <button role="tab" data-p="p1" aria-selected="true"><span class="n">01</span>要点</button>
     <button role="tab" data-p="p2" aria-selected="false"><span class="n">02</span>道具</button>
     <button role="tab" data-p="p3" aria-selected="false"><span class="n">03</span>型</button>
-    <button role="tab" data-p="p4" aria-selected="false"><span class="n">04</span>カード</button>
-    <button role="tab" data-p="p5" aria-selected="false"><span class="n">05</span>本番</button>
+    <button role="tab" data-p="p4" aria-selected="false"><span class="n">04</span>予想</button>
+    <button role="tab" data-p="p5" aria-selected="false"><span class="n">05</span>カード</button>
+    <button role="tab" data-p="p6" aria-selected="false"><span class="n">06</span>ことば</button>
   </div>
 </nav>
 
@@ -329,6 +367,38 @@ footer{margin:46px 0 26px;padding-top:18px;border-top:1px solid var(--edge);
 </table></div>
 <p>5時間＝300分。<b>余りは10分しかありません。</b>
 悩む時間の余裕はゼロだと思ってください。</p>
+
+<h2><span class="kicker">9月13日</span>5時間の流れ</h2>
+<ol class="tl">
+  <li><span class="t">11:00</span><span class="w">問題文を読む・条件を書き出す<em>25分 → 11:25</em></span></li>
+  <li><span class="t">11:25</span><span class="w">エスキス（間取りを決める）<em>60分 → 12:25</em></span></li>
+  <li class="key"><span class="t">12:25</span><span class="w"><b>記述を先に片づける</b><em>25分 → 12:50</em></span></li>
+  <li><span class="t">12:50</span><span class="w">1階平面図 兼 配置図<em>40分 → 13:30</em></span></li>
+  <li><span class="t">13:30</span><span class="w">2階平面図<em>30分 → 14:00</em></span></li>
+  <li><span class="t">14:00</span><span class="w">3階平面図<em>25分 → 14:25</em></span></li>
+  <li><span class="t">14:25</span><span class="w">床伏図 兼 小屋伏図<em>35分 → 15:00</em></span></li>
+  <li><span class="t">15:00</span><span class="w">立面図<em>20分 → 15:20</em></span></li>
+  <li><span class="t">15:20</span><span class="w">部分詳細図 1/20<em>25分 → 15:45</em></span></li>
+  <li><span class="t">15:45</span><span class="w">最終確認<em>15分 → 16:00</em></span></li>
+</ol>
+<div class="flag info">
+  <h4>なぜ記述を先にやるのか</h4>
+  <p>あとに回すと必ず時間が足りなくなるからです。
+  図面は多少雑でも点は残りますが、<b>記述の白紙はまるごと失点</b>です。</p>
+</div>
+
+<h2><span class="kicker">最後の15分</span>指差し確認</h2>
+<div class="panel"><ul class="check" data-store="final">
+<li><label><input type="checkbox"><span>木造3階建てになっているか（構造・階数の指定どおりか）</span></label></li>
+<li><label><input type="checkbox"><span><b>7枚すべて描き終わっているか</b></span></label></li>
+<li><label><input type="checkbox"><span>平面図と伏図で柱の位置が合っているか</span></label></li>
+<li><label><input type="checkbox"><span>面積表の数字が条件に合っているか</span></label></li>
+<li><label><input type="checkbox"><span>要求された部屋がすべてあるか・階を間違えていないか</span></label></li>
+<li><label><input type="checkbox"><span>各階に階段があるか／全部の部屋に入れるか</span></label></li>
+<li><label><input type="checkbox"><span>室名・寸法・方位・縮尺を書き忘れていないか</span></label></li>
+<li><label><input type="checkbox"><span>1FL・軒高・最高高さが全図面で同じ数字か</span></label></li>
+</ul></div>
+
 </section>
 
 <!-- ============ 02 道具 ============ -->
@@ -654,8 +724,13 @@ A2用紙の中で意外と小さいことを、目で覚えておいてくださ
 </table></div>
 </section>
 
-<!-- ============ 04 カード ============ -->
+<!-- ============ 04 予想問題 ============ -->
 <section role="tabpanel" id="p4">
+{{PART:yosou}}
+</section>
+
+<!-- ============ 05 カード ============ -->
+<section role="tabpanel" id="p5">
 <h2><span class="kicker">すきま時間</span>記述の暗記カード 20問</h2>
 <p>カードを押すと解答例が出ます。「言えた／まだ」で仕分けすると、
 次からは「まだ」だけを回せます。記録はこの端末に残ります。</p>
@@ -677,66 +752,9 @@ A2用紙の中で意外と小さいことを、目で覚えておいてくださ
 自分の図面に合わせて言い換えてください。</p>
 </section>
 
-<!-- ============ 05 本番 ============ -->
-<section role="tabpanel" id="p5">
-<h2><span class="kicker">9月13日</span>5時間の流れ</h2>
-<ol class="tl">
-  <li><span class="t">11:00</span><span class="w">問題文を読む・条件を書き出す<em>25分 → 11:25</em></span></li>
-  <li><span class="t">11:25</span><span class="w">エスキス（間取りを決める）<em>60分 → 12:25</em></span></li>
-  <li class="key"><span class="t">12:25</span><span class="w"><b>記述を先に片づける</b><em>25分 → 12:50</em></span></li>
-  <li><span class="t">12:50</span><span class="w">1階平面図 兼 配置図<em>40分 → 13:30</em></span></li>
-  <li><span class="t">13:30</span><span class="w">2階平面図<em>30分 → 14:00</em></span></li>
-  <li><span class="t">14:00</span><span class="w">3階平面図<em>25分 → 14:25</em></span></li>
-  <li><span class="t">14:25</span><span class="w">床伏図 兼 小屋伏図<em>35分 → 15:00</em></span></li>
-  <li><span class="t">15:00</span><span class="w">立面図<em>20分 → 15:20</em></span></li>
-  <li><span class="t">15:20</span><span class="w">部分詳細図 1/20<em>25分 → 15:45</em></span></li>
-  <li><span class="t">15:45</span><span class="w">最終確認<em>15分 → 16:00</em></span></li>
-</ol>
-<div class="flag info">
-  <h4>なぜ記述を先にやるのか</h4>
-  <p>あとに回すと必ず時間が足りなくなるからです。
-  図面は多少雑でも点は残りますが、<b>記述の白紙はまるごと失点</b>です。</p>
-</div>
-
-<h2><span class="kicker">最後の15分</span>指差し確認</h2>
-<div class="panel"><ul class="check" data-store="final">
-<li><label><input type="checkbox"><span>木造3階建てになっているか（構造・階数の指定どおりか）</span></label></li>
-<li><label><input type="checkbox"><span><b>7枚すべて描き終わっているか</b></span></label></li>
-<li><label><input type="checkbox"><span>平面図と伏図で柱の位置が合っているか</span></label></li>
-<li><label><input type="checkbox"><span>面積表の数字が条件に合っているか</span></label></li>
-<li><label><input type="checkbox"><span>要求された部屋がすべてあるか・階を間違えていないか</span></label></li>
-<li><label><input type="checkbox"><span>各階に階段があるか／全部の部屋に入れるか</span></label></li>
-<li><label><input type="checkbox"><span>室名・寸法・方位・縮尺を書き忘れていないか</span></label></li>
-<li><label><input type="checkbox"><span>1FL・軒高・最高高さが全図面で同じ数字か</span></label></li>
-</ul></div>
-
-<h2><span class="kicker">想定外が来たら</span>型の崩し方</h2>
-<p>本番で型どおりに置けないことは必ず起きます。そのときの優先順位です。</p>
-<div class="tw"><table>
-<tr><th class="wrap">起きたこと</th><th class="wrap">どう直すか</th></tr>
-<tr><td class="wrap">敷地が細長くて入らない</td>
-    <td class="wrap">マスの数を変える（7×11など）。<b>910の倍数は絶対に崩さない</b></td></tr>
-<tr><td class="wrap">要求室が1つ増えた</td>
-    <td class="wrap">納戸・倉庫をつぶす。売場と居間は最後まで削らない</td></tr>
-<tr><td class="wrap">「客用便所」と指定された</td>
-    <td class="wrap">便所と倉庫を入れかえて売場のとなりへ</td></tr>
-<tr><td class="wrap">駐車場・駐輪場が要求された</td>
-    <td class="wrap">建物を北へ寄せて南に空地。建物の形は変えない</td></tr>
-<tr><td class="wrap">階段の位置を指定された</td>
-    <td class="wrap">指定に従う。ただし<b>3階とも同じ位置</b>だけは死守</td></tr>
-<tr><td class="wrap">どうしても収まらない</td>
-    <td class="wrap"><b>要求室を全部入れるのが最優先。</b>不格好でも欠落よりマシ</td></tr>
-</table></div>
-
-<div class="flag no">
-  <h4>この資料を使うときの約束</h4>
-  <p><b>型は予想であって正解ではありません。</b>正解は当日の問題文だけです。
-  型どおりに置けない条件が出たら、迷わず問題文に従ってください。</p>
-  <p><b>法令の数値は必ず自分で法令集を引いて確かめてください。</b>
-  階段の寸法・基礎の寸法・壁倍率などは目安です。
-  2025年4月から木造の構造の決まりが変わっているので、
-  古い参考書の数字が今も正しいとは限りません。</p>
-</div>
+<!-- ============ 06 ことば ============ -->
+<section role="tabpanel" id="p6">
+{{PART:kotoba}}
 </section>
 
 <footer>
@@ -755,7 +773,7 @@ function show(id,push){
   if(cur) pos[cur.id]=window.scrollY;
   tabs.forEach(t=>t.setAttribute('aria-selected',String(t.dataset.p===id)));
   panels.forEach(p=>p.classList.toggle('on',p.id===id));
-  window.scrollTo(0,pos[id]||0);
+  requestAnimationFrame(()=>window.scrollTo(0,pos[id]||0));
   if(push) history.replaceState(null,'','#'+id);
 }
 tabs.forEach(t=>t.onclick=()=>show(t.dataset.p,true));

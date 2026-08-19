@@ -13,6 +13,8 @@
 | `01-tools.html` | 製図道具の発注リスト、届いたら最初にやること |
 | `02-katachi.html` | 型の図面集（平面・伏図・立面・部分詳細・階段・面積表） |
 | `03-cards.html` | 記述の暗記カード20問（携帯用・localStorage保存） |
+| `04-yosou.html` | 予想問題A（印刷用・記述の記入欄つき） |
+| `onepage.html` | 全部入りの1枚ページ（携帯用）。`onepage.src.html` + `parts/` から生成 |
 | `timetrial.xlsx` | タイムトライアル記録表 |
 | `figures/*.svg` | 図面（スクリプトで生成） |
 
@@ -27,7 +29,11 @@ python3 plans.py        # 平面図 1F/2F/3F
 python3 framing.py      # 床伏図・小屋伏図
 python3 elevation.py    # 南立面図・階段の割付図
 python3 detail.py       # 部分詳細図 1/20
+python3 esquisse.py     # エスキス手順図
+python3 site.py         # 配置図
+python3 variants.py     # 予想問題の解答例（1階平面図）
 python3 timetrial.py    # 記録表 xlsx（openpyxl が必要）
+python3 build_onepage.py # onepage.html を組み立てる
 ```
 
 `scripts/svgkit.py` が共通の描画ライブラリ。
