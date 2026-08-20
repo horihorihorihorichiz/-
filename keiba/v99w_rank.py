@@ -161,11 +161,15 @@ def sd_key(race):
 
 # ───────── 入出力 ─────────
 def find_race_path(arg):
-    """race_jsonパス か race_id → 実ファイルパス（race_{id}.json → hist/{id}.json の順）。"""
+    """race_jsonパス か race_id → 実ファイルパス。
+       2026-08-21 修正(監査B1): **hist/{id}.json を優先**する。
+       旧実装は race_{id}.json を先に見ていたため、終わったレースの古いキャッシュ
+       （date も result も持たない bare 形式）が拾われ、past=False のライブ記帳として
+       確定オッズで記帳されていた（実測: 202601010201 が 07/26 終了済みなのに past=false）。"""
     if os.path.exists(arg):
         return arg
-    for cand in (os.path.join(_DIR, f"race_{arg}.json"),
-                 os.path.join(_DIR, "hist", f"{arg}.json")):
+    for cand in (os.path.join(_DIR, "hist", f"{arg}.json"),
+                 os.path.join(_DIR, f"race_{arg}.json")):
         if os.path.exists(cand):
             return cand
     raise FileNotFoundError(f"race_json が見つからない: {arg}")
@@ -177,6 +181,18 @@ def load_race(arg):
     d = json.load(open(find_race_path(arg), encoding="utf-8"))
     if "race" in d and "horses" not in d:     # hist ラッパ
         return d["race"], (str(d["date"]) if d.get("date") else None), bool(d.get("result"))
+    # bare形式（date/result を持たない）。2026-08-21 修正(監査B1):
+    # 同じ race_id の hist が存在するなら、そのレースは既に終わっている。
+    # bare を直接パス指定された場合も含めて後知恵記帳を塞ぐ。
+    rid = str(d.get("race_id") or "")
+    if rid:
+        hp = os.path.join(_DIR, "hist", f"{rid}.json")
+        if os.path.exists(hp):
+            try:
+                h = json.load(open(hp, encoding="utf-8"))
+                return d, (str(h["date"]) if h.get("date") else None), bool(h.get("result"))
+            except Exception:
+                return d, None, True          # 読めない時は安全側（過去扱い）
     return d, None, False
 
 
@@ -299,6 +315,12 @@ def cmd_run(args):
         if prev and prev.get("settled"):
             print(f"  {rid}: 精算済みのため記帳せず（記録は不変）", file=sys.stderr)
             continue
+        # 2026-08-21 修正(監査B2): 凍結は sticky。一度凍結した記録は --post の有無に
+        # かかわらず上書きしない（旧実装は --post を付け忘れた再実行が発走後データで
+        # 上書きできた。paper_rank.py と同じ流儀に揃える）。
+        if prev and prev.get("frozen"):
+            print(f"  {rid}: 凍結済みのため記帳せず（記録は不変）", file=sys.stderr)
+            continue
         # 後知恵ブロック（paper_rank踏襲）: 過去日付 or 結果同梱のrace_jsonは既定で記帳しない
         past = (date < today) or has_result
         if past and not args.allow_past:
@@ -307,6 +329,10 @@ def cmd_run(args):
             continue
         # 発走3分前で凍結（paper_rank踏襲）。発走後の再記帳は入力が汚れるためブロック
         if judged_tminus is not None and judged_tminus <= 3 and not args.allow_past:
+            if prev:                                   # 既存記録に凍結印を残す(B2)
+                prev["frozen"] = True
+                byrid[rid] = prev
+                n_upd += 1
             print(f"  {rid}: 発走{judged_tminus:+d}分＝凍結時刻を過ぎたため記帳しない", file=sys.stderr)
             continue
         entry = dict(rid=rid, date=date, venue=race.get("venue"),
@@ -340,14 +366,17 @@ def cmd_run(args):
 
 
 # ───────── settle ─────────
-def cmd_settle():
+def cmd_settle(only=None):
     """結果が確定したレースだけ着順を取り込む（fetch_result=histと同じ取得経路）。
        払戻(単勝)が出るまで＝確定前は書かない。結果の手入力・捏造は不可。"""
     import fetch_result as FRES
     logs = load_log()
+    only = set(only or [])          # 監査B7: race_id 指定があればそれだけ精算
     n = 0
     for r in logs:
         if r.get("settled"):
+            continue
+        if only and r["rid"] not in only:
             continue
         try:
             res = FRES.get_result(r["rid"])
@@ -483,13 +512,16 @@ def main():
     p1.add_argument("--post", default=None, help="発走時刻 HH:MM（3分前で記帳凍結）")
     p1.add_argument("--no-odds", action="store_true",
                     help="オッズ取得と選別判定(exclusion.py)を省略する")
-    sub.add_parser("settle", help="確定結果の取り込み")
+    # 2026-08-21 修正(監査B7): RULES.md の `settle <race_id>` が argparse エラーで
+    # 止まっていた（&& で繋いだ stats も走らない）。任意引数として受ける。
+    ps = sub.add_parser("settle", help="確定結果の取り込み")
+    ps.add_argument("races", nargs="*", help="race_id(省略時は未精算すべて)")
     sub.add_parser("stats", help="現行/腕A/B-sd/B-sd16/flt の複勝的中率＋絞り内ROI")
     a = ap.parse_args()
     if a.cmd == "run":
         cmd_run(a)
     elif a.cmd == "settle":
-        cmd_settle()
+        cmd_settle(getattr(a, "races", None))
     else:
         cmd_stats()
 

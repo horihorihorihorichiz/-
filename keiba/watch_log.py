@@ -134,6 +134,9 @@ def eval_race(it, date, fast=False, fresh=False):
         match=bool(t1 and m1 == t1), tags=tags,
         odds_src=od.get("tan_source"),
         stake=0,                    # ★賭け金ゼロ(記録のみ)
+        # 2026-08-21 追加(監査B4): --allow-past のバックフィルが [ライブ実測] に混入していた。
+        # 判定日 < 実行日 なら過去分。cmd_stats はこれで分離する。
+        past=bool(date < jst_now().strftime("%Y%m%d")),
         settled=False,
     )
 
@@ -172,6 +175,16 @@ def cmd_run(date, fast=False, rids=None, fresh_min=30, allow_past=False):
         started = (date == now.strftime("%Y%m%d") and tminus <= 3)
         if started and not prev:
             n_skip += 1                # 未判定のまま発走 → 記録しない(後知恵防止)
+            continue
+        # 2026-08-21 修正(監査B3): 発走後は「既存記録に凍結印を立てて終わり」。
+        # 旧実装は prev がある時に eval_race を再実行してオッズを取り直し、
+        # その発走後の値で上書きしてから frozen=True を立てていた（順序が逆）。
+        # AUTO_PLAYBOOK が全レースを毎回舐めるため、先に終わったレースは必ずこの経路を
+        # 通っており、W10/W11 の記録が発走後オッズ判定になっていた。paper_rank と同順序に揃える。
+        if started and prev:
+            prev["frozen"] = True
+            byrid[rid] = prev
+            n_upd += 1
             continue
         try:
             # 直前(既定30分以内)はJRA公式オッズ。netkeiba無料オッズは40-50分遅れ(RULES §7)
@@ -256,9 +269,15 @@ def _agg(rows, label):
 
 
 def cmd_stats(min_cov=MIN_COV):
-    logs = [r for r in load_log() if r.get("settled")]
+    allrows = [r for r in load_log() if r.get("settled")]
+    # 2026-08-21 修正(監査B4): --allow-past のバックフィルを [ライブ実測] から外す。
+    # past キーが無い古いレコードは判定日と記帳日を比べられないので参考扱いにはしない
+    # (既存台帳は0件なので実害なし。今後の記録は past を持つ)。
+    logs = [r for r in allrows if not r.get("past")]
+    back = [r for r in allrows if r.get("past")]
     if not logs:
-        print("watch: 精算済みレコードなし(週末のライブ運用で貯まる)")
+        print("watch: 精算済みレコードなし(週末のライブ運用で貯まる)"
+              + (f" ※過去バックフィル{len(back)}Rは実測から除外" if back else ""))
         return
     tie = [r for r in logs if r.get("tsi_tie")]
     low = [r for r in logs if not r.get("tsi_tie") and (r.get("tsi_cov") or 0) < min_cov]
@@ -269,7 +288,8 @@ def cmd_stats(min_cov=MIN_COV):
     w11n = [r for r in miss if (r.get("o1") or 0) >= W11_ODDS]
 
     print(f"W10/W11 ライブwatch(賭け金ゼロ・名目100円): {len(logs)}R精算 "
-          f"(判定可{len(use)} / tsiタイ除外{len(tie)} / 低被覆除外{len(low)})")
+          f"(判定可{len(use)} / tsiタイ除外{len(tie)} / 低被覆除外{len(low)})"
+          + (f" ／ 過去バックフィル{len(back)}Rは除外[参考]" if back else ""))
     _agg(match, "W10 合議一致        [ライブ実測]")
     _agg(miss, "　　不一致(対照)     [ライブ実測]")
     _agg(w11, f"W11 合議×{W11_ODDS:.0f}倍+     [ライブ実測]")

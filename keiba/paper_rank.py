@@ -156,6 +156,9 @@ def cmd_run(date, allow_past=False):
                          bets=bets, odds_at_rec={str(k): v for k, v in sorted(tan.items())},
                          o1=tan.get(order[0]), o2=tan.get(order[1]) if len(order) > 1 else None,
                          baba=race.get("baba"),
+                         # 2026-08-21 追加(監査B4): 過去分のバックフィルが「正式(直前判定済み)[実測]」に
+                         # 混入していた。confirmed は実弾判定ライン(150R)の分母なので分離する。
+                         past=bool(date < now.strftime("%Y%m%d")),
                          frozen=False, settled=False)
             # 直前判定(2026-08-16 ANALYSIS): 発走25分以内の判定で発火が残った時だけ「正式な買い」。
             # 朝発火は監視(watch)扱い。ドリフトで乖離が消えるレースを買わないための二段記録。
@@ -165,7 +168,9 @@ def cmd_run(date, allow_past=False):
             except Exception:
                 mins_to_post = 999
             entry["judged_tminus"] = mins_to_post
-            if 0 < mins_to_post <= 25:
+            # 2026-08-21 修正(監査B4): 日付を無視して時刻差だけ見ていたため、過去日のレースでも
+            # 0<x<=25 に落ちれば confirmed=True になっていた。当日のレースに限定する。
+            if 0 < mins_to_post <= 25 and not entry["past"]:
                 entry["confirmed"] = True
             if prev:
                 entry["recorded_first"] = prev.get("recorded_first", prev["recorded"])
@@ -248,12 +253,14 @@ def cmd_stats():
 
     conf = [r for r in logs if r.get("confirmed")]
     watch = [r for r in logs if not r.get("confirmed")]
+    back = [r for r in logs if r.get("past")]        # 監査B4: 過去バックフィルの内数を明示
     print(f"紙上運用(パターン・ルールブック/JRA): {len(logs)}R精算")
     print(f"★正式な買い＝直前判定(発走25分以内)で発火が残ったレースのみ。8/16以前の記帳は全てwatch扱い。")
     block(conf, "正式(直前判定済み)[実測]")
     block(watch, "watch(朝発火のみ・8/16以前含む)[参考]")
     print(f"  判定ライン(RULES): 正式150Rで回収90%超→少額実弾を検討 / 70%未満→設計に戻る")
-    print(f"  進捗: 正式{len(conf)}/150R ※シミュ200%級は窓内参考値(ANALYSIS_20260816.md)・実測扱い禁止")
+    print(f"  進捗: 正式{len(conf)}/150R ※シミュ200%級は窓内参考値(ANALYSIS_20260816.md)・実測扱い禁止"
+          + (f" ／ うち過去バックフィル{len(back)}R(watch扱い)" if back else ""))
 
 
 def main():
@@ -263,7 +270,10 @@ def main():
     p1.add_argument("date", nargs="?", default=None)
     p1.add_argument("--allow-past", action="store_true",
                     help="過去日付でも新規記帳する(後知恵記録になるため通常は使わない)")
-    sub.add_parser("settle")
+    # 2026-08-21 修正(監査B7): RULES.md は `settle <race_id>` と書いているが引数を取らず
+    # argparse エラーで止まっていた。任意引数として受け、指定時はそのレースだけ精算する。
+    p2 = sub.add_parser("settle")
+    p2.add_argument("races", nargs="*", help="race_id(省略時は未精算すべて)")
     sub.add_parser("stats")
     a = ap.parse_args()
     if a.cmd == "run":

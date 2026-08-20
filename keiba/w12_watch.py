@@ -198,6 +198,10 @@ def cmd_run(args):
         if prev and prev.get("settled"):
             print(f"  {rid}: 精算済みのため記帳せず（記録は不変）", file=sys.stderr)
             continue
+        # 2026-08-21 修正(監査B2): 凍結は sticky（v99w_rank と同じ。詳細はそちらのコメント）
+        if prev and prev.get("frozen"):
+            print(f"  {rid}: 凍結済みのため記帳せず（記録は不変）", file=sys.stderr)
+            continue
         # 後知恵ブロック（v99w_rank踏襲）: 過去日付 or 結果同梱は既定で記帳しない
         past = (date < today) or has_result
         if past and not args.allow_past:
@@ -206,6 +210,10 @@ def cmd_run(args):
             continue
         # 発走3分前で凍結。発走後の再記帳は入力が汚れるためブロック
         if judged_tminus is not None and judged_tminus <= 3 and not args.allow_past:
+            if prev:                                   # 既存記録に凍結印を残す(B2)
+                prev["frozen"] = True
+                byrid[rid] = prev
+                n_upd += 1
             print(f"  {rid}: 発走{judged_tminus:+d}分＝凍結時刻を過ぎたため記帳しない",
                   file=sys.stderr)
             continue
@@ -239,13 +247,16 @@ def cmd_run(args):
 
 
 # ── settle ───────────────────────────────────────────
-def cmd_settle():
+def cmd_settle(only=None):
     """確定払戻のみ取り込む（v99w_rank.settle と同経路=fetch_result。捏造・手入力は不可）。"""
     import fetch_result as FRES
     logs = load_log()
+    only = set(only or [])          # 監査B7: race_id 指定があればそれだけ精算
     n = 0
     for r in logs:
         if r.get("settled"):
+            continue
+        if only and r["rid"] not in only:
             continue
         try:
             res = FRES.get_result(r["rid"])
@@ -421,14 +432,17 @@ def main():
     p1.add_argument("--fresh-combo", action="store_true",
                     help="ワイド/三連複オッズもJRA公式から取り直す（約15-20秒/R）")
     p1.add_argument("--no-odds", action="store_true", help="オッズ取得を省略（判定不能になる）")
-    sub.add_parser("settle", help="確定払戻の取り込み")
+    # 2026-08-21 修正(監査B7): RULES.md の `settle <race_id>` が argparse エラーで
+    # 止まっていた（&& で繋いだ stats も走らない）。任意引数として受ける。
+    ps = sub.add_parser("settle", help="確定払戻の取り込み")
+    ps.add_argument("races", nargs="*", help="race_id(省略時は未精算すべて)")
     sub.add_parser("stats", help="n/的中率/ROI（判定時オッズ・確定払戻の両基準）")
     sub.add_parser("probe", help="自己診断（selfcheckが呼ぶ）")
     a = ap.parse_args()
     if a.cmd == "run":
         cmd_run(a)
     elif a.cmd == "settle":
-        cmd_settle()
+        cmd_settle(getattr(a, "races", None))
     elif a.cmd == "stats":
         cmd_stats()
     else:
