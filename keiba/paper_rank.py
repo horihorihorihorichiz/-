@@ -29,7 +29,9 @@ import fetch_result as FRES
 import day_board as DB
 import patterns as JP
 
-LOG = "paper_rank_log.jsonl"
+# 2026-08-21 修正(監査中8): 相対パスだと keiba/ 以外から叩いた時に空の新台帳が生まれ
+# 150R進捗が黙って分裂する。他3本(v99w_rank/w12_watch/watch_log)と同じ _DIR 基準に統一。
+LOG = os.path.join(os.path.dirname(os.path.abspath(__file__)), "paper_rank_log.jsonl")
 
 
 def jst_now():
@@ -95,6 +97,11 @@ def cmd_run(date, allow_past=False):
         if date == now.strftime("%Y%m%d") and post <= (now + datetime.timedelta(minutes=3)).strftime("%H:%M"):
             if rid not in byrid:
                 continue
+            # 2026-08-21 修正(監査中6): 精算済みを再凍結して**発走後の確定オッズ**を
+            # odds_at_freeze に書き込んでいた（実測: 中京12R settled=True に確定オッズが入った）。
+            # 朝発火とのdrift直接測定という記録の目的そのものが汚れる。
+            if byrid[rid].get("settled"):
+                continue
             if not byrid[rid].get("frozen"):
                 byrid[rid]["frozen"] = True
                 byrid[rid].setdefault("confirmed", False)  # 直前判定を経ていない=watch扱い
@@ -106,6 +113,14 @@ def cmd_run(date, allow_past=False):
                     if tanf:
                         byrid[rid]["odds_at_freeze"] = {str(k): v for k, v in sorted(tanf.items())}
                         byrid[rid]["freeze_src"] = odf.get("tan_source")
+                        # 監査中6: そのオッズが T-3 のものか T+330 のものか後から判別できる
+                        # ようにする（旧実装は凍結時刻を一切残していなかった）。
+                        byrid[rid]["frozen_at"] = now.strftime("%m%d %H:%M")
+                        try:
+                            _ph, _pm = int(post[:2]), int(post[3:5])
+                            byrid[rid]["freeze_tminus"] = (_ph * 60 + _pm) - (now.hour * 60 + now.minute)
+                        except Exception:
+                            byrid[rid]["freeze_tminus"] = None
                 except Exception:
                     pass
             continue
@@ -119,9 +134,21 @@ def cmd_run(date, allow_past=False):
             v2_live.rescore(race, res["rows"])
             rows = res["rows"]
             order = [r["num"] for r in rows]
-            od = PR.fetch_jra(rid)
+            # 2026-08-21 修正(監査重大3): fresh 指定が無く、netkeiba が配信している限り
+            # 公式にフォールバックしないため T-25〜T-15 の confirmed 判定が
+            # 実測40-50分遅れのオッズで下っていた（凍結スナップだけ fresh=True で
+            # オッズ源が食い違い、drift分析も無意味になっていた）。他3本と同じ規則に揃える。
+            try:
+                _ph, _pm = int(post[:2]), int(post[3:5])
+                _tm = (_ph * 60 + _pm) - (now.hour * 60 + now.minute)
+            except Exception:
+                _tm = 999
+            od = PR.fetch_jra(rid, fresh=(0 < _tm <= 30))
             tan = {int(k): v for k, v in od.get("tan", {}).items() if v}
             if not tan:
+                # 監査中9: 0件の理由を必ず1行残す（新潟が空になった事故で原因が残らなかった）
+                print(f"  {rid} オッズ0件 → 判定不能でスキップ "
+                      f"(src={od.get('tan_source')} ng={od.get('ng_reason')})", file=sys.stderr)
                 continue
             g12 = (rows[0]["wavg"] - rows[1]["wavg"]) / 12.0 if len(rows) > 1 else 9
             sp15 = ((rows[0]["wavg"] - rows[4]["wavg"]) / 12.0) if len(rows) > 4 else None
@@ -189,11 +216,14 @@ def cmd_run(date, allow_past=False):
     print(f"記帳 新規{n_new} 更新{n_upd} / 総{len(byrid)}件 → {LOG}", file=sys.stderr)
 
 
-def cmd_settle():
+def cmd_settle(only=None):
     logs = load_log()
+    only = set(only or [])      # 監査中15: 指定した race_id だけ精算する（従来は無視して全件）
     n = 0
     for r in logs:
         if r.get("settled"):
+            continue
+        if only and r["race_id"] not in only:
             continue
         try:
             res = FRES.get_result(r["race_id"])
@@ -279,7 +309,7 @@ def main():
     if a.cmd == "run":
         cmd_run(a.date or jst_now().strftime("%Y%m%d"), allow_past=a.allow_past)
     elif a.cmd == "settle":
-        cmd_settle()
+        cmd_settle(getattr(a, "races", None))
     else:
         cmd_stats()
 

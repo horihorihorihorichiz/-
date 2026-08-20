@@ -64,7 +64,13 @@ COST = {"light": 5.0, "heavy": 32.0, "nk": 10.0}
 
 DAY_TTL = 1200.0      # 開催ページHTMLのキャッシュ寿命(秒)
 LIST_TTL = 600.0      # レース一覧(発走時刻)の再取得間隔(秒)。発走遅延に追従するため
-MAX_FAIL = 3          # 同一レースで連続この回数失敗したら以後の予定を捨てる
+MAX_FAIL = 3          # 同一レースで連続この回数失敗したら「一時休止」にする
+# 2026-08-21 追加(監査重大1/重大2)
+EMPTY_GRACE_MIN = 45  # 起動直後に一覧が空でも、この分数までは再試行する(ネット断での全損防止)
+FAIL_COOLDOWN_MIN = 20  # 連続失敗で休止したレースを、この分数後に必ず1回試し直す。
+                        # 旧実装は fails>=MAX_FAIL で以後の予定を全部 done 入りさせ、
+                        # 成功しない限り fails がリセットされないため「早朝にオッズ未発売」
+                        # だっただけで T-3/T-2(凍結との比較点)まで丸ごと当日放棄していた。
 
 
 # ── 基本ユーティリティ ────────────────────────────────────────────────
@@ -351,7 +357,8 @@ def cmd_watch(date, profile="full", dry=False, max_axis=None, rids=None,
     try:
         nav = Nav()
         att = attempts_of(date)
-        fails = {}
+        fails = {}                    # rid -> (連続失敗数, 最終失敗時刻) ※監査重大2で時刻を持たせた
+        _t0 = jst_now()               # 起動時刻（監査重大1: 一覧が空のときの猶予判定に使う）
         last_runners = {}
         listed_at = 0.0
         races, events = [], []
@@ -378,8 +385,26 @@ def cmd_watch(date, profile="full", dry=False, max_axis=None, rids=None,
                     it["jump"] = bool(JUMP.search(it.get("name") or ""))
                 events = build_events(races, date, profile)
                 if not events:
-                    print("[%s] 対象レースなし(JRA非開催?)" % date, file=sys.stderr)
-                    return 0
+                    # 2026-08-21 修正(監査重大1): 旧実装はここで rc=0 終了していた。
+                    # pick_races.get() は4回リトライ後に "" を返し fetch_list が [] を返す設計
+                    # なので、起動時の一時的なネット断は例外ではなくこの経路に必ず落ちる。
+                    # メッセージも非開催日と同一・rc=0 のため、当日の収集が全損しても
+                    # nohupログを見ない限り誰も気づかない（後から作り直せない唯一のデータ）。
+                    # → 起動から EMPTY_GRACE_MIN の間は再試行し、それでも空なら rc≠0 で落ちる。
+                    waited = (jst_now() - _t0).total_seconds() / 60.0
+                    if dry:               # --dry は点検用。待たずにそのまま知らせる
+                        print("[%s] 対象レースなし(--dry)" % date, file=sys.stderr)
+                        return 0
+                    if waited < EMPTY_GRACE_MIN:
+                        print("[%s] 一覧が空。%.0f分後まで再試行する(経過%.0f分)"
+                              % (date, EMPTY_GRACE_MIN, waited), file=sys.stderr)
+                        time.sleep(60)
+                        races = None          # 次周回で取り直す
+                        continue
+                    print("[%s] 対象レースなし: %.0f分再試行しても一覧が空。"
+                          "非開催日ならこれで正常、開催日なら取得障害なので上げ直すこと"
+                          % (date, EMPTY_GRACE_MIN), file=sys.stderr)
+                    return 3
                 print("[%s] %dレース / 予定%d時点 (%s) profile=%s"
                       % (date, len(races), len(events),
                          now.strftime("%H:%M"), profile), file=sys.stderr)
@@ -400,7 +425,10 @@ def cmd_watch(date, profile="full", dry=False, max_axis=None, rids=None,
                 if ok or n >= 2:            # 再開: 取得済み / 2回失敗した時点は諦める
                     done.add(key)
                     continue
-                if fails.get(e["rid"], 0) >= MAX_FAIL:
+                # 監査重大2: 連続失敗は「一時休止」。FAIL_COOLDOWN_MIN 経過したら必ず試し直す。
+                nf, since = fails.get(e["rid"], (0, None))
+                if nf >= MAX_FAIL and since is not None and \
+                        (jst_now() - since).total_seconds() < FAIL_COOLDOWN_MIN * 60:
                     done.add(key)
                     continue
                 late = (now - e["due"]).total_seconds() / 60.0
@@ -436,7 +464,7 @@ def cmd_watch(date, profile="full", dry=False, max_axis=None, rids=None,
                 done.add(ev_key(e["rid"], e["tag"], e["kind"]))
                 if rec.get("ok"):
                     n_ok += 1
-                    fails[e["rid"]] = 0
+                    fails[e["rid"]] = (0, None)
                     if rec.get("runners"):
                         last_runners[e["rid"]] = rec["runners"]
                     sz = len(json.dumps(rec, ensure_ascii=False).encode())
@@ -446,7 +474,8 @@ def cmd_watch(date, profile="full", dry=False, max_axis=None, rids=None,
                              rec.get("odds_time") or ""), file=sys.stderr)
                 else:
                     n_ng += 1
-                    fails[e["rid"]] = fails.get(e["rid"], 0) + 1
+                    _nf, _ = fails.get(e["rid"], (0, None))
+                    fails[e["rid"]] = (_nf + 1, jst_now())
                     print("  ✗ %s %s %-5s %-6s %s" % (now.strftime("%H:%M:%S"), e["rid"],
                                                       e["tag"], e["kind"], rec.get("reason")),
                           file=sys.stderr)

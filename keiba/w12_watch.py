@@ -150,6 +150,8 @@ def cmd_run(args):
             except Exception:
                 pass
         surface, dist = race.get("surface"), race.get("distance")
+        # 2026-08-21 追加(監査重大4): 対象外を先に弾いてから採点する。採点(calc.run)は
+        # 新馬戦で例外を出す（probe指紋の 202205010102 自体がこれ）。
         tan, od, osrc = get_odds(rid, arg, has_result, judged_tminus,
                                  no_odds=args.no_odds, fresh_combo=args.fresh_combo)
         fav_p, ent = EX.metrics(tan)
@@ -171,8 +173,13 @@ def cmd_run(args):
             continue
         n_fire += 1
         # B-sd16順位と買い目（v99w_rank と同一経路・同一タイブレーク）
-        rows, Z = VR.scores_for(race)
-        s16, grp16, nz0 = VR.score_bsd16(race, rows, Z, date, wg16, ws16)
+        try:
+            rows, Z = VR.scores_for(race)
+            s16, grp16, nz0 = VR.score_bsd16(race, rows, Z, date, wg16, ws16)
+        except Exception as e:
+            print(f"  {rid}: 採点不能でスキップ（新馬戦など: {e}）", file=sys.stderr)
+            n_fire -= 1
+            continue
         rank16 = VR.rank_nums(rows, s16)
         wide_pair, legs, trio = bets_for(rank16)
         sgap16 = EX.sgap_of(s16)
@@ -238,6 +245,8 @@ def cmd_run(args):
             entry["recorded_first"] = entry["recorded"]
             n_new += 1
         byrid[rid] = entry
+        if not args.no_record:                     # 監査重大4: 1件ごとに保存（途中死でも残す）
+            save_log([r for r in logs if r["rid"] not in byrid] + list(byrid.values()))
         print(f"  📝 記帳 {rid}（掛け金ゼロ）", file=sys.stderr)
     if not args.no_record:
         keep = [r for r in logs if r["rid"] not in byrid]

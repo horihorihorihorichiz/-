@@ -269,6 +269,16 @@ def cmd_run(args):
     logs = load_log()
     byrid = {r["rid"]: r for r in logs}
     n_new = n_upd = 0
+    # 2026-08-21 修正(監査重大4): 旧実装は try が load_race だけを覆い、calc.run で落ちる
+    # レース（新馬戦=全馬0走。hist 300件サンプルで10.7%、8/22は新潟3R/中京2R/札幌5Rが該当）が
+    # 1本混ざるとバッチ全体が例外死し、**既に処理済みのレースの記帳も保存されずに消えた**
+    # （save_log がループ後1回だけのため）。レース単位で捕まえ、逐次保存する。
+    def _flush():
+        if args.no_record:
+            return
+        keep = [r for r in logs if r["rid"] not in byrid]
+        save_log(keep + list(byrid.values()))
+
     for arg in args.races:
         try:
             race, rdate, has_result = load_race(arg)
@@ -277,7 +287,11 @@ def cmd_run(args):
             continue
         rid = str(race.get("race_id") or os.path.basename(arg).replace(".json", ""))
         date = rdate or today            # B-sd16のベンチはこの日付より前のhistのみ参照(as-of)
-        rows, Z = scores_for(race)
+        try:
+            rows, Z = scores_for(race)
+        except Exception as e:
+            print(f"  {rid}: 採点不能でスキップ（新馬戦など: {e}）", file=sys.stderr)
+            continue
         sA = Z @ wg
         wb = wsd.get(sd_key(race))
         sB = Z @ (wb if wb is not None else wg)
@@ -333,6 +347,7 @@ def cmd_run(args):
                 prev["frozen"] = True
                 byrid[rid] = prev
                 n_upd += 1
+                _flush()
             print(f"  {rid}: 発走{judged_tminus:+d}分＝凍結時刻を過ぎたため記帳しない", file=sys.stderr)
             continue
         entry = dict(rid=rid, date=date, venue=race.get("venue"),
@@ -357,11 +372,11 @@ def cmd_run(args):
             entry["recorded_first"] = entry["recorded"]
             n_new += 1
         byrid[rid] = entry
+        _flush()                                   # 監査重大4: 1件ごとに保存（途中死でも残す）
         print(f"  📝 記帳 {rid} " + (" ".join(marks) if marks else "(上位3頭一致)"),
               file=sys.stderr)
     if not args.no_record:
-        keep = [r for r in logs if r["rid"] not in byrid]
-        save_log(keep + list(byrid.values()))
+        _flush()
         print(f"記帳 新規{n_new} 更新{n_upd} / 総{len(byrid)}件 → {LOG}", file=sys.stderr)
 
 

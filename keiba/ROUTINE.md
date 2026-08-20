@@ -184,3 +184,58 @@ update_triggerツールが使えるセッションで trig_01W62FS4 のpromptに
 ## 【TODO 2026-08-16】毎朝ルーチンを土日のみに変更(ユーザー指示)
 trig_01W62FS4 の cron を "3 0 * * 6,0"(土日9:03JST) に更新する。update_triggerが承認待ちで未完。
 次に承認が通るセッション、または claude.ai/code/routines のUIから変更。平日大井は自動起動しない。
+
+---
+
+# ★★ 2026-08-21 更新: 土曜運用の必須手順（監査で判明した抜けを反映）★★
+
+## 起動時刻の是正
+RULES §9 は「1R発走の3時間前＝6:30-7:00 に起こす」だが、旧ルーチンの cron は `3 9 * * 6,0`＝**9:03起動**だった。
+実測（8/22・36R・初R 09:40）での取り逃し:
+
+| 起動 | 取り逃し |
+|---|---|
+| 06:30（RULES §9 準拠） | 0 / 684時点 |
+| 09:05（旧ルーチン） | **27 / 684 (4%) ・14R分の T-180/T-90/T-60/T-45** |
+| 09:40（1R発走） | 62 / 684 (9%) |
+
+→ **開催日は 6:30 に odds_timeline を起こす**。オッズ時系列は後から作り直せない唯一のデータ。
+
+## 開催日の必須コマンド（旧プロンプトに無かったもの）
+```bash
+cd keiba
+# ① 6:30 — オッズ時系列の収集を起こす（最優先。これだけは遅らせない）
+nohup python3 odds_timeline.py watch > logs/odds_timeline_$(date +%Y%m%d).log 2>&1 &
+tail -3 logs/odds_timeline_$(date +%Y%m%d).log   # 「NNレース / 予定NNN時点」が出ることを目視
+# ② 起動検査 → 当日ボード
+python3 selfcheck.py && python3 day_board.py
+# ③ 各レース（発走25分前〜3分前に再実行して confirmed 化・凍結）
+python3 paper_rank.py run
+python3 watch_log.py run --fast
+python3 v99w_rank.py run <race_id> --post <発走HH:MM>     # 5レーン並走
+python3 w12_watch.py run <race_id> --post <発走HH:MM>     # W12前向き検証
+# ④ 終了後（確定後のみ・捏造禁止）
+python3 paper_rank.py settle && python3 paper_rank.py stats
+python3 watch_log.py settle && python3 watch_log.py stats
+python3 v99w_rank.py settle && python3 v99w_rank.py stats
+python3 w12_watch.py settle && python3 w12_watch.py stats
+python3 odds_timeline.py settle && python3 odds_timeline.py stats
+python3 odds_timeline.py compact --keep-days 14           # 台帳肥大の抑制
+```
+
+## 人間がやること（システムが自力でできない）
+1. **6:30 に odds_timeline を起こす**（上の①）。起動直後に tail で「NNレース」を目視確認。
+   `対象レースなし` が出たら取得障害なので上げ直す（2026-08-21修正で45分は自動再試行し、
+   それでも空なら rc=3 で落ちる＝非開催日と区別できる）。
+2. **朝・昼・夕の3回、同じ tail で生存確認**。消えていたら上げ直す（取得済みはスキップされる）。
+   ロックが残って「既に watch が動いている(pid …)」と出たら、そのPIDが本当に watch か確認して
+   違えば `--force`。
+3. **selfcheck が ❌ なら表示された fix コマンドを実行してから運用開始**。
+   コンテナリセット後は *.pkl（gitignore対象）が無く再生成に数分かかる。
+4. **買い候補レースは T-25〜T-15 に必ず再判定を回す**（confirmed 化。パトロール間隔は25分以内）。
+5. **道悪の日は `python3 day_board.py --baba` を発走前に叩き直す**（体重/馬場の再取得失敗は黙殺される）。
+6. **購入・投票・GO は人間**（変更なし）。システムは買い目提示まで。
+
+## 並走させてはいけないもの
+同じ台帳を触る run を2つ同時に走らせない（4台帳とも全書き換えのため後勝ちで消える）。
+逐次の二重実行は冪等で安全（実測: 同じ race_id を2回 run しても行は増えない）。
