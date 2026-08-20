@@ -428,8 +428,16 @@ def _block(rows, label):
         fuku = win = 0
         for r in sub:
             f1 = r["fin"].get(str(r[arm][0]))
+            # 2026-08-21 修正(監査B-7): 「3着内」ではなく**複勝払戻キーの有無**で数える。
+            # 7頭以下のレースは複勝が2着までしか付かない(実測174R・うち1位該当19R)ため
+            # 「3着内なのに払戻0円」が的中に計上され、同じ表の中で的中率とROIの定義が
+            # 食い違っていた。着順の空文字パース失敗(実測1R)にも払戻側なら追随する。
+            pf = r.get("pay_fuku")
+            if pf is not None:
+                fuku += str(r[arm][0]) in pf
+            elif f1:
+                fuku += f1 <= 3           # 未精算/払戻欠落は従来どおり着順で代用
             if f1:
-                fuku += f1 <= 3
                 win += f1 == 1
         note = f" [{len(sub)}R]" if len(sub) != len(rows) else ""
         print(f"    {name:<16s}: 複勝(1位が3着内) {fuku}/{len(sub)} "
@@ -464,10 +472,17 @@ def _excl_block(rows, label):
             continue
         hit1 = hit2p = 0                      # 1位的中R数 / 上位2頭の的中点数
         for r in sub:
-            f1 = r["fin"].get(str(r[arm][0]))
-            f2 = r["fin"].get(str(r[arm][1])) if len(r[arm]) > 1 else None
-            hit1 += bool(f1 and f1 <= 3)
-            hit2p += bool(f1 and f1 <= 3) + bool(f2 and f2 <= 3)
+            # 監査B-7: ROIと同じ「複勝払戻キーの有無」で的中を定義する（上のコメント参照）
+            pf = r.get("pay_fuku")
+            if pf is not None:
+                h1 = str(r[arm][0]) in pf
+                h2 = (str(r[arm][1]) in pf) if len(r[arm]) > 1 else False
+            else:
+                f1 = r["fin"].get(str(r[arm][0]))
+                f2 = r["fin"].get(str(r[arm][1])) if len(r[arm]) > 1 else None
+                h1, h2 = bool(f1 and f1 <= 3), bool(f2 and f2 <= 3)
+            hit1 += h1
+            hit2p += h1 + h2
         roi_sub = [r for r in sub if r.get("pay_fuku") is not None]
         ret1 = ret2 = 0
         for r in roi_sub:

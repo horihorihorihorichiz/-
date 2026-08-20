@@ -277,6 +277,9 @@ def cmd_settle(only=None):
         r["ret_wide"] = int(pw.get(r["wide"]["pair"], 0))
         pt = pay.get("三連複") or {}
         r["ret_trio"] = sum(int(pt.get(c, 0)) for c in r["trio"]["odds"])
+        # 監査B-6: 3着同着で当たり目が2本になるレース(実測25R)に的中判定を追随させる。
+        # 買い目に載った当たり目だけを保存する（台帳を無駄に太らせない）。
+        r["pay_trio"] = {c: int(pt[c]) for c in r["trio"]["odds"] if c in pt}
         r["settled"] = True
         r["settled_at"] = jst_now().strftime("%m%d %H:%M")
         n += 1
@@ -290,7 +293,17 @@ def cmd_settle(only=None):
 
 # ── stats ────────────────────────────────────────────
 def _hit_combo(r):
-    """的中した三連複combo（無ければNone）。comboは昇順結合＝payout書式と同じ。"""
+    """的中した三連複combo（無ければNone）。comboは昇順結合＝payout書式と同じ。
+       2026-08-21 修正(監査B-6): 3着同着だと当たり目が2本になり(実測25R)、
+       result_top3(3要素に切り詰め)から1本だけ作る旧実装は
+       「的中0なのに払戻あり」を起こしていた。確定払戻(pay_trio)があるレースは
+       そちらの当たり目と買い目の積で判定し、無い時だけ従来の再構成に落とす。"""
+    pay = r.get("pay_trio") or {}
+    if pay:
+        for k in r["trio"]["odds"]:
+            if k in pay:
+                return k
+        return None
     t3 = r.get("result_top3") or []
     if len(t3) != 3:
         return None

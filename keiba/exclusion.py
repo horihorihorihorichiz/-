@@ -29,12 +29,20 @@ ENT_MAX = 1.904     # B: ent の MINE下位40%分位
 SGAP_MIN = 0.066    # C: sgap の MINE上位60%分位（wf_preds_v3ext2の得点差基準・参考）
 
 
+# 2026-08-21 追加(監査B-4): 学習側 filtered_weights.py は `len(iv) < 6` のレースを
+# 母集団から外している。ライブ側にガードが無いと、オッズAPIの部分パース失敗で
+# 1-2頭しか取れなかったとき fav_p=1.0 / ent=0 となり **必ず A◯B◯** で
+# 「最も堅い予想可能レース」として W12 が誤発火する（実測: judge({3:2.0}) → sel=True）。
+MIN_RUNNERS = 6
+
+
 def metrics(tan):
     """tan: {馬番: 単勝オッズ} → (fav_p, ent)。オッズ0/None/欠落は除外。
-       式は build_bsd16_ds.py（bsd16_races.jsonl の fav_p/ent）と同一。"""
+       式は build_bsd16_ds.py（bsd16_races.jsonl の fav_p/ent）と同一。
+       オッズが MIN_RUNNERS 頭未満しか取れていない時は判定不能(None,None)。"""
     iv = {n: 1.0 / float(o) for n, o in (tan or {}).items() if o}
     tot = sum(iv.values())
-    if not tot:
+    if not tot or len(iv) < MIN_RUNNERS:
         return None, None
     fav_p = max(iv.values()) / tot
     ent = -sum((x / tot) * math.log(x / tot) for x in iv.values())
@@ -81,12 +89,18 @@ def selftest():
     """オフライン自己検査。異常は例外。戻り値は1行サマリ。"""
     # (a) 凍結定数（EXCLUSION_REPORT_20260818.md の値そのもの）
     assert (FAV_P_MIN, ENT_MAX, SGAP_MIN) == (0.341, 1.904, 0.066), "凍結値が書き換わった"
-    # (b) metrics: 2頭(2.0倍,2.0倍) → fav_p=0.5, ent=log2
-    f, e = metrics({1: 2.0, 2: 2.0})
-    assert abs(f - 0.5) < 1e-12 and abs(e - math.log(2)) < 1e-12, "metricsの式が壊れた"
-    # (c) 堅い1番人気(1.5倍/6倍/6倍) → A◯B◯=予想可能
-    j = judge({1: 1.5, 2: 6.0, 3: 6.0})
+    # (b) metrics: 6頭均等(全2.0倍) → fav_p=1/6, ent=log6
+    f, e = metrics({n: 2.0 for n in range(1, 7)})
+    assert abs(f - 1 / 6) < 1e-12 and abs(e - math.log(6)) < 1e-12, "metricsの式が壊れた"
+    # (c) 堅い1番人気（8頭・1.5倍+7頭20倍）→ A◯B◯=予想可能
+    j = judge({1: 1.5, **{n: 20.0 for n in range(2, 9)}})
     assert j["sel"] and j["A"] and j["B"], f"堅いレースが例外扱い: {j}"
+    # (c2) 2026-08-21追加(監査B-4): 頭数不足は判定不能。1頭だけのオッズで
+    #      fav_p=1.0/ent=0 となり「最も堅い予想可能レース」に化けるのを防ぐ。
+    for tan in ({3: 2.0}, {3: 2.0, 5: 4.0}, {n: 3.0 for n in range(1, 6)}):
+        jj = judge(tan)
+        assert jj["sel"] is None, f"頭数不足({len(tan)}頭)が判定不能でない: {jj}"
+    assert judge({n: 3.0 for n in range(1, 7)})["sel"] is not None, "6頭が判定不能になった"
     # (d) 割れたレース(全頭5倍) → A✕B✕=例外
     j = judge({n: 5.0 for n in range(1, 9)})
     assert j["sel"] is False and not j["A"] and not j["B"], f"割れたレースが予想可能扱い: {j}"
@@ -95,8 +109,8 @@ def selftest():
     assert j["sel"] is None and "判定不能" in line(j), "オッズ欠落の扱いが変わった"
     # (f) sgap16 = スコア1位-2位
     assert abs(sgap_of([0.5, 0.2, 0.9]) - 0.4) < 1e-12, "sgapの定義が壊れた"
-    return ("選別判定5仕様OK（凍結値0.341/1.904/0.066・metrics式・A∧B判定・"
-            "判定不能の扱い・sgap定義）")
+    return ("選別判定6仕様OK（凍結値0.341/1.904/0.066・metrics式・A∧B判定・"
+            "判定不能の扱い・頭数不足ガード・sgap定義）")
 
 
 if __name__ == "__main__":
