@@ -8,16 +8,23 @@
    一切触れずに、レースごとの「現行WAvg順位 vs 学習配点順位」の対比として
    記帳・精算・集計する。8/22からの凍結ルールブック実測と並走させる。
 
+   第5レーン flt（2026-08-20追加・絞り専用配点）:
+     filtered_w16.json の wF（予想可能レースA∧B∧CのMINE904Rのみで学習した16成分配点。
+     EXCLUSION_REPORT_20260818.md 末尾追記=CONF複勝1点ROI102.1%/VAL84.0%の2期不一致候補）。
+     スコア = Z16 @ wF（sd群に関係なく1本。B-sd16と同じZ16を再利用）。実弾禁止・記録のみ。
+     本丸は「絞り内（excl.sel=予想可能）の複勝1点ROI」→ stats が出す（n<80は検証中表記）。
+
    usage:
      python3 v99w_rank.py run <race_json|race_id> [...] [--allow-past] [--no-record]
                               [--post HH:MM] [--no-odds]
          # 対比表を表示し v99w_live.jsonl に記帳（発走前のみ。過去日付/結果ありは既定ブロック）
          # 対比表の下に選別判定（exclusion.py: 予想可能(A∧B)/例外）を1行表示・記帳（--no-oddsで省略）
      python3 v99w_rank.py settle    # 結果確定済みレースの着順を取り込む（捏造禁止・確定後のみ）
-     python3 v99w_rank.py stats     # 現行 vs 腕A vs B-sd vs B-sd16 の複勝的中率（1位が3着内）
+     python3 v99w_rank.py stats     # 現行 vs 腕A vs B-sd vs B-sd16 vs flt の複勝的中率
+                                    # ＋絞り内（予想可能のみ）の的中率と複勝1点/2点ROI
 
-   記録先: v99w_live.jsonl（1行=1レース。B-sd16は bsd16 系フィールドの追加のみ＝
-           既存レコードはそのまま読める後方互換）
+   記録先: v99w_live.jsonl（1行=1レース。B-sd16は bsd16 系・flt は flt 系・精算時の
+           複勝払戻は pay_fuku フィールドの追加のみ＝既存レコードはそのまま読める後方互換）
    モデル: v99w_result.pkl（無ければ build_comps_v99.py → v99w_fit.py --stage final で再生成）
            v99w2_result.pkl（B-sd16。無ければ corner_eval.py build → v99w2_fit.py で再生成）
    CORNER特徴のライブ生成: corner_live.py（corner_ds.npz と一致することを検算済み）
@@ -36,6 +43,8 @@ PKL2 = os.path.join(_DIR, "v99w2_result.pkl")
 SEL2 = os.path.join(_DIR, "v99w2_sel.json")
 CORNER_DS = os.path.join(_DIR, "corner_ds.npz")
 COMPS_PKL = os.path.join(_DIR, "comps_v99.pkl")
+FLT_JSON = os.path.join(_DIR, "filtered_w16.json")   # 絞り専用配点wF（git管理・凍結）
+FLT_N_JUDGE = 80   # 絞り内ROIはこの精算数までw12_watchと同じく「検証中」表記のみ
 
 # v99w_fit.py の COMPS と同一順（末尾 kankai=(乗数-1)×100）
 COMPS = ["tsi", "lts", "fsi", "bonus", "dsi", "nsi", "csi",
@@ -91,6 +100,19 @@ def load_model16(auto_fit=True):
     return wg16, ws16
 
 
+def load_flt():
+    """filtered_w16.json から絞り専用配点 wF（16成分・1本）を読む。
+       返り値: (wF, sha12)。sha12 = sha256(json.dumps(w))先頭12桁＝selfcheckの凍結指紋。
+       学習の再現は filtered_weights.py（EXCLUSION_REPORT_20260818.md 末尾追記）。"""
+    import hashlib
+    d = json.load(open(FLT_JSON, encoding="utf-8"))
+    wF = np.asarray(d["w"], dtype=float)
+    if len(wF) != 16:
+        raise RuntimeError(f"filtered_w16.json の次元異常: {len(wF)} (16のはず)")
+    sha12 = hashlib.sha256(json.dumps(d["w"]).encode()).hexdigest()[:12]
+    return wF, sha12
+
+
 # ───────── スコア計算 ─────────
 def scores_for(race):
     """calc.run（本番paramsのまま。成分値はparams非依存）→ rows と レース内標準化Z。
@@ -116,9 +138,10 @@ def z16_for(race, rows, Z, date):
     return np.hstack([Z, C]), nz0
 
 
-def score_bsd16(race, rows, Z, date, wg16, ws16):
-    """B-sd16スコア（群が既知なら群別重み、無ければ全体1本wg16）。"""
-    Z16, nz0 = z16_for(race, rows, Z, date)
+def score_bsd16(race, rows, Z, date, wg16, ws16, z16=None):
+    """B-sd16スコア（群が既知なら群別重み、無ければ全体1本wg16）。
+       z16=(Z16,nz0) を渡せば再計算しない（fltレーンとのZ16共有用。省略時は従来通り）。"""
+    Z16, nz0 = z16 if z16 is not None else z16_for(race, rows, Z, date)
     wb = ws16.get(sd_key(race))
     return Z16 @ (wb if wb is not None else wg16), (wb is not None), nz0
 
@@ -196,24 +219,26 @@ def save_log(rows):
 
 
 # ───────── run ─────────
-def show_table(race, rid, rows, cur, armA, bsd, bsd16, sA, sB, s16):
+def show_table(race, rid, rows, cur, armA, bsd, bsd16, flt, sA, sB, s16, sF):
     rk = {arm: {n: i + 1 for i, n in enumerate(o)}
-          for arm, o in (("cur", cur), ("A", armA), ("B", bsd), ("B16", bsd16))}
+          for arm, o in (("cur", cur), ("A", armA), ("B", bsd),
+                         ("B16", bsd16), ("F", flt))}
     print(f"── V99W並走 {rid} {race.get('venue','')} "
           f"{race.get('surface','')}{race.get('distance','')} "
           f"帯{sd_key(race)[1]} {race.get('baba','')} tier{race.get('today_tier','')} "
           f"{len(rows)}頭 ──")
-    print("馬番  馬名              現行  腕A  B-sd  B-16   (腕A/B-sd/B-sd16スコア)")
+    print("馬番  馬名              現行  腕A  B-sd  B-16  flt   (腕A/B-sd/B-sd16/fltスコア)")
     for i, r in enumerate(rows):
         n = r["num"]
         print(f" {n:>3}  {r['name']:<8s}\t {rk['cur'][n]:>3} {rk['A'][n]:>4} "
-              f"{rk['B'][n]:>4} {rk['B16'][n]:>5}    "
-              f"({sA[i]:+.3f}/{sB[i]:+.3f}/{s16[i]:+.3f})")
+              f"{rk['B'][n]:>4} {rk['B16'][n]:>5} {rk['F'][n]:>4}    "
+              f"({sA[i]:+.3f}/{sB[i]:+.3f}/{s16[i]:+.3f}/{sF[i]:+.3f})")
     marks = []
-    for label, o in (("腕A", armA), ("B-sd", bsd), ("B-sd16", bsd16)):
+    for label, o in (("腕A", armA), ("B-sd", bsd), ("B-sd16", bsd16), ("flt", flt)):
         if set(o[:3]) != set(cur[:3]):
             marks.append(f"▲{label}入替")
-    top = (f"上位3頭: 現行{cur[:3]} 腕A{armA[:3]} B-sd{bsd[:3]} B-sd16{bsd16[:3]}"
+    top = (f"上位3頭: 現行{cur[:3]} 腕A{armA[:3]} B-sd{bsd[:3]} B-sd16{bsd16[:3]} "
+           f"flt{flt[:3]}"
            + ("  " + " ".join(marks) if marks else "  （現行と同メンバー）"))
     print(top)
     return marks
@@ -222,6 +247,7 @@ def show_table(race, rid, rows, cur, armA, bsd, bsd16, sA, sB, s16):
 def cmd_run(args):
     wg, wsd = load_model()
     wg16, ws16 = load_model16()
+    wF, flt_sha = load_flt()
     now = jst_now()
     today = now.strftime("%Y%m%d")
     logs = load_log()
@@ -239,12 +265,16 @@ def cmd_run(args):
         sA = Z @ wg
         wb = wsd.get(sd_key(race))
         sB = Z @ (wb if wb is not None else wg)
-        s16, grp16, nz0 = score_bsd16(race, rows, Z, date, wg16, ws16)
+        z16 = z16_for(race, rows, Z, date)      # Z16はB-sd16とfltで共有（1回だけ計算）
+        s16, grp16, nz0 = score_bsd16(race, rows, Z, date, wg16, ws16, z16=z16)
+        sF = z16[0] @ wF                        # flt: sd群に関係なく wF 1本
         cur = [r["num"] for r in rows]
         armA = rank_nums(rows, sA)
         bsd = rank_nums(rows, sB)
         bsd16 = rank_nums(rows, s16)
-        marks = show_table(race, rid, rows, cur, armA, bsd, bsd16, sA, sB, s16)
+        flt = rank_nums(rows, sF)
+        marks = show_table(race, rid, rows, cur, armA, bsd, bsd16, flt,
+                           sA, sB, s16, sF)
         if nz0:
             print(f"  （corner特徴が全欠測の馬 {nz0}/{len(rows)}頭 → z=0扱い）",
                   file=sys.stderr)
@@ -282,11 +312,14 @@ def cmd_run(args):
         entry = dict(rid=rid, date=date, venue=race.get("venue"),
                      surface=race.get("surface"), dist_cat=sd_key(race)[1],
                      field=len(rows), cur=cur, armA=armA, bsd=bsd, bsd16=bsd16,
+                     flt=flt,
                      swap=dict(armA=set(armA[:3]) != set(cur[:3]),
                                bsd=set(bsd[:3]) != set(cur[:3]),
-                               bsd16=set(bsd16[:3]) != set(cur[:3])),
+                               bsd16=set(bsd16[:3]) != set(cur[:3]),
+                               flt=set(flt[:3]) != set(cur[:3])),
                      bsd_group="known" if wb is not None else "fallback_wg",
                      bsd16_group="known" if grp16 else "fallback_wg16",
+                     flt_w_sha=flt_sha,
                      corner_zero=nz0, excl=excl,
                      recorded=now.strftime("%m%d %H:%M"),
                      judged_tminus=judged_tminus,
@@ -330,12 +363,15 @@ def cmd_settle():
         r["fin"] = {str(k): v for k, v in sorted(fin.items())}
         r["result_top3"] = res.get("top3") or \
             [n_ for n_, rk in sorted(fin.items(), key=lambda kv: kv[1])[:3]]
+        # 複勝払戻（100円あたり。絞り内ROI集計用の追加フィールド＝後方互換）
+        r["pay_fuku"] = {str(k): int(v)
+                         for k, v in (pay.get("複勝") or {}).items()}
         r["settled"] = True
         r["settled_at"] = jst_now().strftime("%m%d %H:%M")
         n += 1
         hits = []
-        for arm in ("cur", "armA", "bsd", "bsd16"):
-            if not r.get(arm):           # 旧レコード（B-sd16追加前）は3レーンのまま
+        for arm in ("cur", "armA", "bsd", "bsd16", "flt"):
+            if not r.get(arm):           # 旧レコード（B-sd16/flt追加前）はあるレーンのみ
                 continue
             f1 = fin.get(r[arm][0])
             hits.append(f"{arm}1位={r[arm][0]}" + (f"({f1}着)" if f1 else "(着外)")
@@ -346,14 +382,18 @@ def cmd_settle():
 
 
 # ───────── stats ─────────
+ARMS = (("cur", "現行WAvg"), ("armA", "腕A(全体1本)"),
+        ("bsd", "B-sd(芝ダ×距離帯)"), ("bsd16", "B-sd16(+corner4)"),
+        ("flt", "flt(絞り専用wF)"))
+
+
 def _block(rows, label):
     if not rows:
         print(f"  ({label}: 0R)")
         return
     print(f"  {label}: {len(rows)}R")
-    for arm, name in (("cur", "現行WAvg"), ("armA", "腕A(全体1本)"),
-                      ("bsd", "B-sd(芝ダ×距離帯)"), ("bsd16", "B-sd16(+corner4)")):
-        sub = [r for r in rows if r.get(arm)]   # 旧レコードにbsd16は無い（後方互換）
+    for arm, name in ARMS:
+        sub = [r for r in rows if r.get(arm)]   # 旧レコードにbsd16/fltは無い（後方互換）
         if not sub:
             continue
         fuku = win = 0
@@ -365,8 +405,53 @@ def _block(rows, label):
         note = f" [{len(sub)}R]" if len(sub) != len(rows) else ""
         print(f"    {name:<16s}: 複勝(1位が3着内) {fuku}/{len(sub)} "
               f"({100.0*fuku/len(sub):.1f}%)   1着 {win} ({100.0*win/len(sub):.1f}%){note}")
-    sw = [r for r in rows if any(r["swap"].get(a) for a in ("armA", "bsd", "bsd16"))]
+    sw = [r for r in rows
+          if any(r["swap"].get(a) for a in ("armA", "bsd", "bsd16", "flt"))]
     print(f"    参考: 上位3頭が現行と入替のレース {len(sw)}/{len(rows)}")
+
+
+def _fuku_roi(ret, n_races, pts):
+    """絞り内 複勝ROIの表示。n<80のうちはROIがいくつでも『検証中』のみ
+       （w12_watch.verdict と同じ早期判断禁止規則。実額は左の払戻計で確認可能）。"""
+    if not n_races:
+        return "—"
+    if n_races < FLT_N_JUDGE:
+        return f"🔍検証中(n={n_races}/{FLT_N_JUDGE})"
+    return f"{100.0 * ret / (n_races * pts * 100.0):.1f}%"
+
+
+def _excl_block(rows, label):
+    """絞り内のみ（excl.sel=予想可能 A∧B）の各レーン複勝的中率と複勝1点/2点ROI。
+       ROIは確定複勝払戻（pay_fuku・100円/点）。pay_fuku の無い旧精算レコードは
+       ROI分母から除外し [ROI対象nR] で明示する。"""
+    n_excl = sum(1 for r in rows if r.get("excl"))
+    sel = [r for r in rows if (r.get("excl") or {}).get("sel")]
+    print(f"  {label}: 絞り内{len(sel)}R（excl記帳{n_excl}/{len(rows)}R）")
+    if not sel:
+        return
+    for arm, name in ARMS:
+        sub = [r for r in sel if r.get(arm)]
+        if not sub:
+            continue
+        hit1 = hit2p = 0                      # 1位的中R数 / 上位2頭の的中点数
+        for r in sub:
+            f1 = r["fin"].get(str(r[arm][0]))
+            f2 = r["fin"].get(str(r[arm][1])) if len(r[arm]) > 1 else None
+            hit1 += bool(f1 and f1 <= 3)
+            hit2p += bool(f1 and f1 <= 3) + bool(f2 and f2 <= 3)
+        roi_sub = [r for r in sub if r.get("pay_fuku") is not None]
+        ret1 = ret2 = 0
+        for r in roi_sub:
+            pf = r["pay_fuku"]                # 3着内でなければキーが無い=0円
+            ret1 += pf.get(str(r[arm][0]), 0)
+            ret2 += pf.get(str(r[arm][0]), 0) + \
+                (pf.get(str(r[arm][1]), 0) if len(r[arm]) > 1 else 0)
+        n, nr = len(sub), len(roi_sub)
+        note = f" [ROI対象{nr}R]" if nr != n else ""
+        print(f"    {name:<16s}: 複勝的中(1位) {hit1}/{n} ({100.0*hit1/n:.1f}%)  "
+              f"1点 払戻計{ret1}円/{nr * 100}円 ROI {_fuku_roi(ret1, nr, 1)}  "
+              f"2点 的中{hit2p}/{n * 2}点 払戻計{ret2}円/{nr * 200}円 "
+              f"ROI {_fuku_roi(ret2, nr, 2)}{note}")
 
 
 def cmd_stats():
@@ -374,13 +459,16 @@ def cmd_stats():
     if not logs:
         print("精算済みレコードなし（settle を先に）")
         return
-    print(f"V99W並走レーン（掛け金ゼロ・順位記録のみ・4レーン対比）: {len(logs)}R精算済み")
+    print(f"V99W並走レーン（掛け金ゼロ・順位記録のみ・5レーン対比）: {len(logs)}R精算済み")
     live = [r for r in logs if not r.get("past")]
     back = [r for r in logs if r.get("past")]
     _block(live, "ライブ記帳（発走前判定）[実測]")
     _block(back, "--allow-past 追記（検証用バックフィル）[参考]")
+    print("  ── 絞り内のみ（excl.sel=予想可能A∧B。flt候補の本丸=絞り内の複勝1点ROI） ──")
+    _excl_block(live, "ライブ記帳 [実測]")
+    _excl_block(back, "--allow-past 追記 [参考]")
     print("  ※これは並び替え精度の並走記録。買い判定・実弾検討はライブ既定"
-          "（PATTERNS_FROZEN/paper_rank）の側で行う。")
+          "（PATTERNS_FROZEN/paper_rank）の側で行う。fltは2期不一致候補＝実弾禁止。")
 
 
 # ───────── main ─────────
@@ -396,7 +484,7 @@ def main():
     p1.add_argument("--no-odds", action="store_true",
                     help="オッズ取得と選別判定(exclusion.py)を省略する")
     sub.add_parser("settle", help="確定結果の取り込み")
-    sub.add_parser("stats", help="現行 vs 腕A vs B-sd vs B-sd16 の複勝的中率")
+    sub.add_parser("stats", help="現行/腕A/B-sd/B-sd16/flt の複勝的中率＋絞り内ROI")
     a = ap.parse_args()
     if a.cmd == "run":
         cmd_run(a)

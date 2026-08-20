@@ -231,8 +231,9 @@ def v99w_lane():
     wg16, ws16 = v99w_rank.load_model16(auto_fit=False)
     assert len(wg16) == 16, f"B-sd16重みの次元異常: {len(wg16)}"
     assert len(ws16) == 6, f"B-sd16群数異常: {len(ws16)} (芝ダ×S/M/L=6のはず)"
+    z16 = v99w_rank.z16_for(d["race"], rows, Z, str(d["date"]))
     s16, grp16, _nz = v99w_rank.score_bsd16(d["race"], rows, Z, str(d["date"]),
-                                            wg16, ws16)
+                                            wg16, ws16, z16=z16)
     bsd16 = v99w_rank.rank_nums(rows, s16)
     assert grp16, "B-sd16の群(芝,S)が引けない"
     want16 = [5, 8, 15]
@@ -240,13 +241,26 @@ def v99w_lane():
         raise RuntimeError(f"V99W指紋不一致 B-sd16={bsd16[:3]}(want{want16})。"
                            f"v99w2_fit再学習/corner_live変更が意図的なら"
                            f"selfcheckの指紋を更新すること")
+    # fltレーン(2026-08-20追加。filtered_w16.json=絞り専用配点wF。凍結・再学習しない)
+    wF, flt_sha = v99w_rank.load_flt()
+    assert len(wF) == 16, f"flt(wF)の次元異常: {len(wF)}"
+    want_sha = "9380dd58004a"
+    if flt_sha != want_sha:
+        raise RuntimeError(f"filtered_w16.json のwF指紋不一致 {flt_sha}(want {want_sha})。"
+                           f"wFは凍結配点＝書き換え禁止(EXCLUSION_REPORT_20260818追記)。"
+                           f"正当な再学習ならレポートとselfcheck指紋を同時更新すること")
+    flt = v99w_rank.rank_nums(rows, z16[0] @ wF)
+    wantF = [5, 15, 8]
+    if flt[:3] != wantF:
+        raise RuntimeError(f"V99W指紋不一致 flt={flt[:3]}(want{wantF})。"
+                           f"corner_live/z16経路の変更が意図的なら指紋を更新すること")
     if os.path.exists("v99w_live.jsonl"):
         for ln in open("v99w_live.jsonl", encoding="utf-8"):
             if ln.strip():
                 rec = json.loads(ln)
                 assert {"rid", "date", "cur", "armA", "bsd"} <= set(rec), \
                     f"v99w_live.jsonl スキーマ異常: {sorted(rec)}"
-    return "モデルOK(腕A12次元/B-sd6群/B-sd16 16次元6群)・指紋一致"
+    return "モデルOK(腕A12次元/B-sd6群/B-sd16 16次元6群/flt16次元1本)・指紋一致"
 
 
 check("V99W並走レーン", v99w_lane,
