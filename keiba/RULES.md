@@ -13,6 +13,23 @@
   「特化不足で負けた」→1位一致率54-75%まで特化して負けた。
 - **残る道は1本**: 市場の価格ズレ（odds_timeline.py、8/22から収集）。外れたら控除率超えは無いと結論する。
 
+## ★★★ モデル非依存の運用コマンド（2026-08-20コード化。Opus等どのモデルでもこの通り叩く）★★★
+**判定は全てスクリプト側にある。モデルは計算しない・上書きしない・スクリプトの出力に従う。**
+```bash
+python3 selfcheck.py                 # 起動検査。指紋(V3/V99W/B-sd16)が学習済み配点の正しさを保証
+python3 day_board.py                 # 当日ボード(凍結ルールブック本番。発火は全パターン併記)
+python3 fetch_race.py <race_id> --run --budget 10000   # 単レース予想(本番経路)
+python3 v99w_rank.py run <race_id>   # 4レーン紙上並走(現行/腕A/B-sd/B-sd16)。発走3分前に--postで凍結
+python3 v99w_rank.py settle <race_id> && python3 v99w_rank.py stats   # 確定後精算→比較表
+python3 odds_timeline.py watch       # 開催日6:30起動(オッズ時系列の自作収集)
+```
+- 学習配点の実体: v99w_result.pkl / v99w2_result.pkl（欠落時は selfcheck の fix コマンドで再生成。
+  再生成後も指紋一致が必須＝配点が変わっていないことの証明）。
+- W12(ダ短距離×B-sd16上位2頭×選別)はゼロ掛け金の前向き検証。**n>=80まで実弾禁止**。
+- 検証履歴の地図: CONCLUSION_20260818.md → V99W_REPORT.md → V99W2_REPORT.md → PORTFOLIO_REPORT_20260820.md。
+  新しい検証を始める前に必ずこの4本を読み、**同じ検証を繰り返さない**（コース別分割は7回測って全滅済み）。
+- 全景ページ(ユーザー共有用): claude.ai/code/artifact/a9f620d6-534a-4770-a9b8-8f28be364d63（B-sd16作戦盤）。
+
 ## ★★★ 毎セッションの入口（迷わない・ミスらないための強制手順）★★★
 1. `python3 selfcheck.py` — ALL GREENになるまで予想作業を始めない。
    git同期(コンテナリセット検出)・依存・得点回帰指紋・パターン発火仕様・JSTを1コマンドで検査する。
