@@ -286,37 +286,136 @@ C通りと2通りの交点（売場の中）に<b>柱が1本立ちます</b>。
 そろえてください。</b>バラバラだとランクⅣの「図面相互の重大な不整合」になります。</div>
 
 <h2>11. 部分詳細図 1/20</h2>
+
+<h3>11-1　そもそも、どこを切った図なのか</h3>
+<p>部分詳細図が分かりにくいのは、<strong>「建物のどこを、どっち向きに切ったのか」</strong>
+が書かれていないからです。まずそこから確認します。</p>
 <figure>
-  <img src="figures/detail.svg" alt="部分詳細図">
-  <figcaption>外壁を包丁で切った断面。基礎まわりと2階床まわり。</figcaption>
+  <img src="figures/detail_key.svg" alt="どこを切った図なのか">
+  <figcaption>外壁を上から下までまっすぐ切って横から見た図。そのうちAとBを拡大する。</figcaption>
 </figure>
-<h3>外壁の6層（内から外へ）── これは呪文のように覚える</h3>
+<ul>
+<li><b>1/20 は実物の20分の1</b>。平面図（1/100）の5倍の大きさなので細かく描ける</li>
+<li><b>左が室内、右が屋外</b>。この向きは絶対に変えない</li>
+<li><b>拡大するのは2か所</b>。A＝地面のところ、B＝2階の床のところ</li>
+</ul>
+
+<h3>11-2　外壁の6層 ── 横に切ると分かる</h3>
+<p>縦に切った図だと外壁は細長くて、6つの層がつぶれて見えません。
+そこで<strong>壁を水平に切って上から見た形</strong>にしました。</p>
+<figure>
+  <img src="figures/detail_wall.svg" alt="外壁の6層を横に切った図">
+  <figcaption>左が室内、右が屋外。6つの層が横に並ぶだけ。</figcaption>
+</figure>
 <table>
 <tr><th class="num">順</th><th>材料</th><th class="num">厚さ</th><th>役目</th></tr>
-<tr><td class="num">1</td><td>強化石膏ボード</td><td class="num">15</td><td>火に耐える（準耐火45分の要）</td></tr>
-<tr><td class="num">2</td><td>柱 ＋ グラスウール16K</td><td class="num">105</td><td>構造 ＋ 断熱</td></tr>
-<tr><td class="num">3</td><td>構造用合板</td><td class="num">9</td><td>地震・風に耐える（壁倍率2.5）</td></tr>
-<tr><td class="num">4</td><td>透湿防水シート</td><td class="num">—</td><td>雨は止め、湿気は通す</td></tr>
-<tr><td class="num">5</td><td>通気胴縁</td><td class="num">18</td><td>すき間を作って湿気を上に逃がす</td></tr>
-<tr><td class="num">6</td><td>窯業系サイディング</td><td class="num">16</td><td>外側の仕上げ</td></tr>
-<tr class="total"><td colspan="2">合計</td><td class="num">163</td><td>外壁の厚さ</td></tr>
+<tr><td class="num">1</td><td>強化石膏ボード</td><td class="num">15</td>
+    <td>火に耐える（準耐火45分の要）</td></tr>
+<tr><td class="num">2</td><td>柱 ＋ グラスウール16K</td><td class="num">105</td>
+    <td>構造 ＋ 断熱</td></tr>
+<tr><td class="num">3</td><td>構造用合板</td><td class="num">9</td>
+    <td>地震・風に耐える（壁倍率2.5）</td></tr>
+<tr><td class="num">4</td><td>透湿防水シート</td><td class="num">—</td>
+    <td>雨は止め、湿気は通す</td></tr>
+<tr><td class="num">5</td><td>通気胴縁</td><td class="num">18</td>
+    <td>すき間を作り湿気を上へ逃がす</td></tr>
+<tr><td class="num">6</td><td>窯業系サイディング</td><td class="num">16</td>
+    <td>外側の仕上げ</td></tr>
+<tr class="total"><td colspan="2">合計</td><td class="num">163</td>
+    <td>外壁の厚さ</td></tr>
 </table>
-<p class=""><b>15・105・9・18・16</b>。この5つの数字だけ、
-歌うように覚えてください。<strong>「いちご・とうご・きゅう・じゅうはち・じゅうろく」</strong></p>
+<p><b>15・105・9・18・16</b>。この5つの数字だけ覚えます。
+柱を切ったところは木、柱と柱の間は断熱材が見えます。</p>
 
-<h3>基礎まわりの数字</h3>
+<h3>11-3　拡大A　地面のところ</h3>
+<figure>
+  <img src="figures/detail_foot.svg" alt="足元まわりの拡大図">
+  <figcaption>下から順に、実際に作る順番で番号をふってあります。</figcaption>
+</figure>
 <table>
-<tr><th>部位</th><th class="num">寸法</th><th>決まりの目安</th></tr>
-<tr><td>根入れの深さ</td><td class="num">300</td><td>240mm以上が必要</td></tr>
-<tr><td>底盤の厚さ</td><td class="num">150</td><td>べた基礎</td></tr>
-<tr><td>立ち上がりの厚さ</td><td class="num">150</td><td>120mm以上が必要</td></tr>
-<tr><td>立ち上がりの地上部分</td><td class="num">386</td><td>300mm以上が必要</td></tr>
-<tr><td>アンカーボルト</td><td class="num">M12</td><td>間隔2,730mm以下・埋込み250以上</td></tr>
-<tr><td>砕石</td><td class="num">60</td><td>＋ 防湿フィルム</td></tr>
+<tr><th class="num">番</th><th>部材</th><th>寸法</th><th>なんのため</th></tr>
+<tr><td class="num">1</td><td>砕石 ＋ 防湿フィルム</td><td>t=60</td>
+    <td>地面を固めて土の湿気を止める</td></tr>
+<tr><td class="num">2</td><td>べた基礎 底盤</td><td>t=150</td>
+    <td>重さを地面全体に分ける（根入れ300）</td></tr>
+<tr><td class="num">3</td><td>べた基礎 立上り</td><td>t=150</td>
+    <td>土台を載せる台。地上386（300以上）</td></tr>
+<tr><td class="num">4</td><td>アンカーボルト</td><td>M12</td>
+    <td>基礎と土台をつなぎ止める（2,730以下）</td></tr>
+<tr><td class="num">5</td><td>基礎パッキン</td><td>t=20</td>
+    <td>すき間を作って床下を換気する</td></tr>
+<tr><td class="num">6</td><td>土台</td><td>105×105</td>
+    <td>柱を受ける横木。防腐防蟻処理</td></tr>
+<tr><td class="num">7</td><td>床断熱</td><td>t=50</td>
+    <td>押出法ポリスチレンフォーム</td></tr>
+<tr><td class="num">8</td><td>1階の床 ＝ 1FL</td><td>24＋15</td>
+    <td>構造用合板の上にフローリング</td></tr>
+<tr><td class="num">9</td><td>外壁の6層</td><td>t=163</td><td>11-2の図と同じもの</td></tr>
+<tr><td class="num">10</td><td>水切り</td><td>—</td>
+    <td>雨を外へ落として壁の中に入れない</td></tr>
 </table>
-<div class="note">数字はすべて<b>法令集と告示で必ず確認</b>してください。
-特に2025年4月から木造の構造の決まりが変わっているので、
-壁倍率などは最新のものを見てください。</div>
+
+<h3>11-4　拡大B　2階の床のところ</h3>
+<figure>
+  <img src="figures/detail_floor2.svg" alt="2階床まわりの拡大図">
+  <figcaption>外壁は地面から屋根まで同じ6層。変わるのは床まわりだけ。</figcaption>
+</figure>
+<table>
+<tr><th class="num">番</th><th>部材</th><th>寸法</th><th>なんのため</th></tr>
+<tr><td class="num">11</td><td>胴差</td><td>105×300</td>
+    <td>2階の床を受ける、外周を1周する梁</td></tr>
+<tr><td class="num">12</td><td>構造用合板</td><td>t=24</td>
+    <td>梁に直接張る（根太レス＝剛床）</td></tr>
+<tr><td class="num">13</td><td>フローリング ＝ 2FL</td><td>t=15</td><td>GL+3,650</td></tr>
+<tr><td class="num">14</td><td>2階の柱</td><td>105×105</td>
+    <td>1階の柱の真上に立つ（直下率）</td></tr>
+<tr><td class="num">15</td><td>1階の天井</td><td>t=9.5</td>
+    <td>石膏ボード ＋ 野縁40×45＠455</td></tr>
+<tr><td class="num">16</td><td>外壁</td><td>t=163</td><td>下と同じ6層が続く</td></tr>
+</table>
+
+<h3>11-5　本番で提出するのは、この1枚</h3>
+<p>AとBを1枚につないだものが解答用紙に描いて出す図です。
+間の同じところは<strong>破断線（ギザギザの線）</strong>で省略します。</p>
+<figure>
+  <img src="figures/detail.svg" alt="部分詳細図（提出用）">
+  <figcaption>これがそのまま解答例。左の帯のAとBが拡大図に対応している。</figcaption>
+</figure>
+<div class="note warn"><b>いちばん多い失点は「文字の書き忘れ」です。</b>
+絵だけ描いても点になりません。部材の名前と寸法を必ず文字で書き込むこと。
+上の図で右側に並んでいる文字は、全部あなたが書くものです。</div>
+
+<h3>11-6　25分の描き順</h3>
+<table>
+<tr><th class="num">分</th><th>やること</th><th>中身</th></tr>
+<tr><td class="num">3</td><td>基準線を引く</td>
+    <td>GL・1FL・2FL の横線と通り芯の縦線</td></tr>
+<tr><td class="num">4</td><td>基礎を描く</td>
+    <td>砕石 → 底盤 → 立上り → アンカーボルト</td></tr>
+<tr><td class="num">3</td><td>土台と1階の床</td>
+    <td>基礎パッキン → 土台 → 構造用合板 → フローリング</td></tr>
+<tr><td class="num">6</td><td>外壁の6層を上まで通す</td>
+    <td>内から外へ 15・105・9・シート・18・16</td></tr>
+<tr><td class="num">5</td><td>2階の床・胴差・天井</td>
+    <td>破断線を先に引いてから上を描く</td></tr>
+<tr class="total"><td class="num">4</td><td>寸法と部材名を書き込む</td>
+    <td>ここを飛ばすと点にならない。必ず時間を残す</td></tr>
+</table>
+<div class="note"><b>1/20 の換算：</b>105mm＝5.25mm、300mm＝15mm、910mm＝45.5mm。
+三角スケールの1/20の面をそのまま当てて測ります。暗算しないこと。</div>
+
+<h3>11-7　出す前のチェック</h3>
+<div class="card"><ul>
+<li>□ 縮尺「1/20」を書いたか</li>
+<li>□ GL・1FL・2FL の記号と高さの数字を書いたか</li>
+<li>□ 外壁6層すべてに名前と厚さを書いたか</li>
+<li>□ 基礎の根入れ・底盤厚・立上り厚を書いたか</li>
+<li>□ アンカーボルトの径（M12）と間隔を書いたか</li>
+<li>□ 断熱材の種類と厚さを書いたか</li>
+<li>□ 通気層があると分かるように描いたか</li>
+<li>□ 胴差・土台の寸法を書いたか</li>
+<li>□ 切り口のハッチ（木・コンクリート・断熱材）を入れたか</li>
+</ul></div>
 
 <h2>12. 型が通じないときの直し方</h2>
 <p>本番でこの型どおりに置けないことは必ず起きます。そのときの優先順位です。</p>

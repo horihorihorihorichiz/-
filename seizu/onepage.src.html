@@ -742,16 +742,30 @@ A2用紙の中で意外と小さいことを、目で覚えておいてくださ
 <tr class="sum"><td class="wrap">最高高さ</td><td class="n">+10,806</td><td class="wrap">9,350 ＋ 1,456</td></tr>
 </table></div>
 
-<h2><span class="kicker">1/20</span>部分詳細図</h2>
-<figure><div class="sheet">{{SVG:detail}}</div>
-<figcaption>外壁を包丁で切った断面。基礎まわりと2階床（胴差）まわり。</figcaption></figure>
-<h3>外壁の6層 ── 内から外へ</h3>
+<h2><span class="kicker">1/20 ①</span>そもそも、どこを切った図？</h2>
+<p>部分詳細図が分かりにくいのは、<b>「建物のどこを、どっち向きに切ったのか」</b>が
+書いていないからです。まずそこから。</p>
+<figure><div class="sheet">{{SVG:detail_key}}</div>
+<figcaption>外壁を上から下までまっすぐ切って、横から見た図。そのうちAとBを拡大する。</figcaption></figure>
+<ul>
+<li><b>1/20 は「実物の20分の1」。</b>平面図（1/100）の5倍の大きさなので、
+ネジ1本まで描けます</li>
+<li><b>左が室内、右が屋外。</b>この向きは絶対に変えない</li>
+<li><b>拡大するのは2か所だけ。</b>A＝地面のところ、B＝2階の床のところ</li>
+</ul>
+
+<h2><span class="kicker">1/20 ②</span>外壁の6層 ── 横に切ると分かる</h2>
+<p>縦に切った図だと外壁は細長くて、6つの層がつぶれて見えません。
+そこで<b>壁を水平に切って、上から見た形</b>にしました。これなら一目です。</p>
+<figure><div class="sheet">{{SVG:detail_wall}}</div>
+<figcaption>左が室内、右が屋外。6つの層が横に並ぶだけ。</figcaption></figure>
 <div class="tw"><table>
-<tr><th class="n">順</th><th class="wrap">材料</th><th class="n">厚</th><th class="wrap">役目</th></tr>
+<tr><th class="n">順</th><th class="wrap">材料</th><th class="n">厚</th>
+    <th class="wrap">役目</th></tr>
 <tr><td class="n">1</td><td class="wrap">強化石膏ボード</td><td class="n">15</td>
     <td class="wrap">火に耐える（準耐火45分の要）</td></tr>
-<tr><td class="n">2</td><td class="wrap">柱＋グラスウール16K</td><td class="n">105</td>
-    <td class="wrap">構造＋断熱</td></tr>
+<tr><td class="n">2</td><td class="wrap">柱 ＋ グラスウール16K</td><td class="n">105</td>
+    <td class="wrap">構造 ＋ 断熱</td></tr>
 <tr><td class="n">3</td><td class="wrap">構造用合板</td><td class="n">9</td>
     <td class="wrap">地震・風に耐える（壁倍率2.5）</td></tr>
 <tr><td class="n">4</td><td class="wrap">透湿防水シート</td><td class="n">—</td>
@@ -760,19 +774,108 @@ A2用紙の中で意外と小さいことを、目で覚えておいてくださ
     <td class="wrap">すき間を作り湿気を上へ逃がす</td></tr>
 <tr><td class="n">6</td><td class="wrap">窯業系サイディング</td><td class="n">16</td>
     <td class="wrap">外側の仕上げ</td></tr>
-<tr class="sum"><td colspan="2">合計</td><td class="n">163</td><td class="wrap">外壁の厚さ</td></tr>
+<tr class="sum"><td colspan="2">合計</td><td class="n">163</td>
+    <td class="wrap">外壁の厚さ</td></tr>
 </table></div>
-<p><b class="num">15・105・9・18・16</b>。この5つの数字だけ、歌うように覚えてください。</p>
-<h3>基礎まわりの数字</h3>
+<p><b class="num">15・105・9・18・16</b>。この5つの数字だけ、歌うように覚えてください。
+<span class="mark">柱を切ったところは木、柱と柱の間は断熱材</span>が見えます。</p>
+
+<h2><span class="kicker">1/20 ③</span>拡大A　地面のところ</h2>
+<figure><div class="sheet">{{SVG:detail_foot}}</div>
+<figcaption>下から順に、実際に作る順番で番号をふってあります。</figcaption></figure>
 <div class="tw"><table>
-<tr><th class="wrap">部位</th><th class="n">寸法</th><th class="wrap">決まりの目安</th></tr>
-<tr><td class="wrap">根入れの深さ</td><td class="n">300</td><td class="wrap">240mm以上が必要</td></tr>
-<tr><td class="wrap">底盤の厚さ</td><td class="n">150</td><td class="wrap">べた基礎</td></tr>
-<tr><td class="wrap">立上りの厚さ</td><td class="n">150</td><td class="wrap">120mm以上が必要</td></tr>
-<tr><td class="wrap">立上りの地上部分</td><td class="n">386</td><td class="wrap">300mm以上が必要</td></tr>
-<tr><td class="wrap">アンカーボルト</td><td class="n">M12</td><td class="wrap">2,730以下・埋込み250以上</td></tr>
-<tr><td class="wrap">砕石</td><td class="n">60</td><td class="wrap">＋ 防湿フィルム</td></tr>
+<tr><th class="n">番</th><th class="wrap">部材</th><th class="wrap">寸法</th>
+    <th class="wrap">なんのため</th></tr>
+<tr><td class="n">1</td><td class="wrap">砕石 ＋ 防湿フィルム</td><td class="wrap">t=60</td>
+    <td class="wrap">地面を固めて、土からの湿気を止める</td></tr>
+<tr><td class="n">2</td><td class="wrap">べた基礎 底盤</td><td class="wrap">t=150</td>
+    <td class="wrap">建物の重さを地面全体に分ける（根入れ300）</td></tr>
+<tr><td class="n">3</td><td class="wrap">べた基礎 立上り</td><td class="wrap">t=150</td>
+    <td class="wrap">土台を載せる台。地上386mm（300以上）</td></tr>
+<tr><td class="n">4</td><td class="wrap">アンカーボルト</td><td class="wrap">M12</td>
+    <td class="wrap">基礎と土台をつなぎ止める（2,730以下）</td></tr>
+<tr><td class="n">5</td><td class="wrap">基礎パッキン</td><td class="wrap">t=20</td>
+    <td class="wrap">すき間を作って床下を換気する</td></tr>
+<tr><td class="n">6</td><td class="wrap">土台</td><td class="wrap">105×105</td>
+    <td class="wrap">柱を受ける横木。防腐防蟻処理</td></tr>
+<tr><td class="n">7</td><td class="wrap">床断熱</td><td class="wrap">t=50</td>
+    <td class="wrap">押出法ポリスチレンフォーム</td></tr>
+<tr><td class="n">8</td><td class="wrap">1階の床 ＝ 1FL</td><td class="wrap">24＋15</td>
+    <td class="wrap">構造用合板の上にフローリング</td></tr>
+<tr><td class="n">9</td><td class="wrap">外壁の6層</td><td class="wrap">t=163</td>
+    <td class="wrap">上の②の図と同じもの</td></tr>
+<tr><td class="n">10</td><td class="wrap">水切り</td><td class="wrap">—</td>
+    <td class="wrap">雨を外へ落として壁の中に入れない</td></tr>
 </table></div>
+
+<h2><span class="kicker">1/20 ④</span>拡大B　2階の床のところ</h2>
+<figure><div class="sheet">{{SVG:detail_floor2}}</div>
+<figcaption>外壁は地面から屋根まで、ずっと同じ6層。変わるのは床まわりだけ。</figcaption></figure>
+<div class="tw"><table>
+<tr><th class="n">番</th><th class="wrap">部材</th><th class="wrap">寸法</th>
+    <th class="wrap">なんのため</th></tr>
+<tr><td class="n">11</td><td class="wrap">胴差</td><td class="wrap">105×300</td>
+    <td class="wrap">2階の床を受ける、外周を1周する梁</td></tr>
+<tr><td class="n">12</td><td class="wrap">構造用合板</td><td class="wrap">t=24</td>
+    <td class="wrap">梁に直接張る（根太レス＝剛床）</td></tr>
+<tr><td class="n">13</td><td class="wrap">フローリング ＝ 2FL</td><td class="wrap">t=15</td>
+    <td class="wrap">GL+3,650</td></tr>
+<tr><td class="n">14</td><td class="wrap">2階の柱</td><td class="wrap">105×105</td>
+    <td class="wrap">1階の柱の真上に立つ（直下率）</td></tr>
+<tr><td class="n">15</td><td class="wrap">1階の天井</td><td class="wrap">t=9.5</td>
+    <td class="wrap">石膏ボード ＋ 野縁40×45＠455</td></tr>
+<tr><td class="n">16</td><td class="wrap">外壁</td><td class="wrap">t=163</td>
+    <td class="wrap">下と同じ6層がそのまま続く</td></tr>
+</table></div>
+
+<h2><span class="kicker">1/20 ⑤</span>本番で提出するのは、この1枚</h2>
+<p>上のAとBを<b>1枚につないだもの</b>が、解答用紙に描いて出す図です。
+間の同じところは<b>破断線（ギザギザの線）</b>で省略します。</p>
+<figure><div class="sheet">{{SVG:detail}}</div>
+<figcaption>これがそのまま解答例。左の帯のAとBが、さっきの拡大図に対応している。</figcaption></figure>
+<div class="flag fix">
+  <h4>いちばん多い失点 ── 文字を書き忘れる</h4>
+  <p>絵だけ描いても点になりません。<b>部材の名前と寸法を、必ず文字で
+  書き込むこと。</b>そうしてはじめて「分かって描いた」と認めてもらえます。
+  上の図で右側に並んでいる文字は、<span class="mark">全部あなたが書くもの</span>です。</p>
+</div>
+
+<h2><span class="kicker">1/20 ⑥</span>25分の描き順</h2>
+<p>白い紙を前に「どこから描こう」と迷うと、それだけで5分溶けます。
+<b>順番を決めてしまいます。</b></p>
+<ol class="tl">
+<li><span class="t">3分</span><span class="w">基準線を引く
+<em>GL・1FL・2FL の横線と、通り芯の縦線。ここが全部の基準</em></span></li>
+<li><span class="t">4分</span><span class="w">基礎を描く
+<em>砕石 → 底盤 → 立上り → アンカーボルト</em></span></li>
+<li><span class="t">3分</span><span class="w">土台と1階の床
+<em>基礎パッキン → 土台 → 構造用合板 → フローリング</em></span></li>
+<li><span class="t">6分</span><span class="w">外壁の6層を上まで通す
+<em>内から外へ 15・105・9・シート・18・16</em></span></li>
+<li><span class="t">5分</span><span class="w">2階の床・胴差・1階の天井
+<em>破断線を先に引いてから上のパネルを描く</em></span></li>
+<li class="key"><span class="t">4分</span><span class="w"><b>寸法と部材名を書き込む</b>
+<em>ここを飛ばすと点にならない。必ず時間を残す</em></span></li>
+</ol>
+<div class="flag info">
+  <h4>基準線からはみ出さないコツ</h4>
+  <p>1/20 では <b>105mm ＝ 5.25mm</b>、<b>300mm ＝ 15mm</b>、
+  <b>910mm ＝ 45.5mm</b>。三角スケールの1/20の面をそのまま当てて測ります。
+  暗算しないこと。</p>
+</div>
+
+<h2><span class="kicker">1/20 ⑦</span>出す前のチェック</h2>
+<div class="panel"><ul class="check" data-store="detailchk">
+<li><label><input type="checkbox"><span>縮尺「1/20」を書いたか</span></label></li>
+<li><label><input type="checkbox"><span>GL・1FL・2FL の記号と高さの数字を書いたか</span></label></li>
+<li><label><input type="checkbox"><span>外壁6層すべてに名前と厚さを書いたか</span></label></li>
+<li><label><input type="checkbox"><span>基礎の根入れ・底盤厚・立上り厚を書いたか</span></label></li>
+<li><label><input type="checkbox"><span>アンカーボルトの径（M12）と間隔を書いたか</span></label></li>
+<li><label><input type="checkbox"><span>断熱材の種類と厚さを書いたか</span></label></li>
+<li><label><input type="checkbox"><span>通気層があると分かるように描いたか</span></label></li>
+<li><label><input type="checkbox"><span>胴差・土台の寸法（105×300／105×105）を書いたか</span></label></li>
+<li><label><input type="checkbox"><span>切り口のハッチ（木・コンクリート・断熱材）を入れたか</span></label></li>
+</ul></div>
 </section>
 
 <!-- ============ 04 予想問題 ============ -->

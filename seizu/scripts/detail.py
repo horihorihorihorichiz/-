@@ -26,7 +26,7 @@ GAP = 46.0
 TOP_H = (TOP_HI - TOP_LO) * S
 BOT_H = (BOT_HI - BOT_LO) * S
 DRAW_H = TOP_H + GAP + BOT_H
-W, H = 700, int(MT + DRAW_H + 96)
+W, H = 700, int(MT + DRAW_H + 132)
 LX = 388.0               # 右側の説明文の位置
 
 
@@ -94,10 +94,16 @@ def draw():
     s.text(W / 2.0, 57,
            '左が室内・右が屋外　／　準防火地域の準耐火建築物（45分）を想定',
            size=11.5, fill='#666')
-    s.text(W / 2.0, 76, '基礎まわり ～ 2階床（胴差）まわり', size=11.5,
-           fill='#666')
+    s.text(W / 2.0, 76, '★ 本番の解答用紙に描いて提出するのは、この1枚', size=12,
+           fill='#b03060', weight='700')
 
     xin, xout = XMIN, XMAX
+
+    # 室内・屋外
+    s.text(X(-260), MT - 14, '← 室内', size=12.5, weight='700',
+           fill='#8a8f88')
+    s.text(X(170), MT - 14, '屋外 →', size=12.5, weight='700',
+           fill='#8a8f88')
 
     # ================= 上のパネル：2階床まわり =================
     # 2階の柱＋断熱
@@ -129,6 +135,10 @@ def draw():
                stroke_width=0.8, stroke_dasharray='9 3 2 3')
         s.text(X(xin) - 28, Y(mm) - 5, lab, size=10.5, anchor='end',
                fill='#b03060', weight='700')
+
+    s.rect(6, MT + 2, 20, TOP_H - 4, fill='#f4eef0', stroke='none')
+    s.text_rot(16, MT + TOP_H / 2.0, 'B　2階の床のところ', -90,
+               size=11.5, weight='700', fill='#b03060')
 
     # ================= 破断線 =================
     ybreak = MT + TOP_H + GAP / 2.0
@@ -201,6 +211,11 @@ def draw():
         s.text(X(xin) - 28, Y(mm) - 5, lab, size=10.5, anchor='end',
                fill='#b03060', weight='700')
 
+    s.rect(6, MT + TOP_H + GAP + 2, 20, BOT_H - 4,
+           fill='#f4eef0', stroke='none')
+    s.text_rot(16, MT + TOP_H + GAP + BOT_H / 2.0,
+               'A　地面のところ', -90, size=11.5, weight='700', fill='#b03060')
+
     # ================= 寸法 =================
     dx = X(xin) - 126
     for a, b, lab in ((-360, -300, '60'), (-300, -150, '150'),
@@ -252,8 +267,21 @@ def draw():
     for a, b, c, t in top_notes + bot_notes:
         callout(s, a, b, c, t)
 
+    # ================= ハッチの凡例 =================
+    gy = MT + DRAW_H + 18
+    s.text(30, gy, '模様の意味', size=11.5, weight='700', anchor='start')
+    keys = [('url(#pWood)', '木材（切り口）'), ('url(#pConc)', 'コンクリート'),
+            ('url(#pIns)', '断熱材'), ('url(#pGrav)', '砕石'),
+            ('url(#pGround)', '地面')]
+    kx = 110
+    for fill, lab in keys:
+        s.rect(kx, gy - 11, 26, 14, fill=fill, stroke='#888',
+               stroke_width=0.8)
+        s.text(kx + 32, gy, lab, size=11, anchor='start', fill='#555')
+        kx += 32 + len(lab) * 11.5 + 18
+
     # ================= 注意書き =================
-    ny = MT + DRAW_H + 22
+    ny = MT + DRAW_H + 56
     s.rect(30, ny - 16, W - 60, 62, fill='#fff8e1', stroke='#e0c060',
            stroke_width=1, rx=6)
     s.text(44, ny + 2,
