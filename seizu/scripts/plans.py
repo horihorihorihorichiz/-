@@ -139,33 +139,44 @@ FLOORS = {
 }
 
 
-def px(gx):
-    return ML + gx * G
-
-
-def py(gy):
-    return MT + (NY - gy) * G
-
-
 def draw_floor(n, d=None):
+    """d に nx / ny / xlines / ylines / tooshi / kuda を入れるとマス数を変えられる。"""
     d = d or FLOORS[n]
+    nx = d.get('nx', NX)
+    ny = d.get('ny', NY)
+    xlines = d.get('xlines', XLINES)
+    ylines = d.get('ylines', YLINES)
+    tooshi = d.get('tooshi', TOOSHI)
+    kuda = d.get('kuda', KUDA)
+    W = ML + nx * G + MR
+    H = MT + ny * G + MB
+
+    def px(gx):
+        return ML + gx * G
+
+    def py(gy):
+        return MT + (ny - gy) * G
+
     s = Svg(W, H)
 
     # ---- タイトル ----
     s.text(W / 2.0, 36, d['title'], size=21, weight='700')
-    s.text(W / 2.0, 60, '1マス = 910mm ／ 間口 7,280 × 奥行 9,100 ／ 床面積 66.25㎡',
+    area = nx * ny * 0.8281
+    s.text(W / 2.0, 60,
+           '1マス = 910mm ／ 間口 %s × 奥行 %s ／ 床面積 %.2f㎡'
+           % (format(nx * 910, ','), format(ny * 910, ','), area),
            size=12, fill='#666')
 
-    x0, y0, x1, y1 = px(0), py(10), px(8), py(0)
+    x0, y0, x1, y1 = px(0), py(ny), px(nx), py(0)
 
     # ---- 910グリッド ----
-    for i in range(NX + 1):
+    for i in range(nx + 1):
         s.line(px(i), y0, px(i), y1, stroke='#e8e8e8', stroke_width=0.7)
-    for j in range(NY + 1):
+    for j in range(ny + 1):
         s.line(x0, py(j), x1, py(j), stroke='#e8e8e8', stroke_width=0.7)
 
     # ---- 部屋 ----
-    for name, area, a, b, c, e, kind in d['rooms']:
+    for name, ar, a, b, c, e, kind in d['rooms']:
         fill, edge = COLORS[kind]
         s.rect(px(a), py(e), (c - a) * G, (e - b) * G, fill=fill,
                stroke=edge, stroke_width=1.2, opacity='0.95')
@@ -174,46 +185,36 @@ def draw_floor(n, d=None):
         big = (c - a) >= 5
         s.text(cx, cy - 2, name, size=16 if big else 13, weight='700',
                fill='#1a1a1a')
-        s.text(cx, cy + (17 if big else 15), area + ' ㎡',
+        s.text(cx, cy + (17 if big else 15), ar + ' ㎡',
                size=12 if big else 11, fill='#555')
 
-    # ---- 通り芯（太めの破線） ----
-    for gx, _ in XLINES:
+    # ---- 通り芯 ----
+    for gx, _ in xlines:
         s.line(px(gx), y0 - 18, px(gx), y1 + 26, stroke='#b03060',
                stroke_width=0.9, stroke_dasharray='9 3 2 3', opacity='0.55')
-    for gy, _ in YLINES:
+    for gy, _ in ylines:
         s.line(x0 - 18, py(gy), x1 + 26, py(gy), stroke='#b03060',
                stroke_width=0.9, stroke_dasharray='9 3 2 3', opacity='0.55')
 
-    # ---- 外周の壁（太線） ----
-    s.rect(px(0), py(10), 8 * G, 10 * G, stroke='#111', stroke_width=3.4)
+    # ---- 外周の壁 ----
+    s.rect(px(0), py(ny), nx * G, ny * G, stroke='#111', stroke_width=3.4)
 
     # ---- 開口部（窓・出入口） ----
     for face, pos, ln, kind, label in d['openings']:
         col = {'win': '#2f7fd0', 'entry': '#d0342f', 'balc': '#2f7fd0'}[kind]
-        wdt = 5.0
-        if face == 'S':
-            xa, xb, yy = px(pos), px(pos + ln), py(0)
+        if face in ('S', 'N'):
+            xa, xb = px(pos), px(pos + ln)
+            yy = py(0) if face == 'S' else py(ny)
             s.line(xa, yy, xb, yy, stroke='#ffffff', stroke_width=4.2)
-            s.line(xa, yy, xb, yy, stroke=col, stroke_width=wdt)
+            s.line(xa, yy, xb, yy, stroke=col, stroke_width=5.0)
             if label:
-                s.text((xa + xb) / 2.0, yy + 20, label, size=11, fill=col,
-                       weight='700')
-        elif face == 'N':
-            xa, xb, yy = px(pos), px(pos + ln), py(10)
-            s.line(xa, yy, xb, yy, stroke='#ffffff', stroke_width=4.2)
-            s.line(xa, yy, xb, yy, stroke=col, stroke_width=wdt)
-            if label:
-                s.text((xa + xb) / 2.0, yy - 10, label, size=11, fill=col,
-                       weight='700')
-        elif face == 'E':
-            ya, yb, xx = py(pos), py(pos + ln), px(8)
+                s.text((xa + xb) / 2.0, yy + (20 if face == 'S' else -10),
+                       label, size=11, fill=col, weight='700')
+        else:
+            ya, yb = py(pos), py(pos + ln)
+            xx = px(nx) if face == 'E' else px(0)
             s.line(xx, ya, xx, yb, stroke='#ffffff', stroke_width=4.2)
-            s.line(xx, ya, xx, yb, stroke=col, stroke_width=wdt)
-        else:  # 'W'
-            ya, yb, xx = py(pos), py(pos + ln), px(0)
-            s.line(xx, ya, xx, yb, stroke='#ffffff', stroke_width=4.2)
-            s.line(xx, ya, xx, yb, stroke=col, stroke_width=wdt)
+            s.line(xx, ya, xx, yb, stroke=col, stroke_width=5.0)
 
     # ---- 室内の間仕切り壁 ----
     walls = set()
@@ -225,22 +226,22 @@ def draw_floor(n, d=None):
     for w in walls:
         if w[0] == 'V':
             _, gx, ga, gb = w
-            if gx in (0, 8):
+            if gx in (0, nx):
                 continue
             s.line(px(gx), py(ga), px(gx), py(gb), stroke='#111',
                    stroke_width=2.0)
         else:
             _, gy, ga, gb = w
-            if gy in (0, 10):
+            if gy in (0, ny):
                 continue
             s.line(px(ga), py(gy), px(gb), py(gy), stroke='#111',
                    stroke_width=2.0)
 
-    # ---- 室内建具（開口をあける） ----
+    # ---- 室内建具 ----
     for ori, wall, pos, ln in d['doors']:
         r = min(ln * G * 0.72, G * 0.82)
         slide = ln >= 1.5
-        if ori == 'V':   # 南北方向の壁 x=wall、y方向 pos..pos+ln
+        if ori == 'V':
             xx, ya, yb = px(wall), py(pos), py(pos + ln)
             s.line(xx, ya, xx, yb, stroke='#ffffff', stroke_width=3.4)
             if slide:
@@ -251,7 +252,7 @@ def draw_floor(n, d=None):
                 s.path('M %.1f %.1f A %.1f %.1f 0 0 1 %.1f %.1f'
                        % (xx + r, ya, r, r, xx, ya - r),
                        stroke='#aaa', stroke_width=0.8)
-        else:            # 東西方向の壁 y=wall、x方向 pos..pos+ln
+        else:
             yy, xa, xb = py(wall), px(pos), px(pos + ln)
             s.line(xa, yy, xb, yy, stroke='#ffffff', stroke_width=3.4)
             if slide:
@@ -263,67 +264,72 @@ def draw_floor(n, d=None):
                        % (xa, yy + r, r, r, xa + r, yy),
                        stroke='#aaa', stroke_width=0.8)
 
-    # ---- 竪穴区画（階段室を囲む） ----
-    s.rect(px(0) + 4, py(6) + 4, 2 * G - 8, 4 * G - 8, fill='none',
-           stroke='#c0392b', stroke_width=1.6, stroke_dasharray='6 4')
+    # ---- 竪穴区画（階段室） ----
+    sa, sb, sc, sd = d.get('stair_box', (0, 2, 2, 6))
+    s.rect(px(sa) + 4, py(sd) + 4, (sc - sa) * G - 8, (sd - sb) * G - 8,
+           fill='none', stroke='#c0392b', stroke_width=1.6,
+           stroke_dasharray='6 4')
 
     # ---- 階段（折り返し） ----
-    sx0, sy0, sx1, sy1 = px(0), py(6), px(2), py(2)
-    mid = px(1)
-    s.line(mid, py(2), mid, py(5), stroke='#8a6d00', stroke_width=1.6)
+    mid = px((sa + sc) / 2.0)
+    top = sd - 1
+    s.line(mid, py(sb), mid, py(top), stroke='#8a6d00', stroke_width=1.6)
     for k in range(1, 8):
-        yy = py(2) - k * (py(2) - py(5)) / 8.0
-        s.line(px(0) + 3, yy, mid, yy, stroke='#8a6d00', stroke_width=0.9)
-        s.line(mid, yy, px(2) - 3, yy, stroke='#8a6d00', stroke_width=0.9)
-    s.line(px(0) + 3, py(5), px(2) - 3, py(5), stroke='#8a6d00',
+        yy = py(sb) - k * (py(sb) - py(top)) / 8.0
+        s.line(px(sa) + 3, yy, mid, yy, stroke='#8a6d00', stroke_width=0.9)
+        s.line(mid, yy, px(sc) - 3, yy, stroke='#8a6d00', stroke_width=0.9)
+    s.line(px(sa) + 3, py(top), px(sc) - 3, py(top), stroke='#8a6d00',
            stroke_width=1.6)
-    s.text(px(1), py(5.55), '踊り場', size=10, fill='#8a6d00')
-    # 上り矢印
-    s.line(px(0.5), py(2.3), px(0.5), py(4.9), stroke='#8a6d00',
-           stroke_width=1.6)
-    s.polygon([(px(0.5), py(5.15)), (px(0.5) - 5, py(4.85)),
-               (px(0.5) + 5, py(4.85))], fill='#8a6d00')
-    s.text(px(1), py(3.0), 'UP', size=13, fill='#8a6d00', weight='700')
+    s.text(mid, py(top + 0.55), '踊り場', size=10, fill='#8a6d00')
+    s.line(px(sa + 0.5), py(sb + 0.3), px(sa + 0.5), py(top - 0.1),
+           stroke='#8a6d00', stroke_width=1.6)
+    s.polygon([(px(sa + 0.5), py(top + 0.15)),
+               (px(sa + 0.5) - 5, py(top - 0.15)),
+               (px(sa + 0.5) + 5, py(top - 0.15))], fill='#8a6d00')
+    s.text(px(sc - 0.5), py(sb + 0.55), 'UP', size=12, fill='#8a6d00',
+           weight='700')
 
     # ---- 柱 ----
-    for gx, gy in KUDA:
+    for gx, gy in kuda:
         s.rect(px(gx) - 4, py(gy) - 4, 8, 8, fill='#111')
-    for gx, gy in TOOSHI:
+    for gx, gy in tooshi:
         s.circle(px(gx), py(gy), 8, fill='#ffffff', stroke='#c0392b',
                  stroke_width=2.4)
         s.circle(px(gx), py(gy), 4, fill='#c0392b')
 
     # ---- 通り符号 ----
-    for gx, nm in XLINES:
+    for gx, nm in xlines:
         s.circle(px(gx), y0 - 36, 11, fill='#ffffff', stroke='#b03060',
                  stroke_width=1.2)
         s.text(px(gx), y0 - 32, nm, size=12, weight='700', fill='#b03060')
-    for gy, nm in YLINES:
+    for gy, nm in ylines:
         s.circle(x0 - 40, py(gy), 11, fill='#ffffff', stroke='#b03060',
                  stroke_width=1.2)
         s.text(x0 - 40, py(gy) + 4, nm, size=12, weight='700', fill='#b03060')
 
     # ---- 寸法 ----
-    s.dim_h(px(0), px(8), y1 + 52, '7,280  ( 910 × 8マス )')
-    s.line(x1 + 46, py(0), x1 + 46, py(10), stroke='#444', stroke_width=0.8)
-    for gy in (0, 10):
+    s.dim_h(px(0), px(nx), y1 + 52,
+            '%s  ( 910 × %dマス )' % (format(nx * 910, ','), nx))
+    s.line(x1 + 46, py(0), x1 + 46, py(ny), stroke='#444', stroke_width=0.8)
+    for gy in (0, ny):
         s.line(x1 + 42, py(gy), x1 + 50, py(gy), stroke='#444',
                stroke_width=0.8)
-    s.text_rot(x1 + 40, (y0 + y1) / 2.0, '9,100  ( 910 × 10マス )', size=11,
+    s.text_rot(x1 + 40, (y0 + y1) / 2.0,
+               '%s  ( 910 × %dマス )' % (format(ny * 910, ','), ny), size=11,
                fill='#444')
 
     # ---- 方位 ----
-    nx, ny = W - 46, MT + 26
-    s.circle(nx, ny, 19, fill='#ffffff', stroke='#444', stroke_width=1.1)
-    s.polygon([(nx, ny - 14), (nx - 6, ny + 7), (nx, ny + 2), (nx + 6, ny + 7)],
-              fill='#c0392b')
-    s.text(nx, ny + 19, 'N', size=11, weight='700', fill='#444')
+    nxp, nyp = W - 46, MT + 26
+    s.circle(nxp, nyp, 19, fill='#ffffff', stroke='#444', stroke_width=1.1)
+    s.polygon([(nxp, nyp - 14), (nxp - 6, nyp + 7), (nxp, nyp + 2),
+               (nxp + 6, nyp + 7)], fill='#c0392b')
+    s.text(nxp, nyp + 19, 'N', size=11, weight='700', fill='#444')
 
     # ---- 道路 ----
     ry = y1 + 60
     if d.get('road', n == 1):
-        s.rect(px(-0.6), ry, 9.2 * G, 26, fill='#f2f2f2', stroke='#bbb',
-               stroke_width=0.8)
+        s.rect(px(-0.6), ry, (nx + 1.2) * G, 26, fill='#f2f2f2',
+               stroke='#bbb', stroke_width=0.8)
         s.text(W / 2.0, ry + 17, '道　路（商店街の通り）', size=12,
                fill='#666', weight='700')
     else:

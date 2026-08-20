@@ -9,7 +9,7 @@ BW, BD = 7.28, 9.10           # 建物
 ROAD = 4.0                    # 図に描く道路の幅
 ML, MT = 118, 132
 W = int(ML * 2 + SW * S + 90)
-H = int(MT + (SD + ROAD) * S + 116)
+H = int(MT + (SD + ROAD) * S + 160)
 
 EW = (SW - BW) / 2.0          # 東西のあき 2.36m
 NGAP = 1.00                   # 北の境界からのあき
@@ -119,15 +119,20 @@ def draw():
 
     # まとめ
     ly = MT + (SD + ROAD) * S + 26
-    s.rect(30, ly - 18, W - 60, 74, fill='#f6f9f4', stroke='#bcd4bc',
+    s.rect(30, ly - 18, W - 60, 116, fill='#f6f9f4', stroke='#bcd4bc',
            stroke_width=1, rx=6)
     s.text(46, ly, '外壁から敷地境界線まで：東西 2,360 ／ 北 1,000 '
                    '→ どちらも 500mm以上でOK', size=11.5, anchor='start',
            fill='#245a2c')
-    s.text(46, ly + 20, '建蔽率 66.25 ÷ 180 ＝ 36.8%（限度80%）／ '
-                        '容積率 198.74 ÷ 180 ＝ 110.4%（限度300%）',
+    s.text(46, ly + 20, '建蔽率　66.25 ÷ 180 ＝ 36.8%　（限度80%）',
            size=11.5, anchor='start', fill='#245a2c')
-    s.text(46, ly + 40, '南に4.9mの空地ができるので、駐輪4台も'
+    s.text(46, ly + 42, '容積率　まず限度を決める：'
+                        '前面道路 8m × 6/10 ＝ 480%　と　都市計画 300%',
+           size=11.5, anchor='start', fill='#245a2c')
+    s.text(46, ly + 62, '　　　　小さいほうを採るので 限度は 300%。'
+                        '198.74 ÷ 180 ＝ 110.4% → OK', size=11.5,
+           anchor='start', fill='#245a2c')
+    s.text(46, ly + 84, '南に4.9mの空地ができるので、駐輪4台も'
                         '住宅への通路もここに入る。', size=11.5,
            anchor='start', fill='#245a2c')
     return s

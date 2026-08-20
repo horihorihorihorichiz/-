@@ -205,15 +205,78 @@
 <div class="tw"><table>
 <tr><th class="wrap">確かめること</th><th class="wrap">計算</th><th>判定</th></tr>
 <tr><td class="wrap">境界線から500mm以上</td><td class="wrap">東西2,360 ／ 北1,000</td><td>○</td></tr>
-<tr><td class="wrap">建蔽率 80%以下</td><td class="wrap">66.25 ÷ 180 ＝ 36.8%</td><td>○</td></tr>
-<tr><td class="wrap">容積率 300%以下</td><td class="wrap">198.74 ÷ 180 ＝ 110.4%</td><td>○</td></tr>
+<tr><td class="wrap">建蔽率</td><td class="wrap">66.25 ÷ 180 ＝ 36.8%（限度80%）</td><td>○</td></tr>
+<tr><td class="wrap">容積率</td><td class="wrap">198.74 ÷ 180 ＝ 110.4%（限度300%）</td><td>○</td></tr>
 <tr><td class="wrap">駐輪4台</td><td class="wrap">2.4m × 1.9m を南西に確保</td><td>○</td></tr>
 </table></div>
 
+<h3>容積率は「2つ比べて、小さいほう」</h3>
+<div class="flag fix">
+  <h4>問題文の300%を、そのまま使ってはいけません</h4>
+  <p>容積率の限度は、<b>2つの数字を出して、小さいほうを採る</b>と決まっています
+  （法52条）。片方だけ見て終わりにすると、うっかり不適合になります。</p>
+</div>
+<ol>
+<li><b>都市計画で決められた値</b> … 問題文に「容積率の限度は300%」と書いてある値</li>
+<li><b>前面道路の幅員 × 決まった数</b> … 道路が狭いと、その分だけ厳しくなる
+  <ul>
+  <li>住居系の用途地域 → <b>幅員(m) × 4/10</b></li>
+  <li>それ以外（近隣商業・商業・準工業・工業など）→ <b>幅員(m) × 6/10</b></li>
+  </ul>
+</li>
+</ol>
+<p>今回は前面道路が8m、用途地域は近隣商業地域なので</p>
+<div class="tw"><table>
+<tr><th class="wrap">出す数字</th><th class="wrap">計算</th><th class="n">結果</th></tr>
+<tr><td class="wrap">① 都市計画の値</td><td class="wrap">問題文に書いてある</td>
+    <td class="n">300%</td></tr>
+<tr><td class="wrap">② 前面道路から</td><td class="wrap">8 × 6/10 ＝ 4.8</td>
+    <td class="n">480%</td></tr>
+<tr class="sum"><td class="wrap">小さいほうが限度</td><td class="wrap">300 と 480 を比べる</td>
+    <td class="n">300%</td></tr>
+</table></div>
+<div class="flag yes">
+  <h4>結果は変わりませんでした</h4>
+  <p>今回は道路が8mと広いので②が480%になり、①の300%のほうが小さい。
+  <b>限度は300%のまま</b>です。実際は110.4%なので、大きく余っています。</p>
+  <p>でも<b>この確認をしたこと自体が答案の中身</b>になります。
+  面積表のそばに「8×6/10＝480% ＞ 300% ∴ 300%」と書いておくと、
+  分かって計算していることが伝わります。</p>
+</div>
+
+<h3>前面道路の早見表（覚えなくていい・その場で計算する）</h3>
+<div class="tw"><table>
+<tr><th class="n">道路の幅</th><th class="n">住居系（4/10）</th>
+    <th class="n">それ以外（6/10）</th></tr>
+<tr><td class="n">4m</td><td class="n">160%</td><td class="n">240%</td></tr>
+<tr><td class="n">6m</td><td class="n">240%</td><td class="n">360%</td></tr>
+<tr><td class="n">8m</td><td class="n">320%</td><td class="n">480%</td></tr>
+<tr><td class="n">10m</td><td class="n">400%</td><td class="n">600%</td></tr>
+<tr><td class="n">12m以上</td><td colspan="2" class="wrap">この計算はしない。都市計画の値だけ</td></tr>
+</table></div>
+<div class="flag no">
+  <h4>危ないのは「道路が狭いとき」</h4>
+  <p>もし前面道路が<b>4m</b>だったら、②は 4 × 6/10 ＝ <b>240%</b>。
+  都市計画が300%でも、<b>限度は240%に下がります</b>。
+  それでも延べ198.74㎡なら110.4%なので今回の型は大丈夫ですが、
+  <b>敷地が小さい問題では効いてきます</b>。</p>
+  <p>目安：延べ198.74㎡なら、敷地が <b>83㎡</b> より小さいと240%を超えます。
+  （198.74 ÷ 2.4 ＝ 82.8）</p>
+</div>
+<div class="flag info">
+  <h4>建蔽率のほうにもオマケがあります</h4>
+  <p>準防火地域の中に準耐火建築物を建てると、建蔽率の限度に
+  <b>+10%</b> のオマケがつきます（法53条3項）。今回なら80% → 90%。
+  でも実際は36.8%なので使う必要はありません。
+  <b>敷地いっぱいに建てたいときだけ思い出せば十分</b>です。</p>
+</div>
+<p style="font-size:13px;color:var(--ink3)">
+条文の番号と乗数は必ず法令集（法52条・法53条）で確認してください。
+特定行政庁が別の数を指定している区域もあります。</p>
+
 <h2><span class="kicker">解答例</span>1階平面図（直したあと）</h2>
-<figure><div class="sheet">{{SVG:var_b}}</div>
-<figcaption>売場の角を切って便所にした。これが今回の解答例。
-2階と3階は型のまま（「型」タブを見てください）。</figcaption></figure>
+<figure><div class="sheet">{{SVG:ansA_1f}}</div>
+<figcaption>売場の角を切って便所にした。2階と3階は型のまま。</figcaption></figure>
 <div class="tw"><table>
 <tr><th class="wrap">室名</th><th class="n">マス</th><th class="n">㎡</th><th class="wrap">条件</th></tr>
 <tr><td class="wrap">店舗売場</td><td class="n">32</td><td class="n">26.50</td><td class="wrap">25㎡以上 ○</td></tr>
@@ -281,78 +344,285 @@
   とたんに答案らしくなります。上の6問には全部、数字が入っています。</p>
 </div>
 
-<h2><span class="kicker">予想問題B</span>変化球：1階に高齢者の寝室</h2>
-<p>もう1本、型が少し崩れる問題も用意しました。当日パニックにならないための練習です。</p>
-<div class="flag no">
-  <h4>追加される条件</h4>
-  <p>「夫婦の母（70歳代）と同居する。<b>1階に和室6帖（母の寝室）を設ける</b>。」</p>
-</div>
-<h3>考え方</h3>
-<p>1階は80マスしかありません。和室6帖は12マス。<b>どこかから12マス持ってこないと入りません。</b></p>
-<ol>
-<li><b>売場は削れない</b>（25㎡＝31マス必要、いまは36マス。5マスしか余裕なし）</li>
-<li><b>厨房も削れない</b>（9㎡＝11マス必要、いまは12マス）</li>
-<li><b>スタッフルームは？</b> 6㎡＝8マス必要。いまは12マス。
-でも<span class="mark">「1階に」とは書かれていない</span></li>
+<h2><span class="kicker">予想問題B</span>変化球：1階に祖母の寝室</h2>
+<div class="paper">
+<p class="ph">設計課題　商店街に建つ併用住宅（木造3階建て）</p>
+<p class="ps">変わるところ（他はAと同じ）</p>
+<ol class="pl">
+<li>パン屋を営む夫婦と子供2人に加え、<b>夫の母（70歳代）と同居する</b>。</li>
+<li>敷地は<b>間口14m × 奥行16m</b>、南側に<b>幅員6m</b>の道路。</li>
+<li>延べ面積は<b>200㎡以上、230㎡以下</b>とする。</li>
+<li>1階に<b>和室6帖以上（母の寝室）</b>を設ける。母が階段を使わずに
+生活できるようにすること。</li>
+<li>スタッフルームは計画しなくてよい。</li>
 </ol>
-<div class="flag yes">
-  <h4>答え：スタッフルームを2階へ引っ越しさせる</h4>
-  <p>2階の「和室」を「スタッフルーム」に置きかえれば、
-  <b>1階に12マス空いて、そこに和室6帖が入ります。</b>
-  マスの数はどこもいじりません。</p>
-</div>
-<figure><div class="sheet">{{SVG:var_c}}</div>
-<figcaption>北東のスタッフルームが和室6帖に変わっただけ。他はまったく同じ。</figcaption></figure>
-<div class="flag info">
-  <h4>この問題で聞かれること</h4>
-  <p>「高齢者への配慮」がほぼ確実に記述で出ます。答えの材料はこれ：
-  <b>1階に寝室を置いたので階段を使わずに生活できる／
-  寝室のとなりに店舗用便所がある／出入口の段差をなくした／
-  廊下と出入口の有効幅を780mm以上とした</b>。</p>
+<p class="ps">計画の要点等</p>
+<ol class="pl">
+<li>木造3階建てとするにあたり、構造上工夫した点を記述しなさい。</li>
+<li>高齢者の居室を1階に設けたことについて、工夫した点を記述しなさい。</li>
+<li>店舗部分と住宅部分の動線について記述しなさい。</li>
+<li>準防火地域における防火上の措置について記述しなさい。</li>
+<li>階段の寸法をどのように決めたか記述しなさい。</li>
+<li>高齢者の避難について配慮した点を記述しなさい。</li>
+</ol>
 </div>
 
-<h2><span class="kicker">予想問題C</span>変化球：敷地の形が違う</h2>
-<div class="flag no">
-  <h4>こう書かれていたら</h4>
-  <p>「敷地は<b>間口9m × 奥行20m</b>」──つまり<b>細長い土地</b>。
-  間口7,280mmの建物だと、両側のあきが (9 - 7.28) ÷ 2 ＝ 0.86m。
-  500mm以上なので置けますが、けっこうギリギリです。</p>
-</div>
-<h3>直し方：マスの数を組みかえる</h3>
-<p><b>910の倍数だけは絶対に崩さない。</b>これさえ守れば、
-何マス × 何マスに変えても型はそのまま使えます。
-下の表から、条件に合う組み合わせを選ぶだけです。</p>
+<h3>考え方 ── 部屋が増えたら、建物を大きくする</h3>
+<p>1階に和室6帖（12マス）が増えます。でも1階の80マスはすでに満杯。
+<b>どこかを削るのではなく、建物そのものを大きくします。</b></p>
 <div class="tw"><table>
-<tr><th class="wrap">マス</th><th class="n">間口</th><th class="n">奥行</th>
-    <th class="n">各階㎡</th><th class="n">延べ㎡</th></tr>
-<tr><td class="wrap">7 × 10</td><td class="n">6,370</td><td class="n">9,100</td>
-    <td class="n">57.97</td><td class="n">173.90</td></tr>
-<tr><td class="wrap">7 × 11</td><td class="n">6,370</td><td class="n">10,010</td>
-    <td class="n">63.76</td><td class="n">191.29</td></tr>
-<tr><td class="wrap">6 × 13</td><td class="n">5,460</td><td class="n">11,830</td>
-    <td class="n">64.59</td><td class="n">193.78</td></tr>
-<tr class="sum"><td class="wrap">8 × 10 ★型</td><td class="n">7,280</td><td class="n">9,100</td>
-    <td class="n">66.25</td><td class="n">198.74</td></tr>
-<tr><td class="wrap">8 × 9</td><td class="n">7,280</td><td class="n">8,190</td>
-    <td class="n">59.62</td><td class="n">178.87</td></tr>
-<tr><td class="wrap">9 × 9</td><td class="n">8,190</td><td class="n">8,190</td>
-    <td class="n">67.08</td><td class="n">201.23</td></tr>
-<tr><td class="wrap">8 × 11</td><td class="n">7,280</td><td class="n">10,010</td>
-    <td class="n">72.87</td><td class="n">218.62</td></tr>
-<tr><td class="wrap">9 × 10</td><td class="n">8,190</td><td class="n">9,100</td>
-    <td class="n">74.53</td><td class="n">223.59</td></tr>
+<tr><th class="wrap">手順</th><th class="wrap">やること</th><th class="wrap">結果</th></tr>
+<tr><td class="wrap">1</td><td class="wrap">延べ面積の条件を見る</td>
+    <td class="wrap">200〜230㎡ → 8×10（198.74）では足りない</td></tr>
+<tr><td class="wrap">2</td><td class="wrap">マス割り表から選ぶ</td>
+    <td class="wrap"><b>9×10 ＝ 90マス</b>。延べ223.59㎡ でぴったり</td></tr>
+<tr><td class="wrap">3</td><td class="wrap">増えた1マスを西側に足す</td>
+    <td class="wrap">西を<b>3マス幅</b>にして、住宅用の廊下を1本通す</td></tr>
 </table></div>
-<p>間口9mの敷地なら <b>7マス × 11マス</b>（間口6,370）を選べば、
-両側のあきが1.3mずつになって余裕が出ます。延べ191.29㎡で
-「180〜200㎡」にも収まります。</p>
-<div class="flag info">
-  <h4>組みかえるときのルール</h4>
-  <ul>
-  <li><b>階段の2マス × 4マスは絶対に変えない。</b>ここを変えると段数の計算がやり直しになる</li>
-  <li><b>大きい部屋から先に置く。</b>売場・居間・寝室。小さい部屋はあとから隙間に入る</li>
-  <li><b>梁は3,640mm（4マス）を超えないように柱を入れる</b></li>
-  </ul>
+<div class="flag yes">
+  <h4>西を3マス幅にすると、全部つながる</h4>
+  <p>玄関 → 廊下 → 階段、そして 廊下 → 祖母の和室。
+  <b>住宅の中を、売場をまったく通らずに歩ける</b>ようになります。
+  和室6帖は3マス×4マスできれいに入ります。</p>
 </div>
+
+<h3>解答例　1階平面図 兼 配置図</h3>
+<figure><div class="sheet">{{SVG:ansB_1f}}</div>
+<figcaption>西の3マス幅が住宅ゾーン。祖母の和室は北西の静かな位置。</figcaption></figure>
+<h3>解答例　2階平面図</h3>
+<figure><div class="sheet">{{SVG:ansB_2f}}</div>
+<figcaption>1階の和室の真上が洗面脱衣室と浴室。水まわりを西にそろえる。</figcaption></figure>
+<h3>解答例　3階平面図</h3>
+<figure><div class="sheet">{{SVG:ansB_3f}}</div>
+<figcaption>西の廊下と東の廊下がB通りでつながる。子供室2室は同じ広さ。</figcaption></figure>
+
+<h3>解答例　面積表</h3>
+<div class="tw"><table>
+<tr><th>階</th><th class="wrap">室名</th><th class="n">マス</th><th class="n">㎡</th></tr>
+<tr><td rowspan="8">1</td><td class="wrap">店舗売場</td><td class="n">36</td><td class="n">29.81</td></tr>
+<tr><td class="wrap">厨房・作業場</td><td class="n">12</td><td class="n">9.94</td></tr>
+<tr><td class="wrap">和室6帖（母の寝室）</td><td class="n">12</td><td class="n">9.94</td></tr>
+<tr><td class="wrap">階段</td><td class="n">8</td><td class="n">6.62</td></tr>
+<tr><td class="wrap">店舗用便所</td><td class="n">6</td><td class="n">4.97</td></tr>
+<tr><td class="wrap">倉庫</td><td class="n">6</td><td class="n">4.97</td></tr>
+<tr><td class="wrap">廊下</td><td class="n">6</td><td class="n">4.97</td></tr>
+<tr><td class="wrap">住宅玄関</td><td class="n">4</td><td class="n">3.31</td></tr>
+<tr class="sum"><td colspan="2">1階 合計</td><td class="n">90</td><td class="n">74.53</td></tr>
+<tr><td rowspan="8">2</td><td class="wrap">居間・食事室・台所</td><td class="n">36</td><td class="n">29.81</td></tr>
+<tr><td class="wrap">和室6帖</td><td class="n">12</td><td class="n">9.94</td></tr>
+<tr><td class="wrap">家事室・納戸</td><td class="n">12</td><td class="n">9.94</td></tr>
+<tr><td class="wrap">階段</td><td class="n">8</td><td class="n">6.62</td></tr>
+<tr><td class="wrap">洗面脱衣室</td><td class="n">6</td><td class="n">4.97</td></tr>
+<tr><td class="wrap">浴室</td><td class="n">6</td><td class="n">4.97</td></tr>
+<tr><td class="wrap">廊下</td><td class="n">6</td><td class="n">4.97</td></tr>
+<tr><td class="wrap">便所</td><td class="n">4</td><td class="n">3.31</td></tr>
+<tr class="sum"><td colspan="2">2階 合計</td><td class="n">90</td><td class="n">74.53</td></tr>
+<tr><td rowspan="7">3</td><td class="wrap">夫婦寝室</td><td class="n">24</td><td class="n">19.87</td></tr>
+<tr><td class="wrap">子供室A</td><td class="n">15</td><td class="n">12.42</td></tr>
+<tr><td class="wrap">子供室B</td><td class="n">15</td><td class="n">12.42</td></tr>
+<tr><td class="wrap">納戸</td><td class="n">12</td><td class="n">9.94</td></tr>
+<tr><td class="wrap">廊下（西＋東）</td><td class="n">12</td><td class="n">9.94</td></tr>
+<tr><td class="wrap">階段</td><td class="n">8</td><td class="n">6.62</td></tr>
+<tr><td class="wrap">便所</td><td class="n">4</td><td class="n">3.31</td></tr>
+<tr class="sum"><td colspan="2">3階 合計</td><td class="n">90</td><td class="n">74.53</td></tr>
+<tr class="sum"><td colspan="2">延べ面積</td><td class="n">270</td><td class="n">223.59</td></tr>
+</table></div>
+<div class="tw"><table>
+<tr><th class="wrap">確かめること</th><th class="wrap">計算</th><th>判定</th></tr>
+<tr><td class="wrap">延べ面積 200〜230㎡</td><td class="wrap">223.59㎡</td><td>○</td></tr>
+<tr><td class="wrap">境界線から500mm以上</td><td class="wrap">東西2,905 ／ 北6,900</td><td>○</td></tr>
+<tr><td class="wrap">建蔽率</td><td class="wrap">74.53 ÷ 224 ＝ 33.3%（限度80%）</td><td>○</td></tr>
+<tr><td class="wrap">容積率の限度</td><td class="wrap">6 × 6/10 ＝ 360% と 300% → 300%</td><td>—</td></tr>
+<tr><td class="wrap">容積率</td><td class="wrap">223.59 ÷ 224 ＝ 99.8%</td><td>○</td></tr>
+</table></div>
+
+<h3>解答例　計画の要点等</h3>
+<div class="qa"><p class="q">(1) 木造3階建てとするにあたり、構造上工夫した点</p>
+<p class="a">1階から3階まで柱の位置をすべてそろえ、直下率を高めた。
+A・B・C・D通りと1・2・3・4通りの交点に計16本の柱を各階共通で配置し、
+四隅は120mm角の通し柱、その他は105mm角の管柱としている。
+梁の最大スパンは3,640mmに抑え、床は構造用合板t=24を梁に直接張った剛床とした。
+耐力壁は筋かい45×90のたすき掛けと構造用合板t=9を用い、
+桁行方向・梁間方向のいずれにも偏りなく配置している。</p></div>
+
+<div class="qa"><p class="q">(2) 高齢者の居室を1階に設けたことについて</p>
+<p class="a">母の寝室である和室6帖を1階の北西に配置し、階段を使わずに
+生活できるようにした。住宅玄関から寝室までは有効910mmの廊下1本でつながり、
+途中に段差を設けていない。寝室のすぐ南に階段室があるため、
+2階・3階の家族がすぐ様子を見に行ける。廊下と出入口の有効幅は780mm以上とし、
+将来手すりを取り付けられるよう壁に下地を入れている。
+寝室のとなりの階段室を経て、2階の浴室・便所へも短い動線で行ける。</p></div>
+
+<div class="qa"><p class="q">(3) 店舗部分と住宅部分の動線</p>
+<p class="a">南面の道路側に店舗の出入口を設け、来店客は売場から
+店舗用便所へ至る動線とした。住宅の玄関は同じ南面の西端に別に設け、
+玄関から廊下を通って母の寝室と階段に達する。
+住宅の動線が売場をまったく通らないため、営業時間中も両者が交錯しない。
+商品の搬入は北面の勝手口から厨房・倉庫へ直接行う。</p></div>
+
+<div class="qa"><p class="q">(4) 準防火地域における防火上の措置</p>
+<p class="a">延べ面積223.59㎡・地上3階の木造であるため、45分準耐火建築物とした。
+外壁は屋内側から強化石膏ボードt=15、柱105（グラスウール16K t=100充填）、
+構造用合板t=9、透湿防水シート、通気胴縁t=18、窯業系サイディングt=16の構成とし、
+軒裏はケイ酸カルシウム板とした。3階に居室があるため階段室を準耐火構造の
+床・壁で囲み、開口部を防火設備として竪穴区画とした。
+延焼のおそれのある部分の開口部にも防火設備を設けている。</p></div>
+
+<div class="qa"><p class="q">(5) 階段の寸法をどのように決めたか</p>
+<p class="a">1階から2階は階高3,100mmを15段割りとして蹴上206.7mm、
+2階から3階は階高2,900mmを14段割りとして蹴上207.1mm、
+踏面はいずれも210mmとした。幅は有効750mm以上を確保している。
+住宅の基準（蹴上230mm以下・踏面150mm以上）を満たすことに加え、
+店舗の基準（蹴上220mm以下・踏面210mm以上）も同時に満たしているため、
+将来店舗側から利用する場合にも対応できる。</p></div>
+
+<div class="qa"><p class="q">(6) 高齢者の避難について配慮した点</p>
+<p class="a">母の寝室を1階に置いたことで、火災時に階段を使わずに屋外へ
+避難できる。寝室は南面と西面の2方向に開口部を持ち、掃出し窓から
+直接屋外へ出ることもできる。廊下から玄関までの避難経路は直線で、
+途中に段差や狭くなる部分がない。階段室は竪穴区画としているため、
+上階からの煙が1階の廊下へ流れ込みにくい。</p></div>
+
+<h2><span class="kicker">予想問題C</span>変化球：細長い敷地</h2>
+<div class="paper">
+<p class="ph">設計課題　商店街に建つ併用住宅（木造3階建て）</p>
+<p class="ps">変わるところ（他はAと同じ）</p>
+<ol class="pl">
+<li>敷地は<b>間口9m × 奥行20m</b>の細長い形。南側に<b>幅員6m</b>の道路。</li>
+<li>延べ面積は<b>180㎡以上、200㎡以下</b>とする。</li>
+<li>店舗売場は<b>25㎡以上</b>とし、奥行きが深くなることを踏まえて
+採光・通風に配慮すること。</li>
+<li>東西の隣地には既存の建物が近接している。</li>
+</ol>
+<p class="ps">計画の要点等</p>
+<ol class="pl">
+<li>間口が狭い敷地に対して、平面計画で工夫した点を記述しなさい。</li>
+<li>奥行きの深い売場の採光・通風をどのように確保したか記述しなさい。</li>
+<li>木造3階建てとするにあたり、構造上工夫した点を記述しなさい。</li>
+<li>準防火地域における防火上の措置について記述しなさい。</li>
+<li>階段の寸法をどのように決めたか記述しなさい。</li>
+<li>隣地との関係について配慮した点を記述しなさい。</li>
+</ol>
+</div>
+
+<h3>考え方 ── マスを縦に伸ばす</h3>
+<p>間口9mに8マス（7,280）を入れると、両側のあきが
+(9,000 − 7,280) ÷ 2 ＝ <b>860mm</b>。500mm以上ではありますが余裕がありません。
+<b>間口を減らして、奥行きを増やします。</b></p>
+<div class="tw"><table>
+<tr><th class="wrap">案</th><th class="n">両側のあき</th><th class="n">延べ面積</th><th>判定</th></tr>
+<tr><td class="wrap">8 × 10（型のまま）</td><td class="n">860mm</td><td class="n">198.74</td>
+    <td>ぎりぎり</td></tr>
+<tr class="sum"><td class="wrap">7 × 11（採用）</td><td class="n">1,315mm</td><td class="n">191.29</td>
+    <td>余裕あり</td></tr>
+<tr><td class="wrap">6 × 13</td><td class="n">1,770mm</td><td class="n">193.78</td>
+    <td>売場が細くなりすぎ</td></tr>
+</table></div>
+<div class="flag info">
+  <h4>変えないところ</h4>
+  <p><b>階段の2マス×4マスは絶対に変えません。</b>ここを変えると段数の計算が
+  やり直しになります。西の列を2マス幅にして、階段・玄関・便所・倉庫を
+  縦に積むのも型のままです。</p>
+</div>
+
+<h3>解答例　1階平面図 兼 配置図</h3>
+<figure><div class="sheet">{{SVG:ansC_1f}}</div>
+<figcaption>売場は奥行き方向に長い。西の列に住宅玄関・階段・便所・倉庫を積む。</figcaption></figure>
+<h3>解答例　2階平面図</h3>
+<figure><div class="sheet">{{SVG:ansC_2f}}</div>
+<figcaption>居間も奥行き方向に長い。水まわりは西の列にそろえる。</figcaption></figure>
+<h3>解答例　3階平面図</h3>
+<figure><div class="sheet">{{SVG:ansC_3f}}</div>
+<figcaption>細長いので廊下は南北に1本。子供室2室は東西に並べて同じ広さにする。</figcaption></figure>
+
+<h3>解答例　面積表</h3>
+<div class="tw"><table>
+<tr><th>階</th><th class="wrap">室名</th><th class="n">マス</th><th class="n">㎡</th></tr>
+<tr><td rowspan="7">1</td><td class="wrap">店舗売場</td><td class="n">35</td><td class="n">28.98</td></tr>
+<tr><td class="wrap">厨房・作業場</td><td class="n">12</td><td class="n">9.94</td></tr>
+<tr><td class="wrap">階段</td><td class="n">8</td><td class="n">6.62</td></tr>
+<tr><td class="wrap">スタッフルーム</td><td class="n">8</td><td class="n">6.62</td></tr>
+<tr><td class="wrap">倉庫</td><td class="n">6</td><td class="n">4.97</td></tr>
+<tr><td class="wrap">住宅玄関</td><td class="n">4</td><td class="n">3.31</td></tr>
+<tr><td class="wrap">店舗用便所</td><td class="n">4</td><td class="n">3.31</td></tr>
+<tr class="sum"><td colspan="2">1階 合計</td><td class="n">77</td><td class="n">63.76</td></tr>
+<tr><td rowspan="7">2</td><td class="wrap">居間・食事室・台所</td><td class="n">35</td><td class="n">28.98</td></tr>
+<tr><td class="wrap">和室6帖</td><td class="n">12</td><td class="n">9.94</td></tr>
+<tr><td class="wrap">階段</td><td class="n">8</td><td class="n">6.62</td></tr>
+<tr><td class="wrap">家事室・納戸</td><td class="n">8</td><td class="n">6.62</td></tr>
+<tr><td class="wrap">浴室</td><td class="n">6</td><td class="n">4.97</td></tr>
+<tr><td class="wrap">便所</td><td class="n">4</td><td class="n">3.31</td></tr>
+<tr><td class="wrap">洗面脱衣室</td><td class="n">4</td><td class="n">3.31</td></tr>
+<tr class="sum"><td colspan="2">2階 合計</td><td class="n">77</td><td class="n">63.76</td></tr>
+<tr><td rowspan="7">3</td><td class="wrap">夫婦寝室</td><td class="n">25</td><td class="n">20.70</td></tr>
+<tr><td class="wrap">子供室A</td><td class="n">12</td><td class="n">9.94</td></tr>
+<tr><td class="wrap">子供室B</td><td class="n">12</td><td class="n">9.94</td></tr>
+<tr><td class="wrap">納戸</td><td class="n">10</td><td class="n">8.28</td></tr>
+<tr><td class="wrap">階段</td><td class="n">8</td><td class="n">6.62</td></tr>
+<tr><td class="wrap">廊下</td><td class="n">6</td><td class="n">4.97</td></tr>
+<tr><td class="wrap">便所</td><td class="n">4</td><td class="n">3.31</td></tr>
+<tr class="sum"><td colspan="2">3階 合計</td><td class="n">77</td><td class="n">63.76</td></tr>
+<tr class="sum"><td colspan="2">延べ面積</td><td class="n">231</td><td class="n">191.29</td></tr>
+</table></div>
+<div class="tw"><table>
+<tr><th class="wrap">確かめること</th><th class="wrap">計算</th><th>判定</th></tr>
+<tr><td class="wrap">延べ面積 180〜200㎡</td><td class="wrap">191.29㎡</td><td>○</td></tr>
+<tr><td class="wrap">境界線から500mm以上</td><td class="wrap">東西1,315 ／ 北9,990</td><td>○</td></tr>
+<tr><td class="wrap">建蔽率</td><td class="wrap">63.76 ÷ 180 ＝ 35.4%（限度80%）</td><td>○</td></tr>
+<tr><td class="wrap">容積率の限度</td><td class="wrap">6 × 6/10 ＝ 360% と 300% → 300%</td><td>—</td></tr>
+<tr><td class="wrap">容積率</td><td class="wrap">191.29 ÷ 180 ＝ 106.3%</td><td>○</td></tr>
+<tr><td class="wrap">売場 25㎡以上</td><td class="wrap">28.98㎡</td><td>○</td></tr>
+</table></div>
+<div class="flag fix">
+  <h4>Cだけ通りが1本増えます</h4>
+  <p>奥行きが11マス（10,010mm）になるので、東西の通りを
+  <b>1・2・3・4・5 の5本</b>にします（0／2／6／9／11マスの位置）。
+  こうしないと梁が3,640mmを超えてしまいます。柱は各階20本になります。</p>
+</div>
+
+<h3>解答例　計画の要点等</h3>
+<div class="qa"><p class="q">(1) 間口が狭い敷地に対して、平面計画で工夫した点</p>
+<p class="a">間口9,000mmに対し建物の間口を6,370mm（910mm×7マス）とし、
+東西の隣地境界線から外壁面まで1,315mmずつを確保した。
+不足する床面積は奥行き方向で確保することとし、奥行を10,010mm（11マス）とした。
+910mmのモジュールは崩さず、マスの数だけを組みかえている。
+これにより階段の2マス×4マスや西側の水まわりの配置は変えずに済んでいる。</p></div>
+
+<div class="qa"><p class="q">(2) 奥行きの深い売場の採光・通風</p>
+<p class="a">売場は間口4,550mm・奥行6,370mmと奥に深くなるため、
+南面の道路側に幅2,730mmの出入口と開口部を設けたうえで、
+東面にも高さのある窓を連続して設け、奥まで光が届くようにした。
+北面には勝手口を設け、南面の開口部との間で南北に風が抜ける経路を確保している。
+天井高を2,700mmとし、高い位置に窓を設けることで奥への採光を助けている。</p></div>
+
+<div class="qa"><p class="q">(3) 木造3階建てとするにあたり、構造上工夫した点</p>
+<p class="a">間口方向のスパンは1,820／2,730／1,820、奥行方向は
+1,820／3,640／2,730／1,820に区切り、いずれも3,640mm以下に抑えた。
+奥行が長くなるため東西方向の通りを5本とし、柱を各階同じ位置に20本配置して
+直下率を高めている。四隅は120mm角の通し柱、その他は105mm角の管柱とした。
+床は構造用合板t=24を梁に直接張った剛床とし、水平力を耐力壁へ伝えている。</p></div>
+
+<div class="qa"><p class="q">(4) 準防火地域における防火上の措置</p>
+<p class="a">延べ面積191.29㎡・地上3階の木造であるため、45分準耐火建築物とした。
+外壁は屋内側から強化石膏ボードt=15、柱105（グラスウール16K t=100充填）、
+構造用合板t=9、透湿防水シート、通気胴縁t=18、窯業系サイディングt=16の構成とし、
+軒裏はケイ酸カルシウム板とした。3階に居室があるため階段室を竪穴区画とし、
+開口部には防火設備を設けている。東西の隣地境界線に近いため、
+延焼のおそれのある部分の開口部はすべて防火設備とした。</p></div>
+
+<div class="qa"><p class="q">(5) 階段の寸法をどのように決めたか</p>
+<p class="a">1階から2階は階高3,100mmを15段割りとして蹴上206.7mm、
+2階から3階は階高2,900mmを14段割りとして蹴上207.1mm、
+踏面はいずれも210mmとした。幅は有効750mm以上を確保している。
+住宅の基準（蹴上230mm以下・踏面150mm以上）と店舗の基準
+（蹴上220mm以下・踏面210mm以上）の双方を満たしている。</p></div>
+
+<div class="qa"><p class="q">(6) 隣地との関係について配慮した点</p>
+<p class="a">東西の隣地境界線から外壁面まで1,315mmを確保した。
+隣家が近接する東西面については、居室の開口部は腰高窓とし、
+浴室・便所などの水まわりは高窓および型板ガラスとしてプライバシーに配慮している。
+また東西面は延焼のおそれのある部分に含まれるため、開口部には防火設備を設け、
+外壁は防火構造以上としている。</p></div>
 
 <h2><span class="kicker">想定外が来たら</span>型の崩し方 早見表</h2>
 <div class="tw"><table>

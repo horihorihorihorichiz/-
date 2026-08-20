@@ -41,7 +41,7 @@ def main():
         html = f.read()
     html = re.sub(r'\{\{PART:(\w+)\}\}',
                   lambda m: inline_part(m.group(1)), html)
-    html = re.sub(r'\{\{SVG:([a-z0-9_]+)\}\}',
+    html = re.sub(r'\{\{SVG:(\w+)\}\}',
                   lambda m: inline_svg(m.group(1)), html)
     html = html.replace('{{CARDS}}', cards_literal())
     assert '{{' not in html, '未置換のプレースホルダが残っています'
