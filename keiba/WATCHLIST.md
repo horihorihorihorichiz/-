@@ -129,4 +129,8 @@
 - 根拠: 49名ポートフォリオ分析で唯一3期プラス（ワイド MINE101.2/VAL131.8/CONF140.3）。
   ただしn=49/32で基準未達・多重比較696案の生き残り。**偶然の可能性が高い前提で前向き検証**。
 - 判定: 前向きn>=80で ROI>=100% なら昇格検討、<100%なら棄却。実弾禁止。
-- 記録先: v99w_live.jsonl のB-sd16レーン＋watch_log.py（発火レースのみ手動追記でも可）
+- 記録先（2026-08-20コード化・モデル非依存）: **w12_watch.py**（台帳=w12_log.jsonl）。
+  `python3 w12_watch.py run <race_id> --post HH:MM` → `settle` → `stats`。
+  発火条件・凍結閾値は exclusion.py（EXCLUSION_REPORT の凍結値）＋w12_watch.py にコード化済み。
+  selfcheck.py が既知4レースの発火/非発火指紋を毎セッション検査する。
+  stats は n<80 のあいだROIに関わらず「検証中」しか出さない（早期昇格の禁止）。

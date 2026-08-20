@@ -13,6 +13,7 @@
      6. JST時刻      : 実行時刻の取得(時間軸ズレ事故の防止)
      7. JRA公式オッズ: jra_odds.py が sp.jra.jp に到達し単複を取れるか(非開催日はスキップ)
      8. watch台帳    : watch_log.py のW10/W11判定ロジックと台帳の健全性
+     8a. W12発火     : w12_watch.py のダ短×選別発火ロジック(既知4レース指紋)と台帳
      9. 通知ギャップ : notify.py の欠落検出・実行基盤停止(ギャップ)検出が動くか
 
    usage: python3 selfcheck.py        # 全部
@@ -301,6 +302,18 @@ def watch_log_health():
 
 check("watch台帳(W10/W11)", watch_log_health,
       fix="python3 watch_log.py probe で詳細。台帳が壊れていたら watch_log.jsonl の該当行を確認")
+
+
+# 8a. W12発火(2026-08-20新設・w12_watch.py: ダ短×選別×B-sd16上位2頭の紙上フォワード) ----
+#     既知4レースの発火/非発火指紋(該当/非該当×選別通過/不通過)と凍結値・台帳健全性を
+#     完全オフラインで検査。発火条件の出所=WATCHLIST.md W12 / EXCLUSION_REPORT_20260818.md。
+def w12_health():
+    import w12_watch
+    return w12_watch.probe()
+
+
+check("W12発火(w12_watch)", w12_health,
+      fix="python3 w12_watch.py probe で詳細。台帳が壊れていたら w12_log.jsonl の該当行を確認")
 
 
 # 8b. オッズ時系列の収集器(2026-08-18新設・odds_timeline.py) -------------------

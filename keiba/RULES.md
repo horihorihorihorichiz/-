@@ -22,6 +22,8 @@ python3 fetch_race.py <race_id> --run --budget 10000   # 単レース予想(本�
 python3 v99w_rank.py run <race_id>   # 4レーン紙上並走(現行/腕A/B-sd/B-sd16)。発走3分前に--postで凍結
 python3 v99w_rank.py settle <race_id> && python3 v99w_rank.py stats   # 確定後精算→比較表
 python3 odds_timeline.py watch       # 開催日6:30起動(オッズ時系列の自作収集)
+python3 w12_watch.py run <race_id>   # W12発火判定(ダ1400以下×選別)。発火時ゼロ掛け金記帳
+python3 w12_watch.py settle <race_id> && python3 w12_watch.py stats   # 確定精算→n/80進捗
 ```
 - 学習配点の実体: v99w_result.pkl / v99w2_result.pkl（欠落時は selfcheck の fix コマンドで再生成。
   再生成後も指紋一致が必須＝配点が変わっていないことの証明）。

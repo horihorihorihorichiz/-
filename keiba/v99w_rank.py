@@ -9,8 +9,10 @@
    記帳・精算・集計する。8/22からの凍結ルールブック実測と並走させる。
 
    usage:
-     python3 v99w_rank.py run <race_json|race_id> [...] [--allow-past] [--no-record] [--post HH:MM]
+     python3 v99w_rank.py run <race_json|race_id> [...] [--allow-past] [--no-record]
+                              [--post HH:MM] [--no-odds]
          # 対比表を表示し v99w_live.jsonl に記帳（発走前のみ。過去日付/結果ありは既定ブロック）
+         # 対比表の下に選別判定（exclusion.py: 予想可能(A∧B)/例外）を1行表示・記帳（--no-oddsで省略）
      python3 v99w_rank.py settle    # 結果確定済みレースの着順を取り込む（捏造禁止・確定後のみ）
      python3 v99w_rank.py stats     # 現行 vs 腕A vs B-sd vs B-sd16 の複勝的中率（1位が3着内）
 
@@ -135,24 +137,50 @@ def sd_key(race):
 
 
 # ───────── 入出力 ─────────
+def find_race_path(arg):
+    """race_jsonパス か race_id → 実ファイルパス（race_{id}.json → hist/{id}.json の順）。"""
+    if os.path.exists(arg):
+        return arg
+    for cand in (os.path.join(_DIR, f"race_{arg}.json"),
+                 os.path.join(_DIR, "hist", f"{arg}.json")):
+        if os.path.exists(cand):
+            return cand
+    raise FileNotFoundError(f"race_json が見つからない: {arg}")
+
+
 def load_race(arg):
     """race_jsonパス か race_id を受け、(race, date_str|None, has_result) を返す。
        hist形式 {"race":…,"result":…,"date":…} と fetch_race形式（素のrace）の両対応。"""
-    path = None
-    if os.path.exists(arg):
-        path = arg
-    else:
-        for cand in (os.path.join(_DIR, f"race_{arg}.json"),
-                     os.path.join(_DIR, "hist", f"{arg}.json")):
-            if os.path.exists(cand):
-                path = cand
-                break
-    if not path:
-        raise FileNotFoundError(f"race_json が見つからない: {arg}")
-    d = json.load(open(path, encoding="utf-8"))
+    d = json.load(open(find_race_path(arg), encoding="utf-8"))
     if "race" in d and "horses" not in d:     # hist ラッパ
         return d["race"], (str(d["date"]) if d.get("date") else None), bool(d.get("result"))
     return d, None, False
+
+
+def get_tan(rid, arg, has_result, tminus):
+    """判定時点の単勝オッズ辞書 {馬番int: オッズ} と出所。
+       過去（結果あり）= hist の確定単勝（最終オッズ・ネット不要。検証用の代理値）。
+       ライブ = predict.fetch_jra（発走30分前以内は fresh=True で JRA公式。
+       watch_log.cmd_run と同じ流儀。netkeiba無料オッズは40-50分遅れ＝RULES §7）。"""
+    if has_result:
+        try:
+            d = json.load(open(find_race_path(arg), encoding="utf-8"))
+            order = (d.get("result") or {}).get("order") or []
+            tan = {int(o["num"]): float(o["odds"]) for o in order if o.get("odds")}
+            if tan:
+                return tan, "hist_final"
+        except Exception:
+            pass
+    try:
+        import predict as PR
+        fresh = tminus is not None and 0 < tminus <= 30
+        od = PR.fetch_jra(rid, fresh=fresh)
+        tan = {int(k): float(v) for k, v in (od.get("tan") or {}).items() if v}
+        if tan:
+            return tan, od.get("tan_source")
+    except Exception:
+        pass
+    return {}, None
 
 
 def load_log():
@@ -220,6 +248,21 @@ def cmd_run(args):
         if nz0:
             print(f"  （corner特徴が全欠測の馬 {nz0}/{len(rows)}頭 → z=0扱い）",
                   file=sys.stderr)
+        judged_tminus = None
+        if args.post:
+            try:
+                ph, pm = (int(x) for x in args.post.split(":"))
+                judged_tminus = (ph * 60 + pm) - (now.hour * 60 + now.minute)
+            except Exception:
+                pass
+        # 選別ライブ判定（exclusion.py・EXCLUSION_REPORT_20260818の凍結値。A∧B=予想可能）
+        excl = None
+        if not args.no_odds:
+            import exclusion
+            tan, osrc = get_tan(rid, arg, has_result, judged_tminus)
+            excl = exclusion.judge(tan, s16)
+            excl["odds_src"] = osrc
+            print("  " + exclusion.line(excl))
         if args.no_record:
             continue
         prev = byrid.get(rid)
@@ -232,13 +275,6 @@ def cmd_run(args):
             print(f"  {rid}: 過去日付/結果ありのため記帳しない（後知恵防止）。"
                   f"検証目的の追記は --allow-past", file=sys.stderr)
             continue
-        judged_tminus = None
-        if args.post:
-            try:
-                ph, pm = (int(x) for x in args.post.split(":"))
-                judged_tminus = (ph * 60 + pm) - (now.hour * 60 + now.minute)
-            except Exception:
-                pass
         # 発走3分前で凍結（paper_rank踏襲）。発走後の再記帳は入力が汚れるためブロック
         if judged_tminus is not None and judged_tminus <= 3 and not args.allow_past:
             print(f"  {rid}: 発走{judged_tminus:+d}分＝凍結時刻を過ぎたため記帳しない", file=sys.stderr)
@@ -251,7 +287,7 @@ def cmd_run(args):
                                bsd16=set(bsd16[:3]) != set(cur[:3])),
                      bsd_group="known" if wb is not None else "fallback_wg",
                      bsd16_group="known" if grp16 else "fallback_wg16",
-                     corner_zero=nz0,
+                     corner_zero=nz0, excl=excl,
                      recorded=now.strftime("%m%d %H:%M"),
                      judged_tminus=judged_tminus,
                      past=bool(past), settled=False)
@@ -357,6 +393,8 @@ def main():
                     help="過去日付/結果ありでも記帳（後知恵記録になるため通常は使わない）")
     p1.add_argument("--no-record", action="store_true", help="表示のみ・記帳しない")
     p1.add_argument("--post", default=None, help="発走時刻 HH:MM（3分前で記帳凍結）")
+    p1.add_argument("--no-odds", action="store_true",
+                    help="オッズ取得と選別判定(exclusion.py)を省略する")
     sub.add_parser("settle", help="確定結果の取り込み")
     sub.add_parser("stats", help="現行 vs 腕A vs B-sd vs B-sd16 の複勝的中率")
     a = ap.parse_args()
