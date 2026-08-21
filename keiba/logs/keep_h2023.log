@@ -1,3 +1,20 @@
 [keep_alive:h2023] 08/21 23:35 起動 #1 (proxy=http://127.0.0.1:33231)
 curl: (7) Failed to connect to 127.0.0.1 port 33231 after 0 ms: Couldn't connect to server
 [keep_alive:h2023] 08/22 01:10 起動 #1 (proxy=http://127.0.0.1:40445)
+  202310020311 FAIL: HTTP Error 400: Bad Request
+[20230218] +4R (累計4R)
+  202305010803 FAIL: HTTP Error 400: Bad Request
+  202305010806 FAIL: HTTP Error 400: Bad Request
+  202305010808 FAIL: HTTP Error 400: Bad Request
+  202305010810 FAIL: HTTP Error 400: Bad Request
+  202309010401 FAIL: HTTP Error 400: Bad Request
+  202309010402 FAIL: HTTP Error 400: Bad Request
+  202309010403 FAIL: HTTP Error 400: Bad Request
+  202309010405 FAIL: HTTP Error 400: Bad Request
+  202309010407 FAIL: HTTP Error 400: Bad Request
+  202309010410 FAIL: HTTP Error 400: Bad Request
+  202309010411 FAIL: HTTP Error 400: Bad Request
+  202310020405 FAIL: HTTP Error 400: Bad Request
+  202310020406 FAIL: HTTP Error 400: Bad Request
+  202310020412 FAIL: HTTP Error 400: Bad Request
+[20230219] +21R (累計25R)
