@@ -18,3 +18,26 @@ curl: (7) Failed to connect to 127.0.0.1 port 33231 after 0 ms: Couldn't connect
   202310020406 FAIL: HTTP Error 400: Bad Request
   202310020412 FAIL: HTTP Error 400: Bad Request
 [20230219] +21R (累計25R)
+  202306020103 FAIL: HTTP Error 400: Bad Request
+  202306020104 FAIL: HTTP Error 400: Bad Request
+curl: (28) Connection timed out after 25002 milliseconds
+  202306020112 FAIL: HTTP Error 400: Bad Request
+  202309010504 FAIL: HTTP Error 400: Bad Request
+  202309010505 FAIL: HTTP Error 400: Bad Request
+  202309010510 FAIL: HTTP Error 400: Bad Request
+  202310020502 FAIL: HTTP Error 400: Bad Request
+  202310020505 FAIL: HTTP Error 400: Bad Request
+  202310020506 FAIL: HTTP Error 400: Bad Request
+  202310020507 FAIL: HTTP Error 400: Bad Request
+[20230225] +25R (累計50R)
+  202306020201 FAIL: HTTP Error 400: Bad Request
+  202306020202 FAIL: HTTP Error 400: Bad Request
+  202306020203 FAIL: HTTP Error 400: Bad Request
+  202306020206 FAIL: HTTP Error 400: Bad Request
+  202306020211 FAIL: HTTP Error 400: Bad Request
+  202309010608 FAIL: HTTP Error 400: Bad Request
+  202309010609 FAIL: HTTP Error 400: Bad Request
+  202309010610 FAIL: HTTP Error 400: Bad Request
+  202309010611 FAIL: HTTP Error 400: Bad Request
+  202309010612 FAIL: HTTP Error 400: Bad Request
+  202310020603 FAIL: HTTP Error 400: Bad Request
