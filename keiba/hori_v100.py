@@ -116,7 +116,7 @@ def main():
     # 縮小の強さを振る。強すぎると条件別が全体1本に潰れるので、
     # 条件別配点に公平な機会を与えてから判定する。
     rs = np.random.RandomState(17)
-    L2S = [float(x) for x in (os.environ.get("L2S") or "0.2,1.0,8.0").split(",")]
+    L2S = [float(x) for x in (os.environ.get("L2S") or "8.0,1.0,0.2").split(",")]
     L2 = L2S[-1]
     models = {"①素のVer.99.27": lambda r: raw, "②全体1本(学習)": lambda r: w_all}
     w_vg = w_sd = None
@@ -164,6 +164,23 @@ def main():
             row += f"{w[j]/t*30:>9.0f}"
         print(row)
     print("\n※ 値は「TSIを30点としたときの相対点」。マイナスは減点方向に効く成分。")
+
+    print("\n" + "=" * 96)
+    print(f"同上 — 現行6群（芝ダ×距離帯）ごと  λ={L2:g}")
+    print("=" * 96)
+    cells6 = sorted(w_sd.keys())
+    cnt6 = collections.Counter(sd_cell(r) for r in MINE)
+    print(f"{'成分':<24}{'Ver.99.27':>10}" + "".join(f"{c:>9}" for c in cells6))
+    print(f"{'（MINE R数）':<24}{'':>10}" + "".join(f"{cnt6[c]:>9}" for c in cells6))
+    print("-" * (34 + 9 * len(cells6)))
+    for j, nm in enumerate(NAMES16[:K]):
+        base = BASE_PT.get(nm)
+        row = f"{JP.get(nm,nm):<24}{(str(base)+'点' if base else '—'):>10}"
+        for c in cells6:
+            wv = w_sd[c]
+            t = wv[0] if abs(wv[0]) > 1e-9 else 1.0
+            row += f"{wv[j]/t*30:>9.0f}"
+        print(row)
 
     pickle.dump({"w_all": w_all, "w_vg": w_vg, "w_sd": w_sd, "cells": cells,
                  "names": NAMES16[:K], "l2": L2},
