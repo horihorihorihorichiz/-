@@ -1,3 +1,16 @@
 [keep_alive:h2023b] 08/21 23:35 起動 #1 (proxy=http://127.0.0.1:33231)
   202306040207 FAIL: HTTP Error 400: Bad Request
   202306040211 FAIL: HTTP Error 400: Bad Request
+  202309040203 FAIL: HTTP Error 400: Bad Request
+[20230910] +3R (累計3R)
+  202306040306 FAIL: HTTP Error 400: Bad Request
+  202306040309 FAIL: HTTP Error 400: Bad Request
+  202306040312 FAIL: HTTP Error 400: Bad Request
+  202309040305 FAIL: HTTP Error 400: Bad Request
+  202309040306 FAIL: HTTP Error 400: Bad Request
+  202309040308 FAIL: HTTP Error 400: Bad Request
+  202309040310 FAIL: HTTP Error 400: Bad Request
+  202309040312 FAIL: HTTP Error 400: Bad Request
+[20230916] +8R (累計11R)
+  202306040404 FAIL: HTTP Error 400: Bad Request
+[keep_alive:h2023b] 08/22 01:13 起動 #1 (proxy=http://127.0.0.1:40445)
