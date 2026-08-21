@@ -1,0 +1,11 @@
+条件: ['ダL', 'ダM', 'ダS', '芝L', '芝M', '芝S']
+  ダL t5: MINE 27.5% (素21.2%) → VAL 32.2% CONF 22.6%
+  ダL win: MINE 27.2% (素21.5%) → VAL 28.0% CONF 23.8%
+  ダL ax: MINE 30.4% (素21.9%) → VAL 28.4% CONF 22.6%
+  ダM t5: MINE 25.5% (素16.2%) → VAL 24.1% CONF 31.1%
+  ダM win: MINE 26.6% (素21.4%) → VAL 13.0% CONF 20.5%
+  ダM ax: MINE 24.8% (素18.0%) → VAL 18.5% CONF 24.6%
+  ダS t5: MINE 23.3% (素16.4%) → VAL 23.4% CONF 32.7%
+  ダS win: MINE 26.3% (素20.7%) → VAL 20.4% CONF 25.7%
+  ダS ax: MINE 24.6% (素16.0%) → VAL 25.9% CONF 37.2%
+  芝L t5: MINE 29.5% (素23.3%) → VAL 26.7% CONF 27.8%
