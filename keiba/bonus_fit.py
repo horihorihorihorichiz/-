@@ -298,7 +298,7 @@ def main():
         rec["gain_null"] = vn - base
         out["modes"][mode] = rec
         for nm in ("MINE", "VALIDATE", "CONFIRM"):
-            e = rec[nm]; be = out["baseline"][nm][mode]
+            e = rec[nm][mode]; be = out["baseline"][nm][mode]
             print(f"  {nm:9s} 的中 {be['hit']:5.1f}%→{e['hit']:5.1f}%  "
                   f"ROI {be['roi']:6.1f}%→{e['roi']:6.1f}%  "
                   f"平均払戻 {be['avgpay']:7.0f}→{e['avgpay']:7.0f}円", file=sys.stderr)

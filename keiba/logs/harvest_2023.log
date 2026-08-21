@@ -455,3 +455,4 @@ usage: harvest_year.py [-h] [--start START] [--end END]
                        [--commit-every COMMIT_EVERY] [--force] [--no-refit]
 harvest_year.py: error: unrecognized arguments: 2023
 [20230105] +24R (累計24R)
+[20230109] +24R (累計48R)
