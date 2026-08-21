@@ -14,6 +14,13 @@
      スコア = Z16 @ wF（sd群に関係なく1本。B-sd16と同じZ16を再利用）。実弾禁止・記録のみ。
      本丸は「絞り内（excl.sel=予想可能）の複勝1点ROI」→ stats が出す（n<80は検証中表記）。
 
+   第6レーン v100（2026-08-21追加・堀川システムVer.100の配点）:
+     hori_v100_w.json の w6（Ver.99.27の11成分+展開乗数+通過順4成分の16本を
+     Plackett-Luceで学習。芝ダ×距離帯6群・全体1本へL2縮小λ=0.2。MINE 6452Rのみで学習）。
+     スコア = Z16 @ w6[(芝ダ,距離帯)]（B-sd16と同じZ16を再利用。行列積1回だけの追加）。
+     素のVer.99.27に対し 1位勝率 19.2→22.2% / 3着内 47.2→53.4%、未知2期間とも同幅で上昇
+     （HORIKAWA_V100.md）。B-sd16との違いは学習の縮小の強さと検証の作法のみ。実弾禁止・記録のみ。
+
    usage:
      python3 v99w_rank.py run <race_json|race_id> [...] [--allow-past] [--no-record]
                               [--post HH:MM] [--no-odds]
@@ -44,6 +51,7 @@ SEL2 = os.path.join(_DIR, "v99w2_sel.json")
 CORNER_DS = os.path.join(_DIR, "corner_ds.npz")
 COMPS_PKL = os.path.join(_DIR, "comps_v99.pkl")
 FLT_JSON = os.path.join(_DIR, "filtered_w16.json")   # 絞り専用配点wF（git管理・凍結）
+V100_JSON = os.path.join(_DIR, "hori_v100_w.json")   # 堀川システムVer.100配点（git管理・凍結）
 FLT_N_JUDGE = 80   # 絞り内ROIはこの精算数までw12_watchと同じく「検証中」表記のみ
 
 # v99w_fit.py の COMPS と同一順（末尾 kankai=(乗数-1)×100）
@@ -111,6 +119,25 @@ def load_flt():
         raise RuntimeError(f"filtered_w16.json の次元異常: {len(wF)} (16のはず)")
     sha12 = hashlib.sha256(json.dumps(d["w"]).encode()).hexdigest()[:12]
     return wF, sha12
+
+
+def load_v100():
+    """hori_v100_w.json から堀川システムVer.100の配点を読む。
+       返り値: (w6={(芝ダ,距離帯):w16}, wg16, sha12)。
+       Ver.99.27の11成分+展開乗数+通過順4成分の16本をPlackett-Luceで学習(MINE 6452Rのみ)。
+       芝ダ×距離帯6群・全体1本へL2縮小λ=0.2。HORIKAWA_V100.md / hori_v100.py が出典。
+       B-sd16と同じZ16をそのまま使えるので、ライブ経路の追加計算は行列積1回だけ。"""
+    import hashlib
+    d = json.load(open(V100_JSON, encoding="utf-8"))
+    w6 = {}
+    for k, v in d["w"].items():
+        v = np.asarray(v, dtype=float)
+        if len(v) != 16:
+            raise RuntimeError(f"hori_v100_w.json の次元異常: {k}={len(v)} (16のはず)")
+        w6[(k[0], k[1:])] = v                 # "芝S" → ("芝","S")
+    wg = np.asarray(d["wg"], dtype=float)
+    sha12 = hashlib.sha256(json.dumps(d["w"], sort_keys=True).encode()).hexdigest()[:12]
+    return w6, wg, sha12
 
 
 # ───────── スコア計算 ─────────
@@ -235,26 +262,27 @@ def save_log(rows):
 
 
 # ───────── run ─────────
-def show_table(race, rid, rows, cur, armA, bsd, bsd16, flt, sA, sB, s16, sF):
+def show_table(race, rid, rows, cur, armA, bsd, bsd16, flt, v100, sA, sB, s16, sF, s100):
     rk = {arm: {n: i + 1 for i, n in enumerate(o)}
           for arm, o in (("cur", cur), ("A", armA), ("B", bsd),
-                         ("B16", bsd16), ("F", flt))}
+                         ("B16", bsd16), ("F", flt), ("V", v100))}
     print(f"── V99W並走 {rid} {race.get('venue','')} "
           f"{race.get('surface','')}{race.get('distance','')} "
           f"帯{sd_key(race)[1]} {race.get('baba','')} tier{race.get('today_tier','')} "
           f"{len(rows)}頭 ──")
-    print("馬番  馬名              現行  腕A  B-sd  B-16  flt   (腕A/B-sd/B-sd16/fltスコア)")
+    print("馬番  馬名              現行  腕A  B-sd  B-16  flt  V100  (腕A/B-sd/B-sd16/flt/V100)")
     for i, r in enumerate(rows):
         n = r["num"]
         print(f" {n:>3}  {r['name']:<8s}\t {rk['cur'][n]:>3} {rk['A'][n]:>4} "
-              f"{rk['B'][n]:>4} {rk['B16'][n]:>5} {rk['F'][n]:>4}    "
-              f"({sA[i]:+.3f}/{sB[i]:+.3f}/{s16[i]:+.3f}/{sF[i]:+.3f})")
+              f"{rk['B'][n]:>4} {rk['B16'][n]:>5} {rk['F'][n]:>4} {rk['V'][n]:>5}   "
+              f"({sA[i]:+.3f}/{sB[i]:+.3f}/{s16[i]:+.3f}/{sF[i]:+.3f}/{s100[i]:+.3f})")
     marks = []
-    for label, o in (("腕A", armA), ("B-sd", bsd), ("B-sd16", bsd16), ("flt", flt)):
+    for label, o in (("腕A", armA), ("B-sd", bsd), ("B-sd16", bsd16), ("flt", flt),
+                     ("V100", v100)):
         if set(o[:3]) != set(cur[:3]):
             marks.append(f"▲{label}入替")
     top = (f"上位3頭: 現行{cur[:3]} 腕A{armA[:3]} B-sd{bsd[:3]} B-sd16{bsd16[:3]} "
-           f"flt{flt[:3]}"
+           f"flt{flt[:3]} V100{v100[:3]}"
            + ("  " + " ".join(marks) if marks else "  （現行と同メンバー）"))
     print(top)
     return marks
@@ -264,6 +292,7 @@ def cmd_run(args):
     wg, wsd = load_model()
     wg16, ws16 = load_model16()
     wF, flt_sha = load_flt()
+    w100, wg100, v100_sha = load_v100()
     now = jst_now()
     today = now.strftime("%Y%m%d")
     logs = load_log()
@@ -298,13 +327,16 @@ def cmd_run(args):
         z16 = z16_for(race, rows, Z, date)      # Z16はB-sd16とfltで共有（1回だけ計算）
         s16, grp16, nz0 = score_bsd16(race, rows, Z, date, wg16, ws16, z16=z16)
         sF = z16[0] @ wF                        # flt: sd群に関係なく wF 1本
+        wv = w100.get(sd_key(race))             # V100: 芝ダ×距離帯6群（無ければ全体1本）
+        s100 = z16[0] @ (wv if wv is not None else wg100)
         cur = [r["num"] for r in rows]
         armA = rank_nums(rows, sA)
         bsd = rank_nums(rows, sB)
         bsd16 = rank_nums(rows, s16)
         flt = rank_nums(rows, sF)
-        marks = show_table(race, rid, rows, cur, armA, bsd, bsd16, flt,
-                           sA, sB, s16, sF)
+        v100 = rank_nums(rows, s100)
+        marks = show_table(race, rid, rows, cur, armA, bsd, bsd16, flt, v100,
+                           sA, sB, s16, sF, s100)
         if nz0:
             print(f"  （corner特徴が全欠測の馬 {nz0}/{len(rows)}頭 → z=0扱い）",
                   file=sys.stderr)
@@ -353,14 +385,16 @@ def cmd_run(args):
         entry = dict(rid=rid, date=date, venue=race.get("venue"),
                      surface=race.get("surface"), dist_cat=sd_key(race)[1],
                      field=len(rows), cur=cur, armA=armA, bsd=bsd, bsd16=bsd16,
-                     flt=flt,
+                     flt=flt, v100=v100,
                      swap=dict(armA=set(armA[:3]) != set(cur[:3]),
                                bsd=set(bsd[:3]) != set(cur[:3]),
                                bsd16=set(bsd16[:3]) != set(cur[:3]),
-                               flt=set(flt[:3]) != set(cur[:3])),
+                               flt=set(flt[:3]) != set(cur[:3]),
+                               v100=set(v100[:3]) != set(cur[:3])),
                      bsd_group="known" if wb is not None else "fallback_wg",
                      bsd16_group="known" if grp16 else "fallback_wg16",
-                     flt_w_sha=flt_sha,
+                     flt_w_sha=flt_sha, v100_w_sha=v100_sha,
+                     v100_group="known" if wv is not None else "fallback_wg",
                      corner_zero=nz0, excl=excl,
                      recorded=now.strftime("%m%d %H:%M"),
                      judged_tminus=judged_tminus,
@@ -414,7 +448,7 @@ def cmd_settle(only=None):
         r["settled_at"] = jst_now().strftime("%m%d %H:%M")
         n += 1
         hits = []
-        for arm in ("cur", "armA", "bsd", "bsd16", "flt"):
+        for arm in ("cur", "armA", "bsd", "bsd16", "flt", "v100"):
             if not r.get(arm):           # 旧レコード（B-sd16/flt追加前）はあるレーンのみ
                 continue
             f1 = fin.get(r[arm][0])
@@ -428,7 +462,7 @@ def cmd_settle(only=None):
 # ───────── stats ─────────
 ARMS = (("cur", "現行WAvg"), ("armA", "腕A(全体1本)"),
         ("bsd", "B-sd(芝ダ×距離帯)"), ("bsd16", "B-sd16(+corner4)"),
-        ("flt", "flt(絞り専用wF)"))
+        ("flt", "flt(絞り専用wF)"), ("v100", "V100(堀川Ver.100配点)"))
 
 
 def _block(rows, label):
@@ -458,7 +492,7 @@ def _block(rows, label):
         print(f"    {name:<16s}: 複勝(1位が3着内) {fuku}/{len(sub)} "
               f"({100.0*fuku/len(sub):.1f}%)   1着 {win} ({100.0*win/len(sub):.1f}%){note}")
     sw = [r for r in rows
-          if any(r["swap"].get(a) for a in ("armA", "bsd", "bsd16", "flt"))]
+          if any(r["swap"].get(a) for a in ("armA", "bsd", "bsd16", "flt", "v100"))]
     print(f"    参考: 上位3頭が現行と入替のレース {len(sw)}/{len(rows)}")
 
 

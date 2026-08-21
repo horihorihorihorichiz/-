@@ -65,7 +65,8 @@ check("依存(numpy/lightgbm)", lambda: __import__("numpy") and __import__("ligh
 REQUIRED = ["model_v3.txt", "model_v5.txt", "params.json", "params_v2.json", "pattern_stats.json",
             "results.jsonl", "RULES.md", "SOP.md",
             "model_v4_s0.txt", "model_v4_s1.txt", "model_v4_s2.txt",
-            "model_v4_s3.txt", "model_v4_s4.txt"]
+            "model_v4_s3.txt", "model_v4_s4.txt",
+            "filtered_w16.json", "hori_v100_w.json"]
 check("必須ファイル", lambda: (
     (lambda miss: (_ for _ in ()).throw(RuntimeError(f"欠落: {miss}")) if miss else f"{len(REQUIRED)}本OK")
     ([f for f in REQUIRED if not os.path.exists(f)])))
@@ -254,20 +255,37 @@ def v99w_lane():
     if flt[:3] != wantF:
         raise RuntimeError(f"V99W指紋不一致 flt={flt[:3]}(want{wantF})。"
                            f"corner_live/z16経路の変更が意図的なら指紋を更新すること")
+    # V100レーン(2026-08-21追加。hori_v100_w.json=堀川システムVer.100配点。凍結)
+    w6, wg100, v100_sha = v99w_rank.load_v100()
+    assert len(w6) == 6, f"V100群数異常: {len(w6)} (芝ダ×S/M/L=6のはず)"
+    assert len(wg100) == 16, f"V100全体1本の次元異常: {len(wg100)}"
+    want_v100_sha = "67ae1a5b91a5"
+    if v100_sha != want_v100_sha:
+        raise RuntimeError(f"hori_v100_w.json の指紋不一致 {v100_sha}(want {want_v100_sha})。"
+                           f"Ver.100の配点は凍結＝書き換え禁止(HORIKAWA_V100.md)。"
+                           f"標本追加などで正当に引き直したなら、レポートと"
+                           f"selfcheckの指紋を同時に更新すること")
+    v100 = v99w_rank.rank_nums(rows, z16[0] @ w6[("芝", "S")])
+    wantV = [5, 15, 8]
+    if v100[:3] != wantV:
+        raise RuntimeError(f"V99W指紋不一致 V100={v100[:3]}(want{wantV})。"
+                           f"corner_live/z16経路の変更が意図的なら指紋を更新すること")
     if os.path.exists("v99w_live.jsonl"):
         for ln in open("v99w_live.jsonl", encoding="utf-8"):
             if ln.strip():
                 rec = json.loads(ln)
                 assert {"rid", "date", "cur", "armA", "bsd"} <= set(rec), \
                     f"v99w_live.jsonl スキーマ異常: {sorted(rec)}"
-    return "モデルOK(腕A12次元/B-sd6群/B-sd16 16次元6群/flt16次元1本)・指紋一致"
+    return ("モデルOK(腕A12次元/B-sd6群/B-sd16 16次元6群/flt16次元1本/"
+            "V100 16次元6群)・指紋一致")
 
 
 check("V99W並走レーン", v99w_lane,
       fix="python3 build_comps_v99.py && python3 v99w_fit.py --stage final && "
           "python3 corner_eval.py build && python3 v99w2_fit.py --stage mine && "
           "python3 v99w2_fit.py --stage final "
-          "(再学習で指紋が正当に変わった場合は selfcheck.py の wantA/wantB/want16 を更新)")
+          "(再学習で指紋が正当に変わった場合は selfcheck.py の "
+          "wantA/wantB/want16/wantF/wantV を更新)")
 
 # 6. JST -----------------------------------------------------------------
 now = datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=9)))

@@ -456,3 +456,4 @@ usage: harvest_year.py [-h] [--start START] [--end END]
 harvest_year.py: error: unrecognized arguments: 2023
 [20230105] +24R (累計24R)
 [20230109] +24R (累計48R)
+curl: (7) Failed to connect to 127.0.0.1 port 33007 after 0 ms: Couldn't connect to server
