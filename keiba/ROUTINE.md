@@ -5,12 +5,23 @@
 > **登録済みのルーチンにも下のプロンプトを貼り直すこと**（貼り直さないと旧手順のまま回る）。
 登録: claude.ai/code/routines → New routine
 - 名前: `競馬・週末デイボード運用`
-- cron: `3 9 * * 6,0`（土日 9:03 JST）
+- cron: `30 21 * * 5,6`（**UTC指定。土日 6:30 JST**）
+  ★2026-08-21変更: 旧 `3 9 * * 6,0`（9:03 JST）では odds_timeline の
+  **T-180/T-90/T-60/T-45 を14R分・27時点/684 取り逃す**（下表）。
+  オッズ時系列は後から作り直せない唯一のデータなので、起動を6:30に前倒しした。
 - リポジトリ: `horihorihorihorichiz/-`（Allowed domainsは旧手順のnetkeiba系と同じ）
 - プロンプト（そのまま貼る）:
 ```
 keiba/RULES.md §0 と keiba/CLAUDE.md の競馬節を読んでから、当日運用を開始:
-0. pip install -q numpy lightgbm && cd keiba && python3 selfcheck.py  # ALL GREEN必須
+0. pip install -q numpy lightgbm && cd keiba
+0a. ★最優先・他より先にやる: オッズ時系列の収集を起こす。後から作り直せない唯一のデータで、
+    最初の採取点が T-180(第1レースの3時間前=約6:40)。1分でも遅れた分は永久に取れない。
+      mkdir -p logs
+      nohup python3 -u odds_timeline.py watch > logs/odds_timeline_$(date +%Y%m%d).log 2>&1 &
+      sleep 30 && tail -n 5 logs/odds_timeline_$(date +%Y%m%d).log
+    「NNレース / 予定NNN時点」が出ることを必ず目視する。`対象レースなし` なら取得障害
+    （45分は自動再試行し、それでも空なら rc=3 で落ちる＝非開催日と区別できる）。上げ直す。
+0b. python3 selfcheck.py  # ALL GREEN必須
 1. python3 day_board.py で今日の全場ボードを生成し、SendUserFileで送付
 2. python3 paper_rank.py run で発火レースを紙上記帳 / python3 watch_log.py run でW10/W11を記録
 3. 以降は終日パトロール: 各買いレース(A近接含む)の発走15分前に
@@ -24,7 +35,13 @@ keiba/RULES.md §0 と keiba/CLAUDE.md の競馬節を読んでから、当日�
    発走3分前は paper_rank.py run で凍結。確定後は paper_rank.py settle→結果をプッシュ報告。
    待ち時間は ScheduleWakeup で「次のレースの発走15分前の4分前」に起床を張り、
    ユーザーと会話したら返信の最後に必ず張り直す。保険として15分間隔のCronCreateも張る。
-4. 全レース終了後: paper_rank.py stats で日次精算(2日累計・150Rライン進捗)を報告し、
+3b. 朝・昼・夕の3回、odds_timeline の生存確認:
+    tail -n 3 logs/odds_timeline_$(date +%Y%m%d).log
+    消えていたら上げ直す(取得済みの時点はスキップされる)。ロックが残って
+    「既に watch が動いている(pid …)」と出たら、そのPIDが本当に watch か確認して違えば --force。
+4. 全レース終了後: odds_timeline.py settle && odds_timeline.py stats で当日の時系列を確定させ、
+   odds_timeline.py compact --keep-days 14 で台帳を畳む。続いて
+   paper_rank.py stats で日次精算(2日累計・150Rライン進捗)を報告し、
    watch_log.py settle && watch_log.py stats でW10/W11の当日分も精算・報告し、
    まとめmdを SendUserFile で送付、commit & push（ブランチ claude/stoic-ride-p35k9n）
 ※環境リセット検出時(ファイル欠損/HEADが古い)は git fetch origin claude/stoic-ride-p35k9n
@@ -212,7 +229,7 @@ python3 selfcheck.py && python3 day_board.py
 # ③ 各レース（発走25分前〜3分前に再実行して confirmed 化・凍結）
 python3 paper_rank.py run
 python3 watch_log.py run --fast
-python3 v99w_rank.py run <race_id> --post <発走HH:MM>     # 5レーン並走
+python3 v99w_rank.py run <race_id> --post <発走HH:MM>     # 6レーン並走(V100追加)
 python3 w12_watch.py run <race_id> --post <発走HH:MM>     # W12前向き検証
 # ④ 終了後（確定後のみ・捏造禁止）
 python3 paper_rank.py settle && python3 paper_rank.py stats
