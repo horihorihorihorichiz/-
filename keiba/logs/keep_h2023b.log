@@ -113,3 +113,8 @@ curl: (28) Connection timed out after 25001 milliseconds
   202308020409 FAIL: HTTP Error 400: Bad Request
   202304040102 FAIL: HTTP Error 400: Bad Request
   202304040105 FAIL: HTTP Error 400: Bad Request
+  202304040107 FAIL: HTTP Error 400: Bad Request
+  202304040108 FAIL: HTTP Error 400: Bad Request
+  202304040109 FAIL: HTTP Error 400: Bad Request
+  202304040110 FAIL: HTTP Error 400: Bad Request
+[20231014] +22R (累計160R)
