@@ -47,23 +47,23 @@ cnt=collections.Counter(k52(r) for r in MINE)
 #   除外されたセルはライブ側で自動的に30分割へフォールバックする(挙動は同じ)。
 by=collections.defaultdict(list)
 for r in MINE: by[k52(r)].append(r)
-final={}
-skipped={}
-for k,sub in by.items():
-    c=w52.get(k)
-    if c is None:
-        skipped[k]=len(sub); continue
-    b=np.mean(np.stack([b30(r) for r in sub]),0)
-    final[k]=0.5*c+0.5*b
+skipped={k:len(sub) for k,sub in by.items() if k not in w52}
 if skipped:
     print("40R未満で除外(30分割へフォールバック):",
           ", ".join(f"{k} {v}R" for k,v in sorted(skipped.items(), key=lambda x:x[1])))
-json.dump({"axis":"venue+surface+dist_cat(52)","mix":0.5,"names":NAMES,
-           "w":{k:[round(float(x),8) for x in v] for k,v in final.items()},
+# ★2026-08-22 監査で確定したバグの修正:
+#   旧実装はクラス層をセル平均で潰した1本の重み"w"を書き出していたが、それは
+#   評価時のモデルと別物で、実測 VAL55.8/CONF55.9(勝者は56.5/57.0)＝上乗せがほぼ消える。
+#   スコアは実行時に2層を合成する: 0.5*w52[場+芝ダ+距離帯] + 0.5*w30[芝ダ+距離帯+クラス]
+#   (w52が無いセルは w30 のみ。w30も無ければ w6 → wg)
+json.dump({"axis":"venue+surface+dist_cat(2層合成)","mix":0.5,"names":NAMES,
+           "combine":"score_w = 0.5*w52[venue+sd] + 0.5*w30[sd+tier]; "
+                     "w52欠落セルはw30のみ; w30欠落はw6; それも無ければwg",
            "wg":[round(float(x),8) for x in w_all],
            "w6":{k:[round(float(x),8) for x in v] for k,v in w6.items()},
            "w30":{k:[round(float(x),8) for x in v] for k,v in w30.items()},
-           "n":{k:int(cnt[k]) for k in final}},
+           "w52":{k:[round(float(x),8) for x in v] for k,v in w52.items()},
+           "n":{k:int(cnt[k]) for k in w52}},
           open("hori52_w.json","w"), ensure_ascii=False, indent=1)
 _t=[w6[g][0]/(np.mean(np.abs(w6[g])) or 1.0) for g in w6]
 SCALE=30.0/(np.mean(_t) or 1.0)
@@ -82,9 +82,12 @@ L=["# 堀川システム 52分割 配点表（2026-08-22 最終構成）","",
    "・新潟/中山/中京/京都/阪神のダM … ダートは1400→1700/1800と飛ぶため1500-1700が無い",
    "加えて40R未満のセル（福島ダL 7R・札幌ダL 8R・函館ダL 8R）は独立した配点を持たず、",
    "30分割（芝ダ×距離帯×クラス）の配点をそのまま使う。",""
+   "★この表は2層のうちの【場の層】(スコアの50%)。もう50%は HORIKAWA_30.md の",
+   "【クラス層】(芝ダ×距離帯×クラス)で、レースごとに 場の層50% + クラス層50% を合成して使う。",
+   "この表単独では勝者モデルにならない(監査で実測: 層を潰すとVAL55.8/CONF55.9に落ちる)。","",
    "各セルのベクトルの大きさで正規化し、6群の平均TSIが30点になる共通係数を掛けた値。","","---",""]
 ven=["札幌","函館","福島","新潟","東京","中山","中京","京都","阪神","小倉"]
-ks=sorted(final,key=lambda k:(ven.index(k[:2]) if k[:2] in ven else 99,k))
+ks=sorted(w52,key=lambda k:(ven.index(k[:2]) if k[:2] in ven else 99,k))
 for v in ven:
     sub=[k for k in ks if k.startswith(v)]
     if not sub: continue
@@ -94,9 +97,9 @@ for v in ven:
     for j,nm in enumerate(NAMES):
         vals=[]
         for k in sub:
-            w=final[k]; sc=np.mean(np.abs(w)) or 1.0
+            w=w52[k]; sc=np.mean(np.abs(w)) or 1.0
             vals.append(f"{w[j]/sc*SCALE:.0f}")
         L.append(f"| {JP[nm]} | {BASE.get(nm,'—')} | "+" | ".join(vals)+" |")
     L.append("")
 open("HORIKAWA_52.md","w").write("\n".join(L))
-print(f"セル数 {len(final)} / wrote HORIKAWA_52.md, hori52_w.json")
+print(f"セル数 {len(w52)} / wrote HORIKAWA_52.md, hori52_w.json")
