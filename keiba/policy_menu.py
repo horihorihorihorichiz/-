@@ -15,8 +15,9 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import v99w_fit as V, v99w2_fit as V2
 from verify_export import scorer_from_artifact
 
-FORMS = ["単勝1位", "複勝1位", "ワイド1-2位", "三連複軸流し4頭(6点)", "三連複軸流し5頭(10点)"]
-COSTS = np.array([100.0, 100.0, 100.0, 600.0, 1000.0])
+FORMS = ["単勝1位", "複勝1位", "ワイド1-2位", "三連複軸流し4頭(6点)", "三連複軸流し5頭(10点)",
+         "三連複5頭BOX(10点)"]
+COSTS = np.array([100.0, 100.0, 100.0, 600.0, 1000.0, 1000.0])
 OB = [0, 1.5, 2.0, 2.6, 3.5, 5.0, 8.0, 10**9]
 
 def obl(o):
@@ -56,9 +57,16 @@ def main():
                     v = tri.get(k)
                     if v: t += float(v)
                 return t
+            def box_ret(hs):
+                t = 0.0
+                for c in itertools.combinations(hs, 3):
+                    k = "-".join(str(x) for x in sorted(c))
+                    v = tri.get(k)
+                    if v: t += float(v)
+                return t
             RET[i] = [g("単勝", str(a)), g("複勝", str(a)),
                       g("ワイド", "-".join(str(x) for x in sorted((a, b)))) if b else 0.0,
-                      trio_ret(od[1:5]), trio_ret(od[1:6])]
+                      trio_ret(od[1:5]), trio_ret(od[1:6]), box_ret(od[:5])]
         return RET
 
     def conds_of(order_list):
