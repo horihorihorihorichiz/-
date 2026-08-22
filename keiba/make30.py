@@ -59,7 +59,12 @@ lines = ["# 堀川システム 30分割 配点表（2026-08-22）",
          "",
          "距離帯: S=1400m以下 / M=1500-1700m / L=1800m以上",
          "tier: 3=重賞・OP / 4=3勝C / 5=2勝C / 6=1勝C / 10=未勝利・新馬",
-         "", "---", "", "## 配点表（TSI=30点を基準にした相対点）", ""]
+         "", "---", "", "## 配点表", "",
+         "各セルのベクトルの大きさで正規化し、6群の平均TSIが30点になる共通係数を掛けた値。",
+         "セル間でも Ver.99.27 とも直接比べられる。マイナスは減点方向に効く成分。", ""]
+# 共通スケール: 6群の重みで「TSIが30点」になる係数を求め、全セルに同じ係数を使う
+_t = [w6[g][0]/ (np.mean(np.abs(w6[g])) or 1.0) for g in w6]
+SCALE = 30.0 / (np.mean(_t) or 1.0)
 ks = sorted(w30, key=lambda k:(k.split('/')[0], int(k.split('t')[1])))
 for grp in ["芝S","芝M","芝L","ダS","ダM","ダL"]:
     sub = [k for k in ks if k.startswith(grp+"/")]
@@ -74,8 +79,12 @@ for grp in ["芝S","芝M","芝L","ダS","ダM","ダL"]:
         row = f"| {JP[nm]} | {BASE.get(nm,'—')} | "
         vals=[]
         for k in sub:
-            w=w30[k]; t=w[0] if abs(w[0])>1e-9 else 1.0
-            vals.append(f"{w[j]/t*30:.0f}")
+            w=w30[k]
+            # ★TSIで割る正規化はTSIの重みが0付近のセル(芝L/t3など)で破綻するため使わない。
+            #   各セルのベクトルの大きさ(平均絶対値)で割り、6群の平均TSI相当が30点になる
+            #   共通係数を掛ける。これでセル間もVer.99.27とも比較できる。
+            sc = np.mean(np.abs(w)) or 1.0
+            vals.append(f"{w[j]/sc*SCALE:.0f}")
         lines.append(row + " | ".join(vals) + " |")
     lines.append("")
 open("HORIKAWA_30.md","w").write("\n".join(lines))
