@@ -45,7 +45,8 @@ def main():
         uk = "-".join(str(x) for x in sorted((a, b)))
         tk = "-".join(str(x) for x in sorted((a, b, c)))
         rets = [g("単勝", str(a)), g("複勝", str(a)), g("ワイド", uk), g("馬連", uk), g("三連複", tk)]
-        o2 = (r.get("odds") or {}).get(str(b))
+        od_ = r.get("odds") or {}
+        o2 = od_.get(b) or od_.get(str(b))
         m = r["month"]
         seg = 0 if m <= "202602" else (1 if m <= "202605" else 2)
         rows.append((g12, g23, g34, rets, seg, float(o2) if o2 else None))
@@ -72,13 +73,13 @@ def main():
         if nn < 50: continue
         line = f"{sh:<5}{nn:>6}"
         for bi in range(len(BETS)):
-            hit = (RET[m, bi] > 0).mean()*100; roi = RET[m, bi].sum()/(100*nn)
+            hit = (RET[m, bi] > 0).mean()*100; roi = RET[m, bi].sum()/nn
             line += f"  {hit:5.1f}%/{roi:6.1f}%  "
         print(line)
     m = np.ones(n, bool)
     line = f"{'全体':<5}{n:>6}"
     for bi in range(len(BETS)):
-        line += f"  {(RET[:,bi]>0).mean()*100:5.1f}%/{RET[:,bi].sum()/(100*n):6.1f}%  "
+        line += f"  {(RET[:,bi]>0).mean()*100:5.1f}%/{RET[:,bi].sum()/n:6.1f}%  "
     print(line)
 
     print("\n═ 期間別（形×最も相性の良い券種の確認）═")
@@ -87,7 +88,7 @@ def main():
         for si, nm in ((0, "MINE"), (1, "VAL"), (2, "CONF")):
             m = (shape == sh) & (seg == si); nn = int(m.sum())
             if nn < 30: line += f"  {nm}:n{nn}小 "; continue
-            line += f"  {nm} {(RET[m,bi]>0).mean()*100:.0f}%/{RET[m,bi].sum()/(100*nn):.0f}% (n{nn})"
+            line += f"  {nm} {(RET[m,bi]>0).mean()*100:.0f}%/{RET[m,bi].sum()/nn:.0f}% (n{nn})"
         print(line)
 
     print("\n═ 連続量: g12帯ごとの1位成績（しきい値に依存しない確認）═")
@@ -96,8 +97,8 @@ def main():
         m = (g12a >= lo) & (g12a < hi); nn = int(m.sum())
         if nn < 100: continue
         print(f"{f'{lo:.2f}-{hi:.2f}':>10}{nn:>6}"
-              f"{(RET[m,1]>0).mean()*100:9.1f}%/{RET[m,1].sum()/(100*nn):6.1f}%"
-              f"{(RET[m,0]>0).mean()*100:9.1f}%/{RET[m,0].sum()/(100*nn):6.1f}%")
+              f"{(RET[m,1]>0).mean()*100:9.1f}%/{RET[m,1].sum()/nn:6.1f}%"
+              f"{(RET[m,0]>0).mean()*100:9.1f}%/{RET[m,0].sum()/nn:6.1f}%")
 
     print("\n═ 連続量: 2強度(g12小×g23帯)ごとのワイド1-2成績 ═")
     print(f"{'g23帯':>10}{'n':>6}{'ワイド1-2 的中/ROI':^22}{'馬連1-2 的中/ROI':^20}")
@@ -106,8 +107,8 @@ def main():
         m = base & (g23a >= lo) & (g23a < hi); nn = int(m.sum())
         if nn < 100: continue
         print(f"{f'{lo:.1f}-{hi:.1f}':>10}{nn:>6}"
-              f"{(RET[m,2]>0).mean()*100:10.1f}%/{RET[m,2].sum()/(100*nn):6.1f}%"
-              f"{(RET[m,3]>0).mean()*100:9.1f}%/{RET[m,3].sum()/(100*nn):6.1f}%")
+              f"{(RET[m,2]>0).mean()*100:10.1f}%/{RET[m,2].sum()/nn:6.1f}%"
+              f"{(RET[m,3]>0).mean()*100:9.1f}%/{RET[m,3].sum()/nn:6.1f}%")
 
     print("\n═ 2強なのに市場が2位を安く見ていない場合（2位オッズ帯で分解・ワイド1-2）═")
     m2 = (shape == "2強") & ~np.isnan(o2a)
@@ -115,7 +116,13 @@ def main():
         m = m2 & (o2a >= lo) & (o2a < hi); nn = int(m.sum())
         if nn < 50: continue
         print(f"  2位オッズ{lo}-{hi}倍: n{nn}  ワイド的中{(RET[m,2]>0).mean()*100:.1f}% "
-              f"ROI {RET[m,2].sum()/(100*nn):.1f}%  馬連ROI {RET[m,3].sum()/(100*nn):.1f}%")
+              f"ROI {RET[m,2].sum()/nn:.1f}%  馬連ROI {RET[m,3].sum()/nn:.1f}%")
+    print("\n═ 要精査: 馬連1-2×(g12<0.3∧g23 0.6-0.9) 期間別 ═")
+    m = base & (g23a >= 0.6) & (g23a < 0.9)
+    for si, nm in ((0, "MINE"), (1, "VAL"), (2, "CONF")):
+        mm = m & (seg == si); nn = int(mm.sum())
+        if nn:
+            print(f"  {nm}: n{nn} 的中{(RET[mm,3]>0).mean()*100:.1f}% ROI {RET[mm,3].sum()/nn:.1f}%")
     json.dump({"note": "shape study raw counts in stdout"}, open("shape_study.json","w"))
 
 
