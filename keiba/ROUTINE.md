@@ -1,6 +1,49 @@
 # 週末ルーチン設定手順（Ver.100=紙上運用が本線／旧・レース選定も残置）
 
-## ★★最新（2026-08-08〜 / 2026-08-17プロンプト更新）: デイボード+15分前プッシュ通知ルーチン（こちらを登録）
+## ★★★最新（2026-08-22 憲章対応版・こちらを登録）: 週末フルオート「ユーザーはLINEの【S/A】を買うだけ」
+
+> ユーザー指示「毎週土日の立ち回り＝君から来た『期待値あるよー』を買うだけにしたい」。
+> FORMAT_FINAL.md（恒久運用憲章）準拠。**登録済みルーチン(trig_01W62FS4等)にこのプロンプトを
+> 貼り替えること**。cron は `30 21 * * 5,6`（UTC＝土日6:30 JST。オッズ収集の取り逃し防止）。
+
+登録: claude.ai/code/routines → 既存ルーチンを編集（またはNew routine）
+- 名前: `競馬・週末フルオート(憲章準拠)`
+- cron: `30 21 * * 5,6`（UTC指定。土日 6:30 JST）
+- リポジトリ: `horihorihorihorichiz/-`（Allowed domains: nar.netkeiba.com / race.netkeiba.com /
+  db.netkeiba.com / api.line.me ＋パッケージマネージャ既定）
+- プロンプト（そのまま貼る）:
+```
+keiba/MEMORY.md → keiba/FORMAT_FINAL.md(恒久運用憲章)を読んでから、開催日フルオート運用を開始。
+ユーザーとの契約: ユーザーは「LINEに届いた【S/A】買い目を買うだけ」。他の判断・操作を求めない。
+0. pip install -q numpy lightgbm && cd keiba && mkdir -p logs
+0a. ★最優先(起動直後・他より先): オッズ時系列の収集を番人経由で起こす(後から作り直せない唯一のデータ):
+      nohup bash keep_alive.sh odds$(date +%m%d) 200 python3 -u odds_timeline.py watch \
+        >> logs/keep_odds$(date +%Y%m%d).log 2>&1 &
+      sleep 30 && tail -5 logs/keep_odds$(date +%Y%m%d).log
+    「NNレース / 予定NNN時点」を必ず目視。出なければ上げ直す(取得済み時点はスキップされ安全)。
+0b. python3 selfcheck.py  # ALL GREENになるまで運用を始めない(❌は表示のfixコマンドを先に)
+0c. python3 line_notify.py --check  # 未設定(コンテナリセット)ならチャットで再設定を依頼し、
+    復旧までは PushNotification+チャットで【S/A】を代替送信する(黙って落とさない)
+1. python3 day_board.py で全場ボード生成 → hori52順位+形判定 → plus_fires.json の active と照合
+2. 発火あり: 即LINE『場R / 券種 / 買い目 / 金額 【S or A】根拠』(S=2万/A=1万)。
+   発走25〜15分前に再判定して confirmed 化。条件が消えたら取消も必ずLINE。
+   発火なし: レースごとの連絡は一切しない(静粛=正常動作)。
+3. 終日の紙上並走(実弾ではない・記録のみ): paper_rank.py run / watch_log.py run /
+   v99w_rank.py run / w12_watch.py run を各レース発走前後で回す。
+   朝昼夕に tail で odds 収集の生存確認。待ち時間は ScheduleWakeup で次レース前に起床を張る。
+4. 全レース確定後: paper_rank/watch_log/v99w_rank/w12_watch の settle&stats →
+   odds_timeline.py settle && stats && compact --keep-days 14 →
+   デイダイジェスト1通をLINE(発火数・紙上結果・オッズ収集の進捗/3,000Rライン) →
+   まとめmdを SendUserFile → MEMORY.md追記(確定/棄却/変更があった時のみ) → commit & push
+   (ブランチ claude/stoic-ride-p35k9n)。
+※環境リセット検出時(ファイル欠損/HEADが古い)は git fetch origin claude/stoic-ride-p35k9n
+  && git merge --ff-only origin/claude/stoic-ride-p35k9n && pip install -q numpy lightgbm で復旧。
+厳守: 購入・投票・GOは人間。認証情報を扱わない・netkeibaにログインしない。結果は確定後のみ記録。
+期待値負の候補を「買い目」として送らない(送るなら[参考・期待値負]ラベルのみ)。
+発火0件の週末が続くのは故障ではなく正常動作(発火表active=0の間、買い物はゼロ)。
+```
+
+## ★★旧（2026-08-08〜 / 2026-08-17プロンプト更新）: デイボード+15分前プッシュ通知ルーチン
 > 8/17更新: 直前判定(confirmed)・watch_log(W10/W11)・notify --heartbeat の3点を追加。
 > **登録済みのルーチンにも下のプロンプトを貼り直すこと**（貼り直さないと旧手順のまま回る）。
 登録: claude.ai/code/routines → New routine
