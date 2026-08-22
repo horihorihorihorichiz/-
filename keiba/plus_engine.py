@@ -37,6 +37,11 @@ def judge(rid, today=None):
     for f in FIRES["active"]:
         pass          # 発火条件が昇格したらここに判定コードを足す(現在active=[])
     out["fires"] = fired
+    # 等級: 独立した発火が2つ以上噛み合えばS(2万)、1つならA(1万)
+    if len(fired) >= 2:
+        out["grade"], out["stake"] = "S", 20000
+    elif len(fired) == 1:
+        out["grade"], out["stake"] = "A", 10000
     if not fired:
         out["verdict"] = "見送り(発火なし)"
         out["note"] = ("現在アクティブな発火条件は0件。期待値プラスの証明を持つ買い方が"
