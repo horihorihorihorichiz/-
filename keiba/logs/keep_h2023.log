@@ -1,6 +1,5 @@
 [keep_alive:h2023] 08/21 23:35 起動 #1 (proxy=http://127.0.0.1:33231)
 curl: (7) Failed to connect to 127.0.0.1 port 33231 after 0 ms: Couldn't connect to server
-<<<<<<< Updated upstream
 [keep_alive:h2023] 08/22 01:10 起動 #1 (proxy=http://127.0.0.1:40445)
   202310020311 FAIL: HTTP Error 400: Bad Request
 [20230218] +4R (累計4R)
@@ -136,5 +135,3 @@ curl: (28) Connection timed out after 25002 milliseconds
 ★収穫完了: 累計13174R
 [keep_alive:h2023] 08/22 06:57 終了 rc=0
 [keep_alive:h2023] 正常終了のため番人も終了
-=======
->>>>>>> Stashed changes

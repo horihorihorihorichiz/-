@@ -1,6 +1,5 @@
 [keep_alive:h2022] 08/21 23:35 起動 #1 (proxy=http://127.0.0.1:33231)
   202206020801 FAIL: HTTP Error 400: Bad Request
-<<<<<<< Updated upstream
 [keep_alive:h2022] 08/22 01:10 起動 #1 (proxy=http://127.0.0.1:40445)
   202206020801 FAIL: HTTP Error 400: Bad Request
   202206020803 FAIL: HTTP Error 400: Bad Request
@@ -171,8 +170,6 @@ curl: (56) CONNECT tunnel failed, response 503
 [20221008] +23R (累計1702R)
 [20221009] +23R (累計1725R)
 [20221010] +23R (累計1748R)
-=======
->>>>>>> Stashed changes
 [keep_alive:h2022] 08/22 09:59 起動 #1 (proxy=http://127.0.0.1:46847)
 Traceback (most recent call last):
   File "/home/user/-/keiba/harvest_year.py", line 144, in <module>
@@ -193,3 +190,624 @@ Traceback (most recent call last):
     raise JSONDecodeError("Expecting value", s, err.value) from None
 json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
 [keep_alive:h2022] 08/22 09:59 終了 rc=1
+[keep_alive:h2022] 08/22 10:00 起動 #2 (proxy=http://127.0.0.1:46847)
+Traceback (most recent call last):
+  File "/home/user/-/keiba/harvest_year.py", line 144, in <module>
+    main()
+  File "/home/user/-/keiba/harvest_year.py", line 97, in main
+    done_dates = set(json.load(open(state_f)).get("done", []))
+                     ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/json/__init__.py", line 293, in load
+    return loads(fp.read(),
+           ^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/json/__init__.py", line 346, in loads
+    return _default_decoder.decode(s)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/json/decoder.py", line 337, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/json/decoder.py", line 355, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+[keep_alive:h2022] 08/22 10:00 終了 rc=1
+[keep_alive:h2022] 08/22 10:01 起動 #3 (proxy=http://127.0.0.1:46847)
+Traceback (most recent call last):
+  File "/home/user/-/keiba/harvest_year.py", line 144, in <module>
+    main()
+  File "/home/user/-/keiba/harvest_year.py", line 97, in main
+    done_dates = set(json.load(open(state_f)).get("done", []))
+                     ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/json/__init__.py", line 293, in load
+    return loads(fp.read(),
+           ^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/json/__init__.py", line 346, in loads
+    return _default_decoder.decode(s)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/json/decoder.py", line 337, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/json/decoder.py", line 355, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+[keep_alive:h2022] 08/22 10:01 終了 rc=1
+[keep_alive:h2022] 08/22 10:02 起動 #4 (proxy=http://127.0.0.1:46847)
+Traceback (most recent call last):
+  File "/home/user/-/keiba/harvest_year.py", line 144, in <module>
+    main()
+  File "/home/user/-/keiba/harvest_year.py", line 97, in main
+    done_dates = set(json.load(open(state_f)).get("done", []))
+                     ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/json/__init__.py", line 293, in load
+    return loads(fp.read(),
+           ^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/json/__init__.py", line 346, in loads
+    return _default_decoder.decode(s)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/json/decoder.py", line 337, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/json/decoder.py", line 355, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+[keep_alive:h2022] 08/22 10:02 終了 rc=1
+[keep_alive:h2022] 08/22 10:03 起動 #5 (proxy=http://127.0.0.1:46847)
+Traceback (most recent call last):
+  File "/home/user/-/keiba/harvest_year.py", line 144, in <module>
+    main()
+  File "/home/user/-/keiba/harvest_year.py", line 97, in main
+    done_dates = set(json.load(open(state_f)).get("done", []))
+                     ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/json/__init__.py", line 293, in load
+    return loads(fp.read(),
+           ^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/json/__init__.py", line 346, in loads
+    return _default_decoder.decode(s)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/json/decoder.py", line 337, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/json/decoder.py", line 355, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+[keep_alive:h2022] 08/22 10:03 終了 rc=1
+[keep_alive:h2022] 08/22 10:04 起動 #6 (proxy=http://127.0.0.1:46847)
+Traceback (most recent call last):
+  File "/home/user/-/keiba/harvest_year.py", line 144, in <module>
+    main()
+  File "/home/user/-/keiba/harvest_year.py", line 97, in main
+    done_dates = set(json.load(open(state_f)).get("done", []))
+                     ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/json/__init__.py", line 293, in load
+    return loads(fp.read(),
+           ^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/json/__init__.py", line 346, in loads
+    return _default_decoder.decode(s)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/json/decoder.py", line 337, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/json/decoder.py", line 355, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+[keep_alive:h2022] 08/22 10:04 終了 rc=1
+[keep_alive:h2022] 08/22 10:05 起動 #7 (proxy=http://127.0.0.1:46847)
+Traceback (most recent call last):
+  File "/home/user/-/keiba/harvest_year.py", line 144, in <module>
+    main()
+  File "/home/user/-/keiba/harvest_year.py", line 97, in main
+    done_dates = set(json.load(open(state_f)).get("done", []))
+                     ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/json/__init__.py", line 293, in load
+    return loads(fp.read(),
+           ^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/json/__init__.py", line 346, in loads
+    return _default_decoder.decode(s)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/json/decoder.py", line 337, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/json/decoder.py", line 355, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+[keep_alive:h2022] 08/22 10:05 終了 rc=1
+[keep_alive:h2022] 08/22 10:06 起動 #8 (proxy=http://127.0.0.1:46847)
+Traceback (most recent call last):
+  File "/home/user/-/keiba/harvest_year.py", line 144, in <module>
+    main()
+  File "/home/user/-/keiba/harvest_year.py", line 97, in main
+    done_dates = set(json.load(open(state_f)).get("done", []))
+                     ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/json/__init__.py", line 293, in load
+    return loads(fp.read(),
+           ^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/json/__init__.py", line 346, in loads
+    return _default_decoder.decode(s)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/json/decoder.py", line 337, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/json/decoder.py", line 355, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+[keep_alive:h2022] 08/22 10:06 終了 rc=1
+[keep_alive:h2022] 08/22 10:07 起動 #9 (proxy=http://127.0.0.1:46847)
+Traceback (most recent call last):
+  File "/home/user/-/keiba/harvest_year.py", line 144, in <module>
+    main()
+  File "/home/user/-/keiba/harvest_year.py", line 97, in main
+    done_dates = set(json.load(open(state_f)).get("done", []))
+                     ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/json/__init__.py", line 293, in load
+    return loads(fp.read(),
+           ^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/json/__init__.py", line 346, in loads
+    return _default_decoder.decode(s)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/json/decoder.py", line 337, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/json/decoder.py", line 355, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+[keep_alive:h2022] 08/22 10:07 終了 rc=1
+[keep_alive:h2022] 08/22 10:08 起動 #10 (proxy=http://127.0.0.1:46847)
+Traceback (most recent call last):
+  File "/home/user/-/keiba/harvest_year.py", line 144, in <module>
+    main()
+  File "/home/user/-/keiba/harvest_year.py", line 97, in main
+    done_dates = set(json.load(open(state_f)).get("done", []))
+                     ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/json/__init__.py", line 293, in load
+    return loads(fp.read(),
+           ^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/json/__init__.py", line 346, in loads
+    return _default_decoder.decode(s)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/json/decoder.py", line 337, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/json/decoder.py", line 355, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+[keep_alive:h2022] 08/22 10:08 終了 rc=1
+[keep_alive:h2022] 08/22 10:09 起動 #11 (proxy=http://127.0.0.1:46847)
+Traceback (most recent call last):
+  File "/home/user/-/keiba/harvest_year.py", line 144, in <module>
+    main()
+  File "/home/user/-/keiba/harvest_year.py", line 97, in main
+    done_dates = set(json.load(open(state_f)).get("done", []))
+                     ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/json/__init__.py", line 293, in load
+    return loads(fp.read(),
+           ^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/json/__init__.py", line 346, in loads
+    return _default_decoder.decode(s)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/json/decoder.py", line 337, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/json/decoder.py", line 355, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+[keep_alive:h2022] 08/22 10:09 終了 rc=1
+[keep_alive:h2022] 08/22 10:10 起動 #12 (proxy=http://127.0.0.1:46847)
+Traceback (most recent call last):
+  File "/home/user/-/keiba/harvest_year.py", line 144, in <module>
+    main()
+  File "/home/user/-/keiba/harvest_year.py", line 97, in main
+    done_dates = set(json.load(open(state_f)).get("done", []))
+                     ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/json/__init__.py", line 293, in load
+    return loads(fp.read(),
+           ^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/json/__init__.py", line 346, in loads
+    return _default_decoder.decode(s)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/json/decoder.py", line 337, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/json/decoder.py", line 355, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+[keep_alive:h2022] 08/22 10:10 終了 rc=1
+[keep_alive:h2022] 08/22 10:11 起動 #13 (proxy=http://127.0.0.1:46847)
+Traceback (most recent call last):
+  File "/home/user/-/keiba/harvest_year.py", line 144, in <module>
+    main()
+  File "/home/user/-/keiba/harvest_year.py", line 97, in main
+    done_dates = set(json.load(open(state_f)).get("done", []))
+                     ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/json/__init__.py", line 293, in load
+    return loads(fp.read(),
+           ^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/json/__init__.py", line 346, in loads
+    return _default_decoder.decode(s)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/json/decoder.py", line 337, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/json/decoder.py", line 355, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+[keep_alive:h2022] 08/22 10:11 終了 rc=1
+[keep_alive:h2022] 08/22 10:12 起動 #14 (proxy=http://127.0.0.1:46847)
+Traceback (most recent call last):
+  File "/home/user/-/keiba/harvest_year.py", line 144, in <module>
+    main()
+  File "/home/user/-/keiba/harvest_year.py", line 97, in main
+    done_dates = set(json.load(open(state_f)).get("done", []))
+                     ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/json/__init__.py", line 293, in load
+    return loads(fp.read(),
+           ^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/json/__init__.py", line 346, in loads
+    return _default_decoder.decode(s)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/json/decoder.py", line 337, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/json/decoder.py", line 355, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+[keep_alive:h2022] 08/22 10:12 終了 rc=1
+[keep_alive:h2022] 08/22 10:13 起動 #15 (proxy=http://127.0.0.1:46847)
+Traceback (most recent call last):
+  File "/home/user/-/keiba/harvest_year.py", line 144, in <module>
+    main()
+  File "/home/user/-/keiba/harvest_year.py", line 97, in main
+    done_dates = set(json.load(open(state_f)).get("done", []))
+                     ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/json/__init__.py", line 293, in load
+    return loads(fp.read(),
+           ^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/json/__init__.py", line 346, in loads
+    return _default_decoder.decode(s)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/json/decoder.py", line 337, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/json/decoder.py", line 355, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+[keep_alive:h2022] 08/22 10:13 終了 rc=1
+[keep_alive:h2022] 08/22 10:14 起動 #16 (proxy=http://127.0.0.1:46847)
+Traceback (most recent call last):
+  File "/home/user/-/keiba/harvest_year.py", line 144, in <module>
+    main()
+  File "/home/user/-/keiba/harvest_year.py", line 97, in main
+    done_dates = set(json.load(open(state_f)).get("done", []))
+                     ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/json/__init__.py", line 293, in load
+    return loads(fp.read(),
+           ^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/json/__init__.py", line 346, in loads
+    return _default_decoder.decode(s)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/json/decoder.py", line 337, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/json/decoder.py", line 355, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+[keep_alive:h2022] 08/22 10:14 終了 rc=1
+[keep_alive:h2022] 08/22 10:15 起動 #17 (proxy=http://127.0.0.1:46847)
+Traceback (most recent call last):
+  File "/home/user/-/keiba/harvest_year.py", line 144, in <module>
+    main()
+  File "/home/user/-/keiba/harvest_year.py", line 97, in main
+    done_dates = set(json.load(open(state_f)).get("done", []))
+                     ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/json/__init__.py", line 293, in load
+    return loads(fp.read(),
+           ^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/json/__init__.py", line 346, in loads
+    return _default_decoder.decode(s)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/json/decoder.py", line 337, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/json/decoder.py", line 355, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+[keep_alive:h2022] 08/22 10:15 終了 rc=1
+[keep_alive:h2022] 08/22 10:16 起動 #18 (proxy=http://127.0.0.1:46847)
+Traceback (most recent call last):
+  File "/home/user/-/keiba/harvest_year.py", line 144, in <module>
+    main()
+  File "/home/user/-/keiba/harvest_year.py", line 97, in main
+    done_dates = set(json.load(open(state_f)).get("done", []))
+                     ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/json/__init__.py", line 293, in load
+    return loads(fp.read(),
+           ^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/json/__init__.py", line 346, in loads
+    return _default_decoder.decode(s)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/json/decoder.py", line 337, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/json/decoder.py", line 355, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+[keep_alive:h2022] 08/22 10:16 終了 rc=1
+[keep_alive:h2022] 08/22 10:17 起動 #19 (proxy=http://127.0.0.1:46847)
+Traceback (most recent call last):
+  File "/home/user/-/keiba/harvest_year.py", line 144, in <module>
+    main()
+  File "/home/user/-/keiba/harvest_year.py", line 97, in main
+    done_dates = set(json.load(open(state_f)).get("done", []))
+                     ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/json/__init__.py", line 293, in load
+    return loads(fp.read(),
+           ^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/json/__init__.py", line 346, in loads
+    return _default_decoder.decode(s)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/json/decoder.py", line 337, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/json/decoder.py", line 355, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+[keep_alive:h2022] 08/22 10:17 終了 rc=1
+[keep_alive:h2022] 08/22 10:18 起動 #20 (proxy=http://127.0.0.1:46847)
+Traceback (most recent call last):
+  File "/home/user/-/keiba/harvest_year.py", line 144, in <module>
+    main()
+  File "/home/user/-/keiba/harvest_year.py", line 97, in main
+    done_dates = set(json.load(open(state_f)).get("done", []))
+                     ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/json/__init__.py", line 293, in load
+    return loads(fp.read(),
+           ^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/json/__init__.py", line 346, in loads
+    return _default_decoder.decode(s)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/json/decoder.py", line 337, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/json/decoder.py", line 355, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+[keep_alive:h2022] 08/22 10:18 終了 rc=1
+[keep_alive:h2022] 08/22 10:19 起動 #21 (proxy=http://127.0.0.1:46847)
+Traceback (most recent call last):
+  File "/home/user/-/keiba/harvest_year.py", line 144, in <module>
+    main()
+  File "/home/user/-/keiba/harvest_year.py", line 97, in main
+    done_dates = set(json.load(open(state_f)).get("done", []))
+                     ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/json/__init__.py", line 293, in load
+    return loads(fp.read(),
+           ^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/json/__init__.py", line 346, in loads
+    return _default_decoder.decode(s)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/json/decoder.py", line 337, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/json/decoder.py", line 355, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+[keep_alive:h2022] 08/22 10:19 終了 rc=1
+[keep_alive:h2022] 08/22 10:20 起動 #22 (proxy=http://127.0.0.1:46847)
+Traceback (most recent call last):
+  File "/home/user/-/keiba/harvest_year.py", line 144, in <module>
+    main()
+  File "/home/user/-/keiba/harvest_year.py", line 97, in main
+    done_dates = set(json.load(open(state_f)).get("done", []))
+                     ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/json/__init__.py", line 293, in load
+    return loads(fp.read(),
+           ^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/json/__init__.py", line 346, in loads
+    return _default_decoder.decode(s)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/json/decoder.py", line 337, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/json/decoder.py", line 355, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+[keep_alive:h2022] 08/22 10:20 終了 rc=1
+[keep_alive:h2022] 08/22 10:21 起動 #23 (proxy=http://127.0.0.1:46847)
+Traceback (most recent call last):
+  File "/home/user/-/keiba/harvest_year.py", line 144, in <module>
+    main()
+  File "/home/user/-/keiba/harvest_year.py", line 97, in main
+    done_dates = set(json.load(open(state_f)).get("done", []))
+                     ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/json/__init__.py", line 293, in load
+    return loads(fp.read(),
+           ^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/json/__init__.py", line 346, in loads
+    return _default_decoder.decode(s)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/json/decoder.py", line 337, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/json/decoder.py", line 355, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+[keep_alive:h2022] 08/22 10:21 終了 rc=1
+[keep_alive:h2022] 08/22 10:22 起動 #24 (proxy=http://127.0.0.1:46847)
+Traceback (most recent call last):
+  File "/home/user/-/keiba/harvest_year.py", line 144, in <module>
+    main()
+  File "/home/user/-/keiba/harvest_year.py", line 97, in main
+    done_dates = set(json.load(open(state_f)).get("done", []))
+                     ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/json/__init__.py", line 293, in load
+    return loads(fp.read(),
+           ^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/json/__init__.py", line 346, in loads
+    return _default_decoder.decode(s)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/json/decoder.py", line 337, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/json/decoder.py", line 355, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+[keep_alive:h2022] 08/22 10:22 終了 rc=1
+[keep_alive:h2022] 08/22 10:23 起動 #25 (proxy=http://127.0.0.1:46847)
+Traceback (most recent call last):
+  File "/home/user/-/keiba/harvest_year.py", line 144, in <module>
+    main()
+  File "/home/user/-/keiba/harvest_year.py", line 97, in main
+    done_dates = set(json.load(open(state_f)).get("done", []))
+                     ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/json/__init__.py", line 293, in load
+    return loads(fp.read(),
+           ^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/json/__init__.py", line 346, in loads
+    return _default_decoder.decode(s)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/json/decoder.py", line 337, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/json/decoder.py", line 355, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+[keep_alive:h2022] 08/22 10:23 終了 rc=1
+[keep_alive:h2022] 08/22 10:24 起動 #26 (proxy=http://127.0.0.1:46847)
+Traceback (most recent call last):
+  File "/home/user/-/keiba/harvest_year.py", line 144, in <module>
+    main()
+  File "/home/user/-/keiba/harvest_year.py", line 97, in main
+    done_dates = set(json.load(open(state_f)).get("done", []))
+                     ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/json/__init__.py", line 293, in load
+    return loads(fp.read(),
+           ^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/json/__init__.py", line 346, in loads
+    return _default_decoder.decode(s)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/json/decoder.py", line 337, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/json/decoder.py", line 355, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+[keep_alive:h2022] 08/22 10:24 終了 rc=1
+[keep_alive:h2022] 08/22 10:25 起動 #27 (proxy=http://127.0.0.1:46847)
+Traceback (most recent call last):
+  File "/home/user/-/keiba/harvest_year.py", line 144, in <module>
+    main()
+  File "/home/user/-/keiba/harvest_year.py", line 97, in main
+    done_dates = set(json.load(open(state_f)).get("done", []))
+                     ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/json/__init__.py", line 293, in load
+    return loads(fp.read(),
+           ^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/json/__init__.py", line 346, in loads
+    return _default_decoder.decode(s)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/json/decoder.py", line 337, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/json/decoder.py", line 355, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+[keep_alive:h2022] 08/22 10:25 終了 rc=1
+[keep_alive:h2022] 08/22 10:26 起動 #28 (proxy=http://127.0.0.1:46847)
+Traceback (most recent call last):
+  File "/home/user/-/keiba/harvest_year.py", line 144, in <module>
+    main()
+  File "/home/user/-/keiba/harvest_year.py", line 97, in main
+    done_dates = set(json.load(open(state_f)).get("done", []))
+                     ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/json/__init__.py", line 293, in load
+    return loads(fp.read(),
+           ^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/json/__init__.py", line 346, in loads
+    return _default_decoder.decode(s)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/json/decoder.py", line 337, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/json/decoder.py", line 355, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+[keep_alive:h2022] 08/22 10:26 終了 rc=1
+[keep_alive:h2022] 08/22 10:27 起動 #29 (proxy=http://127.0.0.1:46847)
+Traceback (most recent call last):
+  File "/home/user/-/keiba/harvest_year.py", line 144, in <module>
+    main()
+  File "/home/user/-/keiba/harvest_year.py", line 97, in main
+    done_dates = set(json.load(open(state_f)).get("done", []))
+                     ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/json/__init__.py", line 293, in load
+    return loads(fp.read(),
+           ^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/json/__init__.py", line 346, in loads
+    return _default_decoder.decode(s)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/json/decoder.py", line 337, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/json/decoder.py", line 355, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+[keep_alive:h2022] 08/22 10:27 終了 rc=1
+[keep_alive:h2022] 08/22 10:28 起動 #30 (proxy=http://127.0.0.1:46847)
+Traceback (most recent call last):
+  File "/home/user/-/keiba/harvest_year.py", line 144, in <module>
+    main()
+  File "/home/user/-/keiba/harvest_year.py", line 97, in main
+    done_dates = set(json.load(open(state_f)).get("done", []))
+                     ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/json/__init__.py", line 293, in load
+    return loads(fp.read(),
+           ^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/json/__init__.py", line 346, in loads
+    return _default_decoder.decode(s)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/json/decoder.py", line 337, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/json/decoder.py", line 355, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+[keep_alive:h2022] 08/22 10:28 終了 rc=1
+[keep_alive:h2022] 08/22 10:29 起動 #31 (proxy=http://127.0.0.1:46847)
+Traceback (most recent call last):
+  File "/home/user/-/keiba/harvest_year.py", line 144, in <module>
+    main()
+  File "/home/user/-/keiba/harvest_year.py", line 97, in main
+    done_dates = set(json.load(open(state_f)).get("done", []))
+                     ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/json/__init__.py", line 293, in load
+    return loads(fp.read(),
+           ^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/json/__init__.py", line 346, in loads
+    return _default_decoder.decode(s)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/json/decoder.py", line 337, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/json/decoder.py", line 355, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+[keep_alive:h2022] 08/22 10:29 終了 rc=1
+[keep_alive:h2022] 08/22 10:30 起動 #32 (proxy=http://127.0.0.1:46847)
+Traceback (most recent call last):
+  File "/home/user/-/keiba/harvest_year.py", line 144, in <module>
+    main()
+  File "/home/user/-/keiba/harvest_year.py", line 97, in main
+    done_dates = set(json.load(open(state_f)).get("done", []))
+                     ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/json/__init__.py", line 293, in load
+    return loads(fp.read(),
+           ^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/json/__init__.py", line 346, in loads
+    return _default_decoder.decode(s)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/json/decoder.py", line 337, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/json/decoder.py", line 355, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+[keep_alive:h2022] 08/22 10:30 終了 rc=1
+[keep_alive:h2022] 08/22 10:31 起動 #1 (proxy=http://127.0.0.1:46847)
