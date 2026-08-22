@@ -40,13 +40,24 @@ w52=fit_by(MINE,k52,0.3,b30,40)
 cnt=collections.Counter(k52(r) for r in MINE)
 # 最終重み = 0.5*52セル + 0.5*30セル。30セル側は各52セルの代表レースで決まるので
 # セルごとに「そのセルに属するMINEレースの30セル重みの平均」を使う
+# ★2026-08-22 修正: 旧実装はMINEの全キーを回していたため、40R未満で w52 から
+#   除外されたセル(福島ダL 7R / 札幌ダL 8R / 函館ダL 8R)まで最終辞書に入れてしまい、
+#   独立した重みを持つかのように見えていた。実体は30分割の重みそのままで、
+#   場別の情報は何も足されていない。誤解を招くので **w52 にあるキーだけ** を採る。
+#   除外されたセルはライブ側で自動的に30分割へフォールバックする(挙動は同じ)。
 by=collections.defaultdict(list)
 for r in MINE: by[k52(r)].append(r)
 final={}
+skipped={}
 for k,sub in by.items():
-    b=np.mean(np.stack([b30(r) for r in sub]),0)
     c=w52.get(k)
-    final[k]= b if c is None else 0.5*c+0.5*b
+    if c is None:
+        skipped[k]=len(sub); continue
+    b=np.mean(np.stack([b30(r) for r in sub]),0)
+    final[k]=0.5*c+0.5*b
+if skipped:
+    print("40R未満で除外(30分割へフォールバック):",
+          ", ".join(f"{k} {v}R" for k,v in sorted(skipped.items(), key=lambda x:x[1])))
 json.dump({"axis":"venue+surface+dist_cat(52)","mix":0.5,"names":NAMES,
            "w":{k:[round(float(x),8) for x in v] for k,v in final.items()},
            "wg":[round(float(x),8) for x in w_all],
@@ -65,6 +76,12 @@ L=["# 堀川システム 52分割 配点表（2026-08-22 最終構成）","",
    "| null(60セル乱数) | 60 | 55.8% | 55.9% | 83.0% | 80.5% |","",
    "現行比 3着内 +2.6pt / 複勝2点ROI +3.0pt。未知2期間とも改善。","",
    "距離帯: S=1400m以下 / M=1500-1700m / L=1800m以上","",
+   "**欠落セルについて**: 10場×6区分=60のうち52セル。欠けているのはコース設定上",
+   "そのレース自体が存在しないため（バグではない）。",
+   "・函館/福島/小倉の芝M … 芝1500-1700mのコースが無い（芝は1200/1800/2000/2600のみ）",
+   "・新潟/中山/中京/京都/阪神のダM … ダートは1400→1700/1800と飛ぶため1500-1700が無い",
+   "加えて40R未満のセル（福島ダL 7R・札幌ダL 8R・函館ダL 8R）は独立した配点を持たず、",
+   "30分割（芝ダ×距離帯×クラス）の配点をそのまま使う。",""
    "各セルのベクトルの大きさで正規化し、6群の平均TSIが30点になる共通係数を掛けた値。","","---",""]
 ven=["札幌","函館","福島","新潟","東京","中山","中京","京都","阪神","小倉"]
 ks=sorted(final,key=lambda k:(ven.index(k[:2]) if k[:2] in ven else 99,k))
