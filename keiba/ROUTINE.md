@@ -25,6 +25,8 @@ keiba/MEMORY.md → keiba/FORMAT_FINAL.md(恒久運用憲章)を読んでから�
 0c. python3 line_notify.py --check  # 未設定(コンテナリセット)ならチャットで再設定を依頼し、
     復旧までは PushNotification+チャットで【S/A】を代替送信する(黙って落とさない)
 1. python3 day_board.py で全場ボード生成 → hori52順位+形判定 → plus_fires.json の active と照合
+1b. 日曜のみ: python3 win5.py --dry で繰越を確認。G4条件(実効期待回収≥100%=繰越約8.6億以上)成立時のみ
+    フォーメーション(win5.py --budget 10000)を【A】発火としてLINE。繰越ゼロ〜未満の週は一言も送らない。
 2. 発火あり: 即LINE『場R / 券種 / 買い目 / 金額 【S or A】根拠』(S=2万/A=1万)。
    発走25〜15分前に再判定して confirmed 化。条件が消えたら取消も必ずLINE。
    発火なし: レースごとの連絡は一切しない(静粛=正常動作)。
