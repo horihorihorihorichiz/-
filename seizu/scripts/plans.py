@@ -148,14 +148,17 @@ def draw_floor(n, d=None):
     ylines = d.get('ylines', YLINES)
     tooshi = d.get('tooshi', TOOSHI)
     kuda = d.get('kuda', KUDA)
+    side = d.get('road_side', 'S')          # 'S' 'E' 'N' 'W' 'SE' など
+    top_pad = 62 if 'N' in side else 0
+    MTd = MT + top_pad
     W = ML + nx * G + MR
-    H = MT + ny * G + MB
+    H = MTd + ny * G + MB
 
     def px(gx):
         return ML + gx * G
 
     def py(gy):
-        return MT + (ny - gy) * G
+        return MTd + (ny - gy) * G
 
     s = Svg(W, H)
 
@@ -319,7 +322,8 @@ def draw_floor(n, d=None):
                fill='#444')
 
     # ---- 方位 ----
-    nxp, nyp = W - 46, MT + 26
+    nxp = (x0 - 72) if 'E' in side else (W - 46)
+    nyp = MTd + 26
     s.circle(nxp, nyp, 19, fill='#ffffff', stroke='#444', stroke_width=1.1)
     s.polygon([(nxp, nyp - 14), (nxp - 6, nyp + 7), (nxp, nyp + 2),
                (nxp + 6, nyp + 7)], fill='#c0392b')
@@ -327,13 +331,26 @@ def draw_floor(n, d=None):
 
     # ---- 道路 ----
     ry = y1 + 60
-    if d.get('road', n == 1):
-        s.rect(px(-0.6), ry, (nx + 1.2) * G, 26, fill='#f2f2f2',
-               stroke='#bbb', stroke_width=0.8)
-        s.text(W / 2.0, ry + 17, '道　路（商店街の通り）', size=12,
-               fill='#666', weight='700')
-    else:
-        s.text(W / 2.0, ry + 17, '↓ こちらが道路（南）', size=11, fill='#999')
+
+    def road_band(x, y, w, h, label, rot=False):
+        s.rect(x, y, w, h, fill='#f2f2f2', stroke='#bbb', stroke_width=0.8)
+        if rot:
+            s.text_rot(x + w / 2.0 + 4, y + h / 2.0, label, -90, size=12,
+                       fill='#666', weight='700')
+        else:
+            s.text(x + w / 2.0, y + h / 2.0 + 4, label, size=12, fill='#666',
+                   weight='700')
+
+    if 'S' in side:
+        road_band(px(-0.6), ry, (nx + 1.2) * G, 26, '道　路（南）')
+    if 'N' in side:
+        road_band(px(-0.6), y0 - 88, (nx + 1.2) * G, 26, '道　路（北）')
+    if 'E' in side:
+        road_band(x1 + 64, py(ny + 0.4), 26, (ny + 0.8) * G, '道　路（東）',
+                  rot=True)
+    if 'W' in side:
+        road_band(x0 - 90, py(ny + 0.4), 26, (ny + 0.8) * G, '道　路（西）',
+                  rot=True)
 
     # ---- 凡例 ----
     ly = ry + 56
