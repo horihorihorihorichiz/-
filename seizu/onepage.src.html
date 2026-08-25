@@ -195,6 +195,7 @@ figcaption{font-size:13px;color:var(--ink3);margin-top:9px;line-height:1.7}
   border:1px solid;cursor:pointer}
 .acts .ng{background:var(--caution-soft);color:var(--caution);
   border-color:color-mix(in srgb,var(--caution) 34%,transparent)}
+b.ok{color:var(--ok)}
 .acts .ok{background:var(--ok-soft);color:var(--ok);
   border-color:color-mix(in srgb,var(--ok) 34%,transparent)}
 .step{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
@@ -774,9 +775,9 @@ A2用紙の中で意外と小さいことを、目で覚えておいてくださ
 <div class="tw"><table>
 <tr><th class="n">#</th><th class="wrap">この教材の図</th>
     <th class="wrap">答案ではこう描く</th><th>点への影響</th></tr>
-<tr><td class="n">1</td><td class="wrap">耐力壁の印がない</td>
+<tr><td class="n">1</td><td class="wrap">耐力壁の印がない<br><b class="ok">→ 直しました</b></td>
     <td class="wrap">耐力壁には<b>△印</b>を付ける</td><td>大</td></tr>
-<tr><td class="n">2</td><td class="wrap">通し柱を赤い◎で表現</td>
+<tr><td class="n">2</td><td class="wrap">通し柱を赤い◎で表現<br><b class="ok">→ 直しました</b></td>
     <td class="wrap">■を<b>○印で囲む</b>（色は使わない）</td><td>大</td></tr>
 <tr><td class="n">3</td><td class="wrap">出入口の印がない</td>
     <td class="wrap">道路から敷地・建物への出入口に<b>▲印</b></td><td>大</td></tr>
@@ -803,6 +804,51 @@ A2用紙の中で意外と小さいことを、目で覚えておいてくださ
 書き忘れるとそのぶん点になりません。<span class="mark">図が描けていても、
 記号がないと「分かって描いた」と認めてもらえない</span>のは、
 部分詳細図の文字と同じ理屈です。</p>
+
+<h2><span class="kicker">直した所</span>耐力壁（△印）の入れ方</h2>
+<div class="flag fix">
+  <h4>ここは大事なので、やり方ごと覚えてください</h4>
+  <p>この教材の平面図には、いままで<b>耐力壁の△印が1つも入っていませんでした</b>。
+  要求図書に「耐力壁を明示する」と書いてある以上、印のない図は解答例として不十分です。
+  ぜんぶの図に入れ直しました。</p>
+</div>
+
+<h3>耐力壁って何のこと？</h3>
+<p>ふつうの壁は<b>部屋を仕切るだけ</b>です。耐力壁は、それに加えて
+<b>地震や風で建物が横に押されたときに、ふんばる壁</b>のこと。
+中に筋かいを入れたり、構造用合板を張ったりして強くしてあります。</p>
+<p><span class="mark">木造3階建ては、この壁の数と置き方で建物がもつかどうかが決まります。</span>
+だから試験でも「どこを耐力壁にしたのか」を△印で示させるのです。</p>
+
+<h3>置き場所を決める3つのルール</h3>
+<div class="tw"><table>
+<tr><th class="n">#</th><th class="wrap">ルール</th><th class="wrap">なぜ</th></tr>
+<tr><td class="n">1</td><td class="wrap"><b>通り芯の上に置く</b></td>
+    <td class="wrap">柱と柱をつなぐ線の上でないと、力が基礎まで下りていかない</td></tr>
+<tr><td class="n">2</td><td class="wrap"><b>長さは910mm以上</b>、切れ目なく</td>
+    <td class="wrap">短すぎる壁はふんばれない。窓やドアで分断されたらもう耐力壁ではない</td></tr>
+<tr><td class="n">3</td><td class="wrap"><b>東西南北にバランスよく</b></td>
+    <td class="wrap">片側だけ強いと、地震のときに建物がねじれて壊れる（四分割法）</td></tr>
+</table></div>
+
+<h3>だから、窓の位置はこう決める</h3>
+<p>実は<b>「耐力壁を置いてから窓を置く」</b>のが正しい順番です。
+窓を先に好きなだけ大きく取ると、壁が残らなくなります。</p>
+<ul>
+<li><b>窓やドアは、通り芯をまたがない。</b>通り芯から通り芯までの1区間の中に収める</li>
+<li><b>1区間には必ず910mm以上の壁を残す。</b>2マス（1,820）の区間なら、
+窓は最大でも910mmまで</li>
+<li>残した壁の外側に、<b>△印</b>を1つ付ける</li>
+</ul>
+<div class="flag no">
+  <h4>この教材の図でやったこと</h4>
+  <p>全部の平面図（型3枚＋予想問題A〜Fの解答例）で、窓と出入口の位置を
+  上のルールに合わせて置き直しました。その結果、
+  <b>南・北・東・西のどの面にも耐力壁が3か所ずつ</b>入り、
+  四分割法のバランスも取れています。</p>
+  <p>店舗の出入口は3,640mmから<b>1,820mm</b>に、玄関は<b>910mm</b>に縮めました。
+  「売場を広く見せたい」より<b>「建物が立っていること」</b>が先です。</p>
+</div>
 
 <h2><span class="kicker">これを覚える</span>答案で使う記号の一覧</h2>
 <figure><div class="sheet">{{SVG:symbols}}</div>

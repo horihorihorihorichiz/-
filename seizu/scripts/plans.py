@@ -139,6 +139,159 @@ FLOORS = {
 }
 
 
+MIN_WALL = 0.9          # 耐力壁として意味のある最小の長さ（マス＝910mm）
+GAP = 0.1               # 開口と通り芯のあいだに必ず残すすき間
+MINLEN = {'entry': 0.9, 'balc': 1.2, 'win': 0.6}   # 開口の最小の幅
+
+
+def _union(segs):
+    """重なった区間をつないで、重ならない区間のリストにする。"""
+    out = []
+    for a, b in sorted(segs):
+        if out and a <= out[-1][1] + 1e-9:
+            out[-1][1] = max(out[-1][1], b)
+        else:
+            out.append([a, b])
+    return out
+
+
+def _covered(segs, a, b):
+    """区間 a..b が segs でぜんぶ覆われているか。"""
+    pos = a
+    for p0, p1 in _union(segs):
+        if p0 > pos + 1e-9:
+            return False
+        pos = max(pos, p1)
+        if pos >= b - 1e-9:
+            return True
+    return pos >= b - 1e-9
+
+
+def _longest_free(segs, a, b):
+    """区間 a..b のうち開口でふさがれていない一番長い部分を返す。"""
+    best, pos = (0.0, a), a
+    for p0, p1 in _union([(max(a, q0), min(b, q1)) for q0, q1 in segs
+                          if min(b, q1) > max(a, q0)]):
+        if p0 - pos > best[0]:
+            best = (p0 - pos, pos)
+        pos = max(pos, p1)
+    if b - pos > best[0]:
+        best = (b - pos, pos)
+    return best        # (長さ, 始まり)
+
+
+def _seg_of(cross, mid):
+    """midpoint がどの通り間に入るかを返す。"""
+    for a, b in zip(cross[:-1], cross[1:]):
+        if a - 1e-9 <= mid <= b + 1e-9:
+            return a, b
+    return cross[0], cross[-1]
+
+
+def _fit_face(ops, cross):
+    """1つの面の開口を、通り間ごとに「耐力壁が910mm以上残る」ように直す。
+
+    ・開口は通り芯をまたがせない（またぐと、その通り間の壁がなくなるため）
+    ・通り間の片側に MIN_WALL 以上の壁をまとめて残す
+    """
+    groups = {}
+    for i, (pos, ln, kind) in enumerate(ops):
+        key = _seg_of(cross, pos + ln / 2.0)
+        groups.setdefault(key, []).append(i)
+
+    out = list(ops)
+    for (a, b), idx in groups.items():
+        room = (b - a) - MIN_WALL - GAP * (len(idx) + 1)
+        if room <= 0:
+            for i in idx:
+                out[i] = None
+            continue
+        want = [ops[i][1] for i in idx]
+        if sum(want) > room:                       # 入りきらない分を縮める
+            k = room / sum(want)
+            want = [max(MINLEN.get(ops[i][2], 0.6), w * k)
+                    for i, w in zip(idx, want)]
+            while sum(want) > room and len(want) > 1:
+                j = want.index(max(want))          # 一番広いものから捨てる
+                out[idx[j]] = None
+                idx = idx[:j] + idx[j + 1:]
+                want = want[:j] + want[j + 1:]
+                room = (b - a) - MIN_WALL - GAP * (len(idx) + 1)
+            if sum(want) > room:
+                want = [room]
+        # 壁を残す側を決める：もとの位置が通り間の前半なら「奥（b側）」に壁
+        mid0 = sum(ops[i][0] + ops[i][1] / 2.0 for i in idx) / max(1, len(idx))
+        near_a = mid0 < (a + b) / 2.0
+        total = sum(want) + GAP * (len(idx) - 1)
+        cur = (a + GAP) if near_a else (b - GAP - total)
+        for i, w in zip(idx, want):
+            out[i] = (round(cur, 3), round(w, 3), ops[i][2])
+            cur += w + GAP
+    return out
+
+
+def fit_openings(d, nx, ny, xlines, ylines):
+    """外周の窓・出入口を、耐力壁がきちんと残る位置に自動でそろえる。"""
+    xs = [g for g, _ in xlines]
+    ys = [g for g, _ in ylines]
+    faces = {'S': xs, 'N': xs, 'W': ys, 'E': ys}
+    idxs = {f: [] for f in faces}
+    ops = list(d.get('openings', []))
+    for i, o in enumerate(ops):
+        if o[0] in idxs:
+            idxs[o[0]].append(i)
+    for f, cross in faces.items():
+        if not idxs[f]:
+            continue
+        got = _fit_face([(ops[i][1], ops[i][2], ops[i][3]) for i in idxs[f]],
+                        cross)
+        for i, g in zip(idxs[f], got):
+            ops[i] = None if g is None else (f, g[0], g[1], g[2], ops[i][4])
+    return [o for o in ops if o is not None]
+
+
+def _bearing_marks(d, nx, ny, xlines, ylines):
+    """耐力壁に△印を付ける位置を、壁と開口から自動で決める。
+
+    通り芯の上にあって、開口でふさがれていない壁の区間を耐力壁とみなす。
+    """
+    walls = {}
+    for _, _, a, b, c, e, _ in d['rooms']:
+        walls.setdefault(('V', a), []).append((b, e))
+        walls.setdefault(('V', c), []).append((b, e))
+        walls.setdefault(('H', b), []).append((a, c))
+        walls.setdefault(('H', e), []).append((a, c))
+
+    # 開口（外周）と建具（室内）を向きごとに集める
+    op = {'V': {}, 'H': {}}
+    for face, pos, ln, kind, _lab in d.get('openings', []):
+        if face in ('S', 'N'):
+            op['H'].setdefault(0 if face == 'S' else ny, []).append(
+                (pos, pos + ln))
+        else:
+            op['V'].setdefault(0 if face == 'W' else nx, []).append(
+                (pos, pos + ln))
+    for ori, wall, pos, ln in d.get('doors', []):
+        op[ori].setdefault(wall, []).append((pos, pos + ln))
+
+    marks = []
+    for ori, lines, cross in (('V', [g for g, _ in xlines],
+                               [g for g, _ in ylines]),
+                              ('H', [g for g, _ in ylines],
+                               [g for g, _ in xlines])):
+        for ln_ in lines:
+            for a, b in zip(cross[:-1], cross[1:]):
+                if b - a < 1:
+                    continue
+                if not _covered(walls.get((ori, ln_), []), a, b):
+                    continue
+                ln2, st = _longest_free(op[ori].get(ln_, []), a, b)
+                if ln2 < MIN_WALL - 1e-9:
+                    continue
+                marks.append((ori, ln_, st + ln2 / 2.0))
+    return marks
+
+
 def draw_floor(n, d=None):
     """d に nx / ny / xlines / ylines / tooshi / kuda を入れるとマス数を変えられる。"""
     d = d or FLOORS[n]
@@ -149,6 +302,7 @@ def draw_floor(n, d=None):
     tooshi = d.get('tooshi', TOOSHI)
     kuda = d.get('kuda', KUDA)
     side = d.get('road_side', 'S')          # 'S' 'E' 'N' 'W' 'SE' など
+    d = dict(d, openings=fit_openings(d, nx, ny, xlines, ylines))
     top_pad = 62 if 'N' in side else 0
     MTd = MT + top_pad
     W = ML + nx * G + MR
@@ -309,13 +463,27 @@ def draw_floor(n, d=None):
         s.text(ax, ybot + 16, 'UP', size=11, fill=col, weight='700')
     s.text(px(mid), py(land + 0.42), '踊場', size=9.5, fill='#a08840')
 
+    # ---- 耐力壁の△印（要求図書に「耐力壁には△印を付ける」と明記） ----
+    for ori, ln_, mid_ in _bearing_marks(d, nx, ny, xlines, ylines):
+        if ori == 'V':
+            out = -1 if ln_ == 0 else 1
+            cx, cy = px(ln_) + out * 15, py(mid_)
+            tri = [(cx - out * 7, cy), (cx + out * 4, cy - 6.5),
+                   (cx + out * 4, cy + 6.5)]
+        else:
+            out = 1 if ln_ == 0 else -1
+            cx, cy = px(mid_), py(ln_) + out * 15
+            tri = [(cx, cy - out * 7), (cx - 6.5, cy + out * 4),
+                   (cx + 6.5, cy + out * 4)]
+        s.polygon(tri, fill='#ffffff', stroke='#1f6fb2', stroke_width=1.5)
+
     # ---- 柱 ----
     for gx, gy in kuda:
         s.rect(px(gx) - 4, py(gy) - 4, 8, 8, fill='#111')
     for gx, gy in tooshi:
-        s.circle(px(gx), py(gy), 8, fill='#ffffff', stroke='#c0392b',
-                 stroke_width=2.4)
-        s.circle(px(gx), py(gy), 4, fill='#c0392b')
+        s.circle(px(gx), py(gy), 9, fill='#ffffff', stroke='#c0392b',
+                 stroke_width=2.0)
+        s.rect(px(gx) - 4, py(gy) - 4, 8, 8, fill='#111')
 
     # ---- 通り符号 ----
     for gx, nm in xlines:
@@ -371,21 +539,25 @@ def draw_floor(n, d=None):
 
     # ---- 凡例 ----
     ly = ry + 56
-    s.circle(ML + 8, ly - 4, 7, fill='#ffffff', stroke='#c0392b',
-             stroke_width=2.0)
-    s.circle(ML + 8, ly - 4, 3.5, fill='#c0392b')
-    s.text(ML + 20, ly, '通し柱 120角', size=11, anchor='start', fill='#444')
-    s.rect(ML + 116, ly - 8, 8, 8, fill='#111')
-    s.text(ML + 130, ly, '管柱 105角', size=11, anchor='start', fill='#444')
-    s.line(ML + 216, ly - 4, ML + 238, ly - 4, stroke='#2f7fd0',
+    s.circle(ML + 8, ly - 4, 7.5, fill='#ffffff', stroke='#c0392b',
+             stroke_width=1.8)
+    s.rect(ML + 4.5, ly - 7.5, 7, 7, fill='#111')
+    s.text(ML + 20, ly, '通し柱（○で囲む）', size=11, anchor='start',
+           fill='#444')
+    s.rect(ML + 140, ly - 8, 8, 8, fill='#111')
+    s.text(ML + 154, ly, '管柱', size=11, anchor='start', fill='#444')
+    s.polygon([(ML + 200, ly - 11), (ML + 194, ly - 1), (ML + 206, ly - 1)],
+              fill='#fff', stroke='#1f6fb2', stroke_width=1.4)
+    s.text(ML + 212, ly, '耐力壁', size=11, anchor='start', fill='#444')
+    s.line(ML + 262, ly - 4, ML + 282, ly - 4, stroke='#2f7fd0',
            stroke_width=5)
-    s.text(ML + 244, ly, '窓', size=11, anchor='start', fill='#444')
-    s.line(ML + 272, ly - 4, ML + 294, ly - 4, stroke='#d0342f',
+    s.text(ML + 288, ly, '窓', size=11, anchor='start', fill='#444')
+    s.line(ML + 312, ly - 4, ML + 332, ly - 4, stroke='#d0342f',
            stroke_width=5)
-    s.text(ML + 300, ly, '出入口', size=11, anchor='start', fill='#444')
-    s.rect(ML + 352, ly - 9, 20, 10, fill='none', stroke='#c0392b',
+    s.text(ML + 338, ly, '出入口', size=11, anchor='start', fill='#444')
+    s.rect(ML + 388, ly - 9, 18, 10, fill='none', stroke='#c0392b',
            stroke_width=1.4, stroke_dasharray='4 3')
-    s.text(ML + 378, ly, '竪穴区画', size=11, anchor='start', fill='#444')
+    s.text(ML + 412, ly, '竪穴区画', size=11, anchor='start', fill='#444')
 
     s.text(W / 2.0, ly + 28, d['note'] + '　／　階段 ' + d['stair_up'],
            size=11.5, fill='#555')
