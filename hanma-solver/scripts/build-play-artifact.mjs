@@ -74,3 +74,14 @@ build({
   title: '韓麻 ベタおり練習 🀄',
   standaloneName: '韓麻-ベタおり練習.html',
 });
+
+// 麻雀 守りGTO（通常ルール・相手の待ち読み）
+build({
+  modules: ['src/tiles.js', 'src/tiles-data.js', 'src/tileview.js', 'src/shanten.js', 'src/guard.js'],
+  css: ['styles.css', 'quiz.css', 'guard.css'],
+  html: 'guard.html',
+  out: 'guard-standalone.html',
+  docsName: 'guard.html',
+  title: '麻雀 守りGTO 🀄',
+  standaloneName: '麻雀-守りGTO.html',
+});

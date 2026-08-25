@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>麻雀 守りGTO</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="quiz.css">
+  <link rel="stylesheet" href="guard.css">
+</head>
+<body>
+  <div class="wrap-guard">
+    <div class="gtop">
+      <div class="ttl">麻雀 守りGTO <span class="badge">通常ルール</span></div>
+      <div class="gtop-r"><span id="scoreDisp" class="score"></span><button class="btn" id="newTop">別の問題</button></div>
+    </div>
+
+    <div class="opp-card">
+      <div class="opp-head">🀄 相手が <b>リーチ！</b><span class="hint-lite">当たらない牌はどれ？</span></div>
+      <div id="oppRiver" class="river"></div>
+    </div>
+
+    <div class="instr">👇 あなたの手牌。<strong>当たらない牌</strong>を1枚タップして守ろう</div>
+    <div id="myHand" class="ghand"></div>
+
+    <div id="result" class="result" style="display:none"></div>
+    <button class="btn btn-next" id="nextBtn" style="display:none">次の問題へ →</button>
+
+    <div class="nav"><a href="index.html" class="link">ホーム</a> ・ <a href="betaori.html" class="link">韓麻ベタおり</a></div>
+  </div>
+
+  <script type="module" src="src/guard.js"></script>
+</body>
+</html>
