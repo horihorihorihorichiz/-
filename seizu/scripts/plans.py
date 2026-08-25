@@ -101,7 +101,8 @@ FLOORS = {
             ('V', 5, 7.5, 1.2),   # 和室 → 家事室・納戸
         ],
         note='水まわりを西側にまとめて、1階・3階と配管の位置をそろえる。',
-        stair_up='UP 14段（蹴上207.1 / 踏面210）',
+        stair_up='UP 14段で3階へ（蹴上207.1 / 踏面210）／ DN 15段で1階へ',
+        stair_mode='middle',
     ),
     3: dict(
         title='3階平面図',
@@ -134,7 +135,8 @@ FLOORS = {
             ('H', 6, 4.0, 1.0),   # 廊下 → 夫婦寝室
         ],
         note='廊下を東西に1本通して、階段から全部屋へ行けるようにする。',
-        stair_up='DN（下り）',
+        stair_up='DN 14段で2階へ（上に階はないので上りはない）',
+        stair_mode='top',
     ),
 }
 
@@ -429,38 +431,51 @@ def draw_floor(n, d=None):
            stroke_dasharray='6 4')
 
     # ---- 階段（折り返し＝910mm幅の階段が2本並ぶ） ----
+    # 東の段を北へ上る → 踊り場で180度まわる → 西の段を南へ上って上階へ。
+    # だから「上りはじめ＝東の段の南はし」「上りきり＝西の段の南はし」。
+    # 平面図はその階の床から約1.5mで切るので、
+    #   1階 … 上りだけ（UP）＋ 切断線
+    #   2階 … 上り（UP・東）と下り（DN・西）の両方
+    #   3階 … 下りだけ（DN・西）
     mid = (sa + sc) / 2.0
     T = 210.0 / 910.0                     # 踏面210mmをマスに直す
     land = sd - 1                         # 踊り場（北の1マス）
-    n1, n2 = d.get('stair_runs', (6, 7))  # 上り側・下り側の踏面の数
+    n1, n2 = d.get('stair_runs', (6, 7))  # 東の段・西の段の踏面の数
     col = '#8a6d00'
-    down = 'DN' in d.get('stair_up', '')
+    mode = d.get('stair_mode') or (
+        'top' if 'DN' in d.get('stair_up', '') else 'bottom')
     # 踊り場の線
     s.line(px(sa) + 3, py(land), px(sc) - 3, py(land), stroke=col,
            stroke_width=1.6)
-    # 2本の階段を分ける線（手すり側）
+    # 2本の段を分ける線（手すり側）
     s.line(px(mid), py(sb), px(mid), py(land), stroke=col, stroke_width=1.4)
-    # 東側の段（先に上るほう）
-    for k in range(1, n1 + 1):
+    for k in range(1, n1 + 1):            # 東の段
         yy = py(land - k * T)
         s.line(px(mid) + 2, yy, px(sc) - 3, yy, stroke=col, stroke_width=0.9)
-    # 西側の段（踊り場で折り返したあと）
-    for k in range(1, n2 + 1):
+    for k in range(1, n2 + 1):            # 西の段
         yy = py(land - k * T)
         s.line(px(sa) + 3, yy, px(mid) - 2, yy, stroke=col, stroke_width=0.9)
-    # 上り（下り）の矢印。段のある東側に1本だけ引く
-    ax = px((mid + sc) / 2.0)
-    ytop, ybot = py(land - 0.12), py(land - n1 * T - 0.30)
-    if down:
-        s.line(ax, ytop, ax, ybot + 9, stroke=col, stroke_width=1.6)
-        s.polygon([(ax, ybot), (ax - 5, ybot - 9), (ax + 5, ybot - 9)],
-                  fill=col)
-        s.text(ax, ybot - 14, 'DN', size=11, fill=col, weight='700')
-    else:
-        s.line(ax, ybot, ax, ytop + 9, stroke=col, stroke_width=1.6)
+
+    def _arrow(gx, n, label, color):
+        """南のはしから北へ向かう矢印。上りも下りも歩き出す向きは同じ。"""
+        ax = px(gx)
+        ybot, ytop = py(land - n * T - 0.22), py(land - 0.12)
+        s.line(ax, ybot, ax, ytop + 9, stroke=color, stroke_width=1.6)
         s.polygon([(ax, ytop), (ax - 5, ytop + 9), (ax + 5, ytop + 9)],
-                  fill=col)
-        s.text(ax, ybot + 16, 'UP', size=11, fill=col, weight='700')
+                  fill=color)
+        s.text(ax, ybot + 14, label, size=11, fill=color, weight='700')
+
+    def _cut(g0, g1, gy):
+        """切断線。ここから先は「切ったより上」なので本来は見えない。"""
+        x0, x1, yy = px(g0), px(g1), py(gy)
+        s.line(x0, yy + 7, x1, yy - 7, stroke='#111', stroke_width=1.1)
+        s.line(x0, yy + 13, x1, yy - 1, stroke='#111', stroke_width=1.1)
+
+    if mode in ('bottom', 'middle'):
+        _arrow((mid + sc) / 2.0, n1, 'UP', col)
+        _cut(mid + 0.05, sc - 0.05, land - (n1 - 1) * T)
+    if mode in ('middle', 'top'):
+        _arrow((sa + mid) / 2.0, n2, 'DN', '#2f7fd0')
     s.text(px(mid), py(land + 0.42), '踊場', size=9.5, fill='#a08840')
 
     # ---- 耐力壁の△印（要求図書に「耐力壁には△印を付ける」と明記） ----
