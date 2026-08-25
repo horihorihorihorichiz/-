@@ -13,7 +13,9 @@
 | `01-tools.html` | 製図道具の発注リスト、届いたら最初にやること |
 | `02-katachi.html` | 型の図面集（平面・伏図・立面・部分詳細・階段・面積表） |
 | `03-cards.html` | 記述の暗記カード20問（携帯用・localStorage保存） |
-| `04-yosou.html` | 予想問題A（印刷用・記述の記入欄つき） |
+| `mondai.html` | 予想問題A 問題用紙（過去問の様式にならったもの・敷地図つき） |
+| `kaitou.html` | 予想問題A 標準解答例（面積表・計画の要点等・図面） |
+| `04-yosou.html` | 予想問題A〜H（かんたん版・記述の記入欄つき） |
 | `onepage.html` | 全部入りの1枚ページ（携帯用）。`onepage.src.html` + `parts/` から生成 |
 | `timetrial.xlsx` | タイムトライアル記録表 |
 | `figures/*.svg` | 図面（スクリプトで生成） |
@@ -36,7 +38,9 @@ python3 site.py         # 配置図
 python3 variants.py     # 予想問題の解答例（1階平面図）
 python3 timetrial.py    # 記録表 xlsx（openpyxl が必要）
 python3 build_onepage.py # onepage.html を組み立てる
-python3 make_pdf.py     # pdf/ に2本のPDFを書き出す（Chromium を使用）
+python3 sitemap.py      # 敷地図（公式様式）
+python3 mondai.py       # 問題用紙・標準解答例のHTML
+python3 make_pdf.py     # pdf/ に4本のPDFを書き出す（Chromium を使用）
 ```
 
 `scripts/svgkit.py` が共通の描画ライブラリ。
@@ -44,7 +48,8 @@ python3 make_pdf.py     # pdf/ に2本のPDFを書き出す（Chromium を使用
 
 ## この教材で採用した数値
 
-- グリッド 910mm、間口 7,280（8マス）× 奥行 9,100（10マス）、各階 66.25㎡、延べ 198.74㎡
+- グリッド 910mm、間口 7,280（8マス）× 奥行 9,100（10マス）、各階 66.24㎡、延べ 198.72㎡
+  （面積は公式の指定どおり小数点以下第3位を**切り捨て**。7.28×9.10＝66.248→66.24）
 - 柱は全階共通16本（通し柱120角×4＝四隅、管柱105角×12）
 - 階段は3階とも西側の同じ位置。**1階→2階は15段（蹴上206.7）、2階→3階は14段（蹴上207.1）**、踏面はいずれも210
 - **1FL = GL+550**（基礎の立上りを地上300mm以上とるため）。軒高 9,350、最高 10,806
