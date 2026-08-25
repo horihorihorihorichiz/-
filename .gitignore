@@ -6,3 +6,5 @@ slides/exports/*.png
 
 __pycache__/
 *.pyc
+
+seizu/pdf/_tmp/

@@ -17,6 +17,8 @@
 | `onepage.html` | 全部入りの1枚ページ（携帯用）。`onepage.src.html` + `parts/` から生成 |
 | `timetrial.xlsx` | タイムトライアル記録表 |
 | `figures/*.svg` | 図面（スクリプトで生成） |
+| `pdf/二級建築士_製図早見盤.pdf` | 全内容のPDF（75ページ） |
+| `pdf/二級建築士_図面集.pdf` | 図面だけを1ページ1枚で（25ページ） |
 
 ## 図面の作り直し
 
@@ -34,6 +36,7 @@ python3 site.py         # 配置図
 python3 variants.py     # 予想問題の解答例（1階平面図）
 python3 timetrial.py    # 記録表 xlsx（openpyxl が必要）
 python3 build_onepage.py # onepage.html を組み立てる
+python3 make_pdf.py     # pdf/ に2本のPDFを書き出す（Chromium を使用）
 ```
 
 `scripts/svgkit.py` が共通の描画ライブラリ。

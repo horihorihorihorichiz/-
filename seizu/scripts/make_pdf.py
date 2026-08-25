@@ -1,0 +1,133 @@
+# -*- coding: utf-8 -*-
+"""PDFを2本つくる。
+
+pdf/二級建築士_製図早見盤.pdf … 早見盤の全内容（読み物）
+pdf/二級建築士_図面集.pdf     … 図面だけを1ページ1枚で大きく
+
+Chromium の印刷機能を使う（外部ライブラリ不要）。
+"""
+import io
+import os
+import subprocess
+import sys
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from build_onepage import inline_svg          # noqa: E402
+
+BASE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+OUT = os.path.join(BASE, 'pdf')
+TMP = os.path.join(OUT, '_tmp')
+CHROME = os.environ.get(
+    'CHROME', '/opt/pw-browsers/chromium-1194/chrome-linux/chrome')
+
+FONT = ("'Hiragino Sans','Noto Sans JP','Yu Gothic',Meiryo,"
+        "'IPAGothic',sans-serif")
+
+PRINT_CSS = """
+<style>
+@page{size:A4;margin:12mm 11mm}
+nav{display:none!important}
+.shell{max-width:none;padding:0}
+section[role=tabpanel]{display:block!important;animation:none!important;
+  break-before:page}
+section[role=tabpanel]#p1{break-before:auto}
+body{background:#fff!important;background-image:none!important;font-size:12.5px;
+  line-height:1.75}
+:root{--paper:#fff;--panel:#fff}
+h2{break-after:avoid;break-inside:avoid;margin:22px 0 4px;font-size:19px}
+h3{margin:16px 0 4px}
+p{margin:8px 0;max-width:none}
+figure{margin:12px 0;break-inside:avoid}
+.sheet{box-shadow:none;border:1px solid #ddd;padding:6px}
+.sheet svg{max-height:196mm;width:auto;max-width:100%;display:block;margin:0 auto}
+.flag,.qa,.panel,.tw,.paper{break-inside:avoid}
+.flag{margin:12px 0;padding:12px 14px}
+.qa{margin:10px 0;padding:12px 14px}
+.deck .ctrl,.deck .bar2,#stage,.wsearch,.whit{display:none!important}
+.dimline{max-width:520px}
+.term{padding:7px 0}
+header{padding:14px 0 10px}
+footer{display:none}
+</style>
+"""
+
+FIGS = [
+    ('型', 'plan1f', '1階平面図 兼 配置図'),
+    ('型', 'plan2f', '2階平面図'),
+    ('型', 'plan3f', '3階平面図'),
+    ('型', 'stair', '階段の段数の割付'),
+    ('型', 'section', '木材の寸法の書き方（幅×せい）'),
+    ('骨組み', 'framing_floor', '床伏図'),
+    ('骨組み', 'framing_roof', '小屋伏図'),
+    ('高さ', 'elevation_s', '南立面図'),
+    ('部分詳細図', 'detail_key', 'どこを切った図なのか'),
+    ('部分詳細図', 'detail_wall', '外壁の6層（横に切った図）'),
+    ('部分詳細図', 'detail_foot', '拡大A　地面のところ'),
+    ('部分詳細図', 'detail_floor2', '拡大B　2階の床のところ'),
+    ('部分詳細図', 'detail', '本番で提出する1枚'),
+    ('解き方', 'esquisse', 'エスキスの6手順'),
+    ('解き方', 'site', '配置図の型'),
+    ('予想A', 'ansA_1f', '1階（客用便所を売場から）'),
+    ('予想B', 'ansB_1f', '1階（祖母の和室）'),
+    ('予想B', 'ansB_2f', '2階'),
+    ('予想B', 'ansB_3f', '3階'),
+    ('予想C', 'ansC_1f', '1階（細長い敷地）'),
+    ('予想C', 'ansC_2f', '2階'),
+    ('予想C', 'ansC_3f', '3階'),
+    ('予想D', 'ansD_1f', '1階（東側道路）'),
+    ('予想E', 'ansE_1f', '1階（南東の角地）'),
+    ('予想F', 'ansF_1f', '1階（北側道路）'),
+]
+
+
+def to_pdf(html_path, pdf_path):
+    subprocess.run(
+        [CHROME, '--headless', '--disable-gpu', '--no-sandbox',
+         '--no-pdf-header-footer', '--virtual-time-budget=20000',
+         '--print-to-pdf=' + pdf_path, 'file://' + html_path],
+        check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    print('wrote %s  (%.1f MB)'
+          % (pdf_path, os.path.getsize(pdf_path) / 1048576.0))
+
+
+def build_hayami():
+    src = io.open(os.path.join(BASE, 'onepage.html'), encoding='utf-8').read()
+    src = src.replace('</style>', '</style>' + PRINT_CSS, 1)
+    p = os.path.join(TMP, 'hayami.html')
+    io.open(p, 'w', encoding='utf-8').write(src)
+    to_pdf(p, os.path.join(OUT, '二級建築士_製図早見盤.pdf'))
+
+
+def build_zumen():
+    css = [
+        '<title>図面集</title><style>',
+        '@page{size:A4;margin:10mm}',
+        '*{box-sizing:border-box;margin:0;padding:0}',
+        'body{font-family:%s;background:#fff;color:#1b1e1b}' % FONT,
+        '.pg{break-after:page;height:277mm;display:flex;flex-direction:column}',
+        '.pg:last-child{break-after:auto}',
+        '.hd{display:flex;align-items:baseline;gap:10px;'
+        'border-bottom:2px solid #a8324a;padding-bottom:5px;margin-bottom:8px}',
+        '.hd .cat{font-size:11px;letter-spacing:.12em;color:#a8324a;'
+        'font-weight:700}',
+        '.hd .ti{font-size:16px;font-weight:700}',
+        '.hd .no{margin-left:auto;font-size:11px;color:#8a8f88}',
+        '.bd{flex:1;display:flex;align-items:center;justify-content:center;'
+        'min-height:0}',
+        '.bd svg{max-width:100%;max-height:100%;width:auto;height:auto}',
+        '</style>']
+    for i, (cat, name, title) in enumerate(FIGS, 1):
+        css.append('<div class="pg"><div class="hd">'
+                   '<span class="cat">%s</span><span class="ti">%s</span>'
+                   '<span class="no">%d / %d</span></div>'
+                   '<div class="bd">%s</div></div>'
+                   % (cat, title, i, len(FIGS), inline_svg(name)))
+    p = os.path.join(TMP, 'zumen.html')
+    io.open(p, 'w', encoding='utf-8').write(''.join(css))
+    to_pdf(p, os.path.join(OUT, '二級建築士_図面集.pdf'))
+
+
+if __name__ == '__main__':
+    os.makedirs(TMP, exist_ok=True)
+    build_hayami()
+    build_zumen()
