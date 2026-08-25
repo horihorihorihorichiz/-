@@ -184,7 +184,8 @@ def draw_floor(n, d=None):
         s.rect(px(a), py(e), (c - a) * G, (e - b) * G, fill=fill,
                stroke=edge, stroke_width=1.2, opacity='0.95')
         cx = (px(a) + px(c)) / 2.0
-        cy = (py(b) + py(e)) / 2.0
+        # 階段室は段の絵と重ならないよう、入口側（南）へ室名を寄せる
+        cy = py(b + 0.62) if kind == 'stair' else (py(b) + py(e)) / 2.0
         big = (c - a) >= 5
         s.text(cx, cy - 2, name, size=16 if big else 13, weight='700',
                fill='#1a1a1a')
@@ -273,24 +274,40 @@ def draw_floor(n, d=None):
            fill='none', stroke='#c0392b', stroke_width=1.6,
            stroke_dasharray='6 4')
 
-    # ---- 階段（折り返し） ----
-    mid = px((sa + sc) / 2.0)
-    top = sd - 1
-    s.line(mid, py(sb), mid, py(top), stroke='#8a6d00', stroke_width=1.6)
-    for k in range(1, 8):
-        yy = py(sb) - k * (py(sb) - py(top)) / 8.0
-        s.line(px(sa) + 3, yy, mid, yy, stroke='#8a6d00', stroke_width=0.9)
-        s.line(mid, yy, px(sc) - 3, yy, stroke='#8a6d00', stroke_width=0.9)
-    s.line(px(sa) + 3, py(top), px(sc) - 3, py(top), stroke='#8a6d00',
+    # ---- 階段（折り返し＝910mm幅の階段が2本並ぶ） ----
+    mid = (sa + sc) / 2.0
+    T = 210.0 / 910.0                     # 踏面210mmをマスに直す
+    land = sd - 1                         # 踊り場（北の1マス）
+    n1, n2 = d.get('stair_runs', (6, 7))  # 上り側・下り側の踏面の数
+    col = '#8a6d00'
+    down = 'DN' in d.get('stair_up', '')
+    # 踊り場の線
+    s.line(px(sa) + 3, py(land), px(sc) - 3, py(land), stroke=col,
            stroke_width=1.6)
-    s.text(mid, py(top + 0.55), '踊り場', size=10, fill='#8a6d00')
-    s.line(px(sa + 0.5), py(sb + 0.3), px(sa + 0.5), py(top - 0.1),
-           stroke='#8a6d00', stroke_width=1.6)
-    s.polygon([(px(sa + 0.5), py(top + 0.15)),
-               (px(sa + 0.5) - 5, py(top - 0.15)),
-               (px(sa + 0.5) + 5, py(top - 0.15))], fill='#8a6d00')
-    s.text(px(sc - 0.5), py(sb + 0.55), 'UP', size=12, fill='#8a6d00',
-           weight='700')
+    # 2本の階段を分ける線（手すり側）
+    s.line(px(mid), py(sb), px(mid), py(land), stroke=col, stroke_width=1.4)
+    # 東側の段（先に上るほう）
+    for k in range(1, n1 + 1):
+        yy = py(land - k * T)
+        s.line(px(mid) + 2, yy, px(sc) - 3, yy, stroke=col, stroke_width=0.9)
+    # 西側の段（踊り場で折り返したあと）
+    for k in range(1, n2 + 1):
+        yy = py(land - k * T)
+        s.line(px(sa) + 3, yy, px(mid) - 2, yy, stroke=col, stroke_width=0.9)
+    # 上り（下り）の矢印。段のある東側に1本だけ引く
+    ax = px((mid + sc) / 2.0)
+    ytop, ybot = py(land - 0.12), py(land - n1 * T - 0.30)
+    if down:
+        s.line(ax, ytop, ax, ybot + 9, stroke=col, stroke_width=1.6)
+        s.polygon([(ax, ybot), (ax - 5, ybot - 9), (ax + 5, ybot - 9)],
+                  fill=col)
+        s.text(ax, ybot - 14, 'DN', size=11, fill=col, weight='700')
+    else:
+        s.line(ax, ybot, ax, ytop + 9, stroke=col, stroke_width=1.6)
+        s.polygon([(ax, ytop), (ax - 5, ytop + 9), (ax + 5, ytop + 9)],
+                  fill=col)
+        s.text(ax, ybot + 16, 'UP', size=11, fill=col, weight='700')
+    s.text(px(mid), py(land + 0.42), '踊場', size=9.5, fill='#a08840')
 
     # ---- 柱 ----
     for gx, gy in kuda:
