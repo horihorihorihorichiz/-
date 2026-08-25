@@ -807,6 +807,84 @@ A2用紙の中で意外と小さいことを、目で覚えておいてくださ
 <p>4寸勾配は「よこ10進むとたて4上がる」。建物の幅7,280の半分＝3,640なので、
 <b class="num">3,640 × 0.4 ＝ 1,456mm</b> が軒桁の上から棟までの高さです。</p>
 
+<h2><span class="kicker">高さの基本</span>GL（ジーエル）ってなに？</h2>
+<p>立面図も断面図も部分詳細図も、高さは全部<b>GL</b>から測ります。
+ここが分からないと、数字を書いても意味が分からないまま写すことになるので、
+先にここだけ片付けます。</p>
+<figure><div class="sheet">{{SVG:gl}}</div>
+<figcaption>GLは「この敷地の地面を0にした線」。高さのものさしの0の位置。</figcaption></figure>
+
+<h3>ひとことで言うと</h3>
+<div class="flag yes">
+  <h4>GL ＝ Ground Level ＝ 地盤面（じばんめん）</h4>
+  <p><b>その建物が建つ地面の高さを「ここを0にしよう」と決めた線</b>です。
+  高さを測るときの<b>ものさしの0の位置</b>だと思ってください。</p>
+</div>
+<div class="flag no">
+  <h4>よくある勘違い</h4>
+  <p>GLは<b>海抜（標高）ではありません。</b>
+  「この土地の地面」という意味なので、敷地がちがえばGLの位置もちがいます。
+  その図面の中だけで通じる0です。</p>
+</div>
+
+<h3>読み方は3つだけ</h3>
+<div class="tw"><table>
+<tr><th class="wrap">書き方</th><th class="wrap">読み方</th><th class="wrap">意味</th></tr>
+<tr><td class="wrap"><b>GL±0</b></td><td class="wrap">ジーエル・ゼロ</td>
+    <td class="wrap">地面ちょうど</td></tr>
+<tr><td class="wrap"><b>GL＋550</b></td><td class="wrap">ジーエル・プラス550</td>
+    <td class="wrap">地面から550mm<b>上</b></td></tr>
+<tr><td class="wrap"><b>GL−400</b></td><td class="wrap">ジーエル・マイナス400</td>
+    <td class="wrap">地面から400mm<b>下</b>（土の中）</td></tr>
+</table></div>
+<p>ミリ単位なので、<b>GL＋550は55cm</b>、<b>GL＋10,806は約10.8m</b>です。
+図面の数字にmmと書いていないのは、<span class="mark">建築の図面は単位がmmと決まっている</span>からです。</p>
+
+<h3>GLとFLはちがう</h3>
+<p>もうひとつ<b>FL</b>という記号が出てきます。こちらは<b>Floor Level ＝ 床の高さ</b>。
+1階の床なら<b>1FL</b>、2階の床なら<b>2FL</b>と書きます。</p>
+<ul>
+<li><b>GL</b>… 地面。<b>建物ぜんぶで1つだけ</b></li>
+<li><b>FL</b>… 床。<b>階の数だけある</b>（1FL・2FL・3FL）</li>
+<li>FLの位置は、いつも<b>GLから何mm上か</b>で言う（例：1FL＝GL＋550）</li>
+</ul>
+
+<h3>なぜ1階の床は地面より550mmも高いのか</h3>
+<p>地面にそのまま床を置くと、雨で水が入り、土の湿気で木が腐り、
+シロアリが上がってきます。だから<b>基礎で持ち上げてから</b>床を作ります。</p>
+<div class="tw"><table>
+<tr><th class="wrap">積むもの</th><th class="n">厚さ</th><th class="wrap">なに</th></tr>
+<tr><td class="wrap">基礎の立上り</td><td class="n">386</td>
+    <td class="wrap">地面から上に立っているコンクリートの部分</td></tr>
+<tr><td class="wrap">基礎パッキン</td><td class="n">20</td>
+    <td class="wrap">すき間をあけて床下の風通しをよくする部品</td></tr>
+<tr><td class="wrap">土台</td><td class="n">105</td>
+    <td class="wrap">基礎の上に横に寝かせる木（105×105）</td></tr>
+<tr><td class="wrap">構造用合板</td><td class="n">24</td>
+    <td class="wrap">床の下地の板</td></tr>
+<tr><td class="wrap">フローリング</td><td class="n">15</td>
+    <td class="wrap">仕上げの板。この上の面が1FL</td></tr>
+<tr class="sum"><td class="wrap">合計</td><td class="n">550</td>
+    <td class="wrap">＝ 1FL は GL＋550</td></tr>
+</table></div>
+<div class="flag fix">
+  <h4>ここは法律で決まっている</h4>
+  <p><b>基礎の立上りは、地面から300mm以上</b>（平成12年建設省告示1347号）。
+  この型は386mmなのでOKです。<br>
+  だから<b>1FL＝GL＋400は物理的に無理</b>で、前に一度直したのはこの理由です。</p>
+</div>
+
+<h3>答案では、どこにGLを書くか</h3>
+<ul>
+<li><b>立面図・断面図</b>… 左はしに横線を引いて <b>GL</b> と書き、
+1FL・2FL・3FL・軒高・最高の高さも同じように書く</li>
+<li><b>部分詳細図</b>… GLの線と、そこからの寸法（基礎の立上り・根入れ）を書く</li>
+<li><b>平面図</b>… 室名の下に <b>GL＋550</b> のように<b>床高</b>を書く
+（玄関ポーチやバルコニーは床高がちがうので、そこも書く）</li>
+</ul>
+<p><span class="mark">立面図・断面図を描き始める前に、まずGLの横線を1本引く。</span>
+それが決まれば、あとは上へ足し算していくだけです。</p>
+
 <h2><span class="kicker">高さ</span>立面図は足し算だけ</h2>
 <figure><div class="sheet">{{SVG:elevation_s}}</div>
 <figcaption>南から見た姿。棟が南北方向なので三角形に見える（妻面）。</figcaption></figure>
