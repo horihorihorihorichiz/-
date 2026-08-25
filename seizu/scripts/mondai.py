@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
-"""公式の様式にならった問題用紙と標準解答例をつくる。
+"""公式の様式にならった問題用紙と標準解答例を6セットつくる。
 
-過去問（令和5年・令和7年）の問題用紙の章立て・文言・表の構成を写し、
+建築技術教育普及センターが公開している過去問（令和5年・令和7年）の
+問題用紙と標準解答例の章立て・文言・表の構成を写し、
 令和8年度の課題「商店街に建つ併用住宅（木造3階建て）」に置きかえたもの。
 """
 import io
@@ -12,107 +13,101 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from build_onepage import inline_svg          # noqa: E402
 
 BASE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+MIN = "'Zen Old Mincho','Hiragino Mincho ProN','Yu Mincho','MS Mincho',serif"
+GO = "'Hiragino Sans','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif"
 
-MIN = ("'Zen Old Mincho','Hiragino Mincho ProN','Yu Mincho','MS Mincho',"
-       "serif")
-GO = ("'Hiragino Sans','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',"
-      "sans-serif")
-
-CSS = """
-<style>
+CSS = """<style>
 @page{size:A4;margin:14mm 13mm}
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:%s;font-size:11.5px;line-height:1.75;color:#000;
+body{font-family:GOFONT;font-size:11.5px;line-height:1.75;color:#000;
   background:#fff}
 .sheet{max-width:186mm;margin:0 auto}
 .note0{border:1px solid #000;padding:7px 9px;font-size:10.5px;line-height:1.6;
-  margin-bottom:14px}
-.kadai{text-align:center;font-family:%s;font-size:17px;font-weight:700;
-  letter-spacing:.08em;margin:16px 0 18px;padding:7px 0;
+  margin-bottom:12px}
+.kadai{text-align:center;font-family:MINFONT;font-size:16px;font-weight:700;
+  letter-spacing:.06em;margin:14px 0 16px;padding:7px 0;
   border-top:2px solid #000;border-bottom:2px solid #000}
-h2.sec{font-family:%s;font-size:14px;font-weight:700;margin:20px 0 7px}
-h3.sub{font-size:12px;font-weight:700;margin:13px 0 4px}
+.kadai small{display:block;font-family:GOFONT;font-size:11px;font-weight:400;
+  letter-spacing:0;margin-top:4px;color:#444}
+h2.sec{font-family:MINFONT;font-size:14px;font-weight:700;margin:18px 0 6px}
+h3.sub{font-size:12px;font-weight:700;margin:12px 0 4px}
 p{margin:5px 0}
 .ind{margin-left:1.1em}
-ol.jp{list-style:none;counter-reset:jp;margin:4px 0 4px 1.6em}
+ol.jp{list-style:none;counter-reset:jp;margin:4px 0 4px 1.7em}
 ol.jp>li{counter-increment:jp;position:relative;margin:3px 0}
 ol.jp>li::before{content:counter(jp,katakana)"．";position:absolute;
-  left:-1.7em;width:1.6em;text-align:left}
-ol.maru{list-style:none;counter-reset:mr;margin:4px 0 4px 1.6em}
-ol.maru>li{counter-increment:mr;position:relative;margin:3px 0}
-ol.maru>li::before{content:"("counter(mr)")";position:absolute;left:-1.9em}
+  left:-1.8em}
 ul.dot{list-style:none;margin:3px 0 3px 1em}
 ul.dot>li{position:relative;margin:2px 0}
 ul.dot>li::before{content:"・";position:absolute;left:-1em}
-table{border-collapse:collapse;width:100%%;font-size:10.5px;margin:7px 0;
+table{border-collapse:collapse;width:100%;font-size:10.5px;margin:7px 0;
   line-height:1.6}
 th,td{border:1px solid #000;padding:4px 6px;vertical-align:top}
 th{background:#f0f0f0;font-weight:700;text-align:center}
-td.c{text-align:center;vertical-align:middle;width:34px;font-weight:700}
-td.rm{width:96px;font-weight:700}
-td.n{text-align:right;font-family:%s}
-.fig{text-align:center;margin:16px 0}
-.fig svg{max-width:100%%;height:auto}
+td.c{text-align:center;vertical-align:middle;width:32px;font-weight:700}
+td.rm{width:100px;font-weight:700}
+td.n{text-align:right;font-family:GOFONT;width:80px}
+.fig{text-align:center;margin:14px 0}
+.fig svg{max-width:100%;height:auto;max-height:210mm}
 .brk{break-before:page}
 .stamp{border:2px solid #000;display:inline-block;padding:5px 22px;
-  font-family:%s;font-size:15px;font-weight:700;letter-spacing:.2em}
-.ansbox{border:1px solid #000;padding:9px 11px;margin:9px 0}
+  font-family:MINFONT;font-size:15px;font-weight:700;letter-spacing:.2em}
+.ansbox{border:1px solid #000;padding:9px 11px;margin:9px 0;
+  break-inside:avoid}
 .ansbox .q{font-weight:700;margin-bottom:5px}
 .ansbox .a{font-size:11px;line-height:1.9}
-.cap{font-size:10px;color:#444;text-align:center;margin-top:5px}
 .warn{border:1px solid #999;background:#f7f7f7;padding:8px 10px;
-  font-size:10.5px;margin:12px 0}
-</style>
-""" % (GO, MIN, MIN, GO, MIN)
+  font-size:10.5px;margin:11px 0}
+</style>""".replace('GOFONT', GO).replace('MINFONT', MIN)
 
-ROOMS = [
-    ('１<br>階', '店舗売場',
-     'ア．25m<sup>2</sup>以上とする。<br>'
+# ---------------- 要求室 ----------------
+R_SHOP = [
+    ('店舗売場', 'ア．25m<sup>2</sup>以上とする。<br>'
      'イ．道路に面して出入口を設ける。<br>'
      'ウ．陳列棚及びレジカウンターを設ける。'),
-    ('', '厨房・作業場',
-     'ア．9m<sup>2</sup>以上とする。<br>'
+    ('厨房・作業場', 'ア．9m<sup>2</sup>以上とする。<br>'
      'イ．店舗売場に隣接させ、直接行き来できるようにする。<br>'
      'ウ．流し台、調理台、作業台及びオーブンを設ける。'),
-    ('', 'スタッフルーム',
-     'ア．6m<sup>2</sup>以上とする。<br>'
+    ('スタッフルーム', 'ア．6m<sup>2</sup>以上とする。<br>'
      'イ．従業員の更衣及び休憩に使用する。'),
-    ('', '店舗用便所',
-     'ア．来客が利用できるものとする。<br>'
+    ('店舗用便所', 'ア．来客が利用できるものとする。<br>'
      'イ．洋式便器及び手洗い器を設ける。'),
-    ('', '倉　庫', '・商品及び材料を保管する。'),
-    ('', '玄　関',
-     'ア．住宅部分の玄関とし、道路から直接出入りできるものとする。<br>'
-     'イ．下足入れを設ける。'),
-    ('２<br>階', '居間・食事室・台所',
-     'ア．１室にまとめ、25m<sup>2</sup>以上として計画する。<br>'
-     'イ．ソファー、テーブル及び椅子（計４席以上）を設ける。<br>'
-     'ウ．台所設備機器（流し台・調理台・コンロ台・冷蔵庫等）を設ける。'),
-    ('', '和　室',
-     'ア．６畳以上とする。<br>'
+    ('倉　庫', '・商品及び材料を保管する。'),
+    ('玄　関', 'ア．住宅部分の玄関とし、道路から直接出入りできるものとする。'
+     '<br>イ．下足入れを設ける。'),
+]
+R_2F = [
+    ('居間・食事室・台所', 'ア．１室にまとめ、25m<sup>2</sup>以上として'
+     '計画する。<br>イ．ソファー、テーブル及び椅子（計４席以上）を設ける。'
+     '<br>ウ．台所設備機器（流し台・調理台・コンロ台・冷蔵庫等）を設ける。'),
+    ('和　室', 'ア．６畳以上とする。<br>'
      'イ．居間に隣接させ、直接行き来できるようにする。<br>'
      'ウ．押入れを設ける。'),
-    ('', '浴室・洗面脱衣室',
+    ('浴室・洗面脱衣室',
      '・浴室には浴槽、洗面脱衣室には洗面台及び洗濯機を設ける。'),
-    ('', '便　所', '・洋式便器を設ける。'),
-    ('', '家事室', '・納戸を兼ねてもよい。'),
-    ('３<br>階', '夫婦寝室',
-     'ア．13m<sup>2</sup>以上とする。<br>'
+    ('便　所', '・洋式便器を設ける。'),
+    ('家事室', '・納戸を兼ねてもよい。'),
+]
+R_3F = [
+    ('夫婦寝室', 'ア．13m<sup>2</sup>以上とする。<br>'
      'イ．洋室とし、ベッド（計２台）及び収納を設ける。'),
-    ('', '子ども室',
-     'ア．２室（各8m<sup>2</sup>以上）設け、いずれも同じ広さとする。<br>'
-     'イ．いずれも洋室とし、ベッド、机及び収納を設ける。'),
-    ('', '便　所', '・洋式便器を設ける。'),
-    ('', '納　戸', ''),
+    ('子ども室', 'ア．２室（各8m<sup>2</sup>以上）設け、いずれも同じ広さと'
+     'する。<br>イ．いずれも洋室とし、ベッド、机及び収納を設ける。'),
+    ('便　所', '・洋式便器を設ける。'),
+    ('納　戸', ''),
+]
+R_SHOP_B = [r for r in R_SHOP if r[0] != 'スタッフルーム'] + [
+    ('和　室<br>（母の寝室）',
+     'ア．６畳以上とする。<br>'
+     'イ．母が階段を使わずに生活できるようにする。<br>'
+     'ウ．押入れを設ける。'),
 ]
 
 ZUSHO = [
-    ('⑴ １階平面図兼配置図<br>（１/100）<br><br>'
-     '⑵ ２階平面図<br>（１/100）<br><br>'
-     '⑶ ３階平面図<br>（１/100）',
+    ('⑴ １階平面図兼配置図<br>（１/100）<br><br>⑵ ２階平面図<br>（１/100）'
+     '<br><br>⑶ ３階平面図<br>（１/100）',
      'ア．１階平面図兼配置図、２階平面図及び３階平面図には、次のものを'
-     '記入する。'
-     '<ul class="dot"><li>建築物の主要な寸法</li><li>室名等</li>'
+     '記入する。<ul class="dot"><li>建築物の主要な寸法</li><li>室名等</li>'
      '<li>「通し柱」を○印で囲み、「耐力壁」には△印を付ける。</li>'
      '<li>部分詳細図の切断位置及び方向</li></ul>'
      'イ．１階平面図兼配置図には、次のものを記入する。'
@@ -125,13 +120,12 @@ ZUSHO = [
      '<li>厨房・作業場…流し台、調理台、作業台及びオーブン</li>'
      '<li>店舗用便所…洋式便器及び手洗い器</li>'
      '<li>玄関…下足入れ</li></ul>'
-     'ウ．２階平面図には、次のものを記入する。'
-     '<ul class="dot">'
+     'ウ．２階平面図には、次のものを記入する。<ul class="dot">'
      '<li>居間・食事室・台所…ソファー、テーブル、椅子及び台所設備機器</li>'
      '<li>和室…畳及び押入れ</li>'
      '<li>浴室…浴槽／洗面脱衣室…洗面台及び洗濯機／便所…洋式便器</li></ul>'
-     'エ．３階平面図には、次のものを記入する。'
-     '<ul class="dot"><li>夫婦寝室…ベッド及び収納</li>'
+     'エ．３階平面図には、次のものを記入する。<ul class="dot">'
+     '<li>夫婦寝室…ベッド及び収納</li>'
      '<li>子ども室…ベッド、机及び収納</li>'
      '<li>便所…洋式便器</li></ul>'),
     ('⑷ 床伏図兼小屋伏図<br>（１/100）',
@@ -141,217 +135,415 @@ ZUSHO = [
      'したがって記入し、断面寸法（小屋束を除く。）を凡例欄に記入する。<br>'
      'ウ．火打梁の代わりに構造用面材による床組とする場合には、胴差、床梁、'
      '桁を記入したうえで、構造用合板の厚さ、釘の種類・打ち付け間隔を'
-     '明記する。<br>'
-     'エ．建築物の主要な寸法を記入する。'),
+     '明記する。<br>エ．建築物の主要な寸法を記入する。'),
     ('⑸ 立面図<br>（１/100）',
-     'ア．南側立面図とする。<br>'
-     'イ．建築物の最高の高さを記入する。'),
+     'ア．南側立面図とする。<br>イ．建築物の最高の高さを記入する。'),
     ('⑹ 部分詳細図（断面）<br>（１/20）',
      'ア．切断位置は、外壁を含む部分とし、開口部を含むものとする。<br>'
      'イ．作図の範囲は、基礎から２階の床までとする。<br>'
      'ウ．主要部の寸法等（床高、天井高、階高、基礎の寸法等）を記入する。<br>'
      'エ．主要部材（基礎、土台、柱、胴差、床梁等必要なもの）の名称・'
-     '断面寸法を記入する。<br>'
-     'オ．アンカーボルト等の名称・寸法を記入する。<br>'
-     'カ．外壁、床、その他必要と思われる部分の断熱・防湿措置を記入する。<br>'
-     'キ．内外の主要な部位（外壁、床、内壁、天井）の仕上材料名を記入する。'),
+     '断面寸法を記入する。<br>オ．アンカーボルト等の名称・寸法を'
+     '記入する。<br>カ．外壁、床、その他必要と思われる部分の断熱・防湿措置'
+     'を記入する。<br>キ．内外の主要な部位（外壁、床、内壁、天井）の'
+     '仕上材料名を記入する。'),
     ('⑺ 面積表',
      'ア．建築面積、床面積及び延べ面積を記入する。<br>'
      'イ．建築面積及び床面積については、計算式も記入する。<br>'
      'ウ．面積の数値は、小数点以下第２位までとし、第３位以下は切り捨てる。'),
-    ('⑻ 計画の要点等',
-     '・建築物の計画に関する次の①〜③について、具体的に記述する。'
-     '<ul class="dot">'
-     '<li>①　木造３階建てとするに当たり、構造計画上工夫した点</li>'
-     '<li>②　店舗部分と住宅部分の動線計画について工夫した点</li>'
-     '<li>③　防火及び避難について配慮した点</li></ul>'),
 ]
 
 
-def mondai():
-    o = ['<title>予想問題A 問題用紙</title>', CSS, '<div class="sheet">']
-    o.append('<div class="note0">〔注意事項〕試験問題を十分に読んだうえで、'
-             '「設計製図の試験」に臨むようにしてください。なお、建築基準法等の'
-             '関係法令や要求図書、主要な要求室等の計画等の設計与条件に対して'
-             '解答内容が不十分な場合には、「設計条件・要求図書に対する重大な'
-             '不適合」と判断されます。</div>')
-    o.append('<div class="warn">この問題用紙は、過去問（令和5年・令和7年）の'
-             '様式にならって作成した<b>予想問題</b>です。本物の試験問題では'
-             'ありません。実際の出題内容は当日の問題用紙によります。</div>')
-    o.append('<div class="kadai">設計課題　「商店街に建つ併用住宅'
-             '（木造３階建て）」</div>')
+def rooms_std(shop=None):
+    return [('１階', shop or R_SHOP), ('２階', R_2F), ('３階', R_3F)]
+
+
+AREA_STD = ('7.28 × 9.10', '66.24', '198.72')
+AREA_B = ('8.19 × 9.10', '74.52', '223.56')
+AREA_C = ('6.37 × 10.01', '63.76', '191.28')
+
+Y_KOZO = ('木造３階建てとするに当たり、構造計画上工夫した点',
+          '１階から３階まで柱の位置をすべてそろえ、直下率を高めた。'
+          '通り芯の交点に柱を各階共通で配置し、建築物の四隅は120mm角の'
+          '通し柱、その他は105mm角の管柱としている。梁の最大スパンは'
+          '3,640mmに抑え、床は構造用合板t=24を梁に直接張った剛床として、'
+          '地震力及び風圧力を耐力壁へ確実に伝達させている。耐力壁は'
+          '筋かい45×90のたすき掛け及び構造用合板t=9を用い、桁行方向・'
+          '梁間方向のいずれにも偏りなく配置した。')
+
+
+def y_bouka(nobe):
+    return ('防火及び避難について配慮した点',
+            '準防火地域に建つ延べ面積%sm<sup>2</sup>・地上３階の木造で'
+            'あるため、45分準耐火建築物とした。外壁は屋内側から強化石膏'
+            'ボードt=15、柱105（グラスウール16K t=100充填）、構造用合板'
+            't=9、透湿防水シート、通気胴縁t=18、窯業系サイディングt=16の'
+            '構成とし、軒裏はケイ酸カルシウム板としている。３階に居室を'
+            '有するため、階段室を準耐火構造の床及び壁で囲み、階段室に'
+            '面する開口部を防火設備として竪穴区画とした。各居室から階段'
+            'までの歩行距離を短くし、避難経路を単純にしている。' % nobe)
+
+
+Y_DOUSEN = ('店舗部分と住宅部分の動線計画について工夫した点',
+            '店舗の出入口は道路側に設け、来店客は店舗売場から店舗用便所へ'
+            '至る動線とした。店舗用便所は売場の一部を区画して設け、厨房を'
+            '通らずに利用できるようにしている。住宅の玄関は店舗の出入口と'
+            'は別に設け、玄関を入ってすぐ階段へ上がれる配置とした。これに'
+            'より住まい手が売場を通らずに２階・３階へ行くことができ、営業'
+            '時間中も両者の動線が交錯しない。商品及び材料の搬入は建築物'
+            '背面の勝手口から厨房・倉庫へ直接行える。')
+
+SPECS = [
+ dict(tag='A', name='南側道路（本命）',
+      lead='ある地方都市の商店街において、パン屋を営む夫婦とその子ども'
+           '２人が住むための併用住宅を計画する。',
+      points=['店舗部分と住宅部分の動線が交錯しないようにする。',
+              '木造３階建てであることを踏まえ、構造上のバランスに'
+              '配慮する。', '防火及び避難に配慮する。'],
+      ken='80', you='300', nobe='180m<sup>2</sup>以上、200m<sup>2</sup>以下',
+      rooms=rooms_std(), area=AREA_STD, site_area='180.00',
+      check='延べ面積 198.72m<sup>2</sup>（180〜200 ○）／建蔽率 66.24 ÷ 180 '
+            '＝ 36.8%（限度80% ○）／容積率の限度は 前面道路8m × 6/10 ＝ '
+            '480% と 都市計画300% の小さいほうで300%、198.72 ÷ 180 ＝ '
+            '110.4%（○）',
+      youten=[Y_KOZO, Y_DOUSEN, y_bouka('198.72')],
+      figs=[('⑴ １階平面図兼配置図（1/100）', 'ansA_1f'),
+            ('⑵ ２階平面図（1/100）', 'plan2f'),
+            ('⑶ ３階平面図（1/100）', 'plan3f'),
+            ('⑷ 床伏図（1/100）', 'framing_floor'),
+            ('⑷ 小屋伏図（1/100）', 'framing_roof'),
+            ('⑸ 南側立面図（1/100）', 'elevation_s'),
+            ('⑹ 部分詳細図（断面）（1/20）', 'detail')]),
+
+ dict(tag='B', name='１階に母の寝室',
+      lead='ある地方都市の商店街において、パン屋を営む夫婦とその子ども'
+           '２人、及び夫の母（70歳代）が住むための併用住宅を計画する。',
+      points=['母が階段を使わずに生活できるようにする。',
+              '店舗部分と住宅部分の動線が交錯しないようにする。',
+              '高齢者の避難に配慮する。'],
+      ken='80', you='300', nobe='200m<sup>2</sup>以上、230m<sup>2</sup>以下',
+      rooms=rooms_std(R_SHOP_B), area=AREA_B, site_area='224.00',
+      check='延べ面積 223.56m<sup>2</sup>（200〜230 ○）／建蔽率 74.52 ÷ 224 '
+            '＝ 33.3%（限度80% ○）／容積率の限度は 前面道路6m × 6/10 ＝ '
+            '360% と 300% の小さいほうで300%、223.56 ÷ 224 ＝ 99.8%（○）',
+      youten=[
+        ('高齢者の居室を１階に設けたことについて工夫した点',
+         '母の寝室である和室６畳を１階の北西に配置し、階段を使わずに生活'
+         'できるようにした。住宅玄関から寝室までは有効910mmの廊下１本で'
+         'つながり、途中に段差を設けていない。寝室のすぐ南に階段室がある'
+         'ため、２階・３階の家族がすぐに様子を見に行ける。廊下及び出入口'
+         'の有効幅は780mm以上とし、将来手すりを取り付けられるよう壁に'
+         '下地を入れている。'),
+        Y_DOUSEN,
+        ('高齢者の避難について配慮した点',
+         '母の寝室を１階に置いたことで、火災時に階段を使わずに屋外へ避難'
+         'できる。寝室は南面及び西面の２方向に開口部を持ち、掃出し窓から'
+         '直接屋外へ出ることもできる。廊下から玄関までの避難経路は直線で、'
+         '途中に段差や狭くなる部分がない。階段室は竪穴区画としているため、'
+         '上階からの煙が１階の廊下へ流れ込みにくい。')],
+      figs=[('⑴ １階平面図兼配置図（1/100）', 'ansB_1f'),
+            ('⑵ ２階平面図（1/100）', 'ansB_2f'),
+            ('⑶ ３階平面図（1/100）', 'ansB_3f')]),
+
+ dict(tag='C', name='間口の狭い敷地',
+      lead='ある地方都市の商店街において、パン屋を営む夫婦とその子ども'
+           '２人が住むための併用住宅を計画する。',
+      points=['間口が狭い敷地であることを踏まえた平面計画とする。',
+              '奥行きの深い店舗売場の採光及び通風に配慮する。',
+              '店舗部分と住宅部分の動線が交錯しないようにする。'],
+      ken='80', you='300', nobe='180m<sup>2</sup>以上、200m<sup>2</sup>以下',
+      rooms=rooms_std(), area=AREA_C, site_area='180.00',
+      check='延べ面積 191.28m<sup>2</sup>（180〜200 ○）／建蔽率 63.76 ÷ 180 '
+            '＝ 35.4%（限度80% ○）／容積率の限度は 前面道路6m × 6/10 ＝ '
+            '360% と 300% の小さいほうで300%、191.28 ÷ 180 ＝ 106.3%（○）',
+      youten=[
+        ('間口が狭い敷地に対して、平面計画上工夫した点',
+         '間口9,000mmに対し建築物の間口を6,370mm（910mm×７マス）とし、'
+         '東西の隣地境界線から外壁面まで1,315mmずつを確保した。不足する'
+         '床面積は奥行き方向で確保することとし、奥行を10,010mm'
+         '（910mm×11マス）としている。910mmのモジュールは崩さず、マスの'
+         '数だけを組みかえたため、階段の位置や西側の水まわりの配置は'
+         '変えずに済んでいる。'),
+        ('奥行きの深い店舗売場の採光及び通風について工夫した点',
+         '店舗売場は間口4,550mm・奥行6,370mmと奥に深くなるため、南面の'
+         '道路側に幅2,730mmの出入口及び開口部を設けたうえで、東面にも'
+         '高さのある窓を連続して設け、奥まで光が届くようにした。北面には'
+         '勝手口を設け、南面の開口部との間で南北に風が抜ける経路を確保'
+         'している。天井高を2,700mmとし、高い位置に窓を設けることで'
+         '奥への採光を助けている。'),
+        ('木造３階建てとするに当たり、構造計画上工夫した点',
+         '間口方向のスパンは1,820／2,730／1,820、奥行方向は1,820／3,640／'
+         '2,730／1,820に区切り、いずれも3,640mm以下に抑えた。奥行が長く'
+         'なるため東西方向の通りを５本とし、柱を各階同じ位置に20本配置'
+         'して直下率を高めている。建築物の四隅は120mm角の通し柱、その他は'
+         '105mm角の管柱とした。床は構造用合板t=24を梁に直接張った剛床と'
+         'し、水平力を耐力壁へ伝達させている。')],
+      figs=[('⑴ １階平面図兼配置図（1/100）', 'ansC_1f'),
+            ('⑵ ２階平面図（1/100）', 'ansC_2f'),
+            ('⑶ ３階平面図（1/100）', 'ansC_3f')]),
+
+ dict(tag='D', name='東側道路',
+      lead='ある地方都市の商店街において、パン屋を営む夫婦とその子ども'
+           '２人が住むための併用住宅を計画する。',
+      points=['店舗の出入口及び住宅の玄関は、東側の道路から出入りできる'
+              'ものとする。',
+              '店舗部分と住宅部分の動線が交錯しないようにする。',
+              '木造３階建てであることを踏まえ、構造上のバランスに'
+              '配慮する。'],
+      ken='80', you='300', nobe='180m<sup>2</sup>以上、200m<sup>2</sup>以下',
+      rooms=rooms_std(), area=AREA_STD, site_area='180.00',
+      check='延べ面積 198.72m<sup>2</sup>（180〜200 ○）／建蔽率 66.24 ÷ 180 '
+            '＝ 36.8%（限度80% ○）／容積率の限度は 前面道路6m × 6/10 ＝ '
+            '360% と 300% の小さいほうで300%、198.72 ÷ 180 ＝ 110.4%（○）',
+      youten=[
+        ('東側道路に対して、平面計画上工夫した点',
+         '店舗売場を建築物の東側に配置し、道路に面する東面に幅3,640mmの'
+         '出入口及び開口部を設けて、通りから店内が見えるようにした。'
+         '住宅の玄関は同じ東面の南端に別に設け、来店客と住まい手の出入口'
+         'を分けている。厨房・スタッフルーム・倉庫は道路から見えない'
+         '西側及び南側にまとめ、北面の勝手口から搬入できるようにした。'),
+        ('階段の位置と直下率について工夫した点',
+         '東面は店舗売場と住宅玄関で使い切るため、階段は玄関の西どなり'
+         '（建築物の南中央）に配置した。この位置を１階から３階まで変えず、'
+         '２階・３階の平面も同じ階段位置を前提に組み立てている。柱は'
+         'Ａ・Ｂ・Ｃ・Ｄ通りと１・２・３・４通りの交点に各階共通で16本'
+         '配置し、直下率を高めた。梁の最大スパンは3,640mmに抑えている。'),
+        Y_DOUSEN],
+      figs=[('⑴ １階平面図兼配置図（1/100）', 'ansD_1f'),
+            ('⑵ ２階平面図（1/100）', 'ansD_2f'),
+            ('⑶ ３階平面図（1/100）', 'ansD_3f')]),
+
+ dict(tag='E', name='南東の角地',
+      lead='ある地方都市の商店街において、パン屋を営む夫婦とその子ども'
+           '２人が住むための併用住宅を計画する。',
+      points=['角地であることを活かした計画とする。',
+              '店舗部分と住宅部分の動線が交錯しないようにする。',
+              '防火及び避難に配慮する。'],
+      ken='90', you='300', nobe='180m<sup>2</sup>以上、200m<sup>2</sup>以下',
+      ken_note='（特定行政庁が指定した角地における加算を含む。）',
+      rooms=rooms_std(), area=AREA_STD, site_area='182.00',
+      check='延べ面積 198.72m<sup>2</sup>（180〜200 ○）／建蔽率 66.24 ÷ 182 '
+            '＝ 36.4%（限度90% ○）／容積率の限度は <b>幅の広い南側道路8m</b>'
+            ' × 6/10 ＝ 480% と 300% の小さいほうで300%、198.72 ÷ 182 ＝ '
+            '109.2%（○）',
+      youten=[
+        ('角地であることを活かして工夫した点',
+         '店舗の出入口を南東の角に向けて設け、南側の通りからも東側の通り'
+         'からも入りやすくした。店舗売場は南面及び東面の２方向に開口部を'
+         '持つため、自然光が奥まで入り、通りからも店内の様子が見える。'
+         '住宅の玄関は南面の西端に設け、来店客の動線と分離している。'),
+        ('容積率及び建蔽率の算定について',
+         '前面道路が２つあるため、容積率の限度の算定には幅の広い南側道路'
+         '8mを用い、8 × 6/10 ＝ 480% と都市計画の300% を比べて小さいほうの'
+         '300% とした。実際の容積率は 198.72 ÷ 182 ＝ 109.2% である。'
+         '建蔽率は特定行政庁が指定した角地における加算を含めて90% が限度'
+         'であるが、本計画は36.4% であり余裕がある。'),
+        y_bouka('198.72')],
+      figs=[('⑴ １階平面図兼配置図（1/100）', 'ansE_1f'),
+            ('⑵ ２階平面図（1/100）', 'plan2f'),
+            ('⑶ ３階平面図（1/100）', 'plan3f')]),
+
+ dict(tag='F', name='北側道路',
+      lead='ある地方都市の商店街において、パン屋を営む夫婦とその子ども'
+           '２人が住むための併用住宅を計画する。',
+      points=['店舗の出入口及び住宅の玄関は、北側の道路から出入りできる'
+              'ものとする。',
+              '住宅部分の居室の日照に配慮する。',
+              '防火及び避難に配慮する。'],
+      ken='80', you='300', nobe='180m<sup>2</sup>以上、200m<sup>2</sup>以下',
+      rooms=rooms_std(), area=AREA_STD, site_area='180.00',
+      check='延べ面積 198.72m<sup>2</sup>（180〜200 ○）／建蔽率 66.24 ÷ 180 '
+            '＝ 36.8%（限度80% ○）／容積率の限度は 前面道路6m × 6/10 ＝ '
+            '360% と 300% の小さいほうで300%、198.72 ÷ 180 ＝ 110.4%（○）',
+      youten=[
+        ('北側道路に対して、住宅部分の日照をどのように確保したか',
+         '店舗は道路に面する必要があるため１階の北側に店舗売場を配置し、'
+         '厨房・スタッフルームなど日照を必要としない諸室を南側にまとめた。'
+         '一方、住宅部分は２階・３階に配置し、居間・食事室・台所及び'
+         '子ども室はいずれも南面に開口部を設けて日照を確保している。'
+         '住宅の玄関は北西に設け、廊下１本で階段に達する動線とした。'),
+        ('階段の位置について工夫した点',
+         '１階のみ南北の配置を入れかえ、階段の位置は１階から３階まで'
+         '変えていない。これにより２階・３階は南面に居室を並べた計画を'
+         'そのまま採用でき、柱の位置も各階共通の16本となって直下率を'
+         '高く保っている。なお店舗売場の中には通り芯上の柱が２本現れる'
+         'が、梁のスパンを3,640mm以下に抑えるために必要なものである。'),
+        y_bouka('198.72')],
+      figs=[('⑴ １階平面図兼配置図（1/100）', 'ansF_1f'),
+            ('⑵ ２階平面図（1/100）', 'plan2f'),
+            ('⑶ ３階平面図（1/100）', 'plan3f')]),
+]
+
+
+HEAD_NOTE = (
+    '<div class="note0">〔注意事項〕試験問題を十分に読んだうえで、'
+    '「設計製図の試験」に臨むようにしてください。なお、建築基準法等の関係'
+    '法令や要求図書、主要な要求室等の計画等の設計与条件に対して解答内容が'
+    '不十分な場合には、「設計条件・要求図書に対する重大な不適合」と判断'
+    'されます。</div>')
+
+
+def kadai(sp, sub):
+    return ('<div class="kadai">設計課題　「商店街に建つ併用住宅'
+            '（木造３階建て）」<small>%s　予想問題%s　%s</small></div>'
+            % (sub, sp['tag'], sp['name']))
+
+
+def mondai(sp):
+    o = ['<title>予想問題%s 問題用紙</title>' % sp['tag'], CSS,
+         '<div class="sheet">', HEAD_NOTE,
+         '<div class="warn">この問題用紙は、公表されている過去問'
+         '（令和5年・令和7年）の様式にならって作成した<b>予想問題</b>です。'
+         '本物の試験問題ではありません。実際の出題内容は当日の問題用紙に'
+         'よります。</div>',
+         kadai(sp, '問 題 用 紙')]
 
     o.append('<h2 class="sec">1．設計条件</h2>')
-    o.append('<p class="ind">ある地方都市の商店街において、パン屋を営む'
-             '夫婦とその子ども２人が住むための併用住宅を計画する。</p>')
+    o.append('<p class="ind">%s</p>' % sp['lead'])
     o.append('<p class="ind">計画に当たっては、次の①〜③に特に留意する。</p>')
-    o.append('<ul class="dot" style="margin-left:1.8em">'
-             '<li>①　店舗部分と住宅部分の動線が交錯しないようにする。</li>'
-             '<li>②　木造３階建てであることを踏まえ、構造上のバランスに'
-             '配慮する。</li>'
-             '<li>③　防火及び避難に配慮する。</li></ul>')
+    o.append('<ul class="dot" style="margin-left:1.8em">%s</ul>'
+             % ''.join('<li>%s　%s</li>' % ('①②③'[i], t)
+                       for i, t in enumerate(sp['points'])))
 
     o.append('<h3 class="sub">⑴　敷　地</h3><ol class="jp">'
              '<li>形状、道路との関係、方位等は、下に示す敷地図のとおりで'
              'ある。</li>'
              '<li>近隣商業地域内にあり、準防火地域に指定されている。</li>'
-             '<li>建蔽率の限度は80％、容積率の限度は300％である。</li>'
+             '<li>建蔽率の限度は%s％%s、容積率の限度は%s％である。</li>'
              '<li>地形は平坦で、道路及び隣地との高低差はなく、地盤は良好で'
              'ある。</li>'
              '<li>電気、都市ガス、上水道及び公共下水道は完備している。</li>'
-             '</ol>')
+             '</ol>' % (sp['ken'], sp.get('ken_note', ''), sp['you']))
     o.append('<h3 class="sub">⑵　構造、階数、建築物の高さ等</h3>'
-             '<ol class="jp">'
-             '<li>木造３階建てとする。</li>'
+             '<ol class="jp"><li>木造３階建てとする。</li>'
              '<li>建築物の最高の高さは11m以下、かつ、軒の高さは9.5m以下と'
              'する。</li>'
              '<li>耐力壁（構造耐力上有効な壁）は、必要な量をバランスよく'
              '配置する。</li></ol>')
     o.append('<h3 class="sub">⑶　延べ面積等</h3><ol class="jp">'
-             '<li>延べ面積は、「180m<sup>2</sup>以上、200m<sup>2</sup>以下」'
-             'とする。</li>'
-             '<li>玄関ポーチ、バルコニー、駐輪スペース等は、床面積に算入'
-             'しない。</li></ol>')
-    o.append('<h3 class="sub">⑷　人員構成等</h3>'
-             '<p class="ind">夫婦（40歳代）、子ども２人（中学生、小学生）</p>')
+             '<li>延べ面積は、「%s」とする。</li>'
+             '<li>玄関ポーチ、バルコニー、駐輪スペース等は、床面積に'
+             '算入しない。</li></ol>' % sp['nobe'])
+    o.append('<h3 class="sub">⑷　人員構成等</h3><p class="ind">%s</p>'
+             % sp.get('jinin', '夫婦（40歳代）、子ども２人（中学生、小学生）'))
 
     o.append('<h3 class="sub">⑸　要求室等</h3>'
-             '<p class="ind">下表の全ての室等は、指定された設置階に計画する。'
-             '</p><table><tr><th style="width:34px">設置階</th>'
-             '<th style="width:96px">室　名　等</th>'
+             '<p class="ind">下表の全ての室等は、指定された設置階に'
+             '計画する。</p><table><tr><th style="width:32px">設置階</th>'
+             '<th style="width:100px">室　名　等</th>'
              '<th>特　記　事　項</th></tr>')
-    for f, nm, memo in ROOMS:
-        span = ''
-        if f:
-            cnt = 6 if '１' in f else (5 if '２' in f else 4)
-            span = '<td class="c" rowspan="%d">%s</td>' % (cnt, f)
-        o.append('<tr>%s<td class="rm">%s</td><td>%s</td></tr>'
-                 % (span, nm, memo))
+    for fl, lst in sp['rooms']:
+        for i, (nm, memo) in enumerate(lst):
+            span = ('<td class="c" rowspan="%d">%s</td>'
+                    % (len(lst), fl.replace('階', '<br>階'))) if i == 0 else ''
+            o.append('<tr>%s<td class="rm">%s</td><td>%s</td></tr>'
+                     % (span, nm, memo))
     o.append('</table>')
     o.append('<p style="font-size:10.5px">（注1）各要求室等においては、'
              '床面積・広さの指定がない場合、床面積は適宜とする。<br>'
              '（注2）階段は、安全を確保するために、踊場を設ける。</p>')
-
     o.append('<h3 class="sub">⑹　屋外施設等</h3>'
              '<p class="ind">屋外に下表のものを計画する。</p><table>'
              '<tr><td class="rm">駐輪スペース</td>'
              '<td>・４台分を設ける。</td></tr>'
              '<tr><td class="rm">門・塀・植栽等</td><td></td></tr></table>')
-
-    o.append('<div class="fig">%s</div>' % inline_svg('site_map'))
+    o.append('<div class="fig">%s</div>' % inline_svg('site_' + sp['tag']))
 
     o.append('<h2 class="sec brk">2．要求図書</h2>')
     o.append('<ul class="dot" style="margin-left:1.2em">'
              '<li>ａ．答案用紙の定められた枠内に、下表の要求図書を記入する。'
              '（寸法線は、枠外にはみだして記入してもよい。）</li>'
              '<li>ｂ．図面は黒鉛筆仕上げとする。（定規を用いなくてもよい。）'
-             '</li>'
-             '<li>ｃ．記入寸法の単位は、mmとする。なお、答案用紙の１目盛は、'
-             '4.55mm（部分詳細図にあっては、10mm）である。</li>'
+             '</li><li>ｃ．記入寸法の単位は、mmとする。なお、答案用紙の'
+             '１目盛は、4.55mm（部分詳細図にあっては、10mm）である。</li>'
              '<li>ｄ．シックハウス対策のための機械換気設備等は、記入しなくて'
              'よい。</li></ul>')
     o.append('<table><tr><th style="width:118px">要　求　図　書'
              '<br>（　）内は縮尺</th><th>特　記　事　項</th></tr>')
     for nm, memo in ZUSHO:
         o.append('<tr><td class="rm">%s</td><td>%s</td></tr>' % (nm, memo))
+    o.append('<tr><td class="rm">⑻ 計画の要点等</td>'
+             '<td>・建築物の計画に関する次の①〜③について、具体的に'
+             '記述する。<ul class="dot">%s</ul></td></tr>'
+             % ''.join('<li>%s　%s</li>' % ('①②③'[i], q)
+                       for i, (q, _) in enumerate(sp['youten'])))
     o.append('</table>')
     o.append('<p style="font-size:10px;color:#444;margin-top:10px">'
-             '※ 実際の試験では、⑵と⑶は「各階平面図」として1つにまとめて'
-             '公表されています。答案用紙の枠の分かれ方は当日の指定によります。'
-             '</p>')
+             '※ 公表されている要求図書では⑵と⑶は「各階平面図」として'
+             '１つにまとめられています。答案用紙の枠の分かれ方は当日の'
+             '指定によります。</p>')
     o.append('</div>')
     return ''.join(o)
 
 
-AREA_ROWS = [
-    ('敷地面積', '', '180.00'),
-    ('建築面積', '（計算式）　7.28 × 9.10', '66.24'),
-    ('床面積　１階', '（計算式）　7.28 × 9.10', '① 66.24'),
-    ('　　　　２階', '（計算式）　7.28 × 9.10', '② 66.24'),
-    ('　　　　３階', '（計算式）　7.28 × 9.10', '③ 66.24'),
-    ('延べ面積', '①＋②＋③', '198.72'),
-]
-
-YOUTEN = [
-    ('①　木造３階建てとするに当たり、構造計画上工夫した点',
-     '１階から３階まで柱の位置をすべてそろえ、直下率を高めた。'
-     'Ａ・Ｂ・Ｃ・Ｄ通りと１・２・３・４通りの交点に計16本の柱を各階共通で'
-     '配置し、建築物の四隅は120mm角の通し柱、その他は105mm角の管柱としている。'
-     '梁の最大スパンは3,640mmに抑え、床は構造用合板t=24を梁に直接張った'
-     '剛床として、地震力及び風圧力を耐力壁へ確実に伝達させている。'
-     '耐力壁は筋かい45×90のたすき掛け及び構造用合板t=9を用い、'
-     '桁行方向・梁間方向のいずれにも偏りなく配置した。'),
-    ('②　店舗部分と住宅部分の動線計画について工夫した点',
-     '店舗の出入口は南面の道路側に設け、来店客は店舗売場から'
-     '店舗用便所へ至る動線とした。店舗用便所は売場の一部を区画して設け、'
-     '厨房を通らずに利用できるようにしている。住宅の玄関は同じ南面の西端に'
-     '別に設け、玄関を入ってすぐ階段へ上がれる配置とした。'
-     'これにより住まい手が売場を通らずに２階・３階へ行くことができ、'
-     '営業時間中も両者の動線が交錯しない。'
-     '商品及び材料の搬入は北面の勝手口から厨房・倉庫へ直接行える。'),
-    ('③　防火及び避難について配慮した点',
-     '準防火地域に建つ延べ面積198.72m2・地上３階の木造であるため、'
-     '45分準耐火建築物とした。外壁は屋内側から強化石膏ボードt=15、'
-     '柱105（グラスウール16K t=100充填）、構造用合板t=9、透湿防水シート、'
-     '通気胴縁t=18、窯業系サイディングt=16の構成とし、軒裏はケイ酸'
-     'カルシウム板としている。３階に居室を有するため、階段室を準耐火構造の'
-     '床及び壁で囲み、階段室に面する開口部を防火設備として竪穴区画とした。'
-     '各居室から階段までの歩行距離を短くし、避難経路を単純にしている。'),
-]
-
-FIGS = [
-    ('⑴ １階平面図兼配置図（1/100）', 'ansA_1f'),
-    ('⑵ ２階平面図（1/100）', 'plan2f'),
-    ('⑶ ３階平面図（1/100）', 'plan3f'),
-    ('⑷ 床伏図（1/100）', 'framing_floor'),
-    ('⑷ 小屋伏図（1/100）', 'framing_roof'),
-    ('⑸ 南側立面図（1/100）', 'elevation_s'),
-    ('⑹ 部分詳細図（断面）（1/20）', 'detail'),
-]
-
-
-def kaitou():
-    o = ['<title>予想問題A 標準解答例</title>', CSS, '<div class="sheet">']
-    o.append('<div style="text-align:center;margin-bottom:14px">'
-             '<span class="stamp">標 準 解 答 例</span></div>')
-    o.append('<div class="warn">これは予想問題Aに対する解答例です。'
-             '公表されている本物の標準解答例ではありません。'
-             '解答は１つではなく、設計条件を満たしていれば他の答えもあります。'
-             '</div>')
-    o.append('<div class="kadai">設計課題　「商店街に建つ併用住宅'
-             '（木造３階建て）」</div>')
+def kaitou(sp):
+    calc, per, tot = sp['area']
+    o = ['<title>予想問題%s 標準解答例</title>' % sp['tag'], CSS,
+         '<div class="sheet">',
+         '<div style="text-align:center;margin-bottom:12px">'
+         '<span class="stamp">標 準 解 答 例</span></div>',
+         '<div class="warn">これは予想問題%sに対する解答例です。'
+         '公表されている本物の標準解答例ではありません。解答は１つでは'
+         'なく、設計条件を満たしていれば他の答えもあります。</div>'
+         % sp['tag'],
+         kadai(sp, '標 準 解 答 例')]
 
     o.append('<h2 class="sec">⑺　面積表</h2><table>')
-    for a, b, c in AREA_ROWS:
+    rows = [('敷地面積', '', sp['site_area']),
+            ('建築面積', '（計算式）　%s' % calc, per),
+            ('床面積　１階', '（計算式）　%s' % calc, '① ' + per),
+            ('　　　　２階', '（計算式）　%s' % calc, '② ' + per),
+            ('　　　　３階', '（計算式）　%s' % calc, '③ ' + per),
+            ('延べ面積', '①＋②＋③', tot)]
+    for a, b, c in rows:
         o.append('<tr><td class="rm">%s</td><td>%s</td>'
-                 '<td class="n" style="width:78px">%s m<sup>2</sup></td></tr>'
-                 % (a, b, c))
+                 '<td class="n">%s m<sup>2</sup></td></tr>' % (a, b, c))
     o.append('</table>')
     o.append('<p style="font-size:10.5px">※ 面積の数値は、小数点以下第２位'
-             'までとし、第３位以下は切り捨てている。'
-             '7.28 × 9.10 ＝ 66.248 → <b>66.24</b>。'
-             '延べ面積は各階の床面積の合計 66.24 × 3 ＝ <b>198.72</b>。</p>')
-    o.append('<div class="warn">条件の確認　'
-             '延べ面積 198.72m<sup>2</sup>（180〜200 ○）／'
-             '建蔽率 66.24 ÷ 180 ＝ 36.8%（限度80% ○）／'
-             '容積率の限度は 前面道路6m × 6/10 ＝ 360% と 都市計画300% の'
-             '小さいほうで300%、198.72 ÷ 180 ＝ 110.4%（○）</div>')
+             'までとし、第３位以下は切り捨てている。延べ面積は各階の床面積'
+             'の合計（%s × 3 ＝ %s）。</p>' % (per, tot))
+    o.append('<div class="warn">条件の確認　%s</div>' % sp['check'])
 
     o.append('<h2 class="sec">⑻　計画の要点等</h2>')
-    for q, a in YOUTEN:
-        o.append('<div class="ansbox"><p class="q">%s</p>'
-                 '<p class="a">%s</p></div>' % (q, a))
+    for i, (q, a) in enumerate(sp['youten']):
+        o.append('<div class="ansbox"><p class="q">%s　%s</p>'
+                 '<p class="a">%s</p></div>' % ('①②③'[i], q, a))
+    if sp['tag'] != 'A':
+        o.append('<div class="warn">床伏図兼小屋伏図・立面図・部分詳細図に'
+                 'ついては、考え方は予想問題Ａの標準解答例と同じです。'
+                 '建築物の大きさが変わる場合は、梁のスパンが3,640mmを'
+                 '超えないように通りの数を増減してください。</div>')
 
-    for title, fig in FIGS:
+    for title, fig in sp['figs']:
         o.append('<h2 class="sec brk">%s</h2>' % title)
         o.append('<div class="fig">%s</div>' % inline_svg(fig))
     o.append('</div>')
     return ''.join(o)
 
 
+def combine(fn, title):
+    """6セットを1つのHTMLにまとめる。"""
+    parts = ['<title>%s</title>' % title, CSS]
+    for i, sp in enumerate(SPECS):
+        html = fn(sp)
+        body = html[html.index('<div class="sheet">'):]
+        if i:
+            body = body.replace(
+                '<div class="sheet">',
+                '<div class="sheet" style="break-before:page">', 1)
+        parts.append(body)
+    return ''.join(parts)
+
+
 if __name__ == '__main__':
-    io.open(os.path.join(BASE, 'mondai.html'), 'w',
-            encoding='utf-8').write(mondai())
-    io.open(os.path.join(BASE, 'kaitou.html'), 'w',
-            encoding='utf-8').write(kaitou())
-    print('wrote mondai.html / kaitou.html')
+    io.open(os.path.join(BASE, 'mondai_all.html'), 'w',
+            encoding='utf-8').write(combine(mondai, '予想問題集 問題用紙'))
+    io.open(os.path.join(BASE, 'kaitou_all.html'), 'w',
+            encoding='utf-8').write(combine(kaitou, '予想問題集 標準解答例'))
+    for sp in SPECS:
+        t = sp['tag']
+        io.open(os.path.join(BASE, 'mondai_%s.html' % t), 'w',
+                encoding='utf-8').write(mondai(sp))
+        io.open(os.path.join(BASE, 'kaitou_%s.html' % t), 'w',
+                encoding='utf-8').write(kaitou(sp))
+    print('wrote mondai_A..F.html / kaitou_A..F.html')

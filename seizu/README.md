@@ -13,8 +13,9 @@
 | `01-tools.html` | 製図道具の発注リスト、届いたら最初にやること |
 | `02-katachi.html` | 型の図面集（平面・伏図・立面・部分詳細・階段・面積表） |
 | `03-cards.html` | 記述の暗記カード20問（携帯用・localStorage保存） |
-| `mondai.html` | 予想問題A 問題用紙（過去問の様式にならったもの・敷地図つき） |
-| `kaitou.html` | 予想問題A 標準解答例（面積表・計画の要点等・図面） |
+| `mondai_A.html` 〜 `mondai_F.html` | 予想問題A〜F 問題用紙（過去問の様式にならったもの） |
+| `kaitou_A.html` 〜 `kaitou_F.html` | 予想問題A〜F 標準解答例 |
+| `mondai_all.html` / `kaitou_all.html` | 6セットを1本にまとめたもの |
 | `04-yosou.html` | 予想問題A〜H（かんたん版・記述の記入欄つき） |
 | `onepage.html` | 全部入りの1枚ページ（携帯用）。`onepage.src.html` + `parts/` から生成 |
 | `timetrial.xlsx` | タイムトライアル記録表 |
@@ -38,8 +39,8 @@ python3 site.py         # 配置図
 python3 variants.py     # 予想問題の解答例（1階平面図）
 python3 timetrial.py    # 記録表 xlsx（openpyxl が必要）
 python3 build_onepage.py # onepage.html を組み立てる
-python3 sitemap.py      # 敷地図（公式様式）
-python3 mondai.py       # 問題用紙・標準解答例のHTML
+python3 sitemap.py      # 敷地図（公式様式・A〜Fの6種）
+python3 mondai.py       # 問題用紙・標準解答例のHTML（A〜F・まとめ版）
 python3 make_pdf.py     # pdf/ に4本のPDFを書き出す（Chromium を使用）
 ```
 

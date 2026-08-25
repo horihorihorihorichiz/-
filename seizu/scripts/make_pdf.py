@@ -3,8 +3,8 @@
 
 pdf/二級建築士_製図早見盤.pdf … 早見盤の全内容（読み物）
 pdf/二級建築士_図面集.pdf     … 図面だけを1ページ1枚で大きく
-pdf/予想問題A_問題用紙.pdf     … 公式の様式にならった問題用紙
-pdf/予想問題A_標準解答例.pdf   … その解答例（面積表・計画の要点等・図面）
+pdf/予想問題集A-F_問題用紙.pdf   … 公式の様式にならった問題用紙6セット
+pdf/予想問題集A-F_標準解答例.pdf … その解答例（面積表・計画の要点等・図面）
 
 Chromium の印刷機能を使う（外部ライブラリ不要）。
 """
@@ -138,5 +138,5 @@ if __name__ == '__main__':
     os.makedirs(TMP, exist_ok=True)
     build_hayami()
     build_zumen()
-    build_plain('mondai.html', '予想問題A_問題用紙.pdf')
-    build_plain('kaitou.html', '予想問題A_標準解答例.pdf')
+    build_plain('mondai_all.html', '予想問題集A-F_問題用紙.pdf')
+    build_plain('kaitou_all.html', '予想問題集A-F_標準解答例.pdf')
