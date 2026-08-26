@@ -8,11 +8,11 @@ W, H = 760, 738
 
 # (名前, 幅, せい, 色, 補足)
 MEMBERS = [
-    ('胴差',       105, 300, '#c0392b', '外周を1周'),
-    ('大梁・軒桁', 105, 240, '#1f6fb2', '柱と柱をつなぐ'),
-    ('床小梁',     105, 180, '#2e8b57', '910mmおき'),
+    ('胴差',       120, 300, '#c0392b', '外周を1周'),
+    ('大梁・軒桁', 120, 240, '#1f6fb2', '柱と柱をつなぐ'),
+    ('床小梁',     120, 180, '#2e8b57', '910mmおき'),
     ('通し柱',     120, 120, '#c0392b', '四隅だけ'),
-    ('管柱・土台', 105, 105, '#8a6a35', 'ふつうの柱'),
+    ('管柱・土台', 120, 120, '#8a6a35', 'ふつうの柱'),
     ('母屋・火打梁', 90,  90, '#7d3c98', '90mm角'),
     ('垂木',        45, 105, '#b0651a', '455mmおき'),
     ('筋かい',      45,  90, '#8a6a35', 'たすき掛け'),
@@ -32,7 +32,7 @@ def draw():
     L = 260.0                            # 長さ（見た目だけ）
     dx, dy = 36.0, -24.0                 # 奥行き方向のずらし
     hh = 300 * S                         # せい300
-    ww = 105 * S                         # 幅105
+    ww = 120 * S                         # 幅120
 
     s.text(bx - 6, by - 62, '① 梁を立体で見ると', size=15, weight='700',
            anchor='start')
@@ -57,7 +57,7 @@ def draw():
     # 幅の寸法（奥行き方向）
     s.line(bx + L + 8, by + 4, bx + L + dx + 8, by + dy + 4, stroke='#c0392b',
            stroke_width=1.2)
-    s.text(bx + L + dx + 22, by + dy + 6, '幅 105', size=13, weight='700',
+    s.text(bx + L + dx + 22, by + dy + 6, '幅 120', size=13, weight='700',
            fill='#c0392b', anchor='start')
     # せいの寸法
     s.dim_v(by, by + hh, bx - 16, '', color='#1f6fb2', anchor='middle', dx=0)
@@ -69,9 +69,9 @@ def draw():
     # まとめ
     s.rect(bx + L + dx + 24, by + 46, 224, 96, fill='#fff8e1',
            stroke='#e0c060', stroke_width=1, rx=8)
-    s.text(bx + L + dx + 38, by + 70, '105 × 300 と書いてあったら', size=12.5,
+    s.text(bx + L + dx + 38, by + 70, '120 × 300 と書いてあったら', size=12.5,
            weight='700', anchor='start', fill='#6b5200')
-    s.text(bx + L + dx + 38, by + 92, '　よこ（幅）　= 105mm', size=12.5,
+    s.text(bx + L + dx + 38, by + 92, '　よこ（幅）　= 120mm', size=12.5,
            anchor='start', fill='#6b5200')
     s.text(bx + L + dx + 38, by + 112, '　たて（せい）= 300mm', size=12.5,
            anchor='start', fill='#6b5200')
@@ -88,10 +88,10 @@ def draw():
     s.rect(bx, py0 + 40, L + dx, ww, fill='#efdcbb', stroke='#8a6a35',
            stroke_width=1.6)
     s.text(bx + (L + dx) / 2.0, py0 + 40 + ww / 2.0 + 5,
-           'この帯の太さ ＝ 幅 105 だけ', size=12.5, fill='#7a5c20')
+           'この帯の太さ ＝ 幅 120 だけ', size=12.5, fill='#7a5c20')
     s.line(bx + L + dx + 14, py0 + 40, bx + L + dx + 14, py0 + 40 + ww,
            stroke='#c0392b', stroke_width=1.2)
-    s.text(bx + L + dx + 22, py0 + 40 + ww / 2.0 + 4, '105', size=12,
+    s.text(bx + L + dx + 22, py0 + 40 + ww / 2.0 + 4, '120', size=12,
            fill='#c0392b', weight='700', anchor='start')
     s.rect(bx + L + dx + 60, py0 + 34, 188, 62, fill='#f6f9f4',
            stroke='#bcd4bc', stroke_width=1, rx=8)
@@ -107,7 +107,7 @@ def draw():
     s.text(46, ty, '③ 断面の大きさくらべ（同じ縮尺・上をそろえてある）',
            size=15, weight='700', anchor='start')
     s.text(46, ty + 20,
-           '幅はほとんど 105 でそろえてある。変わるのは「せい」だけ。',
+           '幅はほとんど 120 でそろえてある。変わるのは「せい」だけ。',
            size=12, fill='#b03060', weight='700', anchor='start')
 
     base = ty + 48                         # 上端をそろえる線
@@ -128,7 +128,7 @@ def draw():
         x += pw + 44
 
     s.text(W / 2.0, H - 16,
-           '柱は正方形（105×105・120×120）。梁は縦長にすると同じ木の量で'
+           '柱は正方形（120×120・120×120）。梁は縦長にすると同じ木の量で'
            '強くなるので、せいを大きくとる。',
            size=12, fill='#555')
     return s

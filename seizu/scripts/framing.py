@@ -124,13 +124,13 @@ def floor_framing():
     columns(s)
 
     # 部材の寸法を図中に
-    s.text(px(4), py(10) - 12, '胴差 105×300', size=11, fill=C_DOUBUCHI,
+    s.text(px(4), py(10) - 12, '胴差 120×300', size=11, fill=C_DOUBUCHI,
            weight='700')
-    s.text_rot(px(2) - 10, py(8), '大梁 105×300', -90, size=11,
+    s.text_rot(px(2) - 10, py(8), '大梁 120×300', -90, size=11,
                fill=C_OOBARI, weight='700')
-    s.text(px(6.5), py(2) - 8, '大梁 105×240', size=11, fill=C_OOBARI,
+    s.text(px(6.5), py(2) - 8, '大梁 120×240', size=11, fill=C_OOBARI,
            weight='700')
-    s.text(px(6.5), py(4) - 8, '床小梁 105×180 @910', size=11, fill=C_KOBARI,
+    s.text(px(6.5), py(4) - 8, '床小梁 120×180 @910', size=11, fill=C_KOBARI,
            weight='700')
     s.text(px(1.15), py(0.55), '火打梁 90×90', size=10.5, fill=C_HIUCHI,
            weight='700', anchor='start')
@@ -153,10 +153,10 @@ def floor_framing():
 
     legend(s, [
         ('tooshi', '', 0, '通し柱 120×120（建物の四隅・1階から3階まで1本）'),
-        ('kuda', '', 0, '管柱 105×105（各階ごとの柱・16か所すべて上下でそろう）'),
-        ('line', C_DOUBUCHI, 5.4, '胴差 105×300（外周をぐるり1周）'),
-        ('line', C_OOBARI, 4.8, '大梁 105×300／105×240（B・C通り と 2・3通り）'),
-        ('line', C_KOBARI, 2.0, '床小梁 105×180 ＠910（東西方向に並べる）'),
+        ('kuda', '', 0, '管柱 120×120（各階ごとの柱・16か所すべて上下でそろう）'),
+        ('line', C_DOUBUCHI, 5.4, '胴差 120×300（外周をぐるり1周）'),
+        ('line', C_OOBARI, 4.8, '大梁 120×300／120×240（B・C通り と 2・3通り）'),
+        ('line', C_KOBARI, 2.0, '床小梁 120×180 ＠910（東西方向に並べる）'),
         ('line', C_HIUCHI, 2.6, '火打梁 90×90（隅8か所・水平のゆがみ止め）'),
     ])
     s.text(W / 2.0, H - 14,
@@ -223,21 +223,21 @@ def roof_framing():
     s.text(px(2), py(4.5) - 8, '垂木 45×105 @455', size=10.5, fill='#b0651a',
            weight='700')
 
-    s.text_rot(px(4) - 10, py(8), '棟木 105×105', -90, size=11, fill=C_MUNE,
+    s.text_rot(px(4) - 10, py(8), '棟木 120×120', -90, size=11, fill=C_MUNE,
                weight='700')
-    s.text_rot(px(0) - 12, py(4), '軒桁 105×240', -90, size=11,
+    s.text_rot(px(0) - 12, py(4), '軒桁 120×240', -90, size=11,
                fill=C_DOUBUCHI, weight='700')
-    s.text(px(6.4), py(6) - 8, '小屋梁 105×240', size=11, fill=C_OOBARI,
+    s.text(px(6.4), py(6) - 8, '小屋梁 120×240', size=11, fill=C_OOBARI,
            weight='700')
     s.text(px(6.2), py(8.5) + 16, '母屋 90×90 @910', size=11, fill=C_KOBARI,
            weight='700')
 
     legend(s, [
-        ('line', C_MUNE, 4.6, '棟木 105×105（建物の中央・南北方向に1本）'),
+        ('line', C_MUNE, 4.6, '棟木 120×120（建物の中央・南北方向に1本）'),
         ('line', C_KOBARI, 2.0, '母屋 90×90 ＠910（棟木と平行に6本）'),
         ('dot', '#7d3c98', 0, '小屋束 90×90（母屋と小屋梁の交点に立てる）'),
-        ('line', C_OOBARI, 4.2, '小屋梁 105×240（東西方向・柱のある通りに）'),
-        ('line', C_DOUBUCHI, 5.4, '軒桁 105×240（A通り・D通り）'),
+        ('line', C_OOBARI, 4.2, '小屋梁 120×240（東西方向・柱のある通りに）'),
+        ('line', C_DOUBUCHI, 5.4, '軒桁 120×240（A通り・D通り）'),
         ('dash', '#b0651a', 1.6, '垂木 45×105 ＠455（棟から軒へ東西に流す）'),
     ])
     s.text(W / 2.0, H - 14,

@@ -83,8 +83,8 @@ for r, row in enumerate(rows):
                fill=INK if r == 0 or c == 0 else '#333')
 s.text(W / 2.0, 776, '小屋（屋根）は床より軽いので、1.5間も2間も240でよい。',
        size=11.5, weight='700', fill='#555')
-s.text(W / 2.0, 798, '幅は120（4寸）で統一する流儀と105で統一する流儀がある。'
-       'どちらでもよいが、図面の中では必ずそろえる。', size=10.5, fill='#999')
+s.text(W / 2.0, 798, '幅は120でそろえる。公式の標準解答例は令和4・5・6・7年とも'
+       '「柱120×120・梁の幅120」だった。', size=10.5, fill='#999')
 
 s.save(os.path.join(OUT, 'beamsize.svg'))
 print('wrote beamsize.svg')

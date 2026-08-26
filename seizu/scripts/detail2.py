@@ -139,7 +139,7 @@ def wall():
     ML, MT = 96, 178
     LAYERS = [
         (15,  '#ebebeb', '強化石膏ボード', '15', '火に耐える'),
-        (105, None,      '柱 ＋ グラスウール', '105', '構造 ＋ 断熱'),
+        (120, None,      '柱 ＋ グラスウール', '120', '構造 ＋ 断熱'),
         (9,   '#f0e2c8', '構造用合板', '9', '地震・風に耐える'),
         (0.0, None,      '透湿防水シート', '—', '雨は止め湿気は通す'),
         (18,  '#f7f7f7', '通気胴縁', '18', '湿気を上へ逃がす'),
@@ -178,7 +178,7 @@ def wall():
                    stroke_width=1.4)
             s.rect(x, y0 + half, wpx, y1 - y0 - half, fill='url(#i2)',
                    stroke='#d98cae', stroke_width=1.2)
-            s.text(x + wpx / 2.0, y0 + half / 2.0 - 4, '柱 105×105', size=13,
+            s.text(x + wpx / 2.0, y0 + half / 2.0 - 4, '柱 120×120', size=13,
                    weight='700', fill='#6b5220')
             s.text(x + wpx / 2.0, y0 + half / 2.0 + 16, '（柱のあるところ）',
                    size=10.5, fill='#8a7550')
@@ -206,7 +206,7 @@ def wall():
                stroke_width=0.9)
         num(s, nx, y0 - 46, i)
 
-    s.dim_h(ML, ML + tw, y1 + 76, '合計 163mm')
+    s.dim_h(ML, ML + tw, y1 + 76, '合計 178mm')
 
     # 右の一覧
     lx = ML + tw + 106
@@ -224,7 +224,7 @@ def wall():
     s.rect(40, ly - 20, W - 80, 50, fill='#f6f9f4', stroke='#bcd4bc',
            stroke_width=1, rx=8)
     s.text(W / 2.0, ly + 2,
-           '15 ・ 105 ・ 9 ・ 18 ・ 16　　合計 163mm。この5つの数字だけ覚える。',
+           '15 ・ 120 ・ 9 ・ 18 ・ 16　　合計 178mm。この5つの数字だけ覚える。',
            size=14, weight='700', fill='#245a2c')
     s.text(W / 2.0, ly + 24,
            '④の透湿防水シートは薄すぎて厚さを描けないので、線1本で表す。',
@@ -280,17 +280,17 @@ def _zoom(title, sub, lo, hi, notes, body):
 
 def _wall_layers(s, X, Y, top, bottom):
     """外壁の6層を縦に描く（top/bottom は mm）。"""
-    s.rect(X(-67.5), Y(top), X(-52.5) - X(-67.5), Y(bottom) - Y(top),
+    s.rect(X(-75), Y(top), X(-60) - X(-75), Y(bottom) - Y(top),
            fill='#ebebeb', stroke='#666', stroke_width=0.9)
-    s.rect(X(-52.5), Y(top), X(52.5) - X(-52.5), Y(bottom) - Y(top),
+    s.rect(X(-60), Y(top), X(60) - X(-60), Y(bottom) - Y(top),
            fill='url(#i2)', stroke='#8a6a35', stroke_width=1.3)
-    s.rect(X(52.5), Y(top), X(61.5) - X(52.5), Y(bottom) - Y(top),
+    s.rect(X(60), Y(top), X(69) - X(60), Y(bottom) - Y(top),
            fill='#f0e2c8', stroke='#666', stroke_width=0.9)
-    s.line(X(61.5), Y(top), X(61.5), Y(bottom), stroke='#2f7fd0',
+    s.line(X(69), Y(top), X(69), Y(bottom), stroke='#2f7fd0',
            stroke_width=1.8)
-    s.rect(X(61.5), Y(top), X(79.5) - X(61.5), Y(bottom) - Y(top),
+    s.rect(X(69), Y(top), X(87) - X(69), Y(bottom) - Y(top),
            fill='#f7f7f7', stroke='#666', stroke_width=0.9)
-    s.rect(X(79.5), Y(top), X(95.5) - X(79.5), Y(bottom) - Y(top),
+    s.rect(X(87), Y(top), X(103) - X(87), Y(bottom) - Y(top),
            fill='#cfd8dc', stroke='#666', stroke_width=0.9)
 
 
@@ -299,7 +299,7 @@ def foot():
 
     def body(s, X, Y):
         # 地面
-        s.rect(X(95.5), Y(0), X(X3MAX) - X(95.5), Y(LO) - Y(0),
+        s.rect(X(103), Y(0), X(X3MAX) - X(103), Y(LO) - Y(0),
                fill='url(#d2)', stroke='none')
         s.line(X(75), Y(0), X(X3MAX), Y(0), stroke='#333', stroke_width=1.8)
         s.text(X(X3MAX) - 4, Y(0) - 7, 'GL', size=12, anchor='end',
@@ -313,29 +313,29 @@ def foot():
                stroke_width=1.6)
         s.rect(X(X3MIN), Y(-150), X(75) - X(X3MIN), Y(-300) - Y(-150),
                fill='url(#c2)', stroke='#666', stroke_width=1.2)
-        s.rect(X(-75), Y(386), X(75) - X(-75), Y(-150) - Y(386),
+        s.rect(X(-75), Y(371), X(75) - X(-75), Y(-150) - Y(371),
                fill='url(#c2)', stroke='#666', stroke_width=1.2)
         s.text(X(-215), Y(140), '床　下', size=12, fill='#999')
         # 基礎パッキン・土台
-        s.rect(X(-52.5), Y(406), X(52.5) - X(-52.5), Y(386) - Y(406),
+        s.rect(X(-60), Y(391), X(60) - X(-60), Y(371) - Y(391),
                fill='#d9d9d9', stroke='#555', stroke_width=1.0)
-        s.rect(X(-52.5), Y(511), X(52.5) - X(-52.5), Y(406) - Y(511),
+        s.rect(X(-60), Y(511), X(60) - X(-60), Y(391) - Y(511),
                fill='url(#w2)', stroke='#8a6a35', stroke_width=1.5)
         # 1階の床
-        s.rect(X(X3MIN), Y(535), X(52.5) - X(X3MIN), Y(511) - Y(535),
+        s.rect(X(X3MIN), Y(535), X(60) - X(X3MIN), Y(511) - Y(535),
                fill='#f5e7cb', stroke='#8a6a35', stroke_width=0.9)
-        s.rect(X(X3MIN), Y(550), X(-52.5) - X(X3MIN), Y(535) - Y(550),
+        s.rect(X(X3MIN), Y(550), X(-60) - X(X3MIN), Y(535) - Y(550),
                fill='#e6d3ad', stroke='#8a6a35', stroke_width=0.9)
-        s.rect(X(X3MIN), Y(511), X(-52.5) - X(X3MIN), Y(461) - Y(511),
+        s.rect(X(X3MIN), Y(511), X(-60) - X(X3MIN), Y(461) - Y(511),
                fill='url(#i2)', stroke='#d98cae', stroke_width=0.9)
         # 外壁
         _wall_layers(s, X, Y, HI, 511)
-        s.rect(X(79.5), Y(420), X(95.5) - X(79.5), Y(511) - Y(420),
+        s.rect(X(87), Y(420), X(103) - X(87), Y(511) - Y(420),
                fill='#cfd8dc', stroke='#666', stroke_width=0.9)
-        s.rect(X(-67.5), Y(550), X(-52.5) - X(-67.5), Y(511) - Y(550),
+        s.rect(X(-75), Y(550), X(-60) - X(-75), Y(511) - Y(550),
                fill='#ebebeb', stroke='#666', stroke_width=0.9)
         # 水切り
-        s.poly([(X(61.5), Y(430)), (X(102), Y(398)), (X(116), Y(366))],
+        s.poly([(X(69), Y(430)), (X(102), Y(398)), (X(116), Y(366))],
                stroke='#607d8b', stroke_width=2.4)
         # アンカーボルト
         s.line(X(-20), Y(120), X(-20), Y(566), stroke='#444',
@@ -343,7 +343,7 @@ def foot():
         s.line(X(-40), Y(120), X(-20), Y(120), stroke='#444',
                stroke_width=2.2)
         # レベル線
-        for mm, lab in ((550, '1FL  GL+550'), (386, '基礎天端 GL+386'),
+        for mm, lab in ((550, '1FL  GL+550'), (371, '基礎天端 GL+371'),
                         (0, 'GL ±0'), (-300, '基礎の底 GL−300')):
             s.line(X(X3MIN) - 24, Y(mm), X(130), Y(mm), stroke='#b03060',
                    stroke_width=0.8, stroke_dasharray='9 3 2 3')
@@ -352,8 +352,8 @@ def foot():
         # 寸法
         dx = X(X3MIN) - 96
         for a, b, lab in ((-360, -300, '60'), (-300, -150, '150'),
-                          (-150, 386, '536'), (386, 406, '20'),
-                          (406, 511, '105')):
+                          (-150, 371, '521'), (371, 391, '20'),
+                          (391, 511, '120')):
             s.line(dx, Y(a), dx, Y(b), stroke='#444', stroke_width=0.8)
             for m in (a, b):
                 s.line(dx - 3.5, Y(m), dx + 3.5, Y(m), stroke='#444',
@@ -364,13 +364,13 @@ def foot():
     notes = [
         (-180, -330, 168, 1, ('砕石 t=60 ＋ 防湿フィルム', '地面を固めて湿気を止める')),
         (-180, -225, 214, 2, ('べた基礎 底盤 t=150', '根入れ300（240以上）')),
-        (0, 100, 260, 3, ('べた基礎 立上り t=150', '地上386（300以上）')),
+        (0, 100, 260, 3, ('べた基礎 立上り t=150', '地上371（300以上）')),
         (-20, 300, 306, 4, ('アンカーボルト M12', '基礎と土台をつなぐ')),
         (0, 396, 352, 5, ('基礎パッキン t=20', '床下の換気口をかねる')),
-        (0, 458, 398, 6, ('土台 105×105', '防腐防蟻処理')),
+        (0, 458, 398, 6, ('土台 120×120', '防腐防蟻処理')),
         (-210, 486, 444, 7, ('床断熱 t=50', '押出法ポリスチレンフォーム')),
         (-260, 542, 490, 8, ('1階の床 ＝ 1FL', '構造用合板24 ＋ フローリング15')),
-        (20, 700, 536, 9, ('外壁の6層 t=163', '別図（外壁を横に切った図）')),
+        (20, 700, 536, 9, ('外壁の6層 t=178', '別図（外壁を横に切った図）')),
         (108, 388, 582, 10, ('水切り', '雨を外へ落とす')),
     ]
     return _zoom('拡大A　地面のところ（基礎・土台・1階の床）',
@@ -384,24 +384,24 @@ def floor2():
     def body(s, X, Y):
         _wall_layers(s, X, Y, HI, LO)
         # 胴差
-        s.rect(X(-52.5), Y(3611), X(52.5) - X(-52.5), Y(3311) - Y(3611),
+        s.rect(X(-60), Y(3611), X(60) - X(-60), Y(3311) - Y(3611),
                fill='url(#w2)', stroke='#8a6a35', stroke_width=1.6)
         # 2階の床
-        s.rect(X(X3MIN), Y(3635), X(52.5) - X(X3MIN), Y(3611) - Y(3635),
+        s.rect(X(X3MIN), Y(3635), X(60) - X(X3MIN), Y(3611) - Y(3635),
                fill='#f5e7cb', stroke='#8a6a35', stroke_width=1.0)
-        s.rect(X(X3MIN), Y(3650), X(-52.5) - X(X3MIN), Y(3635) - Y(3650),
+        s.rect(X(X3MIN), Y(3650), X(-60) - X(X3MIN), Y(3635) - Y(3650),
                fill='#e6d3ad', stroke='#8a6a35', stroke_width=1.0)
         # 1階の天井
-        s.rect(X(X3MIN), Y(3250), X(-52.5) - X(X3MIN), Y(3240.5) - Y(3250),
+        s.rect(X(X3MIN), Y(3250), X(-60) - X(X3MIN), Y(3240.5) - Y(3250),
                fill='#ebebeb', stroke='#666', stroke_width=0.9)
         for k in range(5):
             xx = X3MIN + 34 + k * 56
             s.rect(X(xx), Y(3290), X(xx + 36) - X(xx), Y(3250) - Y(3290),
                    fill='url(#w2)', stroke='#c9a86c', stroke_width=0.8)
         # 内側の石膏ボード
-        s.rect(X(-67.5), Y(3250), X(-52.5) - X(-67.5), Y(LO) - Y(3250),
+        s.rect(X(-75), Y(3250), X(-60) - X(-75), Y(LO) - Y(3250),
                fill='#ebebeb', stroke='#666', stroke_width=0.9)
-        s.rect(X(-67.5), Y(HI), X(-52.5) - X(-67.5), Y(3650) - Y(HI),
+        s.rect(X(-75), Y(HI), X(-60) - X(-75), Y(3650) - Y(HI),
                fill='#ebebeb', stroke='#666', stroke_width=0.9)
         # レベル線
         for mm, lab in ((3650, '2FL  GL+3,650'), (3250, '天井 GL+3,250')):
@@ -419,10 +419,10 @@ def floor2():
                        fill='#444')
 
     notes = [
-        (0, 3460, 176, 11, ('胴差 105×300', '上の階の床を受ける梁')),
+        (0, 3460, 176, 11, ('胴差 120×300', '上の階の床を受ける梁')),
         (-210, 3623, 238, 12, ('構造用合板 t=24', '根太レス＝剛床')),
         (-150, 3643, 300, 13, ('フローリング t=15 ＝ 2FL', 'GL+3,650')),
-        (0, 3740, 362, 14, ('2階の柱 105×105', '1階の柱の真上に立つ')),
+        (0, 3740, 362, 14, ('2階の柱 120×120', '1階の柱の真上に立つ')),
         (-210, 3245, 424, 15, ('1階の天井', '石膏ボード9.5 ＋ 野縁40×45')),
         (75, 3420, 486, 16, ('外壁は下と同じ6層', '上から下まで同じ構成')),
     ]

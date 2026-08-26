@@ -108,8 +108,8 @@ def ly(mm):
     return by - mm * k
 
 
-hatch(bx, ly(386), bx + bw, ly(-300), CON)
-s.rect(bx, ly(386), bw, (386 + 300) * k, fill='none', stroke=INK,
+hatch(bx, ly(371), bx + bw, ly(-300), CON)
+s.rect(bx, ly(371), bw, (371 + 300) * k, fill='none', stroke=INK,
        stroke_width=1.0)
 ground(60, bx, by)
 ground(bx + bw, W - 176, by)
@@ -160,9 +160,9 @@ zx, zw = 64, 140
 zy = 1130                          # GL の位置
 LAYERS = [(535, 550, 'フローリング 15', 940, '#e8cf9a'),
           (511, 535, '構造用合板 24', 962, '#f0e2c0'),
-          (406, 511, '土台 105角 105', 984, WOOD),
-          (386, 406, '基礎パッキン 20', 1006, '#cfd8dc'),
-          (0, 386, '基礎の立上り 386', 1076, CON)]
+          (391, 511, '土台 120角 120', 984, WOOD),
+          (371, 391, '基礎パッキン 20', 1006, '#cfd8dc'),
+          (0, 371, '基礎の立上り 371', 1076, CON)]
 hatch(zx, zy, zx + zw, zy + 200 * k2, CON)
 s.rect(zx, zy, zw, 200 * k2, fill='none', stroke=INK, stroke_width=1.0)
 for a, b, name, laby, col in LAYERS:
@@ -198,9 +198,9 @@ s.lines_text(384, 1058, [
     ('法律で決まっている', 12, '700', RED),
     ('基礎の立上りは、地面から', 12, '400', INK),
     ('300mm以上（平12建告1347号）。', 12, '700', INK),
-    ('この型は386mmなのでOK。', 12, '400', INK),
+    ('この型は371mmなのでOK。', 12, '400', INK),
 ], size=12, lh=18, anchor='start')
-s.text(370, 1146, '386＋20＋105＋24＋15 ＝ 550', size=13.5, anchor='start',
+s.text(370, 1146, '371＋20＋120＋24＋15 ＝ 550', size=13.5, anchor='start',
        weight='700', fill=BLUE)
 s.text(370, 1166, '積み上げた合計が1FLの高さ。', size=11, anchor='start',
        fill='#666')
