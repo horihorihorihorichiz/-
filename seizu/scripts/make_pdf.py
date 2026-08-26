@@ -196,6 +196,7 @@ if __name__ == '__main__':
     os.makedirs(TMP, exist_ok=True)
     build_hayami()
     build_zumen()
+    build_plain('kaisetsu.html', '二級建築士_答案用紙まるごと解説.pdf')
     build_plain('mondai_all.html', '予想問題集A-F_問題用紙.pdf')
     build_plain('kaitou_all.html', '予想問題集A-F_標準解答例.pdf')
     build_mondaishu()

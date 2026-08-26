@@ -1,0 +1,648 @@
+<title>答案用紙 まるごと解説</title>
+<style>
+@page{size:A4;margin:16mm 15mm}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Hiragino Sans','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif;font-size:12.5px;line-height:1.95;color:#1b1e1b;
+  background:#fff}
+.wrap{max-width:180mm;margin:0 auto}
+.cover{height:250mm;display:flex;flex-direction:column;justify-content:center;
+  break-after:page}
+.cover .k{font-size:12px;letter-spacing:.3em;color:#a8324a;font-weight:700}
+.cover h1{font-size:40px;line-height:1.35;margin:10px 0 6px;font-weight:800}
+.cover h2{font-size:19px;font-weight:400;color:#555;margin-bottom:26px}
+.cover .box{border:1.5px solid #d8ccc0;border-radius:10px;padding:18px 22px;
+  background:#fbf8f4;font-size:13px;line-height:2}
+h2.ch{font-size:23px;font-weight:800;margin:0 0 4px;break-before:page;
+  padding-top:2px}
+h2.ch:first-of-type{break-before:auto}
+h2.ch .n{display:inline-block;background:#a8324a;color:#fff;font-size:13px;
+  border-radius:5px;padding:2px 10px;margin-right:10px;vertical-align:3px}
+.lead{color:#555;font-size:12.5px;margin:0 0 14px;border-bottom:2px solid #eee;
+  padding-bottom:10px}
+h3{font-size:16.5px;font-weight:700;margin:20px 0 6px;
+  border-left:5px solid #a8324a;padding-left:9px}
+h4{font-size:14px;font-weight:700;margin:14px 0 4px}
+p{margin:8px 0}
+ul,ol{margin:8px 0 8px 1.5em}
+li{margin:4px 0}
+b{font-weight:700}
+.q{background:#fff6e9;border:1px solid #e8c99a;border-radius:8px;
+  padding:12px 15px;margin:12px 0}
+.q .t{font-weight:700;color:#a86a24;margin-bottom:3px}
+.imp{background:#fdecea;border:1px solid #e6a9a1;border-radius:8px;
+  padding:12px 15px;margin:12px 0}
+.imp .t{font-weight:700;color:#c0392b;margin-bottom:3px}
+.ok{background:#eef5ef;border:1px solid #a9cbb2;border-radius:8px;
+  padding:12px 15px;margin:12px 0}
+.ok .t{font-weight:700;color:#3e6b47;margin-bottom:3px}
+.mark{background:linear-gradient(transparent 62%,#ffe08a 62%);font-weight:700}
+figure{margin:14px 0;break-inside:avoid}
+figure .sh{border:1px solid #ddd;border-radius:6px;padding:6px;background:#fff}
+figure svg{width:100%;height:auto;max-height:180mm;display:block;margin:0 auto}
+figcaption{font-size:11px;color:#777;margin-top:5px;text-align:center}
+table{border-collapse:collapse;width:100%;font-size:12px;margin:10px 0}
+th,td{border:1px solid #d8d8d8;padding:6px 9px;vertical-align:top}
+th{background:#f3efe9;font-weight:700}
+td.n{text-align:right;font-variant-numeric:tabular-nums}
+.step{counter-reset:st;list-style:none;margin-left:0}
+.step>li{counter-increment:st;position:relative;padding-left:34px;margin:9px 0}
+.step>li::before{content:counter(st);position:absolute;left:0;top:1px;
+  width:24px;height:24px;border-radius:50%;background:#a8324a;color:#fff;
+  font-size:12px;font-weight:700;display:flex;align-items:center;
+  justify-content:center}
+.toc{border:1px solid #e0d8cf;border-radius:8px;padding:14px 18px;
+  background:#fbf8f4;font-size:13px}
+.toc div{margin:5px 0}
+.toc span{display:inline-block;width:38px;color:#a8324a;font-weight:700}
+</style>
+<div class="wrap">
+
+<div class="cover">
+  <div class="k">令和8年度　二級建築士　設計製図</div>
+  <h1>答案用紙<br>まるごと解説</h1>
+  <h2>あの1枚に、何を、どうやって描くのか</h2>
+  <div class="box">
+    この本は、<b>予想問題の標準解答例</b>を1枚まるごと分解して、
+    <b>「この線は何？」「なぜこう描くの？」</b>を全部説明したものです。<br>
+    建築のことばを知らなくても読めるように書きました。
+    分からない用語が出てきたら、そのつど説明してあります。
+  </div>
+  <div style="height:22px"></div>
+  <div class="toc">
+    <div><span>1章</span>答案用紙には何が載っているか</div>
+    <div><span>2章</span>縮尺（しゅくしゃく）ってなに</div>
+    <div><span>3章</span>1階平面図 兼 配置図</div>
+    <div><span>4章</span>2階・3階平面図</div>
+    <div><span>5章</span>床伏図 兼 小屋伏図</div>
+    <div><span>6章</span>立面図</div>
+    <div><span>7章</span>部分詳細図</div>
+    <div><span>8章</span>面積表</div>
+    <div><span>9章</span>記号のぜんぶ</div>
+    <div><span>10章</span>5時間の使い方</div>
+  </div>
+</div>
+
+<h2 class="ch"><span class="n">1章</span>答案用紙には何が載っているか</h2>
+<p class="lead">まず、当日わたされる紙の話から。</p>
+
+<h3>紙は2枚だけ</h3>
+<table>
+<tr><th style="width:32%">紙</th><th>なにが書いてある／なにを書く</th></tr>
+<tr><td><b>問題用紙</b></td>
+    <td>お題が書いてある紙。「こういう建物を作りなさい」という指示。
+    大きな紙1枚。<b>右はしが下書き欄</b>になっていて、
+    そこにエスキス（下書き）をしてよい</td></tr>
+<tr><td><b>答案用紙</b></td>
+    <td><b>自分が描く紙。</b>枠が印刷してあって、その中に図面を描く。
+    これを出す</td></tr>
+</table>
+
+<div class="q">
+  <div class="t">えんぴつだけ？</div>
+  <p>そうです。問題用紙に<b>「図面は黒鉛筆仕上げとする」</b>と書いてあります。
+  色えんぴつもボールペンも使いません。だからこの解説書の図も、
+  ぜんぶ<b>黒だけ</b>で描いてあります。</p>
+</div>
+
+<h3>答案用紙には、この7つを描く</h3>
+<figure><div class="sh">{{SVG:sheet_map}}</div>
+<figcaption>7つの枠が印刷されている。この中を埋めていく。</figcaption></figure>
+
+<h3>紙には方眼（ほうがん）が入っている</h3>
+<p>真っ白な紙ではありません。<span class="mark">うすい方眼（マス目）が
+印刷されています。</span>1マスは<b>4.55mm</b>です。</p>
+<div class="ok">
+  <div class="t">4.55mmって、なんの数字？</div>
+  <p>建築の図面は<b>910mm</b>という長さを1マスとして考えます。
+  和室の畳の短いほうの長さです。日本の木造の家は、
+  ほとんどこの910mmの倍数でできています。</p>
+  <p>その910mmを<b>100分の1</b>にすると<b>9.1mm</b>。
+  その<b>半分</b>が<b>4.55mm</b>です。</p>
+  <p>つまり方眼<b>2マス</b>が、実物の<b>910mm</b>。
+  <span class="mark">定規で測らなくても、マスを数えれば長さが決まります。</span></p>
+</div>
+<p>問題用紙にも<b>「答案用紙の1目盛は、4.55mm」</b>と書いてあります。
+だから<b>「定規を用いなくてもよい」</b>とも書いてある。
+マスに沿ってフリーハンドで描いても減点されません。</p>
+
+<h2 class="ch"><span class="n">2章</span>縮尺（しゅくしゃく）ってなに</h2>
+<p class="lead">図面に必ず書いてある「1／100」の意味。</p>
+
+<h3>実物を、何分の1に縮めたか</h3>
+<p><b>1／100</b> は「<b>実物を100分の1にちぢめて描いた</b>」という意味です。</p>
+<table>
+<tr><th style="width:46%">実物の長さ</th><th>図面の上の長さ（1／100）</th></tr>
+<tr><td>910mm（1マス）</td><td class="n">9.1mm</td></tr>
+<tr><td>1,820mm（2マス）</td><td class="n">18.2mm</td></tr>
+<tr><td>7,280mm（建物の幅）</td><td class="n">72.8mm　＝ 約7cm</td></tr>
+<tr><td>9,100mm（建物の奥行）</td><td class="n">91mm　＝ 約9cm</td></tr>
+</table>
+<p>つまり、この建物は答案用紙の上では<b>7cm × 9cm</b>くらいの大きさになります。
+思ったより小さいはずです。</p>
+
+<h3>部分詳細図だけ 1／20</h3>
+<p>部分詳細図（外壁を切った図）だけは<b>1／20</b>です。
+100分の1ではなく20分の1なので、<span class="mark">1／100 の5倍の大きさ</span>。</p>
+<table>
+<tr><th style="width:46%">実物の長さ</th><th>図面の上の長さ（1／20）</th></tr>
+<tr><td>100mm</td><td class="n">5mm</td></tr>
+<tr><td>910mm</td><td class="n">45.5mm　＝ 約4.5cm</td></tr>
+</table>
+<div class="q">
+  <div class="t">なぜ部分詳細図だけ大きいの？</div>
+  <p>壁の中身を描くからです。石膏ボードは<b>15mm</b>、構造用合板は<b>9mm</b>。
+  1／100だと 0.15mm と 0.09mm になって、<b>線が引けません。</b>
+  だから5倍にして、0.75mm と 0.45mm にしています。</p>
+</div>
+
+<h3>三角スケールの使い方</h3>
+<p>定規に「1/100」「1/20」と書いてある面があります。
+<b>その面で測れば、実物の長さがそのまま読めます。</b>
+計算はいりません。</p>
+<ul>
+<li><b>1/100の面</b>で 7,280 のところに印をつければ、それが建物の幅</li>
+<li><b>1/20の面</b>で 120 のところが柱の太さ</li>
+</ul>
+<p>ただし今回は<b>方眼が印刷されている</b>ので、平面図はマスを数えるほうが速いです。
+三角スケールは<b>部分詳細図で使う</b>と思ってください。</p>
+
+
+<h2 class="ch"><span class="n">3章</span>1階平面図 兼 配置図</h2>
+<p class="lead">いちばん時間がかかる図。ここだけで1時間くらい使います。</p>
+
+<h3>「平面図」は、家を上から見た図</h3>
+<p>正しくは<b>「床から1.5mくらいの高さで、家を水平にスパッと切って、
+上から見おろした図」</b>です。</p>
+<ul>
+<li>切った高さより<b>下</b>にあるもの … 壁・柱・家具 → <b>描く</b></li>
+<li>切った高さより<b>上</b>にあるもの … 天井・上の階の床 → <b>描かない</b></li>
+<li>窓は1.5mより下にあるので<b>切れる</b> → だから窓は壁の中に描かれる</li>
+</ul>
+<p><b>「兼 配置図」</b>がついているので、建物のまわりの
+<b>敷地（土地）も一緒に描きます。</b>これが1階だけ大きくなる理由です。</p>
+
+<figure><div class="sh">{{SVG:ans2A_1f}}</div>
+<figcaption>1階平面図 兼 配置図。この1枚に描くものを、これから全部説明します。</figcaption></figure>
+
+<h3>壁は「2本線」で描く</h3>
+<p>いちばん最初につまずくところです。<b>壁は1本の太い線ではなく、
+2本の細い線</b>で描きます。</p>
+<div class="ok">
+  <div class="t">なぜ2本？</div>
+  <p>壁には<b>厚み</b>があるからです。この建物の壁は柱の太さと同じ
+  <b>120mm</b>。1／100だと1.2mm。つまり<b>1.2mm離して2本線を引く</b>と、
+  それが壁になります。</p>
+  <p>方眼が4.55mmなので、<b>マスの4分の1くらいのすき間</b>と覚えてください。</p>
+</div>
+
+<h3>柱は「黒くぬった四角」</h3>
+<p>壁の中に、四角を黒くぬって柱を表します。大きさは<b>120mm角</b>。
+1／100で1.2mm角なので、<b>えんぴつでちょんと点を打つくらい</b>です。</p>
+<p>柱を置く場所は決まっています。<b>通り芯（とおりしん）が交わるところ。</b>
+通り芯は、図の外に A・B・C・D と 1・2・3・4 の丸で示してある線です。</p>
+
+<h3>窓とドアは「記号」で描く</h3>
+<table>
+<tr><th style="width:26%">もの</th><th>描き方</th></tr>
+<tr><td><b>引違い窓</b></td>
+    <td>壁の2本線をそのまま細く続けて、<b>まん中にもう1本</b>。
+    両はしに短い縦線（枠）</td></tr>
+<tr><td><b>引戸</b></td>
+    <td>戸を2枚、<b>少しずらして</b>2本の線で描く</td></tr>
+<tr><td><b>開き戸</b></td>
+    <td>戸の板を1本の線で描き、その先に<b>四分円の弧</b>。
+    弧は「戸が開く道すじ」</td></tr>
+</table>
+
+<h3>家具と設備を描く</h3>
+<p><b>問題用紙に「描きなさい」と書いてあるものは、必ず描きます。</b>
+描いていないと、そのぶん点になりません。</p>
+<table>
+<tr><th style="width:26%">部屋</th><th>描くもの</th></tr>
+<tr><td>便所</td><td>洋式便器（たまご形）＋手洗い器</td></tr>
+<tr><td>洗面脱衣室</td><td>洗面台＋洗濯機</td></tr>
+<tr><td>浴室</td><td>浴槽（四角の中に四角）</td></tr>
+<tr><td>厨房・台所</td><td>流し台（丸1つ）・コンロ（丸4つ）・冷蔵庫</td></tr>
+<tr><td>店舗売場</td><td>陳列棚（細長い四角）＋レジカウンター</td></tr>
+<tr><td>玄関</td><td>下足入れ（くつ箱）</td></tr>
+<tr><td>寝室・子供室</td><td>ベッド・机・収納</td></tr>
+<tr><td>和室</td><td>畳の割り＋押入</td></tr>
+</table>
+<p>うまい絵である必要はありません。<span class="mark">四角と丸で十分です。</span>
+大事なのは<b>大きさが合っていること</b>（ベッドは910×1,820くらい）と、
+<b>ちゃんと置ける場所にあること</b>です。</p>
+
+<h3>床の高さを書く</h3>
+<p>室名の下に <b>GL＋550</b> のように書きます。
+<b>GL</b> は地面のこと。「地面から550mm上に床がある」という意味です。</p>
+<div class="q">
+  <div class="t">なぜ床は地面より上なの？</div>
+  <p>地面にそのまま床を置くと、雨で水が入り、湿気で木が腐り、
+  シロアリが上がってきます。だから<b>基礎（コンクリート）で持ち上げて</b>から
+  床を作ります。</p>
+  <p>その積み上げが<b>基礎の立上り371＋パッキン20＋土台120＋合板24＋
+  フローリング15＝550mm</b>です。</p>
+</div>
+
+<h3>△印と▲印</h3>
+<table>
+<tr><th style="width:22%">印</th><th>意味</th><th>どこに</th></tr>
+<tr><td><b>△（白ぬき）</b></td><td>耐力壁（じしんに耐える壁）</td>
+    <td>壁の<b>外側</b>に置いて、<b>とがった先を壁に向ける</b></td></tr>
+<tr><td><b>▲（黒ぬり）</b></td><td>出入口</td>
+    <td>道路から敷地に入るところと、敷地から建物に入るところ</td></tr>
+</table>
+<div class="imp">
+  <div class="t">△は必ず4面ぜんぶに</div>
+  <p>段ボール箱の1面を切り取ると、箱はすぐグニャッとつぶれます。建物も同じ。
+  <b>南・北・東・西のどれか1面でも耐力壁がないと、地震でねじれて壊れます。</b></p>
+  <p>採点で見られるのは「4面ぜんぶにあるか」「数が偏っていないか」。
+  多くても減点にはなりませんが、<b>足りないと減点</b>です。</p>
+</div>
+
+<h3>敷地のまわりに描くもの</h3>
+<table>
+<tr><th style="width:30%">もの</th><th>大きさ・描き方</th></tr>
+<tr><td>敷地境界線</td><td>一点鎖線（長い線と点のくり返し）で四角く囲む</td></tr>
+<tr><td>あき寸法</td><td>境界線から建物までの距離を<b>4面とも</b>書く</td></tr>
+<tr><td>門</td><td>道路から入るところに、短い太い線2本</td></tr>
+<tr><td>アプローチ</td><td>門から玄関までの道。細い線2本</td></tr>
+<tr><td>塀</td><td>道路以外の3辺に、太い破線。<b>H=1,200</b>と書く</td></tr>
+<tr><td>駐輪スペース</td><td>1台<b>600×1,800</b>。台数ぶん並べる</td></tr>
+<tr><td>植栽</td><td>木。丸をいくつか</td></tr>
+<tr><td>道路</td><td>幅員（道路のはば）も書く</td></tr>
+</table>
+
+<h3>部分詳細図の切断位置</h3>
+<p>「部分詳細図をどこで切ったか」を、この1階平面図に書きます。</p>
+<ul>
+<li><b>太い線</b>を1本、外壁を横切るように引く</li>
+<li>その両はしに<b>矢印</b>。矢印は<b>見る方向</b></li>
+<li>線の両はしに<b>Y―Y</b> のような記号</li>
+</ul>
+<p>書き忘れがとても多いところです。<span class="mark">部分詳細図を描いたら、
+すぐ平面図に切断位置を描く</span>とセットで覚えてください。</p>
+
+<h3>描く順番</h3>
+<ol class="step">
+<li><b>通り芯</b>を引く（たて4本・よこ4本の細い線）</li>
+<li><b>柱</b>を打つ（交わるところ、16か所）</li>
+<li><b>外まわりの壁</b>を2本線で（ぐるり1周）</li>
+<li><b>中の壁</b>を2本線で（部屋の区切り）</li>
+<li><b>窓とドア</b>を記号で（壁に穴をあけて描く）</li>
+<li><b>階段</b></li>
+<li><b>家具と設備</b></li>
+<li><b>室名・面積・床高</b></li>
+<li><b>△印と▲印</b>（数が多いので最後にまとめて）</li>
+<li><b>寸法・敷地・切断位置</b></li>
+</ol>
+<div class="ok">
+  <div class="t">なぜこの順番？</div>
+  <p><b>大きいものから小さいものへ</b>だからです。
+  先に細かいものを描くと、あとから壁を引くときに邪魔になります。</p>
+  <p>それと<b>△印を最後にまとめる</b>のがコツ。1つずつ描くと必ず忘れます。
+  最後に「南・北・東・西」と声に出しながら一気に打ちます。</p>
+</div>
+
+<h2 class="ch"><span class="n">4章</span>2階・3階平面図</h2>
+<p class="lead">1階が描ければ、あとは楽です。</p>
+
+<h3>1階とちがうところは3つだけ</h3>
+<table>
+<tr><th style="width:30%">ちがい</th><th>中身</th></tr>
+<tr><td><b>敷地を描かない</b></td>
+    <td>「兼 配置図」がついていないので、建物だけ。だから紙に余裕ができる</td></tr>
+<tr><td><b>階段の矢印が変わる</b></td>
+    <td>2階は<b>UPとDNの2本</b>、3階は<b>DNの1本</b></td></tr>
+<tr><td><b>バルコニーが出てくる</b></td>
+    <td>床面積には入れないが、図には描く</td></tr>
+</table>
+
+<h3>階段のUPとDN（いちばんややこしいところ）</h3>
+<p>この建物の階段は<b>折り返し階段</b>。910mm幅の階段が2本ならんでいます。</p>
+<ol class="step">
+<li>1階の床で<b>東の段</b>の南のはしに立つ</li>
+<li>北へ向かって<b>7段</b>上ると踊り場</li>
+<li>踊り場で<b>180度まわる</b></li>
+<li>南へ向かって<b>8段</b>上ると2階の床。着くのは<b>西の段</b>の南のはし</li>
+</ol>
+<div class="imp">
+  <div class="t">出発と到着で場所がちがう</div>
+  <p>ここが全部のカギです。2階の床に立つと、足もとに<b>階段口が2つ</b>あります。</p>
+  <ul>
+  <li><b>西の段</b>の南はし … さっき上がってきた道 → <b>DN（下り）</b></li>
+  <li><b>東の段</b>の南はし … これから3階へ上がる道 → <b>UP（上り）</b></li>
+  </ul>
+  <p>1階には「下りる先」がなく、3階には「上る先」がありません。だから
+  <b>矢印が2本になるのは2階だけ</b>です。</p>
+</div>
+<p><b>矢印の向きは、UPもDNも同じ（南から北）。</b>
+矢印は「高くなる方向」ではなく、<b>その階の床から歩き出す方向</b>だからです。</p>
+<figure><div class="sh">{{SVG:stair_updown}}</div>
+<figcaption>横から見た段々と、各階の平面図での見え方。</figcaption></figure>
+
+<h3>切断線（斜めの平行2本線）</h3>
+<p>平面図は床から1.5mで切っているので、階段は途中でその高さを追いこします。
+追いこしたところに<b>斜めの線を2本</b>入れます。</p>
+<ul>
+<li>1階・2階には<b>いる</b>（上に続いているから）</li>
+<li>3階には<b>いらない</b>（上に階がないから）</li>
+</ul>
+
+<h2 class="ch"><span class="n">5章</span>床伏図 兼 小屋伏図</h2>
+<p class="lead">床と屋根の「骨」を上から見た図。間違えると大きな減点です。</p>
+
+<h3>伏図（ふせず）＝ 骨だけにした絵</h3>
+<p>床板をはがして、<b>床を支えている木の棒の並べ方</b>を真上から見た図です。
+「伏せる」は「上から見おろす」という意味。</p>
+
+<figure><div class="sh">{{SVG:ansfuse_floor}}</div>
+<figcaption>床伏図。線1本1本が木の棒で、その太さが書きこんである。</figcaption></figure>
+
+<h3>棒の名前</h3>
+<table>
+<tr><th style="width:24%">名前</th><th style="width:16%">よみ</th><th>どんな棒か</th></tr>
+<tr><td>胴差</td><td>どうさし</td><td>建物の外まわりを1周する太い棒</td></tr>
+<tr><td>大梁</td><td>おおばり</td><td>柱と柱をつなぐ太い棒</td></tr>
+<tr><td>床小梁</td><td>ゆかこばり</td><td>大梁と大梁のあいだに910mmおきに渡す細い棒</td></tr>
+<tr><td>火打梁</td><td>ひうちばり</td><td>角に斜めに入れる棒。四角がゆがまないようにする</td></tr>
+<tr><td>棟木</td><td>むなぎ</td><td>屋根のてっぺんに1本</td></tr>
+<tr><td>母屋</td><td>もや</td><td>棟木と平行に910mmおき</td></tr>
+<tr><td>小屋束</td><td>こやづか</td><td>母屋を支える短い柱</td></tr>
+</table>
+
+<h3>「120×300」の読み方</h3>
+<p><b>よこ（幅）が120mm、たて（せい）が300mm</b>という意味です。
+長さは書きません。</p>
+<div class="ok">
+  <div class="t">なぜ縦長にするの？</div>
+  <p>下敷きを思い出してください。<b>寝かせて押すとフニャッと曲がる</b>けど、
+  <b>立てて押すとほとんど曲がらない</b>。同じ1枚なのに強さが全然ちがう。</p>
+  <p>梁も同じで、<b>縦長にするほど曲がりにくい</b>。強さは<b>せいの2乗</b>で
+  効くので、180から300にすると（1.67倍）強さは約2.8倍になります。</p>
+</div>
+
+<h3>せい（たての高さ）の決め方</h3>
+<p>見るのは<b>2つだけ</b>です。<b>①何mm飛んでいるか ②上に柱が乗るか</b>。</p>
+<table>
+<tr><th>スパン</th><th>床（上に柱なし）</th><th>床（上に柱あり）</th><th>小屋（屋根）</th></tr>
+<tr><td>1間　1,820</td><td>120</td><td>150</td><td>120</td></tr>
+<tr><td>1.5間 2,730</td><td>240</td><td>270</td><td>240</td></tr>
+<tr><td>2間　3,640</td><td>300</td><td>330</td><td>240</td></tr>
+</table>
+<p><b>上に柱が乗ったら1寸（30mm）増し。</b>柱1本ぶんの重さがその1点に
+集中するからです。<b>小屋（屋根）は床より軽い</b>ので、1.5間も2間も240でよい。</p>
+<figure><div class="sh">{{SVG:beamsize}}</div>
+<figcaption>スパンが長いほど、せいは大きい。上に柱が乗ったら1寸増し。</figcaption></figure>
+
+<h3>柱の記号は、階によってちがう</h3>
+<p>ここは公式の標準解答例で確認しました。<b>伏図では柱を4種類に描き分けます。</b></p>
+<figure><div class="sh">{{SVG:hanrei}}</div>
+<figcaption>答案用紙に印刷されている凡例欄。表は自分で作らない。数字を書きこむだけ。</figcaption></figure>
+<div class="imp">
+  <div class="t">覚える数字は1行だけ</div>
+  <p><b>柱も梁の幅も120。火打梁と母屋だけ90。</b></p>
+  <p>公式の標準解答例（令和4・5・6・7年）は、4年とも
+  「通し柱 120×120／1階の管柱 120×120／2階の管柱 120×120」でした。</p>
+</div>
+
+<h3>梁が「必ず」要る場所</h3>
+<ol>
+<li><b>2階の部屋のかたち</b>のライン（開口部も含めて）</li>
+<li><b>1階の部屋のかたち</b>のライン</li>
+<li><b>母屋を受ける束</b>が乗るライン</li>
+<li><b>1,820以上飛んでいる</b>ところ（そこに床梁を入れる）</li>
+</ol>
+
+<h3>火打梁の入れ方</h3>
+<ul>
+<li><b>破線</b>で描く（実線ではない）</li>
+<li>建物の四隅と、中央の区画の四隅。だいたい<b>8か所</b></li>
+<li><b class="mark">階段の中には入れない。</b>入れたら上がれなくなります</li>
+<li>点線は「点・点・点」と書くと手が止まるので、<b>1・2・3のリズム</b>で引く</li>
+</ul>
+
+<h3>描く順番</h3>
+<ol class="step">
+<li><b>通し柱</b>（四隅の4か所）</li>
+<li><b>1階の柱（×印）</b>をフリーハンドで。1本の線を3mmでそろえる</li>
+<li><b>2階の柱（□印）</b>をテンプレートで。平行定規に当ててスライド</li>
+<li><b>梁のライン</b>を細い線で</li>
+<li><b>棟木・母屋</b></li>
+<li><b>火打と断面寸法</b>（どちらも斜めなので最後）</li>
+</ol>
+<div class="ok">
+  <div class="t">なぜ1階の柱を先に？</div>
+  <p>テンプレートで2階の柱を描き始めると、テンプレートが紙をかくして
+  <b>全体が見えなくなります。</b>先に1階の柱（×）を打っておけば、
+  その上に重ねるだけなので間違えません。</p>
+  <p>描き終わったあと、<b>×と□が重なっているか＝直下率</b>を
+  そのまま目で確認できるという利点もあります。</p>
+</div>
+
+<h2 class="ch"><span class="n">6章</span>立面図</h2>
+<p class="lead">建物を横から見た「顔」。足し算だけでできます。</p>
+
+<figure><div class="sh">{{SVG:anselev_s}}</div>
+<figcaption>南側立面図。窓の位置は平面図とぴったり合わせる。</figcaption></figure>
+
+<h3>今年はここに高さを書かされる</h3>
+<div class="imp">
+  <div class="t">今年の要求図面には断面図がない</div>
+  <p>つまり<b>高さの数字を書く図面が立面図しかありません。</b>
+  高さを書かせないと、採点する側は階段が正しいか確かめられない。
+  だから<b>立面図に書かせる</b>と読めます。</p>
+  <p>公式の標準解答例で確かめました。<b>断面図がない年（令和4年・令和7年）は、
+  立面図に高さが書いてあります。</b>断面図がある年（令和6年）は G.L. だけでした。</p>
+</div>
+
+<h3>高さは、GLから足し算するだけ</h3>
+<table>
+<tr><th style="width:26%">高さ</th><th style="width:24%">GLから</th><th>計算</th></tr>
+<tr><td>1FL（1階の床）</td><td class="n">＋550</td><td>基礎の上に土台・床を積んだ高さ</td></tr>
+<tr><td>2FL（2階の床）</td><td class="n">＋3,650</td><td>550 ＋ 3,100</td></tr>
+<tr><td>3FL（3階の床）</td><td class="n">＋6,550</td><td>3,650 ＋ 2,900</td></tr>
+<tr><td>軒高</td><td class="n">＋9,350</td><td>6,550 ＋ 2,800</td></tr>
+<tr><td><b>最高の高さ</b></td><td class="n">＋10,806</td><td>9,350 ＋ 1,456</td></tr>
+</table>
+<p><b>GL</b>＝地面。<b>FL</b>＝床。GLは建物ぜんぶで1つ、FLは階の数だけあります。</p>
+<p>最後の<b>1,456</b>は屋根の三角の高さ。<b>4寸勾配</b>（よこ10進むとたて4上がる）
+なので、建物の幅の半分 3,640 × 0.4 ＝ 1,456 です。</p>
+
+<h3>窓は平面図と合わせる</h3>
+<p><span class="mark">立面図の窓が平面図とずれていると「図面相互の不整合」で減点</span>
+されます。平面図で南面の窓を描いたら、その位置をそのまま立面図に写します。</p>
+<ul>
+<li>窓は<b>床から800mmの高さに、高さ1,300mm</b>くらい</li>
+<li>出入口は<b>床から2,000mm</b></li>
+<li>建具は<b>外枠＋内枠＋まん中の線</b>で描く</li>
+</ul>
+
+<h2 class="ch"><span class="n">7章</span>部分詳細図</h2>
+<p class="lead">外壁を切って、材料を1枚ずつ見せる図。1／20です。</p>
+
+<figure><div class="sh">{{SVG:detail_wall}}</div>
+<figcaption>外壁を横に切ると、6つの層が見える。この順番を丸ごと覚える。</figcaption></figure>
+
+<h3>外壁は6層。内から外へ</h3>
+<table>
+<tr><th style="width:8%">順</th><th style="width:30%">材料</th><th style="width:14%">厚さ</th><th>役目</th></tr>
+<tr><td>1</td><td>強化石膏ボード</td><td class="n">15</td><td>火に耐える</td></tr>
+<tr><td>2</td><td>柱＋グラスウール</td><td class="n">120</td><td>構造＋断熱</td></tr>
+<tr><td>3</td><td>構造用合板</td><td class="n">9</td><td>地震・風に耐える</td></tr>
+<tr><td>4</td><td>透湿防水シート</td><td class="n">—</td><td>雨は止め、湿気は通す</td></tr>
+<tr><td>5</td><td>通気胴縁</td><td class="n">18</td><td>湿気を上へ逃がす</td></tr>
+<tr><td>6</td><td>窯業系サイディング</td><td class="n">16</td><td>外側の仕上げ</td></tr>
+</table>
+<p>合計 <b>15＋120＋9＋18＋16 ＝ 178mm</b>。この5つの数字だけ覚えます。</p>
+
+<figure><div class="sh">{{SVG:detail_foot}}</div>
+<figcaption>地面のところ。下から順に、作る順番で番号がふってある。</figcaption></figure>
+
+<h3>地面のところ（下から順に）</h3>
+<ol>
+<li><b>砕石 t=60 ＋ 防湿フィルム</b> … 地面を固めて湿気を止める</li>
+<li><b>べた基礎 底盤 t=150</b> … 根入れ300mm（240mm以上が必要）</li>
+<li><b>べた基礎 立上り t=150</b> … 地上371mm（<b>300mm以上が必要</b>）</li>
+<li><b>アンカーボルト M12</b> … 基礎と土台をつなぐ</li>
+<li><b>基礎パッキン t=20</b> … 床下の換気口をかねる</li>
+<li><b>土台 120×120</b> … 防腐防蟻処理</li>
+<li><b>床断熱・構造用合板24・フローリング15</b> … ここが1FL</li>
+</ol>
+
+<h2 class="ch"><span class="n">8章</span>面積表</h2>
+<p class="lead">計算はかんたん。書き方にルールがあります。</p>
+
+<h3>マスを数えて掛けるだけ</h3>
+<p>1マスは 910mm × 910mm ＝ <b>0.91m × 0.91m ＝ 0.8281㎡</b>。
+建物が8マス×10マスなら、</p>
+<p style="text-align:center;font-size:15px;font-weight:700">
+7.28 × 9.10 ＝ 66.248 → <b>66.24㎡</b></p>
+
+<h3>計算式は「m単位」で書く</h3>
+<p>mmではなく<b>m（メートル）</b>で書きます。公式の標準解答例もそうでした。</p>
+<table>
+<tr><th style="width:44%">年</th><th>書いてあった計算式</th><th>答え</th></tr>
+<tr><td>令和4年 建築面積</td><td>(14.56×8.19)＋(6.37×3.64)</td><td class="n">142.43㎡</td></tr>
+<tr><td>令和7年 建築面積</td><td>11.83×7.28＋7.735×5.46</td><td class="n">128.35㎡</td></tr>
+</table>
+
+<div class="imp">
+  <div class="t">切り捨て。四捨五入ではありません</div>
+  <p>1つめは計算すると 142.4364、2つめは 128.3555。
+  四捨五入なら 142.44 と 128.36 になるはずですが、
+  公表されている答えは <b>142.43</b> と <b>128.35</b>。</p>
+  <p>つまり<b>小数点以下第3位以下は切り捨て</b>です。問題用紙にも
+  「面積の数値は、小数点以下第2位までとし、第3位以下は切り捨てる」と
+  書いてあります。</p>
+</div>
+
+<h3>表の埋め方</h3>
+<table>
+<tr><th style="width:34%">らん</th><th>書くこと</th></tr>
+<tr><td>敷地面積</td><td>問題用紙の敷地図に書いてある数字をそのまま</td></tr>
+<tr><td>建築面積</td><td>建物を上から見た面積。計算式も書く</td></tr>
+<tr><td>床面積 1階 ア</td><td>1階の面積。計算式も書く</td></tr>
+<tr><td>　　　 2階 イ</td><td>2階の面積</td></tr>
+<tr><td>　　　 3階 ウ</td><td>3階の面積</td></tr>
+<tr><td>延べ面積</td><td><b>ア＋イ＋ウ</b></td></tr>
+</table>
+<p>最後に<b>必ず検算</b>。延べ面積が問題の条件（例：180㎡以上200㎡以下）に
+入っているか、建蔽率・容積率をこえていないかを確かめます。
+<span class="mark">ここをこえると一発失格</span>です。</p>
+
+<h2 class="ch"><span class="n">9章</span>記号のぜんぶ</h2>
+<p class="lead">この22個が手に入れば、答案は書けます。</p>
+
+<figure><div class="sh">{{SVG:symbols}}</div>
+<figcaption>公式の標準解答例で使われている描き方。</figcaption></figure>
+
+<h3>とくに忘れやすい4つ</h3>
+<table>
+<tr><th style="width:22%">印</th><th>意味</th><th style="width:34%">忘れると</th></tr>
+<tr><td><b>△（白ぬき）</b></td><td>耐力壁</td>
+    <td>要求図書に書いてあるので、なければ減点</td></tr>
+<tr><td><b>○で囲む</b></td><td>通し柱（四隅の4か所）</td>
+    <td>同上</td></tr>
+<tr><td><b>▲（黒ぬり）</b></td><td>出入口</td>
+    <td>同上</td></tr>
+<tr><td><b>切断位置</b></td><td>部分詳細図をどこで切ったか</td>
+    <td>部分詳細図が「どこの図か」不明になる</td></tr>
+</table>
+<p>この4つは<b>最後の15分の確認項目</b>に入れてあります。
+1つずつ描くと必ず忘れるので、<b>最後にまとめて一気に打つ</b>のがコツです。</p>
+
+<h3>線の使い分け</h3>
+<table>
+<tr><th style="width:26%">線</th><th>使うところ</th></tr>
+<tr><td>太い実線</td><td>切れているもの（壁・柱）</td></tr>
+<tr><td>細い実線</td><td>見えているもの（家具・階段の段）</td></tr>
+<tr><td>破線（- - -）</td><td>見えないもの（火打梁・上部の吹抜け）</td></tr>
+<tr><td>一点鎖線（－・－）</td><td>中心を表すもの（通り芯・敷地境界線・母屋）</td></tr>
+</table>
+
+<h2 class="ch"><span class="n">10章</span>5時間の使い方</h2>
+<p class="lead">11:00〜16:00。時間切れが、いちばん多い不合格の理由です。</p>
+
+<h3>時間わり</h3>
+<table>
+<tr><th style="width:24%">時刻</th><th style="width:34%">やること</th><th>持ち時間</th></tr>
+<tr><td>11:00〜11:25</td><td>課題文を2回読む</td><td class="n">25分</td></tr>
+<tr><td>11:25〜12:25</td><td><b>エスキス</b>（間取りを決める）</td><td class="n">60分</td></tr>
+<tr><td>12:25〜13:35</td><td>1階平面図 兼 配置図</td><td class="n">70分</td></tr>
+<tr><td>13:35〜14:25</td><td>2階・3階平面図</td><td class="n">50分</td></tr>
+<tr><td>14:25〜15:00</td><td>床伏図 兼 小屋伏図</td><td class="n">35分</td></tr>
+<tr><td>15:00〜15:20</td><td>立面図</td><td class="n">20分</td></tr>
+<tr><td>15:20〜15:45</td><td>部分詳細図・面積表・計画の要点</td><td class="n">25分</td></tr>
+<tr><td><b>15:45〜16:00</b></td><td><b>見直し</b></td><td class="n">15分</td></tr>
+</table>
+
+<div class="imp">
+  <div class="t">エスキスに使える時間は「引き算」で決まる</div>
+  <p>作図が速い人はエスキスに2時間かけてもいい。
+  作図に時間がかかる人は<b>1時間で終わらせないといけない</b>。
+  この計算を本番でやってください。</p>
+  <p>残り時間が少ないなら、<b>条件もれだけ確認して、あとは詰め込むだけ。</b>
+  きれいに収めようとして作図時間がなくなるのが、いちばんダメなパターンです。</p>
+  <p><span class="mark">作図が終わっていない答案は、
+  どんなに計画がよくても不合格です。</span></p>
+</div>
+
+<h3>最後の15分でやること</h3>
+<ol class="step">
+<li><b>延べ面積</b>が条件の中に入っているか</li>
+<li><b>建蔽率・容積率</b>をこえていないか</li>
+<li><b>要求室がぜんぶあるか</b>（問題用紙の表を指でなぞる）</li>
+<li><b>△印</b>が4面ぜんぶにあるか</li>
+<li><b>▲印</b>（道路→敷地、敷地→建物）</li>
+<li><b>通し柱の○</b>（四隅の4か所）</li>
+<li><b>切断位置</b>（Y―Y と矢印）</li>
+<li><b>室名・面積・床高</b>の書き忘れ</li>
+<li><b>階段のUP／DN</b>（2階は2本）</li>
+<li><b>立面図の高さの数字</b></li>
+</ol>
+
+<h3>やってはいけないこと</h3>
+<table>
+<tr><th style="width:38%">やること</th><th>どうなるか</th></tr>
+<tr><td>面積の条件をこえる</td><td><b>一発失格</b></td></tr>
+<tr><td>建蔽率・容積率をこえる</td><td><b>一発失格</b></td></tr>
+<tr><td>要求室がない</td><td><b>重大な不適合</b></td></tr>
+<tr><td>図面が描き終わっていない</td><td><b>重大な不適合</b></td></tr>
+<tr><td>階段がない・行けない部屋がある</td><td><b>重大な不適合</b></td></tr>
+<tr><td>図面どうしが食いちがう</td><td>大きな減点</td></tr>
+<tr><td>線がきたない</td><td><b>ほとんど関係ない</b></td></tr>
+</table>
+
+<div class="ok">
+  <div class="t">最後に</div>
+  <p>この試験は<b>「うまく描く」試験ではありません。</b>
+  <b>「全部描く」試験</b>です。</p>
+  <p>線がふるえていても、字が下手でも受かります。
+  でも<b>1つでも描き忘れると点になりません。</b></p>
+  <p>だから練習でいちばん大事なのは、
+  <span class="mark">同じ型を、時間内に、もれなく、何回も描くこと</span>。
+  この解説書の図をそのまま真似して、まず1枚描いてみてください。</p>
+</div>
+
+</div>
