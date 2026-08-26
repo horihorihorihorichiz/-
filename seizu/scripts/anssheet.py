@@ -60,7 +60,7 @@ def draw(d, title, sub=''):
     if frame:
         SW, SD = frame['sw'] / 910.0, frame['sd'] / 910.0
         ox = (SW - nx) / 2.0                       # 東西のあきは半分ずつ
-        yard = 2.2                                 # 道路側のあき（アプローチ）
+        yard = 2.6                                 # 道路側のあき（アプローチ）
         oy = yard if 'S' in side else (SD - ny - yard)
         LG, TG = -ox, SD - oy                      # 紙の左端・上端の目盛
     else:
@@ -130,36 +130,103 @@ def draw(d, title, sub=''):
             s.text_rot(px(sx1) + 30, py((sy0 + sy1) / 2.0),
                        '道　路（幅員 %s）' % format(site['road'], ','), -90,
                        size=10, weight='700')
-        # 門とアプローチ（道路側の中央から玄関へ）
-        gate = nx * 0.25
-        if 'S' in side:
-            for dxx in (-0.55, 0.55):
-                s.line(px(gate + dxx), py(sy0) - 6, px(gate + dxx),
-                       py(sy0) + 6, stroke=INK, stroke_width=2.4)
-            s.text(px(gate) - 22, py(sy0) - 10, '門', size=8.5)
-            s.line(px(gate - 0.5), py(sy0), px(gate - 0.5), py(0),
-                   stroke='#666', stroke_width=0.8)
-            s.line(px(gate + 0.5), py(sy0), px(gate + 0.5), py(0),
-                   stroke='#666', stroke_width=0.8)
-            s.text(px(gate) + 26, py(sy0 / 2.0), 'アプローチ', size=8,
-                   anchor='start', fill='#333')
-            s.polygon([(px(gate), py(sy0) - 16), (px(gate) - 6, py(sy0) - 4),
-                       (px(gate) + 6, py(sy0) - 4)], fill=INK)
-            # 駐輪スペース4台（600×1,800）
-            bxx = nx - 2.6
-            for i in range(4):
-                a_ = bxx + i * (600 / 910.0)
-                s.rect(px(a_), py(sy0 + 0.15 + 1800 / 910.0),
-                       (600 / 910.0) * G, (1800 / 910.0) * G, fill='#fff',
-                       stroke='#333', stroke_width=0.8)
-            s.text(px(bxx + 2 * 600 / 910.0),
-                   py(sy0 + 0.2 + 1800 / 910.0) - 6,
-                   '駐輪スペース（4台）', size=8)
-            # 植栽
-            for i in range(3):
-                s.circle(px(0.6 + i * 0.8), py(sy0 + 0.75), 9, fill='#fff',
-                         stroke='#666', stroke_width=0.8)
-            s.text(px(1.4), py(sy0 + 0.75) + 24, '植栽', size=8)
+        # ---- 屋外施設（道路のある面に置く） ----
+        # 道路の面
+        face = ('S' if 'S' in side else 'N' if 'N' in side
+                else 'E' if 'E' in side else 'W')
+        # 出入口（住宅玄関・店舗出入口）を道路の面から拾う
+        ents = [(p_, l_, lab_) for f_, p_, l_, k_, lab_ in d['openings']
+                if f_ == face and k_ == 'entry']
+        ents.sort()
+        house = None
+        for p_, l_, lab_ in ents:
+            if '玄関' in (lab_ or ''):
+                house = (p_, l_)
+        if house is None and ents:
+            house = (ents[0][0], ents[0][1])
+
+        # 面ごとの座標のとり方をそろえる
+        if face in ('S', 'N'):
+            edge = sy0 if face == 'S' else sy1
+            wall = 0 if face == 'S' else ny
+            sgn = 1 if face == 'S' else -1          # 敷地の外から建物へ向く向き
+
+            def out(v, o):                          # 沿い座標 v、外へ o
+                return px(v), py(edge + sgn * o)
+
+            def to_wall(v, o):
+                return px(v), py(wall - sgn * o)
+            span = (0, nx)
+        else:
+            edge = sx1 if face == 'E' else sx0
+            wall = nx if face == 'E' else 0
+            sgn = -1 if face == 'E' else 1
+
+            def out(v, o):
+                return px(edge + sgn * o), py(v)
+
+            def to_wall(v, o):
+                return px(wall - sgn * o), py(v)
+            span = (0, ny)
+
+        yard = abs(edge - wall)                     # 道路側のあき（マス）
+
+        # 門とアプローチ … 住宅の玄関の正面だけ。店舗の前には置かない
+        if house:
+            gc = house[0] + house[1] / 2.0
+            gw = max(house[1], 1.0) / 2.0
+            for dd in (-gw, gw):
+                x1_, y1_ = out(gc + dd, -0.12)
+                x2_, y2_ = out(gc + dd, 0.12)
+                s.line(x1_, y1_, x2_, y2_, stroke=INK, stroke_width=2.6)
+            tx_, ty_ = out(gc - gw - 0.5, 0.35)
+            s.text(tx_, ty_ + 4, '門', size=8.5)
+            for dd in (-gw, gw):
+                a_ = out(gc + dd, 0.0)
+                b_ = to_wall(gc + dd, 0.0)
+                s.line(a_[0], a_[1], b_[0], b_[1], stroke='#666',
+                       stroke_width=0.8)
+            tx_, ty_ = out(gc + gw + 0.3, yard / 2.0)
+            s.text(tx_, ty_ + 4, 'アプローチ', size=8, anchor='start',
+                   fill='#333')
+            ax_, ay_ = out(gc, -0.28)
+            bx_, by_ = out(gc, -0.05)
+            if face in ('S', 'N'):
+                s.polygon([(ax_, ay_ + (14 if face == 'N' else -14) * 0),
+                           (bx_, by_)], fill='none')
+            s.polygon([(bx_, by_),
+                       (bx_ - 6, ay_), (bx_ + 6, ay_)], fill=INK)
+
+        # 駐輪スペース … 店舗の前（客が使う）
+        n_bike = 4
+        bw_, bd_ = 600 / 910.0, 1800 / 910.0
+        if yard > bd_ + 0.3:
+            start = span[1] - 0.4 - n_bike * bw_
+            if house and start < house[0] + house[1] + 0.3:
+                start = span[1] - 0.4 - n_bike * bw_
+            for k in range(n_bike):
+                v0 = start + k * bw_
+                c0 = out(v0, 0.18)
+                c1 = out(v0 + bw_, 0.18 + bd_)
+                x_, y_ = min(c0[0], c1[0]), min(c0[1], c1[1])
+                s.rect(x_, y_, abs(c1[0] - c0[0]), abs(c1[1] - c0[1]),
+                       fill='#fff', stroke='#333', stroke_width=0.8)
+            tx_, ty_ = out(start - 0.2, 0.18 + bd_ / 2.0)
+            s.text(tx_, ty_ + 3, '駐輪スペース（%d台）' % n_bike, size=8,
+                   anchor='end')
+
+        # 植栽 … 建物の横のあき（アプローチや駐輪とぶつからないところ）
+        if face in ('S', 'N'):
+            v0, oo = sx0 + 0.5, yard * 0.45
+        else:
+            v0, oo = sy0 + 0.5, yard * 0.45
+        for k in range(3):
+            cx_, cy_ = out(v0 + k * 0.62, oo)
+            s.circle(cx_, cy_, 8, fill='#fff', stroke='#666',
+                     stroke_width=0.8)
+        tx_, ty_ = out(v0 + 0.62, oo + 0.42)
+        s.text(tx_, ty_, '植栽', size=8)
+
         # あき寸法（敷地境界線と建築物との距離）
         s.dim_v(py(0), py(sy0), px(sx0) + 22,
                 format(int(round(-sy0 * 910)), ','), size=8.5,
