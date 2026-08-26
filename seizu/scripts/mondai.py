@@ -383,29 +383,84 @@ HEAD_NOTE = (
     'されます。</div>')
 
 
+A2CSS = """<style>
+@page{size:594mm 420mm;margin:0}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:GOFONT;color:#000;background:#fff;font-size:10.2px;
+  line-height:1.55}
+.a2{width:594mm;height:420mm;display:flex;overflow:hidden;
+  border:1.2px solid #000}
+.tate{width:15mm;border-right:1px solid #000;padding:10mm 0 0;
+  text-align:center;font-family:MINFONT;font-size:13px;font-weight:700}
+.tate i{display:block;font-style:normal;line-height:1.28}
+.tate i.sp{height:4mm}
+.main{flex:1;display:flex;min-width:0}
+.left{width:378mm;padding:5mm 5mm 4mm;display:flex;flex-direction:column;
+  min-width:0}
+.kadai{text-align:center;font-family:MINFONT;font-size:15px;font-weight:700;
+  letter-spacing:.1em;margin-bottom:3mm}
+.kadai small{display:block;font-family:GOFONT;font-size:9.5px;font-weight:400;
+  letter-spacing:0;margin-top:1mm;color:#333}
+.two{flex:1;display:flex;gap:5mm;min-height:0}
+.col{flex:1;min-width:0;overflow:hidden}
+.draft{width:200mm;border-left:1px solid #000;padding:4mm;display:flex;
+  flex-direction:column}
+.atten{border:1px solid #000;padding:2mm 2.5mm;font-size:8.6px;
+  line-height:1.5;margin-bottom:2mm}
+.dhead{font-family:MINFONT;font-size:13px;font-weight:700;letter-spacing:.5em;
+  margin-bottom:1.5mm}
+.dhead small{font-family:GOFONT;font-size:9px;font-weight:400;
+  letter-spacing:0;margin-left:6mm}
+.grid{flex:1;border:1px solid #000;
+  background-image:linear-gradient(#dcdcdc 1px,transparent 1px),
+    linear-gradient(90deg,#dcdcdc 1px,transparent 1px);
+  background-size:4.55mm 4.55mm}
+h2.sec{font-family:MINFONT;font-size:12.5px;font-weight:700;margin:0 0 1.5mm}
+h3.sub{font-size:10.4px;font-weight:700;margin:2mm 0 1mm}
+p{margin:1mm 0}
+.ind{margin-left:1em}
+ol.jp{list-style:none;counter-reset:jp;margin:1mm 0 1mm 1.6em}
+ol.jp>li{counter-increment:jp;position:relative;margin:.6mm 0}
+ol.jp>li::before{content:counter(jp,katakana)"．";position:absolute;left:-1.7em}
+ul.dot{list-style:none;margin:1mm 0 1mm 1em}
+ul.dot>li{position:relative;margin:.5mm 0}
+ul.dot>li::before{content:"・";position:absolute;left:-1em}
+table{border-collapse:collapse;width:100%;font-size:9.2px;margin:1.5mm 0;
+  line-height:1.45}
+th,td{border:.8px solid #000;padding:1mm 1.2mm;vertical-align:top}
+th{background:#f2f2f2;font-weight:700;text-align:center}
+td.c{text-align:center;vertical-align:middle;width:9mm;font-weight:700}
+td.rm{width:22mm;font-weight:700}
+.fig{text-align:center;margin-top:2mm}
+.fig svg{max-width:100%;height:auto;max-height:96mm}
+.small{font-size:8.6px;color:#333}
+sup{font-size:.7em;vertical-align:super}
+</style>""".replace('GOFONT', GO).replace('MINFONT', MIN)
+
+
 def kadai(sp, sub):
     return ('<div class="kadai">設計課題　「商店街に建つ併用住宅'
             '（木造３階建て）」<small>%s　予想問題%s　%s</small></div>'
             % (sub, sp['tag'], sp['name']))
 
 
-def mondai(sp):
-    o = ['<title>予想問題%s 問題用紙</title>' % sp['tag'], CSS,
-         '<div class="sheet">', HEAD_NOTE,
-         '<div class="warn">この問題用紙は、公表されている過去問'
-         '（令和5年・令和7年）の様式にならって作成した<b>予想問題</b>です。'
-         '本物の試験問題ではありません。実際の出題内容は当日の問題用紙に'
-         'よります。</div>',
-         kadai(sp, '問 題 用 紙')]
+def tategaki(t):
+    """1文字ずつ縦に積んで、確実に縦書きにする。／は空きを表す。"""
+    return ''.join('<i class="sp"></i>' if c == '／' else '<i>%s</i>' % c
+                   for c in t)
 
-    o.append('<h2 class="sec">1．設計条件</h2>')
-    o.append('<p class="ind">%s</p>' % sp['lead'])
-    o.append('<p class="ind">計画に当たっては、次の①〜③に特に留意する。</p>')
-    o.append('<ul class="dot" style="margin-left:1.8em">%s</ul>'
+
+def mondai(sp):
+    """本物と同じ A2横1枚の問題用紙。左＝設計条件、中＝要求図書、右＝下書欄。"""
+    L, M = [], []
+
+    L.append('<h2 class="sec">1．設計条件</h2>')
+    L.append('<p class="ind">%s</p>' % sp['lead'])
+    L.append('<p class="ind">計画に当たっては、次の①〜③に特に留意する。</p>')
+    L.append('<ul class="dot" style="margin-left:1.6em">%s</ul>'
              % ''.join('<li>%s　%s</li>' % ('①②③'[i], t)
                        for i, t in enumerate(sp['points'])))
-
-    o.append('<h3 class="sub">⑴　敷　地</h3><ol class="jp">'
+    L.append('<h3 class="sub">⑴　敷　地</h3><ol class="jp">'
              '<li>形状、道路との関係、方位等は、下に示す敷地図のとおりで'
              'ある。</li>'
              '<li>近隣商業地域内にあり、準防火地域に指定されている。</li>'
@@ -414,43 +469,42 @@ def mondai(sp):
              'ある。</li>'
              '<li>電気、都市ガス、上水道及び公共下水道は完備している。</li>'
              '</ol>' % (sp['ken'], sp.get('ken_note', ''), sp['you']))
-    o.append('<h3 class="sub">⑵　構造、階数、建築物の高さ等</h3>'
+    L.append('<h3 class="sub">⑵　構造、階数、建築物の高さ等</h3>'
              '<ol class="jp"><li>木造３階建てとする。</li>'
              '<li>建築物の最高の高さは11m以下、かつ、軒の高さは9.5m以下と'
              'する。</li>'
              '<li>耐力壁（構造耐力上有効な壁）は、必要な量をバランスよく'
              '配置する。</li></ol>')
-    o.append('<h3 class="sub">⑶　延べ面積等</h3><ol class="jp">'
+    L.append('<h3 class="sub">⑶　延べ面積等</h3><ol class="jp">'
              '<li>延べ面積は、「%s」とする。</li>'
              '<li>玄関ポーチ、バルコニー、駐輪スペース等は、床面積に'
              '算入しない。</li></ol>' % sp['nobe'])
-    o.append('<h3 class="sub">⑷　人員構成等</h3><p class="ind">%s</p>'
+    L.append('<h3 class="sub">⑷　人員構成等</h3><p class="ind">%s</p>'
              % sp.get('jinin', '夫婦（40歳代）、子ども２人（中学生、小学生）'))
-
-    o.append('<h3 class="sub">⑸　要求室等</h3>'
+    L.append('<h3 class="sub">⑸　要求室等</h3>'
              '<p class="ind">下表の全ての室等は、指定された設置階に'
-             '計画する。</p><table><tr><th style="width:32px">設置階</th>'
-             '<th style="width:100px">室　名　等</th>'
+             '計画する。</p><table><tr><th style="width:9mm">設置階</th>'
+             '<th style="width:22mm">室　名　等</th>'
              '<th>特　記　事　項</th></tr>')
     for fl, lst in sp['rooms']:
         for i, (nm, memo) in enumerate(lst):
             span = ('<td class="c" rowspan="%d">%s</td>'
                     % (len(lst), fl.replace('階', '<br>階'))) if i == 0 else ''
-            o.append('<tr>%s<td class="rm">%s</td><td>%s</td></tr>'
+            L.append('<tr>%s<td class="rm">%s</td><td>%s</td></tr>'
                      % (span, nm, memo))
-    o.append('</table>')
-    o.append('<p style="font-size:10.5px">（注1）各要求室等においては、'
+    L.append('</table>')
+    L.append('<p class="small">（注1）各要求室等においては、'
              '床面積・広さの指定がない場合、床面積は適宜とする。<br>'
              '（注2）階段は、安全を確保するために、踊場を設ける。</p>')
-    o.append('<h3 class="sub">⑹　屋外施設等</h3>'
+    L.append('<h3 class="sub">⑹　屋外施設等</h3>'
              '<p class="ind">屋外に下表のものを計画する。</p><table>'
              '<tr><td class="rm">駐輪スペース</td>'
              '<td>・４台分を設ける。</td></tr>'
              '<tr><td class="rm">門・塀・植栽等</td><td></td></tr></table>')
-    o.append('<div class="fig">%s</div>' % inline_svg('site_' + sp['tag']))
+    L.append('<div class="fig">%s</div>' % inline_svg('site_' + sp['tag']))
 
-    o.append('<h2 class="sec brk">2．要求図書</h2>')
-    o.append('<ul class="dot" style="margin-left:1.2em">'
+    M.append('<h2 class="sec">2．要求図書</h2>')
+    M.append('<ul class="dot" style="margin-left:1.1em">'
              '<li>ａ．答案用紙の定められた枠内に、下表の要求図書を記入する。'
              '（寸法線は、枠外にはみだして記入してもよい。）</li>'
              '<li>ｂ．図面は黒鉛筆仕上げとする。（定規を用いなくてもよい。）'
@@ -458,22 +512,37 @@ def mondai(sp):
              '１目盛は、4.55mm（部分詳細図にあっては、10mm）である。</li>'
              '<li>ｄ．シックハウス対策のための機械換気設備等は、記入しなくて'
              'よい。</li></ul>')
-    o.append('<table><tr><th style="width:118px">要　求　図　書'
+    M.append('<table><tr><th style="width:26mm">要　求　図　書'
              '<br>（　）内は縮尺</th><th>特　記　事　項</th></tr>')
     for nm, memo in ZUSHO:
-        o.append('<tr><td class="rm">%s</td><td>%s</td></tr>' % (nm, memo))
-    o.append('<tr><td class="rm">⑻ 計画の要点等</td>'
+        M.append('<tr><td class="rm">%s</td><td>%s</td></tr>' % (nm, memo))
+    M.append('<tr><td class="rm">⑻ 計画の要点等</td>'
              '<td>・建築物の計画に関する次の①〜③について、具体的に'
              '記述する。<ul class="dot">%s</ul></td></tr>'
              % ''.join('<li>%s　%s</li>' % ('①②③'[i], q)
                        for i, (q, _) in enumerate(sp['youten'])))
-    o.append('</table>')
-    o.append('<p style="font-size:10px;color:#444;margin-top:10px">'
-             '※ 公表されている要求図書では⑵と⑶は「各階平面図」として'
-             '１つにまとめられています。答案用紙の枠の分かれ方は当日の'
-             '指定によります。</p>')
-    o.append('</div>')
-    return ''.join(o)
+    M.append('</table>')
+    M.append('<p class="small">※ この問題用紙は、公表されている過去問'
+             '（令和4〜7年）の様式にならって作成した<b>予想問題</b>です。'
+             '本物の試験問題ではありません。</p>')
+
+    return ''.join([
+        '<title>予想問題%s 問題用紙</title>' % sp['tag'], A2CSS,
+        '<div class="a2"><div class="tate">' + tategaki(
+            '令和8年度／二級建築士試験﹁設計製図の試験﹂／問題用紙')
+        + '</div><div class="main"><div class="left">',
+        kadai(sp, '問 題 用 紙'),
+        '<div class="two"><div class="col">', ''.join(L),
+        '</div><div class="col">', ''.join(M),
+        '</div></div></div>',
+        '<div class="draft">',
+        '<div class="atten">〔注意事項〕試験問題を十分に読んだうえで、'
+        '「設計製図の試験」に臨むようにしてください。なお、建築基準法等の'
+        '関係法令や要求図書、主要な要求室等の計画等の設計与条件に対して'
+        '解答内容が不十分な場合には、「設計条件・要求図書に対する重大な'
+        '不適合」と判断されます。</div>',
+        '<div class="dhead">下 書 欄<small>（目盛4.55mm）</small></div>',
+        '<div class="grid"></div></div></div></div>'])
 
 
 def kaitou(sp):
@@ -521,23 +590,23 @@ def kaitou(sp):
     return ''.join(o)
 
 
-def combine(fn, title):
+def combine(fn, title, css=None, mark='<div class="sheet">'):
     """6セットを1つのHTMLにまとめる。"""
-    parts = ['<title>%s</title>' % title, CSS]
+    parts = ['<title>%s</title>' % title, css or CSS]
     for i, sp in enumerate(SPECS):
         html = fn(sp)
-        body = html[html.index('<div class="sheet">'):]
+        body = html[html.index(mark):]
         if i:
             body = body.replace(
-                '<div class="sheet">',
-                '<div class="sheet" style="break-before:page">', 1)
+                mark, mark[:-1] + ' style="break-before:page">', 1)
         parts.append(body)
     return ''.join(parts)
 
 
 if __name__ == '__main__':
     io.open(os.path.join(BASE, 'mondai_all.html'), 'w',
-            encoding='utf-8').write(combine(mondai, '予想問題集 問題用紙'))
+            encoding='utf-8').write(combine(mondai, '予想問題集 問題用紙',
+                                            A2CSS, '<div class="a2">'))
     io.open(os.path.join(BASE, 'kaitou_all.html'), 'w',
             encoding='utf-8').write(combine(kaitou, '予想問題集 標準解答例'))
     for sp in SPECS:

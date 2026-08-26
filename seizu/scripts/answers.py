@@ -353,3 +353,47 @@ D3 = base(
 for _n, _d in (('ansD_2f', D2), ('ansD_3f', D3)):
     draw_floor(1, _d).save(os.path.join(OUT, _n + '.svg'))
 print('wrote ansD_2f / ansD_3f')
+
+
+# ============================================================
+# 型をそのまま使う問題（A・E・F）の2階・3階
+#   A … 8×10の型そのまま
+#   E … 南東の角地。型のままで東面の窓を増やす
+#   F … 北道路。1階だけ南北を入れかえるので2階・3階は型のまま
+# ============================================================
+import plans as _plans
+
+
+def from_type(n, title, extra=(), note=None):
+    """型の2階・3階をそのまま解答例として使う。"""
+    d = dict(_plans.FLOORS[n])
+    d['title'] = title
+    d['road'] = False
+    if extra:
+        d['openings'] = list(d['openings']) + list(extra)
+    if note:
+        d['note'] = note
+    return d
+
+
+E_WIN = [('E', 1.0, 2.0, 'win', ''), ('E', 4.0, 2.0, 'win', '')]
+
+A2 = from_type(2, '予想問題　A 解答例　2階平面図')
+A3 = from_type(3, '予想問題　A 解答例　3階平面図')
+E2 = from_type(2, '予想問題　E 解答例　2階平面図（南東の角地）', E_WIN,
+               '角地なので東面にも窓を取れる。水まわりは西にまとめる。')
+E3 = from_type(3, '予想問題　E 解答例　3階平面図（南東の角地）', E_WIN,
+               '角地なので東面にも窓を取れる。廊下を東西に1本通す。')
+F2 = from_type(2, '予想問題　F 解答例　2階平面図（北側道路）',
+               note='道路は北。1階だけ南北を入れかえるので、2階は型のまま。')
+F3 = from_type(3, '予想問題　F 解答例　3階平面図（北側道路）',
+               note='道路は北。階段の位置は動かさない。')
+
+# 解答用紙を組むときに使う、問題ごとの各階
+PLANS = {'A': (A1, A2, A3), 'B': (B1, B2, B3), 'C': (C1, C2, C3),
+         'D': (D1, D2, D3), 'E': (E1, E2, E3), 'F': (F1, F2, F3)}
+
+for _n, _d in (('ansA_2f', A2), ('ansA_3f', A3), ('ansE_2f', E2),
+               ('ansE_3f', E3), ('ansF_2f', F2), ('ansF_3f', F3)):
+    draw_floor(1, _d).save(os.path.join(OUT, _n + '.svg'))
+print('wrote ansA/E/F の2階・3階')

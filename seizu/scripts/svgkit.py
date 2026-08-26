@@ -126,3 +126,38 @@ def _text_rot(self, x, y, s, angle=-90, size=12, anchor='middle',
 
 
 Svg.text_rot = _text_rot
+
+
+# ---------------------------------------------------------------
+# 本番の答案は黒鉛筆だけなので、色つきのSVGを白黒に変換する
+# ---------------------------------------------------------------
+import re as _re
+
+_TAG = _re.compile(r'<[a-zA-Z][^>]*>')
+_COL = _re.compile(r'\b(fill|stroke)="(#[0-9a-fA-F]{3,6})"')
+
+
+def _lum(col):
+    c = col[1:]
+    if len(c) == 3:
+        c = ''.join(ch * 2 for ch in c)
+    r, g, b = int(c[0:2], 16), int(c[2:4], 16), int(c[4:6], 16)
+    return 0.299 * r + 0.587 * g + 0.114 * b
+
+
+def to_mono(svg):
+    """色つきのSVGを、黒鉛筆で描いた図面のような白黒に変える。"""
+    def tag(m):
+        t = m.group(0)
+        is_text = t.startswith('<text') or t.startswith('<tspan')
+
+        def col(mm):
+            a, c = mm.group(1), mm.group(2)
+            if is_text:
+                return '%s="#111111"' % a
+            v = _lum(c)
+            if a == 'fill':
+                return 'fill="%s"' % ('#ffffff' if v >= 150 else '#000000')
+            return 'stroke="%s"' % ('#d5d5d5' if v >= 228 else '#000000')
+        return _COL.sub(col, t)
+    return _TAG.sub(tag, svg)

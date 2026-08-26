@@ -107,6 +107,11 @@ def build_hayami():
     to_pdf(p, os.path.join(OUT, '二級建築士_製図早見盤.pdf'))
 
 
+def build_a2(src_name, pdf_name):
+    """A2横の問題用紙をそのままPDFにする。"""
+    to_pdf(os.path.join(BASE, src_name), pdf_name)
+
+
 def build_plain(src_name, pdf_name):
     """すでにプリント向けに書かれたHTMLをそのままPDFにする。"""
     to_pdf(os.path.join(BASE, src_name), os.path.join(OUT, pdf_name))
@@ -141,9 +146,53 @@ def build_zumen():
     to_pdf(p, os.path.join(OUT, '二級建築士_図面集.pdf'))
 
 
+# ---------------------------------------------------------------
+# 予想問題集：問題と解答を1問ずつ別のPDFにする
+# ---------------------------------------------------------------
+SHEETS = os.path.join(BASE, 'sheets')
+KEYS = ['A', 'B', 'C', 'D', 'E', 'F']
+
+A3CSS = ("<style>@page{size:A3 landscape;margin:0}"
+         "html,body{margin:0;padding:0;background:#fff}"
+         ".pg{width:420mm;height:297mm;break-after:page;overflow:hidden}"
+         ".pg:last-child{break-after:auto}"
+         ".pg svg{width:420mm;height:297mm;display:block}</style>")
+
+
+def _svg(name):
+    t = io.open(os.path.join(SHEETS, name + '.svg'),
+                encoding='utf-8').read()
+    return t.replace('width="1191" height="842"', '', 1)
+
+
+def build_a3(names, pdf_name):
+    """A3横のシートを並べて1本のPDFにする。"""
+    html = [A3CSS] + ['<div class="pg">%s</div>' % _svg(n) for n in names]
+    p = os.path.join(TMP, 'a3_%s.html'
+                     % os.path.basename(pdf_name).replace('.pdf', ''))
+    io.open(p, 'w', encoding='utf-8').write(''.join(html))
+    to_pdf(p, pdf_name)
+
+
+def build_mondaishu():
+    """1問ずつ「問題」と「解答例」を別のPDFにして pdf/予想問題集/ に置く。"""
+    d = os.path.join(OUT, '予想問題集')
+    os.makedirs(d, exist_ok=True)
+    for k in KEYS:
+        build_a2('mondai_%s.html' % k,
+                 os.path.join(d, '予想問題%s_問題.pdf' % k))
+        build_a3(['kaitou_%s' % k, 'kaitou_common1', 'kaitou_common2'],
+                 os.path.join(d, '予想問題%s_解答例.pdf' % k))
+    build_a2('mondai_all.html', os.path.join(d, '00_問題編_A-F.pdf'))
+    build_a3(['kaitou_%s' % k for k in KEYS] +
+             ['kaitou_common1', 'kaitou_common2'],
+             os.path.join(d, '00_解答編_A-F.pdf'))
+
+
 if __name__ == '__main__':
     os.makedirs(TMP, exist_ok=True)
     build_hayami()
     build_zumen()
     build_plain('mondai_all.html', '予想問題集A-F_問題用紙.pdf')
     build_plain('kaitou_all.html', '予想問題集A-F_標準解答例.pdf')
+    build_mondaishu()

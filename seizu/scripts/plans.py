@@ -541,18 +541,21 @@ def draw_floor(n, d=None):
             s.text(x + w / 2.0, y + h / 2.0 + 4, label, size=12, fill='#666',
                    weight='700')
 
-    if 'S' in side:
+    if d.get('road', True) and 'S' in side:
         road_band(px(-0.6), ry, (nx + 1.2) * G, 26, '道　路（南）')
-    if 'N' in side:
+    if d.get('road', True) and 'N' in side:
         road_band(px(-0.6), y0 - 88, (nx + 1.2) * G, 26, '道　路（北）')
-    if 'E' in side:
+    if d.get('road', True) and 'E' in side:
         road_band(x1 + 64, py(ny + 0.4), 26, (ny + 0.8) * G, '道　路（東）',
                   rot=True)
-    if 'W' in side:
+    if d.get('road', True) and 'W' in side:
         road_band(x0 - 90, py(ny + 0.4), 26, (ny + 0.8) * G, '道　路（西）',
                   rot=True)
 
     # ---- 凡例 ----
+    if d.get('bare'):
+        s.h = ry + 22
+        return s
     ly = ry + 56
     s.circle(ML + 8, ly - 4, 7.5, fill='#ffffff', stroke='#c0392b',
              stroke_width=1.8)
