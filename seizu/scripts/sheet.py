@@ -248,11 +248,11 @@ def load_file(name):
 
 
 COMMON = [('共通図 ①　立面図と部分詳細図',
-           ['elevation_s', 'detail'],
+           ['anselev_s', 'detail'],
            'この2枚は「型（8マス×10マス）」のもの。'
            '問題B（9マス）・C（7マス）は間口が違うので寸法を読みかえる。'),
           ('共通図 ②　床伏図と小屋伏図',
-           ['framing_floor', 'framing_roof'],
+           ['ansfuse_floor', 'ansfuse_roof'],
            '2階の床伏図と3階の床伏図は同じ組み方でよい。'
            '小屋伏図は棟が南北方向・4寸勾配。')]
 
