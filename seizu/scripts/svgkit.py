@@ -158,6 +158,6 @@ def to_mono(svg):
             v = _lum(c)
             if a == 'fill':
                 return 'fill="%s"' % ('#ffffff' if v >= 150 else '#000000')
-            return 'stroke="%s"' % ('#d5d5d5' if v >= 228 else '#000000')
+            return 'stroke="%s"' % ('#cccccc' if v >= 195 else '#000000')
         return _COL.sub(col, t)
     return _TAG.sub(tag, svg)

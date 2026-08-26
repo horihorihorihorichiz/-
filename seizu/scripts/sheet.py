@@ -9,7 +9,7 @@ import re
 import io
 from svgkit import Svg, to_mono
 import answers
-from plans import draw_floor
+import anssheet
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 FIG = os.path.join(HERE, '..', 'figures')
@@ -63,11 +63,10 @@ TITLES = ['１階平面図 兼 配置図　縮尺1／100',
 
 
 def panel(key, i):
-    """凡例と注記をはぶいた平面図を、その場で描いて返す。"""
+    """公式の標準解答例と同じ描き方で平面図を描く。"""
     d = dict(answers.PLANS[key][i])
-    d['bare'] = True
-    d['title'] = TITLES[i]
-    sv = draw_floor(1, d)
+    d['floor_label'] = 'GL＋550' if i == 0 else ''
+    sv = anssheet.draw(d, TITLES[i])
     t = sv.dump()
     body = t[t.index('>', t.index('<svg')) + 1:t.rindex('</svg>')]
     return body, sv.w, sv.h
@@ -107,6 +106,17 @@ def sheet(sp):
                    stroke=INK, stroke_width=0.8)
     s.line(38, 466, W - 8, 466, stroke=INK, stroke_width=1.0)
 
+    # ---- 下半分は方眼紙（答案用紙の目盛4.55mm） ----
+    gp = 12.9
+    yy = 470.0
+    while yy < H - 6:
+        s.line(40, yy, W - 8, yy, stroke='#e0e0e0', stroke_width=0.5)
+        yy += gp
+    xx = 40.0
+    while xx < W - 8:
+        s.line(xx, 470, xx, H - 6, stroke='#e0e0e0', stroke_width=0.5)
+        xx += gp
+
     # ---- 面積表 ----
     ty, tx, tw = 500.0, 52.0, 460.0
     rh = 30.0
@@ -117,7 +127,7 @@ def sheet(sp):
             ('　　　　2階　イ', keisan, '%.2f' % a2),
             ('　　　　3階　ウ', keisan, '%.2f' % a3),
             ('延べ面積　ア＋イ＋ウ', '', '%.2f' % (a1 + a2 + a3))]
-    s.rect(tx, ty, tw, rh * len(rows), fill='none', stroke=INK,
+    s.rect(tx, ty, tw, rh * len(rows), fill='#fff', stroke=INK,
            stroke_width=1.2)
     for i, (nm, ks, va) in enumerate(rows):
         y = ty + i * rh
@@ -153,7 +163,7 @@ def sheet(sp):
             ('棟木', '120×120', 'mune'),
             ('母屋', '90×90', 'moya')]
     cw = lw / len(cols)
-    s.rect(lx, ly, lw, 96, fill='none', stroke=INK, stroke_width=1.2)
+    s.rect(lx, ly, lw, 96, fill='#fff', stroke=INK, stroke_width=1.2)
     s.line(lx, ly + 26, lx + lw, ly + 26, stroke=INK, stroke_width=0.8)
     s.line(lx, ly + 66, lx + lw, ly + 66, stroke=INK, stroke_width=0.8)
     for i, (nm, dim, kind) in enumerate(cols):
@@ -202,7 +212,7 @@ def sheet(sp):
 
     # ---- 標準解答例のタイトル ----
     bx, by = 546.0, 634.0
-    s.rect(bx, by, 290, 50, fill='none', stroke=INK, stroke_width=1.4)
+    s.rect(bx, by, 290, 50, fill='#fff', stroke=INK, stroke_width=1.4)
     s.text(bx + 145, by + 32, '標　準　解　答　例', size=18, weight='700')
     s.text(bx + 306, by + 16, '予想問題　%s' % key, size=13, anchor='start',
            weight='700')
@@ -217,7 +227,7 @@ def sheet(sp):
 
     # ---- 採点のポイント ----
     py_, ph = 738.0, 88.0
-    s.rect(52, py_, W - 104, ph, fill='none', stroke=INK, stroke_width=1.0)
+    s.rect(52, py_, W - 104, ph, fill='#fff', stroke=INK, stroke_width=1.0)
     s.text(64, py_ + 20, 'この解答例のポイント', size=12, anchor='start',
            weight='700')
     for i, t in enumerate(POINTS[key]):
