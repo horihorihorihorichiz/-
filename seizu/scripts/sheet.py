@@ -10,6 +10,7 @@ import io
 from svgkit import Svg, to_mono
 import answers
 import anssheet
+import sitemap
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 FIG = os.path.join(HERE, '..', 'figures')
@@ -66,6 +67,9 @@ def panel(key, i):
     """公式の標準解答例と同じ描き方で平面図を描く。"""
     d = dict(answers.PLANS[key][i])
     d['floor_label'] = 'GL＋550' if i == 0 else ''
+    if i == 0:
+        d['cut'] = d.get('nx', 8) - 1.0
+        d['site'] = sitemap.SITES[key]
     sv = anssheet.draw(d, TITLES[i])
     t = sv.dump()
     body = t[t.index('>', t.index('<svg')) + 1:t.rindex('</svg>')]

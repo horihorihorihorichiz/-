@@ -15,7 +15,7 @@ from plans import fit_openings, _bearing_marks, _union
 OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'figures')
 
 G = 56.0
-ML, MR, MT, MB = 104, 116, 104, 150
+ML, MR, MT, MB = 104, 156, 104, 176
 WT = 120.0 / 910.0          # 壁の厚さ（マス）
 INK = '#111'
 
@@ -55,14 +55,23 @@ def draw(d, title, sub=''):
     side = d.get('road_side', 'S')
     d = dict(d, openings=fit_openings(d, nx, ny, xlines, ylines))
 
-    W = ML + nx * G + MR
-    H = MT + ny * G + MB
+    site = d.get('site')
+    if site:
+        SW, SD = site['sw'] / 910.0, site['sd'] / 910.0
+        ox = (SW - nx) / 2.0                       # 東西のあきは半分ずつ
+        yard = 2.2                                 # 道路側のあき（アプローチ）
+        oy = yard if 'S' in side else (SD - ny - yard)
+        LG, TG = -ox, SD - oy                      # 紙の左端・上端の目盛
+    else:
+        SW, SD, LG, TG = nx, ny, 0, ny
+    W = ML + SW * G + MR
+    H = MT + SD * G + MB
 
     def px(gx):
-        return ML + gx * G
+        return ML + (gx - LG) * G
 
     def py(gy):
-        return MT + (ny - gy) * G
+        return MT + (TG - gy) * G
 
     s = Svg(W, H)
     s.text(W / 2.0, 30, title, size=15, weight='700')
@@ -87,6 +96,82 @@ def draw(d, title, sub=''):
         s.line(0, gy_, W, gy_, stroke='#c9c9c9' if dark else '#dedede',
                stroke_width=0.7 if dark else 0.55)
         gy_ += half
+
+    # ---- 敷地・屋外施設（1階平面図 兼 配置図） ----
+    if site:
+        sx0, sx1 = LG, LG + SW
+        sy0, sy1 = TG - SD, TG
+        s.rect(px(sx0), py(sy1), SW * G, SD * G, fill='none', stroke=INK,
+               stroke_width=1.4, stroke_dasharray='16 4 3 4')
+        # 塀（道路に面していない3辺）
+        for f, seg in (('S', ((sx0, sy0), (sx1, sy0))),
+                       ('N', ((sx0, sy1), (sx1, sy1))),
+                       ('W', ((sx0, sy0), (sx0, sy1))),
+                       ('E', ((sx1, sy0), (sx1, sy1)))):
+            if f in side:
+                continue
+            (ax_, ay_), (bx_, by_) = seg
+            s.line(px(ax_), py(ay_), px(bx_), py(by_), stroke=INK,
+                   stroke_width=2.4, stroke_dasharray='14 6')
+        s.text_rot(px(sx0) + 14, py((sy0 + sy1) / 2.0), '塀 H=1,200', -90,
+                   size=8, fill='#333')
+        # 道路
+        if 'S' in side:
+            ry_ = py(sy0)
+            s.text(px((sx0 + sx1) / 2.0), ry_ + 30,
+                   '道　路（幅員 %s）' % format(site['road'], ','), size=10,
+                   weight='700')
+        if 'N' in side:
+            s.text(px((sx0 + sx1) / 2.0), py(sy1) - 26,
+                   '道　路（幅員 %s）' % format(site['road'], ','), size=10,
+                   weight='700')
+        if 'E' in side:
+            s.text_rot(px(sx1) + 30, py((sy0 + sy1) / 2.0),
+                       '道　路（幅員 %s）' % format(site['road'], ','), -90,
+                       size=10, weight='700')
+        # 門とアプローチ（道路側の中央から玄関へ）
+        gate = nx * 0.25
+        if 'S' in side:
+            for dxx in (-0.55, 0.55):
+                s.line(px(gate + dxx), py(sy0) - 6, px(gate + dxx),
+                       py(sy0) + 6, stroke=INK, stroke_width=2.4)
+            s.text(px(gate) - 22, py(sy0) - 10, '門', size=8.5)
+            s.line(px(gate - 0.5), py(sy0), px(gate - 0.5), py(0),
+                   stroke='#666', stroke_width=0.8)
+            s.line(px(gate + 0.5), py(sy0), px(gate + 0.5), py(0),
+                   stroke='#666', stroke_width=0.8)
+            s.text(px(gate) + 26, py(sy0 / 2.0), 'アプローチ', size=8,
+                   anchor='start', fill='#333')
+            s.polygon([(px(gate), py(sy0) - 16), (px(gate) - 6, py(sy0) - 4),
+                       (px(gate) + 6, py(sy0) - 4)], fill=INK)
+            # 駐輪スペース4台（600×1,800）
+            bxx = nx - 2.6
+            for i in range(4):
+                a_ = bxx + i * (600 / 910.0)
+                s.rect(px(a_), py(sy0 + 0.15 + 1800 / 910.0),
+                       (600 / 910.0) * G, (1800 / 910.0) * G, fill='#fff',
+                       stroke='#333', stroke_width=0.8)
+            s.text(px(bxx + 2 * 600 / 910.0),
+                   py(sy0 + 0.2 + 1800 / 910.0) - 6,
+                   '駐輪スペース（4台）', size=8)
+            # 植栽
+            for i in range(3):
+                s.circle(px(0.6 + i * 0.8), py(sy0 + 0.75), 9, fill='#fff',
+                         stroke='#666', stroke_width=0.8)
+            s.text(px(1.4), py(sy0 + 0.75) + 24, '植栽', size=8)
+        # あき寸法（敷地境界線と建築物との距離）
+        s.dim_v(py(0), py(sy0), px(sx0) + 22,
+                format(int(round(-sy0 * 910)), ','), size=8.5,
+                anchor='start', dx=5)
+        s.dim_v(py(sy1), py(ny), px(sx0) + 22,
+                format(int(round((sy1 - ny) * 910)), ','), size=8.5,
+                anchor='start', dx=5)
+        s.dim_h(px(sx0), px(0), py(sy1) - 20,
+                format(int(round(-sx0 * 910)), ','), size=8.5)
+        s.dim_h(px(nx), px(sx1), py(sy1) - 20,
+                format(int(round((sx1 - nx) * 910)), ','), size=8.5)
+        s.text(px(sx1) - 10, py(sy0) - 12, '敷地面積 %s㎡' % site['area'],
+               size=9, anchor='end', fill='#333')
 
     # ---- 通り芯 ----
     for gx, _ in xlines:
@@ -364,20 +449,22 @@ def draw(d, title, sub=''):
     # ---- 階段 ----
     sa, sb, sc, sd = d.get('stair_box', (0, 2, 2, 6))
     mid = (sa + sc) / 2.0
-    Tt = 210.0 / 910.0
+    Tt = 0.25          # 踏面227.5mm（910÷4）。令23条の210mm以上を満たす
     land = sd - 1
     n1, n2 = d.get('stair_runs', (6, 7))
     mode = d.get('stair_mode') or (
         'top' if 'DN' in d.get('stair_up', '') else 'bottom')
     s.line(px(sa) + h, py(land), px(sc) - h, py(land), stroke=INK,
-           stroke_width=1.0)
-    s.line(px(mid), py(sb), px(mid), py(land), stroke=INK, stroke_width=1.0)
+           stroke_width=1.2)
+    s.text(px(mid), py(land + 0.45), '踊場', size=8, fill='#333')
+    s.line(px(mid), py(sb), px(mid), py(land), stroke=INK, stroke_width=1.5)
+    s.text(px(mid) + 12, py(land) + 12, '手摺', size=7.5, fill='#333')
     for k in range(1, n1 + 1):
-        s.line(px(mid) + 1, py(land - k * Tt), px(sc) - h,
-               py(land - k * Tt), stroke=INK, stroke_width=0.7)
+        s.line(px(mid) + 1.5, py(land - k * Tt), px(sc) - h,
+               py(land - k * Tt), stroke=INK, stroke_width=0.8)
     for k in range(1, n2 + 1):
-        s.line(px(sa) + h, py(land - k * Tt), px(mid) - 1,
-               py(land - k * Tt), stroke=INK, stroke_width=0.7)
+        s.line(px(sa) + h, py(land - k * Tt), px(mid) - 1.5,
+               py(land - k * Tt), stroke=INK, stroke_width=0.8)
 
     def arrow(gx, n, lab_):
         ax = px(gx)
@@ -468,12 +555,36 @@ def draw(d, title, sub=''):
                  stroke_width=0.9)
         s.text(x0 - 40, py(gy) + 4, nm, size=10, weight='700')
 
-    # ---- 寸法 ----
-    s.dim_h(x0, x1, y1 + 56, format(nx * 910, ','))
-    s.dim_v(y1, y0, x1 + 52, format(ny * 910, ','))
+    # ---- 寸法（通りごとのスパン＋全体） ----
+    xs = [g for g, _ in xlines]
+    ys = [g for g, _ in ylines]
+    for a, b in zip(xs[:-1], xs[1:]):
+        s.dim_h(px(a), px(b), y1 + 34, format(int((b - a) * 910), ','),
+                size=9)
+    s.dim_h(x0, x1, y1 + 62, format(nx * 910, ','))
+    for a, b in zip(ys[:-1], ys[1:]):
+        s.dim_v(py(a), py(b), x1 + 30, format(int((b - a) * 910), ','),
+                size=9, anchor='start', dx=6)
+    s.dim_v(y1, y0, x1 + 96, format(ny * 910, ','), anchor='start', dx=6)
+
+    # ---- 部分詳細図の切断位置と方向（1階平面図に記入する） ----
+    if d.get('cut'):
+        cx_ = px(d['cut'])
+        s.line(cx_, py(0) - 30, cx_, py(0) + 40, stroke=INK,
+               stroke_width=2.6)
+        for yy_ in (py(0) - 26, py(0) + 34):
+            s.line(cx_, yy_, cx_ + 22, yy_, stroke=INK, stroke_width=1.4)
+            s.polygon([(cx_ + 22, yy_), (cx_ + 13, yy_ - 4),
+                       (cx_ + 13, yy_ + 4)], fill=INK)
+        s.text(cx_ - 8, py(0) - 34, 'Ｙ', size=10, anchor='end',
+               weight='700')
+        s.text(cx_ - 8, py(0) + 48, 'Ｙ', size=10, anchor='end',
+               weight='700')
+        s.text(cx_ + 26, py(0) + 52, '部分詳細図の切断位置', size=8,
+               anchor='start', fill='#333')
 
     # ---- 方位・道路 ----
-    if d.get('road', True):
+    if d.get('road', True) and not site:
         if 'S' in side:
             s.text(W / 2.0, y1 + 88, '道　路', size=11, weight='700')
         if 'N' in side:
@@ -484,7 +595,7 @@ def draw(d, title, sub=''):
         if 'W' in side:
             s.text_rot(x0 - 74, (y0 + y1) / 2.0, '道　路', -90, size=11,
                        weight='700')
-    nxp, nyp = W - 30, 34
+    nxp, nyp = W - 34, 34
     s.circle(nxp, nyp, 12, fill='#fff', stroke='#444', stroke_width=0.9)
     s.polygon([(nxp, nyp - 9), (nxp - 4, nyp + 7), (nxp, nyp + 3),
                (nxp + 4, nyp + 7)], fill=INK)
@@ -494,11 +605,15 @@ def draw(d, title, sub=''):
 
 if __name__ == '__main__':
     import answers
+    import sitemap
     for k in 'ABCDEF':
         for i, ti in enumerate(('１階平面図 兼 配置図　縮尺1／100',
                                 '２階平面図　縮尺1／100',
                                 '３階平面図　縮尺1／100')):
             dd = dict(answers.PLANS[k][i])
             dd['floor_label'] = 'GL＋550' if i == 0 else ''
+            if i == 0:
+                dd['cut'] = dd.get('nx', plans.NX) - 1.0
+                dd['site'] = sitemap.SITES[k]
             draw(dd, ti).save(os.path.join(OUT, 'ans2%s_%df.svg' % (k, i + 1)))
     print('wrote ans2*_?f.svg')
