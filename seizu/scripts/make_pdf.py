@@ -155,17 +155,17 @@ def build_zumen():
 SHEETS = os.path.join(BASE, 'sheets')
 KEYS = ['A', 'B', 'C', 'D', 'E', 'F']
 
-A3CSS = ("<style>@page{size:A3 landscape;margin:0}"
+A3CSS = ("<style>@page{size:594mm 420mm;margin:0}"
          "html,body{margin:0;padding:0;background:#fff}"
-         ".pg{width:420mm;height:297mm;break-after:page;overflow:hidden}"
+         ".pg{width:594mm;height:420mm;break-after:page;overflow:hidden}"
          ".pg:last-child{break-after:auto}"
-         ".pg svg{width:420mm;height:297mm;display:block}</style>")
+         ".pg svg{width:594mm;height:420mm;display:block}</style>")
 
 
 def _svg(name):
     t = io.open(os.path.join(SHEETS, name + '.svg'),
                 encoding='utf-8').read()
-    return t.replace('width="1191" height="842"', '', 1)
+    return t.replace('width="1684" height="1191"', '', 1)
 
 
 def build_a3(names, pdf_name):

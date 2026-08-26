@@ -10,7 +10,7 @@ from plans import fit_openings
 
 OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'figures')
 
-G = 60.0                     # 1マス（910mm）
+G = 56.0                     # 1マス（910mm）
 K = G / 910.0                # 1mmあたり
 ML, MR, MT, MB = 200, 110, 96, 120
 INK = '#111'

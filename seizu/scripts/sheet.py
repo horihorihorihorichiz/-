@@ -17,7 +17,13 @@ FIG = os.path.join(HERE, '..', 'figures')
 OUT = os.path.join(HERE, '..', 'sheets')
 os.makedirs(OUT, exist_ok=True)
 
-W, H = 1191.0, 842.0            # A3横（ポイント）
+W, H = 1684.0, 1191.0           # A2横（ポイント）
+
+# 縮尺をそろえる。1ポイント = 0.3528mm
+#   1/100 の図 … 内部の1マス56px が 910/100 mm になる倍率
+#   1/20  の図 … 内部の1mm 0.30px が 1/20 mm になる倍率
+SC100 = (910 / 100.0 / 0.3528) / 56.0
+SC20 = (1 / 20.0 / 0.3528) / 0.30
 INK = '#111111'
 
 # 問題ごとの中身： (記号, 副題, マス, 敷地面積, 各階面積の計算式)
@@ -70,6 +76,8 @@ def panel(key, i):
     if i == 0:
         d['cut'] = d.get('nx', 8) - 1.0
         d['site'] = sitemap.SITES[key]
+    else:
+        d['frame'] = sitemap.SITES[key]     # 用紙の大きさをそろえる
     sv = anssheet.draw(d, TITLES[i])
     t = sv.dump()
     body = t[t.index('>', t.index('<svg')) + 1:t.rindex('</svg>')]
@@ -91,40 +99,44 @@ def sheet(sp):
     s.rect(0, 0, W, H, fill='none', stroke=INK, stroke_width=1.4)
 
     # ---- 左の縦書きタイトル帯 ----
-    s.line(38, 0, 38, H, stroke=INK, stroke_width=1.0)
-    s.text_rot(22, 150, '二級建築士試験', -90, size=15, weight='700')
-    s.text_rot(22, 330, '「設計製図の試験」', -90, size=13)
-    s.text_rot(22, 560, '予想問題　%s' % key, -90, size=14, weight='700')
-    s.text_rot(22, 730, '解　答　例', -90, size=13)
+    s.line(46, 0, 46, H, stroke=INK, stroke_width=1.0)
+    s.text_rot(26, 190, '二級建築士試験', -90, size=17, weight='700')
+    s.text_rot(26, 420, '「設計製図の試験」', -90, size=15)
+    s.text_rot(26, 730, '予想問題　%s' % key, -90, size=16, weight='700')
+    s.text_rot(26, 940, '解　答　例', -90, size=15)
 
     # ---- 平面図3枚 ----
-    pw = (W - 56) / 3.0
-    top, hrow = 12.0, 448.0
-    for i in range(3):
-        body, bw, bh = panel(key, i)
-        sc = min(pw / bw, hrow / bh)
-        x = 44 + i * pw + (pw - bw * sc) / 2.0
-        s.add(place(body, '%s%d' % (key.lower(), i), x, top, sc))
-        if i:
-            s.line(44 + i * pw - 4, top, 44 + i * pw - 4, top + hrow,
+    # 3枚とも同じ縮尺で並べる（1階だけ小さくならないように）
+    top, hrow, gap = 14.0, 664.0, 16.0
+    ps = [panel(key, i) for i in range(3)]
+    sc = SC100                      # 3枚とも本物どおりの1／100
+    tot = sum(bw for _, bw, _ in ps) * sc + gap * 2
+    x = 54.0 + max(0.0, (W - 76 - tot) / 2.0)
+    for i, (body, bw, bh) in enumerate(ps):
+        s.add(place(body, '%s%d' % (key.lower(), i), x,
+                    top + (hrow - bh * sc) / 2.0, sc))
+        x += bw * sc
+        if i < 2:
+            s.line(x + gap / 2.0, top, x + gap / 2.0, top + hrow,
                    stroke=INK, stroke_width=0.8)
-    s.line(38, 466, W - 8, 466, stroke=INK, stroke_width=1.0)
+            x += gap
+    s.line(46, 694, W - 10, 694, stroke=INK, stroke_width=1.0)
 
     # ---- 下半分は方眼紙（答案用紙の目盛4.55mm） ----
     gp = 12.9
-    yy = 470.0
+    yy = 700.0
     while yy < H - 6:
-        s.line(40, yy, W - 8, yy, stroke='#e0e0e0', stroke_width=0.5)
+        s.line(48, yy, W - 10, yy, stroke='#e0e0e0', stroke_width=0.5)
         yy += gp
-    xx = 40.0
+    xx = 48.0
     while xx < W - 8:
-        s.line(xx, 470, xx, H - 6, stroke='#e0e0e0', stroke_width=0.5)
+        s.line(xx, 700, xx, H - 8, stroke='#e0e0e0', stroke_width=0.5)
         xx += gp
 
     # ---- 面積表 ----
-    ty, tx, tw = 500.0, 52.0, 460.0
-    rh = 30.0
-    s.text(tx, ty - 8, '面　積　表', size=13, anchor='start', weight='700')
+    ty, tx, tw = 748.0, 66.0, 600.0
+    rh = 34.0
+    s.text(tx, ty - 10, '面　積　表', size=15, anchor='start', weight='700')
     rows = [('敷地面積', '', site),
             ('建築面積', keisan, '%.2f' % a1),
             ('床面積　1階　ア', keisan, '%.2f' % a1),
@@ -137,26 +149,26 @@ def sheet(sp):
         y = ty + i * rh
         if i:
             s.line(tx, y, tx + tw, y, stroke=INK, stroke_width=0.8)
-        s.text(tx + 8, y + 20, nm, size=11.5, anchor='start',
+        s.text(tx + 10, y + 23, nm, size=13.5, anchor='start',
                weight='700' if i in (0, 5) else '400')
         if ks:
-            s.text(tx + 190, y + 13, '（計算式）', size=8.5, anchor='start',
+            s.text(tx + 250, y + 15, '（計算式）', size=10, anchor='start',
                    fill='#555')
-            s.text(tx + 190, y + 25, ks, size=11, anchor='start')
-        s.text(tx + tw - 30, y + 20, va, size=12.5, anchor='end',
+            s.text(tx + 250, y + 29, ks, size=12.5, anchor='start')
+        s.text(tx + tw - 38, y + 23, va, size=14, anchor='end',
                weight='700')
-        s.text(tx + tw - 10, y + 20, '㎡', size=10, anchor='end')
-    s.line(tx + 180, ty, tx + 180, ty + rh * len(rows), stroke=INK,
+        s.text(tx + tw - 12, y + 23, '㎡', size=11, anchor='end')
+    s.line(tx + 240, ty, tx + 240, ty + rh * len(rows), stroke=INK,
            stroke_width=0.8)
-    s.line(tx + tw - 100, ty, tx + tw - 100, ty + rh * len(rows), stroke=INK,
+    s.line(tx + tw - 130, ty, tx + tw - 130, ty + rh * len(rows), stroke=INK,
            stroke_width=0.8)
-    s.text(tx, ty + rh * len(rows) + 18,
-           '小数点以下第3位以下は切り捨て。計算式はm単位で書く。', size=10,
+    s.text(tx, ty + rh * len(rows) + 20,
+           '小数点以下第3位以下は切り捨て。計算式はm単位で書く。', size=11,
            anchor='start', fill='#555')
 
     # ---- 凡例欄（伏図の表示記号） ----
-    lx, ly, lw = 546.0, 500.0, 610.0
-    s.text(lx, ly - 8, '凡　例（床伏図兼小屋伏図の表示記号）', size=13,
+    lx, ly, lw = 750.0, 748.0, 880.0
+    s.text(lx, ly - 10, '凡　例（床伏図兼小屋伏図の表示記号）', size=15,
            anchor='start', weight='700')
     cols = [('通し柱', '120×120', 'tooshi'),
             ('1階の管柱', '120×120', 'k1'),
@@ -167,15 +179,15 @@ def sheet(sp):
             ('棟木', '120×120', 'mune'),
             ('母屋', '90×90', 'moya')]
     cw = lw / len(cols)
-    s.rect(lx, ly, lw, 96, fill='#fff', stroke=INK, stroke_width=1.2)
-    s.line(lx, ly + 26, lx + lw, ly + 26, stroke=INK, stroke_width=0.8)
-    s.line(lx, ly + 66, lx + lw, ly + 66, stroke=INK, stroke_width=0.8)
+    s.rect(lx, ly, lw, 118, fill='#fff', stroke=INK, stroke_width=1.2)
+    s.line(lx, ly + 32, lx + lw, ly + 32, stroke=INK, stroke_width=0.8)
+    s.line(lx, ly + 82, lx + lw, ly + 82, stroke=INK, stroke_width=0.8)
     for i, (nm, dim, kind) in enumerate(cols):
         cx = lx + i * cw
         if i:
-            s.line(cx, ly, cx, ly + 96, stroke=INK, stroke_width=0.8)
-        s.text(cx + cw / 2.0, ly + 18, nm, size=9.5)
-        mx, my = cx + cw / 2.0, ly + 46
+            s.line(cx, ly, cx, ly + 118, stroke=INK, stroke_width=0.8)
+        s.text(cx + cw / 2.0, ly + 21, nm, size=11)
+        mx, my = cx + cw / 2.0, ly + 57
         a, b = cx + 6, cx + cw - 6
         if kind == 'hi':
             s.line(a, my, b, my, stroke=INK, stroke_width=1.3,
@@ -210,32 +222,32 @@ def sheet(sp):
                        stroke_width=1.2)
             elif kind == 'mune':
                 s.circle(mx, my, 4, fill=INK)
-        s.text(cx + cw / 2.0, ly + 84, dim, size=10.5, weight='700')
-    s.text(lx - 4, ly + 40, '記号', size=9, anchor='end', fill='#555')
-    s.text(lx - 4, ly + 84, '寸法', size=9, anchor='end', fill='#555')
+        s.text(cx + cw / 2.0, ly + 105, dim, size=12.5, weight='700')
+    s.text(lx - 6, ly + 62, '記号', size=10.5, anchor='end', fill='#555')
+    s.text(lx - 6, ly + 105, '寸法', size=10.5, anchor='end', fill='#555')
 
     # ---- 標準解答例のタイトル ----
-    bx, by = 546.0, 634.0
-    s.rect(bx, by, 290, 50, fill='#fff', stroke=INK, stroke_width=1.4)
-    s.text(bx + 145, by + 32, '標　準　解　答　例', size=18, weight='700')
-    s.text(bx + 306, by + 16, '予想問題　%s' % key, size=13, anchor='start',
+    bx, by = 750.0, 912.0
+    s.rect(bx, by, 380, 62, fill='#fff', stroke=INK, stroke_width=1.4)
+    s.text(bx + 190, by + 41, '標　準　解　答　例', size=23, weight='700')
+    s.text(bx + 400, by + 20, '予想問題　%s' % key, size=13, anchor='start',
            weight='700')
-    s.text(bx + 306, by + 34, sub, size=11, anchor='start')
-    s.text(bx + 306, by + 50,
+    s.text(bx + 400, by + 42, sub, size=13, anchor='start')
+    s.text(bx + 400, by + 62,
            '木造3階建て　／　%dマス × %dマス（%s × %s）'
            % (nx, ny, format(nx * 910, ','), format(ny * 910, ',')),
            size=10, anchor='start', fill='#555')
-    s.text(bx, by + 82,
+    s.text(bx, by + 98,
            '※ 立面図・床伏図兼小屋伏図・部分詳細図は、別紙「共通図」を'
            '見てください。', size=10, anchor='start', fill='#555')
 
     # ---- 採点のポイント ----
-    py_, ph = 738.0, 88.0
-    s.rect(52, py_, W - 104, ph, fill='#fff', stroke=INK, stroke_width=1.0)
-    s.text(64, py_ + 20, 'この解答例のポイント', size=12, anchor='start',
+    py_, ph = 1030.0, 108.0
+    s.rect(66, py_, W - 132, ph, fill='#fff', stroke=INK, stroke_width=1.0)
+    s.text(82, py_ + 24, 'この解答例のポイント', size=14, anchor='start',
            weight='700')
     for i, t in enumerate(POINTS[key]):
-        s.text(64, py_ + 40 + i * 17, '・' + t, size=10.5, anchor='start')
+        s.text(82, py_ + 48 + i * 21, '・' + t, size=13, anchor='start')
     return s
 
 
@@ -248,11 +260,11 @@ def load_file(name):
 
 
 COMMON = [('共通図 ①　立面図と部分詳細図',
-           ['anselev_s', 'detail'],
+           [('anselev_s', 'SC100'), ('detail', 'SC20')],
            'この2枚は「型（8マス×10マス）」のもの。'
            '問題B（9マス）・C（7マス）は間口が違うので寸法を読みかえる。'),
           ('共通図 ②　床伏図と小屋伏図',
-           ['ansfuse_floor', 'ansfuse_roof'],
+           [('ansfuse_floor', 'SC100'), ('ansfuse_roof', 'SC100')],
            '2階の床伏図と3階の床伏図は同じ組み方でよい。'
            '小屋伏図は棟が南北方向・4寸勾配。')]
 
@@ -261,23 +273,24 @@ def common_sheet(title, names, note):
     """立面図・部分詳細図・伏図をまとめた「共通図」。1枚に2図。"""
     s = Svg(W, H)
     s.rect(0, 0, W, H, fill='none', stroke=INK, stroke_width=1.4)
-    s.line(38, 0, 38, H, stroke=INK, stroke_width=1.0)
-    s.text_rot(22, 190, '二級建築士試験', -90, size=15, weight='700')
-    s.text_rot(22, 400, '「設計製図の試験」', -90, size=13)
-    s.text_rot(22, 640, title, -90, size=13.5, weight='700')
+    s.line(46, 0, 46, H, stroke=INK, stroke_width=1.0)
+    s.text_rot(26, 240, '二級建築士試験', -90, size=17, weight='700')
+    s.text_rot(26, 520, '「設計製図の試験」', -90, size=15)
+    s.text_rot(26, 860, title, -90, size=16, weight='700')
 
-    cw = (W - 60) / 2.0
-    for i, name in enumerate(names):
+    cw = (W - 76) / 2.0
+    for i, (name, which) in enumerate(names):
         body, bw, bh = load_file(name)
-        sc = min((cw - 24) / bw, 762.0 / bh)
-        x = 46 + i * cw + (cw - bw * sc) / 2.0
-        s.add(place(body, 'c%d' % i, x, 18, sc))
+        sc = SC100 if which == 'SC100' else SC20
+        x = 54 + i * cw + (cw - bw * sc) / 2.0
+        s.add(place(body, 'c%d' % i, x, 22 + (1080 - bh * sc) / 2.0, sc))
         if i:
-            s.line(46 + i * cw - 12, 16, 46 + i * cw - 12, 786, stroke=INK,
+            s.line(54 + i * cw - 14, 18, 54 + i * cw - 14, 1112, stroke=INK,
                    stroke_width=0.8)
 
-    s.rect(52, 796, W - 104, 32, fill='none', stroke=INK, stroke_width=1.0)
-    s.text(66, 817, '※ ' + note, size=11, anchor='start')
+    s.rect(66, 1122, W - 132, 42, fill='none', stroke=INK,
+           stroke_width=1.0)
+    s.text(84, 1149, '※ ' + note, size=13, anchor='start')
     return s
 
 

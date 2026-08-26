@@ -56,8 +56,9 @@ def draw(d, title, sub=''):
     d = dict(d, openings=fit_openings(d, nx, ny, xlines, ylines))
 
     site = d.get('site')
-    if site:
-        SW, SD = site['sw'] / 910.0, site['sd'] / 910.0
+    frame = site or d.get('frame')      # 2階・3階も1階と同じ用紙の大きさにする
+    if frame:
+        SW, SD = frame['sw'] / 910.0, frame['sd'] / 910.0
         ox = (SW - nx) / 2.0                       # 東西のあきは半分ずつ
         yard = 2.2                                 # 道路側のあき（アプローチ）
         oy = yard if 'S' in side else (SD - ny - yard)

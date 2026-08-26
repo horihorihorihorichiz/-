@@ -11,7 +11,7 @@ from svgkit import Svg
 
 OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'figures')
 
-G = 60.0
+G = 56.0
 ML, MR, MT, MB = 108, 132, 116, 150
 INK = '#111'
 MW = 120.0 / 910.0          # 部材の幅120mm（マス）
