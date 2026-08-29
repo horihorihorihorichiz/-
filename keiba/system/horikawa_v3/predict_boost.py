@@ -65,7 +65,7 @@ def main():
     cards = json.load(open(sys.argv[1], encoding="utf-8"))
     opt = lambda k: sys.argv[sys.argv.index(k) + 1] if k in sys.argv else None
     date = opt("--date") or "20260830"
-    md_path, viz_path = opt("--md"), opt("--viz")
+    md_path, viz_path, alerts_path = opt("--md"), opt("--viz"), opt("--alerts")
 
     st = Store(config.DB_PATH)
     words, per_race = train_eval.load_evalcode(EVAL_RAW)
@@ -192,6 +192,16 @@ def main():
     if viz_path:
         json.dump(viz, open(viz_path, "w", encoding="utf-8"), ensure_ascii=False)
         print(f"書き出しました → {viz_path}")
+    if alerts_path:
+        # notify.py 用。木の順位だけ確定させておき、市場側は発走直前の生オッズで作る。
+        al = {"date": date, "races": [
+            {"id": R["id"], "place": R["place"], "r": R["r"], "post": R["post"],
+             "title": R["title"], "surf": R["surf"], "dist": R["dist"], "n": R["n"],
+             "horses": [{"umaban": h["umaban"], "name": h["name"], "trank": h["trank"],
+                         "evalWord": h["evalWord"]} for h in R["horses"]]}
+            for R in viz["races"]]}
+        json.dump(al, open(alerts_path, "w", encoding="utf-8"), ensure_ascii=False, indent=1)
+        print(f"書き出しました → {alerts_path}")
 
 
 if __name__ == "__main__":

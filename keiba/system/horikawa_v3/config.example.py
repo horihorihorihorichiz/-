@@ -24,3 +24,18 @@ DB_PATH = "data/hori.sqlite"
 CUT_HIST    = "20240824"   # ここより前は過去走の材料としてのみ使う
 CUT_EMBARGO = "20260221"   # 学習はここまで
 CUT_VAL     = "20260301"   # 未知期間はここから（間の1週間は隔離）
+
+# ── LINE 通知（notify.py が使う）
+#
+# LINE Notify は 2025年3月31日で終了しているので使えない。
+# いまは Messaging API で自分の公式アカウントから自分へ push する形になる。
+#
+#   1 LINE Developers で Messaging API チャネルを作る
+#   2 「チャネルアクセストークン（長期）」を発行して LINE_TOKEN に貼る
+#   3 自分のユーザーID（U で始まる33文字）を LINE_TO に貼る
+#     ボットを友だち追加して Webhook で受け取るか、
+#     LINE Developers の「あなたのユーザーID」欄で確認できる
+#
+# ここに貼った値は自分のパソコンの中だけに置くこと。config.py は .gitignore 済み。
+LINE_TOKEN = ""
+LINE_TO = ""
