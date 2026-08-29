@@ -30,7 +30,20 @@ NEEDED_R = ["id", "date", "place", "surf", "turn", "io", "dist",
             "weather", "ground", "cls", "n"]
 
 
-def load_races(path, st):
+def load_idx(path):
+    """タイム指数の別ファイル {レースID: [指数, ...]}。
+
+    ブラウザの保管庫では、タイム指数は races ではなく meta ストアに
+    "idx:<レースID>" というキーで入っている。書き出しスクリプトは
+    races[].tidx しか見ないため、書き出しの t は常に空になる。
+    その穴を埋めるためのもの。並びは races の rows と同じ（着順）。
+    """
+    with open(path, encoding="utf-8") as f:
+        d = json.load(f)
+    return {str(k): [float(x) if x else 0.0 for x in v] for k, v in d.items()}
+
+
+def load_races(path, st, idx=None):
     with gzip.open(path, "rt", encoding="utf-8") as f:
         head = json.loads(f.readline())
         if head.get("_") != "horikawa-export":
@@ -56,6 +69,12 @@ def load_races(path, st):
             r = dict(zip(rcols, d["r"]))
             rows = [dict(zip(hcols, h)) for h in d["h"]]
             tidx = [float(x) if x else 0.0 for x in (d.get("t") or [])]
+            if idx is not None and not any(x > 0 for x in tidx):
+                tidx = idx.get(str(r.get("id")), tidx)
+            if tidx and len(tidx) != len(rows):
+                raise SystemExit(
+                    f'{r.get("id")}: タイム指数 {len(tidx)}件 と 出走馬 {len(rows)}頭 が'
+                    " 合いません。並びが対応していないので取り込みを中止します。")
             n_tidx += sum(1 for x in tidx if x > 0)
 
             rec = {k: r.get(k) for k in NEEDED_R}
@@ -104,7 +123,18 @@ def main():
         return
     st = Store(config.DB_PATH)
 
-    n, dates, n_tidx = load_races(sys.argv[1], st)
+    idx = None
+    args = [a for a in sys.argv[1:]]
+    idx_path = None
+    for a in list(args):
+        if a.endswith(".json"):
+            idx_path = a
+            args.remove(a)
+    if idx_path:
+        idx = load_idx(idx_path)
+        print(f"タイム指数の別ファイルを読みました: {idx_path}（{len(idx)}レース）")
+
+    n, dates, n_tidx = load_races(args[0], st, idx)
     print(f"レース {n}件を取り込みました（保管庫: {config.DB_PATH}）")
     if dates:
         print(f"  期間 {min(dates)} 〜 {max(dates)}")
@@ -114,8 +144,8 @@ def main():
     else:
         print(f"  タイム指数 {n_tidx}件")
 
-    if len(sys.argv) > 2:
-        m = load_train(sys.argv[2], st)
+    if len(args) > 1:
+        m = load_train(args[1], st)
         print(f"調教 {m}レース分を取り込みました")
     else:
         print("  調教ファイルの指定なし。成分「調教縦断/調教本数/調教評価」は作れません。")

@@ -8,6 +8,8 @@ slides/exports/*.png
 keiba/data/*.gz
 keiba/data/*.jsonl
 keiba/data/*.csv
+keiba/data/*.json
+keiba/data/*.sqlite
 
 # 認証情報・秘密情報（絶対にコミットしない）
 # hk (堀川システム) は config.py にログイン用クッキーを置く設計。
