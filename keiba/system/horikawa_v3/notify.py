@@ -59,6 +59,10 @@ def band(v, table):
     return table[-1][1:]
 
 
+# 予想ボードのURL。--url か config.BOARD_URL で差し替える。
+# 中身は Claude Code が公開した時点のもので、自動では更新されない。
+BOARD_URL = getattr(config, "BOARD_URL", "")
+
 API = "https://race.netkeiba.com/api/api_get_jra_odds.html?type=1&locale=ja&race_id={}"
 PUSH = "https://api.line.me/v2/bot/message/push"
 
@@ -221,6 +225,8 @@ def message(race, top, sug=None):
         t += ("\n\n── レースの読みやすさ ──\n"
               f"1強度 {s1}（差 {g1:.2f}）　この帯の木1位は 1着{w1}% / 3着内{i1}%\n"
               f"2強度 {s2}（差 {g2:.2f}）　この帯は上位2頭が揃って3着内 {w2}%")
+    if BOARD_URL:
+        t += ("\n\n全レースの並びと、各馬の成分の内訳はこちら\n" + BOARD_URL)
     t += ("\n\n※星は当たりやすさであって儲けやすさではない。星が増えるほど"
           "その馬の人気も上がるので、回収率はどの帯でも85%前後で平ら。"
           "いちばん良い買い方でも実測91.7%、控除率20%の壁に8pt届いていない。")
@@ -260,6 +266,8 @@ def main():
     dry = "--dry" in sys.argv
     opt = lambda k: sys.argv[sys.argv.index(k) + 1] if k in sys.argv else None
     viz_path, board_path = opt("--viz"), opt("--board")
+    global BOARD_URL
+    BOARD_URL = opt("--url") or getattr(config, "BOARD_URL", "")
     plan = json.load(open(path, encoding="utf-8"))
     s = requests.Session()
     s.headers["User-Agent"] = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
