@@ -1,0 +1,170 @@
+# -*- coding: utf-8 -*-
+"""未発走のレースを採点する。
+
+hk の cmd_predict は保管庫にあるレース（＝着順が確定したレース）しか扱えない。
+parse.py にも出馬表（発走前）のパーサが無い。ここはその穴を埋めるもので、
+ブラウザから取った出馬表を仮のレコードにして保管庫の末尾に置き、
+features.Builder にそのまま計算させる。
+
+  python predict_today.py ../../data/today_cards.json
+
+出せるのは同一レース内の並びとスコアの内訳だけ。買い目や期待値は出さない
+（logic.md「この配点の正しい使い方」参照）。
+"""
+import json
+import os
+import re
+import sys
+import unicodedata
+
+import numpy as np
+
+sys.path.insert(0, os.getcwd())
+import config  # noqa: E402
+
+from hk import features, fit as F  # noqa: E402
+from hk.store import Store  # noqa: E402
+
+import train_eval  # noqa: E402
+
+W_PATH = "weights/hori_w.json"
+EVAL_RAW = "../../data/hk_train_raw.json"
+
+CLASSES = ((r"新馬|未勝利", "t10"), (r"1勝クラス|500万", "t6"),
+           (r"2勝クラス|1000万", "t5"), (r"3勝クラス|1600万", "t4"),
+           (r"オープン|ステークス|重賞|G[ⅠⅡⅢI]", "t3"))
+GROUND = {"良": "良", "稍": "稍重", "稍重": "稍重", "重": "重", "不": "不良", "不良": "不良"}
+
+
+def to_race(rid, card):
+    """出馬表 → 保管庫の races と同じ形の仮レコード。"""
+    # netkeiba の出馬表は全角混じり（「１勝クラス」など）。半角に寄せてから読む。
+    nz = lambda x: unicodedata.normalize("NFKC", x or "")
+    d01, d02 = nz(card["data01"]), nz(card["data02"])
+    m = re.search(r"(芝|ダ|障)\s*(\d+)m\s*\(?\s*(右|左|直線)?\s*(外|内|[A-D])?", d01)
+    if not m:
+        raise SystemExit(f"{rid}: コースを読めません: {d01}")
+    surf, dist, turn = m.group(1), int(m.group(2)), m.group(3) or ""
+    io = m.group(4) if m.group(4) in ("外", "内") else ""
+    mg = re.search(r"馬場\s*:\s*(\S+)", d01)
+    mw = re.search(r"天候\s*:\s*(\S+)", d01)
+    cls = ""
+    for pat, name in CLASSES:
+        if re.search(pat, d02):
+            cls = name
+            break
+    if not cls:
+        raise SystemExit(f"{rid}: クラスを読めません: {d02}")
+
+    rows = []
+    for h in card["rows"]:
+        # 出馬表と同じ class を持つ別表（上がり最速など）の行が混ざる。
+        # 馬番が数字で、性齢の列があるものだけを出走馬とみなす。
+        if h["cancel"] or not str(h.get("umaban", "")).isdigit() or "sexage" not in h:
+            continue
+        ms = re.match(r"([牡牝セ騸])(\d+)", h["sexage"])
+        bw = re.match(r"(\d+)", h["bw"] or "")
+        rows.append({
+            "fin": "", "waku": int(h["waku"] or 0), "umaban": int(h["umaban"]),
+            "horse": h["horse"], "sex": ms.group(1) if ms else "",
+            "age": int(ms.group(2)) if ms else 0,
+            "kin": float(h["kin"] or 0), "jockey": h["jockey"],
+            "sec": 0.0, "margin": "", "corner": "", "agari": 0.0,
+            "odds": 0.0, "pop": 0,
+            "bw": int(bw.group(1)) if bw else 0, "bwd": 0,
+            "trainer": h["trainer"],
+        })
+    return {"id": rid, "date": "20260829", "place": rid[4:6], "surf": surf,
+            "turn": turn, "io": io, "dist": dist,
+            "weather": mw.group(1) if mw else "",
+            "ground": GROUND.get(mg.group(1) if mg else "", "良"),
+            "cls": cls, "n": len(rows), "rows": rows, "tidx": []}
+
+
+def eval_words(card):
+    """追い切り表から 馬ID → 評価語。評価語の列は右から3列目に入っている。"""
+    out = {}
+    for x in card["oikiri"]:
+        if not x["horse"]:
+            continue
+        c = x["cells"]
+        w = c[11] if len(c) > 11 else ""
+        if w and not re.search(r"[0-9()]", w):
+            out[x["horse"]] = w
+    return out
+
+
+def main():
+    cards = json.load(open(sys.argv[1], encoding="utf-8"))
+    w = json.load(open(W_PATH, encoding="utf-8"))
+    names, level = w["names"], w.get("level", "L1")
+    use_tev = train_eval.NAME in names
+
+    tev_table = None
+    if use_tev:
+        words, per_race = train_eval.load_evalcode(EVAL_RAW)
+        tev_table, info = train_eval.learn(config.DB_PATH, words, per_race, config.CUT_VAL)
+        by_word = {words[i]: v for i, v in tev_table.items()}
+
+    m = F.Model()
+    m.names = names
+    m.G = np.array(w["G"])
+    for a in ("L1", "A", "B", "C"):
+        setattr(m, a, {k: np.array(v) for k, v in w[a].items()})
+    m.n, m.rep = w["n"], w["rep"]
+
+    st = Store(config.DB_PATH)
+    races = st.all_races()
+    targets = {rid: to_race(rid, c) for rid, c in cards.items()}
+    for rid in sorted(targets):
+        races.append(targets[rid])
+
+    book = features.Book(races, config.CUT_HIST)
+    b = features.WideBuilder(book, oikiri={}, market=False)
+    nf = len(features.BASE_NAMES)
+    want = set(targets)
+    results = {}
+
+    for ri, r in enumerate(book.races):
+        if r["id"] in want:
+            d = b.build_wide(ri)
+            Z = [list(row[:nf]) for row in d["Z"]]
+            if use_tev:
+                ew = eval_words(cards[r["id"]])
+                col = train_eval.znorm_column(
+                    [by_word.get(ew.get(h["horse"], ""), float("nan")) for h in r["rows"]])
+                for row, x in zip(Z, col):
+                    row.append(x)
+                miss = sum(1 for h in r["rows"] if ew.get(h["horse"]) not in by_word)
+            else:
+                miss = None
+            Z = np.array(Z, float)
+            wv = m.w(d["k"], level)
+            score = Z @ wv
+            results[r["id"]] = (r, d, Z, wv, score, miss, ew if use_tev else {})
+        b.advance(r)
+
+    for rid in sorted(results):
+        r, d, Z, wv, score, miss, ew = results[rid]
+        place = {"01": "札幌", "04": "新潟", "07": "中京"}.get(r["place"], r["place"])
+        print(f'\n=== {place}{int(rid[10:12])}R  {r["surf"]}{r["dist"]}m {r["ground"]} '
+              f'{r["cls"]} {r["n"]}頭  配点層={level} セル={d["k"][level if level in d["k"] else "L1"]} ===')
+        if miss:
+            print(f'  ※ 調教評価が引けなかった馬 {miss}頭（レース内平均で埋め、寄与0）')
+        order = sorted(range(r["n"]), key=lambda i: -score[i])
+        sd = float(np.std(score)) or 1.0
+        print(f'  {"順":>2} {"馬番":>3} {"馬名":<14}{"得点":>7}  効いた成分（上位3）')
+        for k, i in enumerate(order):
+            h = r["rows"][i]
+            parts = sorted(((names[j], Z[i][j] * wv[j]) for j in range(len(names))),
+                           key=lambda x: -abs(x[1]))[:3]
+            nm = next((c["name"] for c in cards[rid]["rows"]
+                       if c["horse"] == h["horse"]), h["horse"])
+            top = "  ".join(f'{a}{v:+.1f}' for a, v in parts)
+            print(f'  {k+1:>2} {h["umaban"]:>3} {nm:<14}{score[i]:>7.1f}  {top}')
+        g = lambda a, bq: (score[order[a]] - score[order[bq]]) / sd
+        print(f'  形: g12={g(0,1):.2f} g23={g(1,2):.2f} g34={g(2,3):.2f}')
+
+
+if __name__ == "__main__":
+    main()
