@@ -1,0 +1,236 @@
+<style>
+/* 8月30日ぶんの追加。35レースあるので絞り込みと会場ごとの索引を足す。 */
+.filters{display:flex;gap:8px;flex-wrap:wrap;align-items:center;
+  padding:12px 0 0;margin-top:2px}
+.filters .lab{font-family:var(--mono);font-size:11px;letter-spacing:.12em;color:var(--dim)}
+.filters button{font:inherit;font-size:13px;padding:5px 12px;border-radius:2px;
+  border:1px solid var(--rule);background:var(--panel);color:var(--dim);cursor:pointer}
+.filters button[aria-pressed="true"]{background:var(--pos);border-color:var(--pos);color:#fff}
+.filters button:focus-visible{outline:2px solid var(--pos);outline-offset:2px}
+.count{font-family:var(--mono);font-size:12px;color:var(--dim);margin-left:auto}
+
+nav{display:block}
+.navgrp{display:flex;gap:6px;flex-wrap:wrap;align-items:center;padding:3px 0}
+.navgrp .vn{font-family:var(--disp);font-weight:700;font-size:13px;width:34px;flex:none}
+.navgrp a{padding:3px 7px;font-size:12px;gap:5px}
+.navgrp a .t{font-size:11px}
+.navgrp a.big{border-color:var(--pos)}
+
+.rhead h2 .rt{font-family:var(--disp);font-weight:700}
+.rhead .gr{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;
+  color:var(--pos);border:1px solid var(--pos);padding:1px 5px;border-radius:2px;
+  align-self:center}
+.warnrow{font-size:12.5px;color:var(--neg);margin:8px 2px 0}
+.two{display:flex;gap:9px;align-items:baseline;font-family:var(--mono);font-size:13px;
+  font-variant-numeric:tabular-nums}
+.two .t1{color:var(--ink)}
+.two .t1 em{font-style:normal;font-size:10px;color:var(--dim);margin-left:1px}
+.two .gapv{font-size:12px;margin-left:auto}
+.hrow{grid-template-columns:30px 40px minmax(130px,1fr) 104px 132px 58px 22px!important}
+@media (max-width:720px){
+  .hrow{grid-template-columns:24px 36px minmax(90px,1fr) 84px 112px 46px 18px!important}
+}
+</style>
+
+<div class="wrap">
+<header>
+  <div class="eyebrow">Horikawa system · 木48成分 + 市場</div>
+  <h1>堀川ボード 8月30日</h1>
+  <p class="lede">札幌・新潟・中京の35レース（障害戦を除く）。木48成分（xgboost）の順位と
+  市場（人気順）の順位を足した合成で並べた。行を押すと木の寄与（SHAP値）が開く。
+  発走順。</p>
+  <div class="warn"><b>これは並びであって買い目ではない。</b>
+  探索窓1,826Rの実測で、この合成は 1位が3着内 <b>70.0%</b>（市場65.3%）、
+  単勝回収率 <b>96.0%</b>（市場76.3%・対にした検定で t=+6.98）、
+  複勝回収率 <b>94.5%</b>（市場83.8%・t=+7.48）。市場を有意に上回るが、
+  <b>それでも100%には届いていない</b>（控除率20%に対し単勝で4pt不足）。
+  未知期間での確認はまだ済んでいない。</div>
+  <div class="filters" id="filters">
+    <span class="lab">場</span>
+    <button data-v="札幌" aria-pressed="true">札幌</button>
+    <button data-v="新潟" aria-pressed="true">新潟</button>
+    <button data-v="中京" aria-pressed="true">中京</button>
+    <span class="lab" style="margin-left:10px">絞る</span>
+    <button data-f="named" aria-pressed="false">特別・重賞のみ</button>
+    <button data-f="hasev" aria-pressed="false">追い切り評価が揃った回のみ</button>
+    <span class="count" id="count"></span>
+  </div>
+</header>
+
+<nav id="nav"></nav>
+<main id="main"></main>
+
+<section class="ref">
+  <h3>調教評価の語</h3>
+  <p class="note">追い切りの短評を、8月30日より前の10,551レースでの3着内率に置き換えたもの。
+  出現の少ない語は全体平均 <b id="base"></b>% へ経験ベイズで縮めてある。
+  木の中でも6番目に効く成分（重要度3.9%）。</p>
+  <div class="words">
+    <div><h4>UPPER</h4><ol id="wtop"></ol></div>
+    <div><h4>LOWER</h4><ol id="wbot"></ol></div>
+  </div>
+</section>
+
+<footer>
+  木は xgboost の rank:ndcg（<code>boost.py</code> / <code>predict_boost.py</code>）。
+  成分48個＝<code>hk/features.py</code> の wide 47 + 調教評価（<code>train_eval.py</code>）。
+  台帳10,551レース、学習6,794R（2024-08-24〜2026-08-23）、木286本。
+  合成は木の順位と人気順位の和。寄与は SHAP 値。
+  出馬表と追い切りは 8月29日 夕方、単勝オッズは同日の前日発売分。
+  馬体重は未発表のため使っていない。
+</footer>
+</div>
+
+<script>
+const DATA = __DATA__;
+
+const WAKU = ['','#F2F2F2','#22201F','#C0392B','#2B5FA8','#E4C13A','#2E7D4F','#E07A2B','#E39BB6'];
+const fmt = v => (v >= 0 ? '+' : '−') + Math.abs(v).toFixed(2);
+const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const isDark = () => document.documentElement.dataset.theme === 'dark' ||
+  (document.documentElement.dataset.theme !== 'light' && matchMedia('(prefers-color-scheme: dark)').matches);
+
+// 3着内率 → 単一色相の濃淡（sequential）。量は明度で出す。
+function rateShade(p) {
+  if (p == null) return 'transparent';
+  const t = Math.max(0, Math.min(1, (p - 4) / 58));
+  const l = isDark() ? 26 + t * 40 : 88 - t * 46;
+  return `hsl(158 ${8 + t * 34}% ${l}%)`;
+}
+
+const nav = document.getElementById('nav');
+const main = document.getElementById('main');
+const VENUES = ['札幌', '新潟', '中京'];
+const navGroups = {};
+VENUES.forEach(v => {
+  const g = document.createElement('div');
+  g.className = 'navgrp';
+  g.innerHTML = `<span class="vn">${v}</span>`;
+  nav.appendChild(g);
+  navGroups[v] = g;
+});
+
+const isNamed = R => R.title && !/^\d?歳|未勝利|新馬|勝クラス/.test(R.title);
+
+DATA.races.forEach(R => {
+  const a = document.createElement('a');
+  a.href = '#r' + R.id;
+  a.className = isNamed(R) ? 'big' : '';
+  a.dataset.id = R.id;
+  a.innerHTML = `<span class="t">${R.post}</span><span>${R.r}R</span>`;
+  a.title = `${R.place}${R.r}R ${R.title || ''} ${R.surf}${R.dist}m ${R.shape}`;
+  navGroups[R.place].appendChild(a);
+
+  const maxAbs = Math.max(...R.horses.map(h => Math.abs(h.score)), 0.001);
+  const order = R.horses.map((h, i) => i).sort((x, y) => R.horses[y].score - R.horses[x].score);
+
+  const sec = document.createElement('section');
+  sec.className = 'race';
+  sec.id = 'r' + R.id;
+  sec.dataset.venue = R.place;
+  sec.dataset.named = isNamed(R) ? '1' : '0';
+  sec.dataset.hasev = R.horses.every(h => h.evalWord) ? '1' : '0';
+
+  let rows = '';
+  order.forEach((i, k) => {
+    const h = R.horses[i];
+    const w = Math.abs(h.score) / maxAbs * 50;
+    const pos = h.score >= 0;
+    const parts = h.parts.map((v, j) => ({ n: DATA.names[j], v, w: R.weights[j] }))
+                         .sort((p, q) => Math.abs(q.v) - Math.abs(p.v));
+    const pmax = Math.max(...parts.map(p => Math.abs(p.v)), 0.001);
+    const gap = h.pop && h.trank ? h.pop - h.trank : 0;   // ＋なら木のほうが高評価
+    rows += `
+    <button class="hrow" data-top="${k === 0 ? 1 : 0}" aria-expanded="false" aria-controls="d${R.id}-${h.umaban}">
+      <span class="rank">${k + 1}</span>
+      <span class="uma"><span class="waku" style="background:${WAKU[h.waku] || '#ccc'}"></span><span class="num">${h.umaban}</span></span>
+      <span class="nm"><span class="n1">${esc(h.name)}</span><span class="n2">${esc(h.sexage)} ${h.kin} ${esc(h.jockey)}</span></span>
+      <span class="ev">${h.evalWord
+          ? `<span class="w"><i class="dot" style="background:${rateShade(h.evalRate)}"></i>${esc(h.evalWord)}</span><span class="r">3着内 ${h.evalRate}%</span>`
+          : `<span class="w" style="color:var(--dim)">—</span><span class="r">評価なし</span>`}</span>
+      <span class="two"><span class="t1">${h.pop || '—'}<em>人気</em></span>
+        <span class="t1">${h.trank}<em>木</em></span>
+        <span class="gapv" style="color:${gap > 0 ? 'var(--pos)' : (gap < 0 ? 'var(--neg)' : 'var(--dim)')}">${gap > 0 ? '+' + gap : (gap || '±0')}</span></span>
+      <span class="val">${h.odds ? h.odds.toFixed(1) : '—'}</span>
+      <span class="chev">▶</span>
+    </button>
+    <div class="detail" id="d${R.id}-${h.umaban}">
+      <h4>木の寄与（SHAP値・上位ほど得点を動かした）</h4>
+      <div class="parts">${parts.map(p => {
+        const pw = Math.abs(p.v) / pmax * 50;
+        const pp = p.v >= 0;
+        return `<div class="prow" title="${esc(p.n)}　寄与 ${fmt(p.v)}">
+          <span class="pl">${esc(p.n)}</span>
+          <span class="pb"><span class="ax"></span>
+            <i style="${pp ? 'left:50%' : 'right:50%'};width:${pw}%;background:${pp ? 'var(--pos)' : 'var(--neg)'}"></i></span>
+          <span class="pv">${fmt(p.v)}</span></div>`;
+      }).join('')}</div>
+      <p class="meta">単勝 ${h.odds ? h.odds.toFixed(1) + '倍（' + h.pop + '番人気）' : '—'}　木の順位 ${h.trank}位　馬体重 ${h.bw ? h.bw + 'kg' : '未発表'}　厩舎 ${esc(h.stable) || '—'}
+        ${h.evalWord ? `　追い切り「${esc(h.evalWord)}」は学習期間 ${h.evalN}件で3着内率 ${h.evalRate}%` : ''}</p>
+    </div>`;
+  });
+
+  const miss = R.horses.filter(h => !h.evalWord).length;
+  const nobw = R.horses.every(h => !h.bw);
+  const allDebut = R.debut === R.n;
+  sec.innerHTML = `
+    <div class="rhead">
+      <span class="post">${R.post}</span>
+      <h2>${esc(R.place)}${R.r}R${R.title && isNamed(R) ? ` <span class="rt">${esc(R.title)}</span>` : ''}</h2>
+      ${isNamed(R) ? '<span class="gr">SPECIAL</span>' : ''}
+      <span class="cond">${esc(R.surf)}${R.dist}m ${esc(R.turn)}　馬場${esc(R.ground)}　${esc(R.cls)}　${R.n}頭</span>
+
+    </div>
+    <div class="gaps"><span>木48成分 + 市場 の合成</span>
+      <span>人気と木の食い違い 平均 ${(R.horses.reduce((a, x) => a + Math.abs((x.pop || 0) - x.trank), 0) / R.horses.length).toFixed(1)}着順</span></div>
+    ${allDebut ? `<p class="warnrow">全馬が初出走。過去走から作る成分がほぼ空なので、この並びの根拠は薄い。</p>` : ''}
+    <div class="tbl">${rows}</div>
+    ${(miss || nobw || (R.debut && !allDebut)) ? `<p class="note">${[
+        R.debut && !allDebut ? `初出走 ${R.debut}頭` : '',
+        miss ? `調教評価が引けなかった馬 ${miss}頭（レース内平均で埋めたので寄与0）` : '',
+        nobw ? '馬体重が未発表。成分「馬体重」は全馬同値で寄与0' : ''
+      ].filter(Boolean).join('　／　')}</p>` : ''}`;
+  main.appendChild(sec);
+});
+
+main.addEventListener('click', e => {
+  const b = e.target.closest('.hrow');
+  if (!b) return;
+  const d = document.getElementById(b.getAttribute('aria-controls'));
+  const open = b.getAttribute('aria-expanded') === 'true';
+  b.setAttribute('aria-expanded', String(!open));
+  d.classList.toggle('open', !open);
+});
+
+const F = document.getElementById('filters');
+function applyFilters() {
+  const on = new Set([...F.querySelectorAll('[data-v][aria-pressed="true"]')].map(b => b.dataset.v));
+  const named = F.querySelector('[data-f="named"]').getAttribute('aria-pressed') === 'true';
+  const hasev = F.querySelector('[data-f="hasev"]').getAttribute('aria-pressed') === 'true';
+  let n = 0;
+  document.querySelectorAll('section.race').forEach(s => {
+    const show = on.has(s.dataset.venue) &&
+                 (!named || s.dataset.named === '1') &&
+                 (!hasev || s.dataset.hasev === '1');
+    s.hidden = !show;
+    if (show) n++;
+    const link = nav.querySelector(`a[data-id="${s.id.slice(1)}"]`);
+    if (link) link.hidden = !show;
+  });
+  document.getElementById('count').textContent = `${n} / ${DATA.races.length} レース`;
+}
+F.addEventListener('click', e => {
+  const b = e.target.closest('button');
+  if (!b) return;
+  b.setAttribute('aria-pressed', String(b.getAttribute('aria-pressed') !== 'true'));
+  applyFilters();
+});
+applyFilters();
+
+document.getElementById('base').textContent = DATA.baseRate;
+const li = x => `<li><span>${esc(x['語'])}</span><span class="p" style="color:${
+    x['縮小後'] * 100 >= DATA.baseRate ? 'var(--pos)' : 'var(--neg)'}">${(x['縮小後'] * 100).toFixed(1)}%</span>` +
+  `<span class="c">${x['件数']}件</span></li>`;
+document.getElementById('wtop').innerHTML = DATA.evalTop.map(li).join('');
+document.getElementById('wbot').innerHTML = DATA.evalBottom.map(li).join('');
+</script>

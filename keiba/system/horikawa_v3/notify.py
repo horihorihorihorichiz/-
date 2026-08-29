@@ -6,8 +6,9 @@
   市場の順位はオッズで動くので、**発走10分前に生オッズだけ取り直して**
   合成し直す。そのうえで合成1位の単勝オッズを見て、基準以上なら送る。
 
-  予想を作る    python predict_boost.py <cards> --date YYYYMMDD --alerts ../../data/alerts_YYYYMMDD.json
+  予想を作る    python predict_boost.py <cards> --date YYYYMMDD --alerts ... --viz ...
   通知を回す    python notify.py ../../data/alerts_20260830.json
+  ボードも更新   python notify.py ../../data/alerts_20260830.json                     --viz ../../data/viz_20260830.json --board ../../data/board_20260830.html
   試し送信      python notify.py ../../data/alerts_20260830.json --test
   送らず確認    python notify.py ../../data/alerts_20260830.json --dry
 
@@ -200,9 +201,39 @@ def message(race, top, sug=None):
     return t
 
 
+def refresh_board(viz_path, board_path, rid, odds):
+    """オッズを見たついでに、ボードのそのレースだけ最新に直して作り直す。
+
+    木の順位は動かないが、市場の順位はオッズで動くので合成の並びも動く。
+    アーティファクトへの公開は Claude Code が動いているときしかできないので、
+    ここで直すのはローカルのHTML。
+    """
+    try:
+        viz = json.load(open(viz_path, encoding="utf-8"))
+        R = next((x for x in viz["races"] if x["id"] == rid), None)
+        if not R:
+            return
+        hs = [h for h in R["horses"] if h["umaban"] in odds]
+        if len(hs) < 5:
+            return
+        hs.sort(key=lambda h: odds[h["umaban"]][0])
+        for i, h in enumerate(hs):
+            h["odds"], h["pop"] = odds[h["umaban"]]
+            h["blend"] = (h["trank"] - 1) + i
+            h["score"] = -float(h["blend"])
+        R["horses"].sort(key=lambda h: (-h["score"], h["trank"]))
+        json.dump(viz, open(viz_path, "w", encoding="utf-8"), ensure_ascii=False)
+        import make_board
+        make_board.build(viz_path, board_path, "堀川ボード")
+    except Exception as e:
+        print(f"ボードの更新に失敗: {e}")
+
+
 def main():
     path = sys.argv[1]
     dry = "--dry" in sys.argv
+    opt = lambda k: sys.argv[sys.argv.index(k) + 1] if k in sys.argv else None
+    viz_path, board_path = opt("--viz"), opt("--board")
     plan = json.load(open(path, encoding="utf-8"))
     s = requests.Session()
     s.headers["User-Agent"] = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
@@ -250,6 +281,8 @@ def main():
         if not top:
             print(f"{datetime.now():%H:%M} {r['place']}{r['r']}R 合成できない。とばす", flush=True)
             continue
+        if viz_path and board_path:
+            refresh_board(viz_path, board_path, r["id"], od)
         hit = top["odds"] >= ODDS_MIN
         print(f"{datetime.now():%H:%M} {r['place']}{r['r']}R 合成1位 "
               f"{top['umaban']}{top['name']} {top['odds']:.1f}倍 "
