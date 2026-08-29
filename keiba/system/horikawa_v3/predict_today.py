@@ -38,6 +38,15 @@ CLASSES = ((r"新馬|未勝利", "t10"), (r"1勝クラス|500万", "t6"),
 GROUND = {"良": "良", "稍": "稍重", "稍重": "稍重", "重": "重", "不": "不良", "不良": "不良"}
 
 
+def _num(x):
+    """数字として読めるか。オッズ欄の '---.-' や人気欄の '**' は読めない扱い。"""
+    try:
+        float(x)
+        return True
+    except (TypeError, ValueError):
+        return False
+
+
 def to_race(rid, card, date):
     """出馬表 → 保管庫の races と同じ形の仮レコード。"""
     # netkeiba の出馬表は全角混じり（「１勝クラス」など）。半角に寄せてから読む。
@@ -72,7 +81,10 @@ def to_race(rid, card, date):
             "age": int(ms.group(2)) if ms else 0,
             "kin": float(h["kin"] or 0), "jockey": h["jockey"],
             "sec": 0.0, "margin": "", "corner": "", "agari": 0.0,
-            "odds": 0.0, "pop": 0,
+            # 出馬表のオッズ欄はJSで後読みされるため、取得時点では "---.-" のことがある。
+            # 数字が入っていればそのまま使う（合成モデルの市場側がこれを見る）。
+            "odds": float(h["odds"]) if _num(h.get("odds")) else 0.0,
+            "pop": int(float(h["pop"])) if _num(h.get("pop")) else 0,
             "bw": int(bw.group(1)) if bw else 0, "bwd": 0,
             "trainer": h["trainer"],
         })
