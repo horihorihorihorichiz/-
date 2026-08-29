@@ -160,6 +160,53 @@
     "fuku_roi": 87.1,
     "pop1": 3.7
    }
+  ],
+  "gap23": [
+   {
+    "band": "0.00 〜 0.04",
+    "n": 364,
+    "both_in3": 20.3,
+    "wide_roi": 85.0,
+    "wide_se": 11.6,
+    "uren_roi": 76.9,
+    "tan_roi": 88.0
+   },
+   {
+    "band": "0.04 〜 0.09",
+    "n": 364,
+    "both_in3": 29.1,
+    "wide_roi": 117.6,
+    "wide_se": 18.3,
+    "uren_roi": 74.7,
+    "tan_roi": 85.2
+   },
+   {
+    "band": "0.09 〜 0.16",
+    "n": 364,
+    "both_in3": 26.9,
+    "wide_roi": 78.1,
+    "wide_se": 7.7,
+    "uren_roi": 80.2,
+    "tan_roi": 79.1
+   },
+   {
+    "band": "0.16 〜 0.29",
+    "n": 364,
+    "both_in3": 32.1,
+    "wide_roi": 95.4,
+    "wide_se": 8.9,
+    "uren_roi": 98.1,
+    "tan_roi": 79.9
+   },
+   {
+    "band": "0.29 〜 1.39",
+    "n": 364,
+    "both_in3": 42.0,
+    "wide_roi": 84.2,
+    "wide_se": 6.1,
+    "uren_roi": 90.8,
+    "tan_roi": 88.4
+   }
   ]
  }
 }

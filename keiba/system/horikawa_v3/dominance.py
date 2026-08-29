@@ -107,7 +107,18 @@ def main():
             continue
         f = _fin(h["fin"])
         sd = float(np.std(s)) or 1.0
+        h2 = r["rows"][o[1]]
+        f2 = _fin(h2["fin"])
+        wid = dict(pay.get("ワイド", []))
+        ure = dict(pay.get("馬連", []))
+        a, bq = sorted((int(h["umaban"]), int(h2["umaban"])))
         rows.append({
+            # 上位2頭がどれだけ後続を離しているか（2位と3位の差）
+            "gap23": float(s[o[1]] - s[o[2]]) if len(o) > 2 else 0.0,
+            "wide12": wid.get(f"{a}-{bq}", 0) / 100.0,
+            "uren12": ure.get(f"{a}-{bq}", 0) / 100.0,
+            "both3": (f is not None and f <= 3) and (f2 is not None and f2 <= 3),
+            "odds2": h2["odds"],
             "gap_raw": float(s[o[0]] - s[o[1]]),          # 生の得点差
             "gap_sd": float((s[o[0]] - s[o[1]]) / sd),    # レース内SDで割った差
             "odds1": h["odds"], "pop1": int(h["pop"]),
@@ -122,6 +133,32 @@ def main():
     res["gap_raw"] = show("木の1位と2位の得点差（生）＝小さいほど僅差", rows, "gap_raw")
     res["gap_sd"] = show("木の1位と2位の得点差（レース内SDで割ったもの）", rows, "gap_sd")
     res["odds1"] = show("比較用: 木1位の単勝オッズ", rows, "odds1", "{:.1f}")
+
+    # ── 上位2頭が抜けているとき
+    print("\n── 木の2位と3位の得点差＝大きいほど上位2頭が抜けている")
+    print(f'  {"区間":<22}{"R":>6}{"1-2着とも3着内":>14}{"ワイドROI":>11}'
+          f'{"馬連ROI":>10}{"単勝1位ROI":>12}{"2頭の平均人気":>13}')
+    v = np.array([d["gap23"] for d in rows])
+    qs = np.quantile(v, np.linspace(0, 1, NB + 1))
+    res["gap23"] = []
+    for i in range(NB):
+        lo, hi = qs[i], qs[i + 1]
+        sset = [d for d in rows
+                if (lo <= d["gap23"] < hi or (i == NB - 1 and d["gap23"] == hi))]
+        if not sset:
+            continue
+        b3 = np.mean([d["both3"] for d in sset]) * 100
+        wr = np.mean([d["wide12"] for d in sset]) * 100
+        wse = np.std([d["wide12"] for d in sset], ddof=1) / np.sqrt(len(sset)) * 100
+        ur = np.mean([d["uren12"] for d in sset]) * 100
+        tr = np.mean([d["tan"] for d in sset]) * 100
+        pp = np.mean([(d["pop1"] + 0.0) for d in sset])
+        lab = f"{lo:.2f} 〜 {hi:.2f}"
+        print(f'  {lab:<22}{len(sset):>6}{b3:>13.1f}%{wr:>10.1f}%{ur:>9.1f}%'
+              f'{tr:>11.1f}%{pp:>13.1f}')
+        res["gap23"].append({"band": lab, "n": len(sset), "both_in3": round(b3, 1),
+                             "wide_roi": round(wr, 1), "wide_se": round(wse, 1),
+                             "uren_roi": round(ur, 1), "tan_roi": round(tr, 1)})
 
     a = res["gap_raw"]
     print(f"\n最も僅差の群 {a[0]['n']}R: 1着 {a[0]['win']}% / 単勝 {a[0]['tan_roi']}%")
