@@ -26,10 +26,14 @@ import config  # noqa: E402
 from hk import features, fit as F, predict as P  # noqa: E402
 from hk.store import Store  # noqa: E402
 
+import train_eval  # noqa: E402
+
 W_PATH = "weights/hori_w.json"
+EVAL_RAW = "../../data/hk_train_raw.json"
+EVAL_TABLE = "weights/train_eval_words.json"
 
 
-def dataset(st):
+def dataset(st, tev=None):
     races = st.all_races()
     book = features.Book(races, config.CUT_HIST)
     oik = st.all_oikiri()
@@ -38,17 +42,26 @@ def dataset(st):
     else:
         print("  追い切りが未取得なので、調教3成分は作りません")
 
-    lin_names = list(features.BASE_NAMES) + (list(features.TRAIN_NAMES) if oik else [])
-    nf = len(lin_names)
+    base_names = list(features.BASE_NAMES) + (list(features.TRAIN_NAMES) if oik else [])
+    nf = len(base_names)
+    # 調教評価は hk の成分ではなく、こちらで作って末尾に足す（train_eval.py 参照）
+    lin_names = base_names + ([train_eval.NAME] if tev is not None else [])
 
     b = features.WideBuilder(book, oikiri=oik, market=False)
-    assert b.wide_names[:nf] == lin_names, "成分の並びが想定と違う"
+    assert b.wide_names[:nf] == base_names, "成分の並びが想定と違う"
 
     DS = []
     for ri, r in enumerate(book.races):
         if r["date"] >= config.CUT_HIST:
             d = b.build_wide(ri)
-            d["Z"] = np.array([row[:nf] for row in d["Z"]], dtype=np.float32)
+            Z = [list(row[:nf]) for row in d["Z"]]
+            if tev is not None:
+                m = tev.get(r["id"]) or {}
+                col = train_eval.znorm_column(
+                    [m.get(str(h["umaban"]), float("nan")) for h in r["rows"]])
+                for row, x in zip(Z, col):
+                    row.append(x)
+            d["Z"] = np.array(Z, dtype=np.float32)
             if 1 in d["ord"]:
                 d["top"] = [d["ord"].index(x) for x in (1, 2, 3) if x in d["ord"]]
                 DS.append(d)
@@ -58,8 +71,23 @@ def dataset(st):
 
 def main():
     st = Store(config.DB_PATH)
+
+    tev = None
+    if os.path.exists(EVAL_RAW):
+        words, per_race = train_eval.load_evalcode(EVAL_RAW)
+        table, info = train_eval.learn(config.DB_PATH, words, per_race, config.CUT_VAL)
+        json.dump(info, open(EVAL_TABLE, "w", encoding="utf-8"),
+                  ensure_ascii=False, indent=1)
+        tev = train_eval.value_map(per_race, table)
+        print(f"調教評価: {info['語数']}語 / 延べ{info['延べ頭数']}頭 / "
+              f"学習{info['レース数']}R(date<{config.CUT_VAL}) / "
+              f"全体3着内率 {info['全体3着内率']*100:.1f}% / eb_k={info['k']}")
+        print(f"  語ごとの表 → {EVAL_TABLE}")
+    else:
+        print(f"{EVAL_RAW} が無いので調教評価は作りません")
+
     print("成分を作ります")
-    DS, names = dataset(st)
+    DS, names = dataset(st, tev)
     TR = [d for d in DS if d["date"] < config.CUT_EMBARGO]
     print(f"学習 {len(TR)}R / 成分 {len(names)}個")
 
