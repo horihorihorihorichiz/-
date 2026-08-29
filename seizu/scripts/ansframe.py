@@ -133,9 +133,10 @@ def draw(kind='floor'):
         for gy in range(2, NY, 2):
             for c_, e_ in zip(xs[:-1], xs[1:]):
                 member('H', gy, c_, e_, '120×240')
-        # 棟木（南北・中央）と母屋（棟木と平行、910おき）
-        s.line(px(NX / 2.0), py(0) - 4, px(NX / 2.0), py(NY) + 4, stroke=INK,
-               stroke_width=1.6)
+        # 棟木（南北・中央）は正角材なので2本の平行線で描く
+        for dd in (-hw, hw):
+            s.line(px(NX / 2.0) + dd, py(0) - 4, px(NX / 2.0) + dd,
+                   py(NY) + 4, stroke=INK, stroke_width=1.2)
         s.text(px(NX / 2.0) + 26, py(NY / 2.0), '棟木 120×120', size=9,
                anchor='start')
         for gx in (1, 2, 3, 5, 6, 7):

@@ -174,10 +174,12 @@ def sheet(sp):
             ('1階の管柱', '120×120', 'k1'),
             ('2階の管柱', '120×120', 'k2'),
             ('重なる管柱', '—', 'kk'),
-            ('胴差・床梁・桁', '120×120', 'beam'),
+            ('胴差・桁（正角材）', '120×120', 'beam'),
+            ('同上（平角材）', '図中に記入', 'hira'),
+            ('同上（丸太材）', '図中に記入', 'maru'),
             ('火打梁', '90×90', 'hi'),
-            ('棟木', '120×120', 'mune'),
-            ('母屋', '90×90', 'moya')]
+            ('棟木・小屋束', '120×120', 'mune'),
+            ('母屋・小屋束', '90×90', 'moya')]
     cw = lw / len(cols)
     s.rect(lx, ly, lw, 118, fill='#fff', stroke=INK, stroke_width=1.2)
     s.line(lx, ly + 32, lx + lw, ly + 32, stroke=INK, stroke_width=0.8)
@@ -186,12 +188,20 @@ def sheet(sp):
         cx = lx + i * cw
         if i:
             s.line(cx, ly, cx, ly + 118, stroke=INK, stroke_width=0.8)
-        s.text(cx + cw / 2.0, ly + 21, nm, size=11)
+        s.text(cx + cw / 2.0, ly + 21, nm, size=9)
         mx, my = cx + cw / 2.0, ly + 57
         a, b = cx + 6, cx + cw - 6
         if kind == 'hi':
             s.line(a, my, b, my, stroke=INK, stroke_width=1.3,
                    stroke_dasharray='9 5')
+        elif kind == 'hira':                     # 平角材（せいが幅より大きい）
+            s.polygon([(a, my - 4), (b, my - 4), (b - 8, my + 4),
+                       (a + 8, my + 4)], fill='#fff', stroke=INK,
+                      stroke_width=1.1)
+        elif kind == 'maru':                     # 丸太材
+            s.path('M %.1f %.1f Q %.1f %.1f %.1f %.1f Q %.1f %.1f %.1f %.1f'
+                   % (a, my, mx, my - 7, b, my - 1, mx, my + 5, a, my),
+                   fill='#fff', stroke=INK, stroke_width=1.1)
         elif kind == 'moya':
             s.line(a, my, b, my, stroke=INK, stroke_width=1.1,
                    stroke_dasharray='11 3 2 3')
@@ -222,7 +232,8 @@ def sheet(sp):
                        stroke_width=1.2)
             elif kind == 'mune':
                 s.circle(mx, my, 4, fill=INK)
-        s.text(cx + cw / 2.0, ly + 105, dim, size=12.5, weight='700')
+        s.text(cx + cw / 2.0, ly + 105, dim, size=11 if len(dim) < 8 else 9.5,
+               weight='700')
     s.text(lx - 6, ly + 62, '記号', size=10.5, anchor='end', fill='#555')
     s.text(lx - 6, ly + 105, '寸法', size=10.5, anchor='end', fill='#555')
 
