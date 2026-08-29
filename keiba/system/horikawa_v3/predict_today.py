@@ -91,7 +91,10 @@ def to_race(rid, card, date):
     return {"id": rid, "date": date, "place": rid[4:6], "surf": surf,
             "turn": turn, "io": io, "dist": dist,
             "weather": mw.group(1) if mw else "",
+            # 馬場が未発表のときは「良」で埋まる。前日の出馬表には馬場欄が
+            # 無いことがあり、そのまま予想すると全レース良として計算される。
             "ground": GROUND.get(mg.group(1) if mg else "", "良"),
+            "ground_known": bool(mg),
             "cls": cls, "n": len(rows), "rows": rows, "tidx": []}
 
 
