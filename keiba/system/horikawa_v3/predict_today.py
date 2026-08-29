@@ -7,6 +7,7 @@ parse.py にも出馬表（発走前）のパーサが無い。ここはその�
 features.Builder にそのまま計算させる。
 
   python predict_today.py ../../data/today_cards.json
+  python predict_today.py ../../data/today_cards.json --md ../../predictions/20260829.md
 
 出せるのは同一レース内の並びとスコアの内訳だけ。買い目や期待値は出さない
 （logic.md「この配点の正しい使い方」参照）。
@@ -94,8 +95,68 @@ def eval_words(card):
     return out
 
 
+def render_md(results, cards, names, level, when):
+    L = [f"# 予想 {when[:4]}-{when[4:6]}-{when[6:8]}", ""]
+    L.append(f"配点表 `weights/hori_w.json`（{len(names)}成分・採用段階 {level}）による、")
+    L.append("同一レース内の並びとスコアの内訳。**買い目と期待値は出していない。**")
+    L.append("")
+    L.append("> 点数が高い＝買い、ではない。未知期間1,707Rの実測で3着内率は 59.64%")
+    L.append("> （市場 66.14%）、市場に条件付けた上乗せは控除率20%を越えるのに必要な")
+    L.append("> 0.223 nats に対して最大 0.0019 nats。買う根拠とされる発火表")
+    L.append("> `plus_fires.json` は未作成。詳しくは `system/logic.md`。")
+    L.append("")
+    for rid in sorted(results):
+        r, d, Z, wv, score, miss, ew, post = results[rid]
+        place = PLACES.get(r["place"], r["place"])
+        L.append(f'## {place}{int(rid[10:12])}R　{post}発走　{r["surf"]}{r["dist"]}m '
+                 f'{r["ground"]}　{CLSNAME.get(r["cls"], r["cls"])}　{r["n"]}頭')
+        L.append("")
+        L.append(f'`{rid}`　配点セル `{d["k"].get(level, d["k"]["L1"])}`')
+        if miss:
+            L.append(f'　※ 調教評価が引けなかった馬 {miss}頭（レース内平均で埋めたので寄与0）')
+        if not any(h["bw"] > 0 for h in r["rows"]):
+            L.append("　※ 馬体重が未発表。成分「馬体重」は全馬同値で寄与0")
+        L.append("")
+        L.append("| 順 | 馬番 | 馬名 | 得点 | 追い切り評価 | 効いた成分（上位3） |")
+        L.append("|--:|--:|---|--:|---|---|")
+        order = sorted(range(r["n"]), key=lambda i: -score[i])
+        for k, i in enumerate(order):
+            h = r["rows"][i]
+            parts = sorted(((names[j], Z[i][j] * wv[j]) for j in range(len(names))),
+                           key=lambda x: -abs(x[1]))[:3]
+            nm = next((c["name"] for c in cards[rid]["rows"]
+                       if c["horse"] == h["horse"]), h["horse"])
+            top = " ".join(f'{a}{v:+.1f}' for a, v in parts)
+            L.append(f'| {k+1} | {h["umaban"]} | {nm} | {score[i]:.1f} | '
+                     f'{ew.get(h["horse"], "—")} | {top} |')
+        sd = float(np.std(score)) or 1.0
+        g = lambda a, bq: (score[order[a]] - score[order[bq]]) / sd
+        L.append("")
+        L.append(f'形: **{SHAPE(g(0,1), g(1,2), g(2,3))}**　'
+                 f'g12={g(0,1):.2f} g23={g(1,2):.2f} g34={g(2,3):.2f}')
+        L.append("")
+    return "\n".join(L)
+
+
+def SHAPE(g12, g23, g34):
+    if g12 >= 1.0: return "1強"
+    if g23 >= 1.0: return "2強"
+    if g34 >= 1.0: return "3強"
+    if g12 >= 0.5 and g23 >= 0.5 and g34 >= 0.5: return "階段"
+    return "混戦"
+
+
+PLACES = {"01": "札幌", "02": "函館", "03": "福島", "04": "新潟", "05": "東京",
+          "06": "中山", "07": "中京", "08": "京都", "09": "阪神", "10": "小倉"}
+CLSNAME = {"t10": "新馬・未勝利", "t6": "1勝クラス", "t5": "2勝クラス",
+           "t4": "3勝クラス", "t3": "オープン"}
+
+
 def main():
     cards = json.load(open(sys.argv[1], encoding="utf-8"))
+    md_path = None
+    if "--md" in sys.argv:
+        md_path = sys.argv[sys.argv.index("--md") + 1]
     w = json.load(open(W_PATH, encoding="utf-8"))
     names, level = w["names"], w.get("level", "L1")
     use_tev = train_eval.NAME in names
@@ -141,12 +202,23 @@ def main():
             Z = np.array(Z, float)
             wv = m.w(d["k"], level)
             score = Z @ wv
-            results[r["id"]] = (r, d, Z, wv, score, miss, ew if use_tev else {})
+            post = re.search(r"(\d{1,2}:\d{2})発走",
+                             unicodedata.normalize("NFKC", cards[r["id"]]["data01"]))
+            results[r["id"]] = (r, d, Z, wv, score, miss,
+                                ew if use_tev else {}, post.group(1) if post else "")
         b.advance(r)
 
+    if md_path:
+        os.makedirs(os.path.dirname(md_path), exist_ok=True)
+        when = next(iter(results.values()))[0]["date"]
+        io_open = open(md_path, "w", encoding="utf-8", newline="\n")
+        io_open.write(render_md(results, cards, names, level, when) + "\n")
+        io_open.close()
+        print(f"書き出しました → {md_path}")
+
     for rid in sorted(results):
-        r, d, Z, wv, score, miss, ew = results[rid]
-        place = {"01": "札幌", "04": "新潟", "07": "中京"}.get(r["place"], r["place"])
+        r, d, Z, wv, score, miss, ew, post = results[rid]
+        place = PLACES.get(r["place"], r["place"])
         print(f'\n=== {place}{int(rid[10:12])}R  {r["surf"]}{r["dist"]}m {r["ground"]} '
               f'{r["cls"]} {r["n"]}頭  配点層={level} セル={d["k"][level if level in d["k"] else "L1"]} ===')
         if miss:
