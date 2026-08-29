@@ -3,3 +3,8 @@ node_modules/
 slides/exports/*.pptx
 slides/exports/*.pdf
 slides/exports/*.png
+
+# 競馬データ（巨大なためコミットしない）
+keiba/data/*.gz
+keiba/data/*.jsonl
+keiba/data/*.csv
