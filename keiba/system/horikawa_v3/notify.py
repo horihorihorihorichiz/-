@@ -30,14 +30,16 @@ import config  # noqa: E402
 
 LEAD_MIN = 10          # 発走の何分前に判定するか
 ODDS_MIN = 5.0         # 合成1位の単勝がこの倍率以上なら通知
-HOLE_MIN = 5.0         # 「穴軸」とみなす単勝の下限
+HOLE_MIN = 5.0         # 軸が「穴」と言える単勝の下限（表示用。選択には使わない）
 
-# 穴を軸にした形の、探索窓1,826Rでの実測回収率。文面に必ず添える。
-# 数字を隠して買い目だけ送ると、ただの当たりそうな話になってしまう。
+# 探索窓1,826Rでの実測回収率（system_bets.py）。文面に必ず添える。
+# 軸も相手も木の順位だけで決める。人気は選択に使わない。
+# 以前は「人気で穴を選んで軸にする」形を測っていて 80.4% だったが、
+# 木で選ぶ形に替えたら 91.7% になった。11pt は選び方の差。
 MEASURED = {
-    "ワイド 穴軸→合成上位": 80.4,   # restructure.py: 人気で相手を選ぶと85.2%
-    "複勝 合成1位(4番人気以下)": 72.3,  # patterns.py B2
-    "複勝 合成1位(6番人気以下)": 43.9,  # patterns.py B3
+    "ワイド 木1位-2位": 91.7,        # ±5.1 / 1,826R
+    "複勝 木1位": 87.2,              # ±1.8
+    "単勝 木1位": 83.9,              # ±4.3
 }
 API = "https://race.netkeiba.com/api/api_get_jra_odds.html?type=1&locale=ja&race_id={}"
 PUSH = "https://api.line.me/v2/bot/message/push"
@@ -125,17 +127,19 @@ def send_line(text, dry=False):
 
 
 def suggest(race, odds):
-    """穴を軸にした形。軸は合成順位がいちばん上の HOLE_MIN 倍以上の馬。"""
-    ranked = order_by_blend(race, odds)
-    if len(ranked) < 4:
+    """軸も相手も木の順位だけで決める。人気は選択に使わない。
+
+    以前は「人気で穴を選んで軸にする」形にしていたが、探索窓で測り直したら
+    木で選ぶほうが 11pt 良かった（80.4% → 91.7%）。穴になるかどうかは
+    結果であって条件ではない。
+    """
+    hs = [dict(h) for h in race["horses"] if h["umaban"] in odds]
+    if len(hs) < 4:
         return None
-    hole = next((h for h in ranked if h["odds"] >= HOLE_MIN), None)
-    if hole is None:
-        return None
-    aite = [h for h in ranked[:4] if h["umaban"] != hole["umaban"]][:2]
-    if len(aite) < 2:
-        return None
-    return {"hole": hole, "aite": aite, "rank": ranked.index(hole) + 1}
+    for h in hs:
+        h["odds"], h["pop"] = odds[h["umaban"]]
+    hs.sort(key=lambda h: h["trank"])
+    return {"jiku": hs[0], "aite": hs[1:3]}
 
 
 def message(race, top, sug=None):
@@ -146,18 +150,20 @@ def message(race, top, sug=None):
          f"\n合成1位　{top['umaban']} {top['name']}\n"
          f"単勝 {top['odds']:.1f}倍（{top['pop']}番人気）／木の順位 {top['trank']}位{ev}")
     if sug:
-        h, a = sug["hole"], sug["aite"]
-        t += ("\n\n── 穴軸の形 ──\n"
+        h, a = sug["jiku"], sug["aite"]
+        ana = "（結果として穴軸）" if h["odds"] >= HOLE_MIN else ""
+        t += (f"\n\n── 木の順位で組む{ana} ──\n"
               f"軸 {h['umaban']} {h['name']}"
-              f"（{h['odds']:.1f}倍・{h['pop']}番人気・合成{sug['rank']}位・木{h['trank']}位）\n"
+              f"（{h['odds']:.1f}倍・{h['pop']}番人気・木1位）\n"
               "相手 " + " / ".join(
-                  f"{x['umaban']} {x['name']}（{x['odds']:.1f}倍）" for x in a) +
-              "\nワイド2点\n"
-              f"\n実測 {MEASURED['ワイド 穴軸→合成上位']:.1f}%"
-              "（相手を人気順で選ぶと85.2%なので、穴軸にするぶん負けが増える形）")
+                  f"{x['umaban']} {x['name']}（{x['odds']:.1f}倍・木{x['trank']}位）"
+                  for x in a) +
+              "\nワイド 軸-相手 の2点\n"
+              f"\n実測 {MEASURED['ワイド 木1位-2位']:.1f}%（±5.1・1,826R）。"
+              "人気で穴を選んで軸にすると80.4%まで落ちるので、軸は木で決めている。")
     t += ("\n\n※これは並びであって買い目の推奨ではない。"
-          f"1位が{ODDS_MIN:.0f}倍以上という条件も、穴軸の形も、"
-          "探索窓の実測は100%を大きく割る。負ける形と分かったうえで買うこと。")
+          "いちばん良い形でも実測91.7%で、控除率20%の壁に8pt届いていない。"
+          "長く続ければ負ける形と分かったうえで買うこと。")
     return t
 
 
