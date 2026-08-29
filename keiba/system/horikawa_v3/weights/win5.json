@@ -1,0 +1,94 @@
+{
+ "window": [
+  "20250801",
+  "20260221"
+ ],
+ "n_days": 62,
+ "n_sets": 1578,
+ "results": [
+  {
+   "select": "市場（人気順）",
+   "per_race": 1,
+   "lines": 1,
+   "hit_rate_pct": 0.6337,
+   "breakeven_payout": 15780
+  },
+  {
+   "select": "市場（人気順）",
+   "per_race": 2,
+   "lines": 32,
+   "hit_rate_pct": 3.7389,
+   "breakeven_payout": 85586
+  },
+  {
+   "select": "市場（人気順）",
+   "per_race": 3,
+   "lines": 243,
+   "hit_rate_pct": 11.4068,
+   "breakeven_payout": 213030
+  },
+  {
+   "select": "市場（人気順）",
+   "per_race": 5,
+   "lines": 3125,
+   "hit_rate_pct": 38.8466,
+   "breakeven_payout": 804445
+  },
+  {
+   "select": "木48成分",
+   "per_race": 1,
+   "lines": 1,
+   "hit_rate_pct": 0.0634,
+   "breakeven_payout": 157800
+  },
+  {
+   "select": "木48成分",
+   "per_race": 2,
+   "lines": 32,
+   "hit_rate_pct": 2.0913,
+   "breakeven_payout": 153018
+  },
+  {
+   "select": "木48成分",
+   "per_race": 3,
+   "lines": 243,
+   "hit_rate_pct": 9.6324,
+   "breakeven_payout": 252272
+  },
+  {
+   "select": "木48成分",
+   "per_race": 5,
+   "lines": 3125,
+   "hit_rate_pct": 30.4183,
+   "breakeven_payout": 1027344
+  },
+  {
+   "select": "木48+市場 の合成",
+   "per_race": 1,
+   "lines": 1,
+   "hit_rate_pct": 0.0634,
+   "breakeven_payout": 157800
+  },
+  {
+   "select": "木48+市場 の合成",
+   "per_race": 2,
+   "lines": 32,
+   "hit_rate_pct": 3.1052,
+   "breakeven_payout": 103053
+  },
+  {
+   "select": "木48+市場 の合成",
+   "per_race": 3,
+   "lines": 243,
+   "hit_rate_pct": 13.0545,
+   "breakeven_payout": 186143
+  },
+  {
+   "select": "木48+市場 の合成",
+   "per_race": 5,
+   "lines": 3125,
+   "hit_rate_pct": 34.981,
+   "breakeven_payout": 893342
+  }
+ ]
+}

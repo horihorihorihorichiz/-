@@ -106,8 +106,41 @@ def blend_top(race, odds):
     return {**best, "blend": best["_b"]}
 
 
-def send_line(text, dry=False):
+TOKEN_URL = "https://api.line.me/v2/oauth/accessToken"
+_cached = {}
+
+
+def access_token():
+    """長期トークンがあればそれを使う。無ければチャネルID＋シークレットで発行する。
+
+    チャネルシークレットは32桁の16進で、それ自体はアクセストークンではない。
+    client_credentials でその場で短期トークン（30日）を取れる。
+    """
     tok = getattr(config, "LINE_TOKEN", "")
+    if tok:
+        return tok
+    if "tok" in _cached:
+        return _cached["tok"]
+    cid = str(getattr(config, "LINE_CHANNEL_ID", "") or "")
+    sec = getattr(config, "LINE_CHANNEL_SECRET", "")
+    if not cid or not sec:
+        return ""
+    try:
+        r = requests.post(TOKEN_URL, timeout=15,
+                          data={"grant_type": "client_credentials",
+                                "client_id": cid, "client_secret": sec})
+        if r.status_code != 200:
+            print(f"トークンの発行に失敗 {r.status_code}: {r.text[:200]}")
+            return ""
+        _cached["tok"] = r.json().get("access_token", "")
+        return _cached["tok"]
+    except Exception as e:
+        print(f"トークンの発行に失敗: {e}")
+        return ""
+
+
+def send_line(text, dry=False):
+    tok = access_token()
     to = getattr(config, "LINE_TO", "")
     if dry:
         print("--- 送信内容（dry） ---\n" + text + "\n-----------------------")
