@@ -1,0 +1,141 @@
+[keep_alive:prefetch] 08/22 01:08 起動 #1 (proxy=http://127.0.0.1:40445)
+skip 202604030101
+skip 202604030102
+== fetch 202604030103 ==
+[1/3] 出馬表取得 race_id=202604030103 ...
+      2歳新馬 / 芝1600m / 馬場良 / 13頭 / tier10
+[2/3] 馬柱取得  1 テンソンコウリン ...
+[2/3] 馬柱取得  2 ベアヒロシデス ...
+[2/3] 馬柱取得  3 マイセイバー ...
+[2/3] 馬柱取得  4 アラベスクテソーロ ...
+[2/3] 馬柱取得  5 トーセンシントラ ...
+[2/3] 馬柱取得  6 サンアンドスターズ ...
+[2/3] 馬柱取得  7 タッカーヴィーナス ...
+[2/3] 馬柱取得  8 セイウンウィルド ...
+[2/3] 馬柱取得  9 エーアイラピド ...
+[2/3] 馬柱取得 10 タッケンエリカ ...
+[2/3] 馬柱取得 11 ジップスパーク ...
+[2/3] 馬柱取得 12 ミツカネリゲル ...
+[2/3] 馬柱取得 13 アイファーマーリン ...
+[3/3] 書き出し: race_202604030103.json
+
+★ race_202604030103.json 生成完了（13頭）。タイム指数反映: 0走
+⚠️ 馬体重未発表: 馬番[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]（HCS=中立で計算。当日発表後に再実行して反映すること）
+⚠️ タイム指数なしで評価中（相手/穴の判別精度が落ちる）。
+   常に反映するには: ローカルの netkeiba_run.py で 202604030103_all.json を作り、keibaフォルダ(または $KEIBA_NETKEIBA_DIR)に置けば自動検出します。
+
+次のコマンド:
+  python predict.py race_202604030103.json --race-id 202604030103
+
+skip 202604030104
+skip 202604030105
+skip 202604030106
+skip 202604030107
+skip 202604030108
+skip 202604030109
+skip 202604030110
+skip 202604030111
+skip 202604030112
+skip 202607030101
+== fetch 202607030102 ==
+[1/3] 出馬表取得 race_id=202607030102 ...
+      2歳新馬 / ダ1800m / 馬場良 / 10頭 / tier10
+[2/3] 馬柱取得  1 ルヴァンタドゥール ...
+[2/3] 馬柱取得  2 アレストラウム ...
+[2/3] 馬柱取得  3 ダイシンレジウス ...
+[2/3] 馬柱取得  4 アルギエバ ...
+[2/3] 馬柱取得  5 ホシヲミテルンナ ...
+[2/3] 馬柱取得  6 テーオーダーウィン ...
+[2/3] 馬柱取得  7 マオノファースト ...
+[2/3] 馬柱取得  8 アワジシマ ...
+[2/3] 馬柱取得  9 マルカルーカス ...
+[2/3] 馬柱取得 10 メイショウラウルス ...
+[3/3] 書き出し: race_202607030102.json
+
+★ race_202607030102.json 生成完了（10頭）。タイム指数反映: 0走
+⚠️ 馬体重未発表: 馬番[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]（HCS=中立で計算。当日発表後に再実行して反映すること）
+⚠️ タイム指数なしで評価中（相手/穴の判別精度が落ちる）。
+   常に反映するには: ローカルの netkeiba_run.py で 202607030102_all.json を作り、keibaフォルダ(または $KEIBA_NETKEIBA_DIR)に置けば自動検出します。
+
+次のコマンド:
+  python predict.py race_202607030102.json --race-id 202607030102
+
+skip 202607030103
+skip 202607030104
+skip 202607030105
+skip 202607030106
+skip 202607030107
+skip 202607030108
+== fetch 202607030109 ==
+[1/3] 出馬表取得 race_id=202607030109 ...
+      3歳以上障害OP / ダ3330m / 馬場良 / 6頭 / tier3
+[2/3] 馬柱取得  1 シャンドゥレール ...
+[2/3] 馬柱取得  2 ジーククローネ ...
+[2/3] 馬柱取得  3 ライラスター ...
+[2/3] 馬柱取得  4 ロードオールライト ...
+[2/3] 馬柱取得  5 キャネル ...
+[2/3] 馬柱取得  6 ヴラディア ...
+[3/3] 書き出し: race_202607030109.json
+
+★ race_202607030109.json 生成完了（6頭）。タイム指数反映: 26走
+⚠️ 馬体重未発表: 馬番[1, 2, 3, 4, 5, 6]（HCS=中立で計算。当日発表後に再実行して反映すること）
+
+次のコマンド:
+  python predict.py race_202607030109.json --race-id 202607030109
+
+skip 202607030110
+skip 202607030111
+skip 202607030112
+skip 202601020101
+skip 202601020102
+skip 202601020103
+skip 202601020104
+== fetch 202601020105 ==
+[1/3] 出馬表取得 race_id=202601020105 ...
+      2歳新馬 / 芝1500m / 馬場良 / 14頭 / tier10
+[2/3] 馬柱取得  1 ノヴァカーラ ...
+[2/3] 馬柱取得  2 タプティ ...
+[2/3] 馬柱取得  3 スピカテソーロ ...
+[2/3] 馬柱取得  4 カセノメロス ...
+[2/3] 馬柱取得  5 グリーンアイランド ...
+Traceback (most recent call last):
+  File "/home/user/-/keiba/fetch_race.py", line 396, in <module>
+    main()
+  File "/home/user/-/keiba/fetch_race.py", line 315, in main
+    career = fetch_horse_results(hs["horse_id"], race_date, su["surface"], su["distance"])
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/-/keiba/fetch_race.py", line 130, in fetch_horse_results
+    h = get(f"https://db.netkeiba.com/horse/result/{horse_id}/", "euc-jp")
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/-/keiba/fetch_race.py", line 27, in get
+    r = urllib.request.urlopen(req, timeout=30)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/urllib/request.py", line 216, in urlopen
+    return opener.open(url, data, timeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/urllib/request.py", line 525, in open
+    response = meth(req, response)
+               ^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/urllib/request.py", line 634, in http_response
+    response = self.parent.error(
+               ^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/urllib/request.py", line 563, in error
+    return self._call_chain(*args)
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/urllib/request.py", line 496, in _call_chain
+    result = func(*args)
+             ^^^^^^^^^^^
+  File "/usr/lib/python3.11/urllib/request.py", line 643, in http_error_default
+    raise HTTPError(req.full_url, code, msg, hdrs, fp)
+urllib.error.HTTPError: HTTP Error 400: Bad Request
+FAIL 202601020105
+skip 202601020106
+skip 202601020107
+skip 202601020108
+skip 202601020109
+skip 202601020110
+skip 202601020111
+skip 202601020112
+prefetch done 01:10
+[keep_alive:prefetch] 08/22 01:10 終了 rc=0
+[keep_alive:prefetch] 正常終了のため番人も終了

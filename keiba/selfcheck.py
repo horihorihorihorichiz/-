@@ -206,6 +206,31 @@ def frozen_check():
 check("ルールブック凍結", frozen_check,
       fix="意図した改定なら PATTERNS_FROZEN.json のsha256と窓端を更新(RULES.md §後知恵禁止)")
 
+# 5.5b 配点書き出しの同一性(2026-08-22新設・監査で発覚したバグの再発防止) ----------
+#     評価に使ったモデルと書き出した成果物が別物になる事故(クラス層潰れ)を検出する。
+#     verify_export.py が成果物のみからモデルを再構成して実測・照合し .ok を書く。
+#     ここでは「.okのshaが現在のjsonと一致するか」だけを見る(重い再実測はしない)。
+def export_verified():
+    import hashlib
+    art = os.path.join(_DIR, "hori52_w.json")
+    if not os.path.exists(art):
+        raise Skip("hori52_w.json なし(52分割は未書き出し)")
+    okf = os.path.join(_DIR, "verify_export.ok")
+    if not os.path.exists(okf):
+        raise RuntimeError("verify_export.ok が無い。配点を書き出したら "
+                           "python3 verify_export.py で同一性検証を回すこと")
+    rec = json.load(open(okf))
+    sha = hashlib.sha256(open(art, "rb").read()).hexdigest()
+    if rec.get("sha256") != sha:
+        raise RuntimeError("hori52_w.json が検証後に変更されている。"
+                           "python3 verify_export.py を再実行して照合し直すこと")
+    v = rec.get("verified", {})
+    return f"書き出し=評価モデル一致を検証済み(VAL{v.get('VAL')}/CONF{v.get('CONF')})"
+
+
+check("配点書き出しの同一性", export_verified,
+      fix="python3 verify_export.py (不一致なら書き出しコードのバグ。修正するまで配点表を使わない)")
+
 # 5.6 V99W並走レーン(2026-08-19新設・学習配点のゼロ掛け金記録。本番エンジン非依存) ----
 #     v99w_result.pkl は.gitignore(コンテナリセットで消える)。土曜ライブで並走させる前に
 #     モデルの存在と腕A/B-sdランキングの指紋をオフラインで確認する。
