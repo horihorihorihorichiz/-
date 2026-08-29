@@ -42,6 +42,23 @@ MEASURED = {
     "複勝 木1位": 87.2,              # ±1.8
     "単勝 木1位": 83.9,              # ±4.3
 }
+# dominance.py で探索窓1,820Rを分位5等分して測った境界と実測値。
+# 「木の1位と2位の差」が大きいほど1位は来る。「2位と3位の差」が大きいほど
+# 上位2頭が揃って3着内に来る。どちらも当たりやすさの話で、回収率は伸びない。
+DOM1 = [(0.37, "★★★★★", 41.5, 75.0), (0.23, "★★★★☆", 33.0, 68.4),
+        (0.14, "★★★☆☆", 23.6, 61.5), (0.06, "★★☆☆☆", 25.5, 56.9),
+        (0.00, "★☆☆☆☆", 20.9, 51.4)]
+DOM2 = [(0.29, "★★★★★", 42.0), (0.16, "★★★★☆", 32.1), (0.09, "★★★☆☆", 26.9),
+        (0.04, "★★☆☆☆", 29.1), (0.00, "★☆☆☆☆", 20.3)]
+
+
+def band(v, table):
+    for lo, *rest in table:
+        if v >= lo:
+            return rest
+    return table[-1][1:]
+
+
 API = "https://race.netkeiba.com/api/api_get_jra_odds.html?type=1&locale=ja&race_id={}"
 PUSH = "https://api.line.me/v2/bot/message/push"
 
@@ -77,8 +94,10 @@ def reliable(odds):
     """
     if len(odds) < 5:
         return False
-    cheapest = min(odds.items(), key=lambda kv: kv[1][0])
-    return cheapest[1][1] == 1
+    # 安い順に並べたとき、人気が 1,2,3… と揃っているか。上位5頭で見る。
+    # 前日の段階では「84倍なのに3番人気」のような行が混ざることがある。
+    byodds = sorted(odds.values(), key=lambda v: v[0])
+    return all(p == i + 1 for i, (_o, p) in enumerate(byodds[:5]))
 
 
 def order_by_blend(race, odds):
@@ -195,9 +214,16 @@ def message(race, top, sug=None):
               "\nワイド 軸-相手 の2点\n"
               f"\n実測 {MEASURED['ワイド 木1位-2位']:.1f}%（±5.1・1,826R）。"
               "人気で穴を選んで軸にすると80.4%まで落ちるので、軸は木で決めている。")
-    t += ("\n\n※これは並びであって買い目の推奨ではない。"
-          "いちばん良い形でも実測91.7%で、控除率20%の壁に8pt届いていない。"
-          "長く続ければ負ける形と分かったうえで買うこと。")
+    g1, g2 = race.get("gap12"), race.get("gap23")
+    if g1 is not None and g2 is not None:
+        s1, w1, i1 = band(g1, DOM1)
+        s2, w2 = band(g2, DOM2)
+        t += ("\n\n── レースの読みやすさ ──\n"
+              f"1強度 {s1}（差 {g1:.2f}）　この帯の木1位は 1着{w1}% / 3着内{i1}%\n"
+              f"2強度 {s2}（差 {g2:.2f}）　この帯は上位2頭が揃って3着内 {w2}%")
+    t += ("\n\n※星は当たりやすさであって儲けやすさではない。星が増えるほど"
+          "その馬の人気も上がるので、回収率はどの帯でも85%前後で平ら。"
+          "いちばん良い買い方でも実測91.7%、控除率20%の壁に8pt届いていない。")
     return t
 
 

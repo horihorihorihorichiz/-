@@ -118,8 +118,12 @@ def main():
         order = sorted(range(len(s)), key=lambda i: (blend[i], trank[i]))
         sd = float(np.std(-blend.astype(float))) or 1.0
         g12 = float((blend[order[1]] - blend[order[0]]) / sd) if len(order) > 1 else 0.0
+        # 木の得点差。dominance.py で測った「1強度」「2強度」の材料
+        so = np.sort(s)[::-1]
         results[rid] = {"race": r, "s": s, "contrib": contrib, "trank": trank,
                         "order": order, "blend": blend, "g12": g12,
+                        "gap12": float(so[0] - so[1]) if len(so) > 1 else 0.0,
+                        "gap23": float(so[1] - so[2]) if len(so) > 2 else 0.0,
                         "ew": PT.eval_words(cards[rid], vocab)}
 
     # ── 出力
@@ -197,6 +201,8 @@ def main():
         al = {"date": date, "races": [
             {"id": R["id"], "place": R["place"], "r": R["r"], "post": R["post"],
              "title": R["title"], "surf": R["surf"], "dist": R["dist"], "n": R["n"],
+             "gap12": round(results[R["id"]]["gap12"], 4),
+             "gap23": round(results[R["id"]]["gap23"], 4),
              "horses": [{"umaban": h["umaban"], "name": h["name"], "trank": h["trank"],
                          "evalWord": h["evalWord"]} for h in R["horses"]]}
             for R in viz["races"]]}
