@@ -1,1 +1,2 @@
 [keep_alive:h2023] 08/21 23:35 起動 #1 (proxy=http://127.0.0.1:33231)
+curl: (7) Failed to connect to 127.0.0.1 port 33231 after 0 ms: Couldn't connect to server
