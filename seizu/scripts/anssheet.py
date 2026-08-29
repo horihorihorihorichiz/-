@@ -59,9 +59,20 @@ def draw(d, title, sub=''):
     frame = site or d.get('frame')      # 2階・3階も1階と同じ用紙の大きさにする
     if frame:
         SW, SD = frame['sw'] / 910.0, frame['sd'] / 910.0
-        ox = (SW - nx) / 2.0                       # 東西のあきは半分ずつ
         yard = 2.6                                 # 道路側のあき（アプローチ）
-        oy = yard if 'S' in side else (SD - ny - yard)
+        # 道路のある側にあきを取り、反対側は残り。道路のない向きは半分ずつ
+        if 'E' in side:
+            ox = SW - nx - yard
+        elif 'W' in side:
+            ox = yard
+        else:
+            ox = (SW - nx) / 2.0
+        if 'S' in side:
+            oy = yard
+        elif 'N' in side:
+            oy = SD - ny - yard
+        else:
+            oy = (SD - ny) / 2.0
         LG, TG = -ox, SD - oy                      # 紙の左端・上端の目盛
     else:
         SW, SD, LG, TG = nx, ny, 0, ny
@@ -189,13 +200,14 @@ def draw(d, title, sub=''):
             tx_, ty_ = out(gc + gw + 0.3, yard / 2.0)
             s.text(tx_, ty_ + 4, 'アプローチ', size=8, anchor='start',
                    fill='#333')
-            ax_, ay_ = out(gc, -0.28)
-            bx_, by_ = out(gc, -0.05)
+            tip = out(gc, 0.02)                # 先っぽは敷地の内がわ
+            back = out(gc, -0.26)              # おしりは道路がわ
             if face in ('S', 'N'):
-                s.polygon([(ax_, ay_ + (14 if face == 'N' else -14) * 0),
-                           (bx_, by_)], fill='none')
-            s.polygon([(bx_, by_),
-                       (bx_ - 6, ay_), (bx_ + 6, ay_)], fill=INK)
+                s.polygon([tip, (back[0] - 6, back[1]),
+                           (back[0] + 6, back[1])], fill=INK)
+            else:
+                s.polygon([tip, (back[0], back[1] - 6),
+                           (back[0], back[1] + 6)], fill=INK)
 
         # 駐輪スペース … 店舗の前（客が使う）
         n_bike = 4
