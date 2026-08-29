@@ -8,3 +8,44 @@ slides/exports/*.png
 keiba/data/*.gz
 keiba/data/*.jsonl
 keiba/data/*.csv
+
+# 認証情報・秘密情報（絶対にコミットしない）
+# hk (堀川システム) は config.py にログイン用クッキーを置く設計。
+config.py
+**/config.py
+!config.example.py
+!**/config.example.py
+
+*cookie*
+*cookies*
+*.cookies
+
+.env
+.env.*
+*.env
+!.env.example
+
+secrets/
+secrets.*
+*secrets*
+*secret*
+!**/*secretary*
+
+*credential*
+*credentials*
+*token*
+!**/*tokenizer*
+
+*.pem
+*.key
+*.p12
+*.pfx
+id_rsa*
+.netrc
+_netrc
+
+# hk 実行時の生成物
+__pycache__/
+*.pyc
+keiba/system/horikawa_v3/data/
+keiba/system/horikawa_v3/weights/hori_w.json
