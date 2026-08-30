@@ -236,6 +236,9 @@ def sheet(sp):
                weight='700')
     s.text(lx - 6, ly + 62, '記号', size=10.5, anchor='end', fill='#555')
     s.text(lx - 6, ly + 105, '寸法', size=10.5, anchor='end', fill='#555')
+    s.text(lx, ly + 138, '※ 平角材（120×240 など）の断面寸法は、この欄ではなく '
+           '床伏図の中の梁1本ずつのわきに記入する。', size=11,
+           anchor='start', fill=INK)
 
     # ---- 標準解答例のタイトル ----
     bx, by = 750.0, 912.0

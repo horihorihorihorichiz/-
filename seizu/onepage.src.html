@@ -611,6 +611,7 @@ footer{margin:46px 0 26px;padding-top:18px;border-top:1px solid var(--edge);
 <li><label><input type="checkbox"><span>室名・寸法・方位・縮尺を書き忘れていないか</span></label></li>
 <li><label><input type="checkbox"><span>1FL・軒高・最高高さが全図面で同じ数字か</span></label></li>
 <li><label><input type="checkbox"><span><b>耐力壁に△印</b>を付けたか</span></label></li>
+<li><label><input type="checkbox"><span><b>梁の断面寸法</b>を伏図の中に1本ずつ書いたか（凡例欄ではない）</span></label></li>
 <li><label><input type="checkbox"><span><b>通し柱を○印</b>で囲んだか（四隅4か所）</span></label></li>
 <li><label><input type="checkbox"><span><b>出入口に▲印</b>を付けたか</span></label></li>
 <li><label><input type="checkbox"><span><b>部分詳細図の切断位置と方向</b>を記入したか</span></label></li>
@@ -1247,6 +1248,38 @@ A2用紙の中で意外と小さいことを、目で覚えておいてくださ
 <li>幅は<b>120でそろえる</b>。公式の標準解答例は令和4・5・6・7年とも
 120でした。<span class="mark">1枚の図面の中では必ずそろえる</span>こと</li>
 </ul>
+
+<h3>断面寸法は「凡例欄」と「図の中」に分かれる</h3>
+<div class="flag no">
+  <h4>ここを知らないと、凡例欄が埋まりません</h4>
+  <p>答案用紙の凡例欄には、<b>「断面寸法の記入欄」</b>という空らんがあります。
+  ところが<span class="mark">梁の寸法をそこに書いてはいけません。</span></p>
+  <p>公式の凡例は「胴差・床梁・桁・小屋梁」が
+  <b>正角材／平角材／丸太材</b>の3つに分かれていて、
+  平角材と丸太材の欄には<b>「図中に記入」</b>と印刷されています。</p>
+</div>
+<div class="tw"><table>
+<tr><th class="wrap">材の形</th><th class="wrap">中身</th>
+    <th class="wrap">断面寸法をどこに書くか</th></tr>
+<tr><td class="wrap"><b>正角材</b></td>
+    <td class="wrap">たてよこが同じ。120×120</td>
+    <td class="wrap"><b>凡例欄</b>に「120×120」</td></tr>
+<tr class="sum"><td class="wrap"><b>平角材</b></td>
+    <td class="wrap">たてが長い。120×180 / 240 / 300</td>
+    <td class="wrap"><b class="num">伏図の中の、梁1本ずつのわきに書く</b></td></tr>
+<tr><td class="wrap"><b>丸太材</b></td>
+    <td class="wrap">丸太のまま（今回は使わない）</td>
+    <td class="wrap">同じく図の中</td></tr>
+</table></div>
+<div class="flag fix">
+  <h4>この型では、梁はぜんぶ平角材</h4>
+  <p>胴差120×300、大梁120×300／120×240、床小梁120×180／120×240。
+  <b>全部たてが長い＝平角材</b>です。</p>
+  <p>つまり<span class="mark">梁の数字は1つも凡例欄に書きません。
+  ぜんぶ伏図の中に、梁のわきに書きます。</span></p>
+  <p>凡例欄に数字を書くのは<b>柱120×120／棟木120×120／火打梁90×90／
+  母屋90×90</b>の4つだけ。</p>
+</div>
 
 <h3>補強が要るところの見つけ方</h3>
 <p>「補強」と言われても分からないので、機械的に探します。</p>

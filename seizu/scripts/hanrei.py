@@ -4,7 +4,7 @@ import os
 from svgkit import Svg
 
 OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'figures')
-W, H = 660, 820
+W, H = 660, 840
 INK, RED = '#111', '#c0392b'
 
 s = Svg(W, H)
@@ -122,15 +122,16 @@ row(8, '棟木・小屋束', '120×120', d_munagi, '2本線＋黒丸（小屋束
 row(9, '母屋・小屋束', '90×90', d_moya, '一点鎖線＋黒丸（小屋束）')
 
 yy = Y0 + 10 * DY + 6
-s.rect(30, yy, W - 60, 88, fill='#fdf3e7', stroke='#c9762f', stroke_width=1.2,
+s.rect(30, yy, W - 60, 108, fill='#fdf3e7', stroke='#c9762f', stroke_width=1.2,
        rx=6)
 s.lines_text(48, yy + 22, [
     ('覚え方はこれだけ', 12.5, '700', '#c9762f'),
     ('柱も梁の幅も 120。火打梁と母屋だけ 90。', 13, '700', INK),
     ('管柱は「1階＝×」「2階＝たて2本線」「重なる＝四角の中にバツ」。',
      12, '400', '#333'),
-    ('平角材（120×240 など）は、図中の梁のわきに寸法を書く。', 12, '400',
-     '#333'),
+    ('平角材（120×240 など）の寸法は、この欄には書かない。', 12.5, '700',
+     RED),
+    ('　→ 伏図の中の、梁1本ずつのわきに書く。', 12.5, '700', RED),
 ], size=12, lh=20, anchor='start')
 
 s.save(os.path.join(OUT, 'hanrei.svg'))
