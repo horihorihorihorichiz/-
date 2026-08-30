@@ -608,14 +608,61 @@ td.n{text-align:right;font-variant-numeric:tabular-nums}
 <p>最後の<b>1,456</b>は屋根の三角の高さ。<b>4寸勾配</b>（よこ10進むとたて4上がる）
 なので、建物の幅の半分 3,640 × 0.4 ＝ 1,456 です。</p>
 
-<h3>窓は平面図と合わせる</h3>
-<p><span class="mark">立面図の窓が平面図とずれていると「図面相互の不整合」で減点</span>
-されます。平面図で南面の窓を描いたら、その位置をそのまま立面図に写します。</p>
-<ul>
-<li>窓は<b>床から800mmの高さに、高さ1,300mm</b>くらい</li>
-<li>出入口は<b>床から2,000mm</b></li>
-<li>建具は<b>外枠＋内枠＋まん中の線</b>で描く</li>
-</ul>
+<h3>窓の描き方</h3>
+<p>立面図の窓は、<b>横の位置は平面図から写し、たての位置は床から決めます。</b>
+この2つを分けて考えると、迷わなくなります。</p>
+<figure><div class="sh">{{SVG:mado}}</div>
+<figcaption>3ステップで描ける。位置は平面図から真下に下ろすだけ。</figcaption></figure>
+
+<h4>描き方は3ステップ</h4>
+<ol class="step">
+<li><b>外わくの長方形</b>… 少し太い線で</li>
+<li><b>内がわにもう1つ長方形</b>… 5mmくらい内側。これが枠の見込み</li>
+<li><b>まん中にたて線1本</b>… 引違い（2枚）なら1本。4枚建てなら3本</li>
+</ol>
+<p>出入口（ドア）も<b>まったく同じ描き方</b>です。ちがうのは高さだけ。</p>
+
+<h4>たての位置は「その階の床から」</h4>
+<div class="tw"><table>
+<tr><th class="wrap">窓の種類</th><th class="wrap">下のはし</th>
+    <th class="wrap">上のはし</th><th class="wrap">高さ</th></tr>
+<tr><td class="wrap"><b>腰窓</b>（こしまど）</td><td class="wrap">FL＋800</td>
+    <td class="wrap">FL＋2,100</td><td class="wrap">1,300</td></tr>
+<tr><td class="wrap"><b>掃き出し窓</b></td><td class="wrap">FL＋0</td>
+    <td class="wrap">FL＋2,000</td><td class="wrap">2,000</td></tr>
+<tr><td class="wrap"><b>出入口（ドア）</b></td><td class="wrap">FL＋0</td>
+    <td class="wrap">FL＋2,000</td><td class="wrap">2,000</td></tr>
+</table></div>
+<p><span class="mark">どの階も同じ数字にそろえます。</span>
+そうすると立面図の窓が横一列にきれいに並びます。ばらばらだと下手に見えるうえ、
+描くのにも時間がかかります。</p>
+
+<h4>横の位置は、平面図から真下に線を下ろすだけ</h4>
+<p>平面図で描いた窓の<b>左はしと右はし</b>から、まっすぐ下へうすい線を下ろします。
+その線のあいだが、立面図の窓の幅です。</p>
+<div class="imp">
+  <div class="t">ここがずれると大きな減点</div>
+  <p>立面図の窓が平面図とちがう位置にあると、
+  <b>「図面相互の重大な不整合」</b>として大きく減点されます。
+  <span class="mark">目分量で描かない。必ず線を下ろして写す。</span></p>
+  <p>この教材の立面図は、<b>平面図の窓のデータをそのまま読んで描いています</b>
+  ので、ずれることがありません。</p>
+</div>
+
+<h4>よくある間違い</h4>
+<div class="tw"><table>
+<tr><th class="wrap">間違い</th><th class="wrap">どうする</th></tr>
+<tr><td class="wrap">平面図と位置がちがう</td>
+    <td class="wrap">必ず線を下ろして写す</td></tr>
+<tr><td class="wrap">階ごとに高さがバラバラ</td>
+    <td class="wrap">腰窓はどの階も FL＋800 にそろえる</td></tr>
+<tr><td class="wrap">1階の窓が基礎にめり込む</td>
+    <td class="wrap">窓は 1FL より下に描かない。
+    先に 1FL＝GL＋550 の線を引いておく</td></tr>
+<tr><td class="wrap">バルコニーの手すりを忘れる</td>
+    <td class="wrap">掃き出し窓の前に格子。高さ<b>1,100以上</b>
+    （3階建ては必要）</td></tr>
+</table></div>
 
 <h2 class="ch"><span class="n">7章</span>部分詳細図</h2>
 <p class="lead">外壁を切って、材料を1枚ずつ見せる図。1／20です。</p>
