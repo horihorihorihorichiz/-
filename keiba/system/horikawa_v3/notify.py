@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
-"""発走10分前に、合成1位のオッズが基準を越えていたら LINE に通知する。
+"""発走10分前に、木1位のオッズが基準を越えていたら LINE に通知する。
 
 仕組み:
   木の順位は動かないので、予想を作った時点で確定させておく（alerts JSON）。
   市場の順位はオッズで動くので、**発走10分前に生オッズだけ取り直して**
-  合成し直す。そのうえで合成1位の単勝オッズを見て、基準以上なら送る。
+  木の順位を出す。そのうえで木1位の単勝オッズを見て、基準以上なら送る。
 
   予想を作る    python predict_boost.py <cards> --date YYYYMMDD --alerts ... --viz ...
   通知を回す    python notify.py ../../data/alerts_20260830.json
@@ -30,7 +30,7 @@ sys.path.insert(0, os.getcwd())
 import config  # noqa: E402
 
 LEAD_MIN = 10          # 発走の何分前に判定するか
-ODDS_MIN = 5.0         # 合成1位の単勝がこの倍率以上なら通知
+ODDS_MIN = 5.0         # 木1位の単勝がこの倍率以上なら通知
 HOLE_MIN = 5.0         # 軸が「穴」と言える単勝の下限（表示用。選択には使わない）
 
 # 探索窓1,826Rでの実測回収率（system_bets.py）。文面に必ず添える。
@@ -119,7 +119,7 @@ def reliable(odds):
     """オッズが本開通しているかを、内部の辻褄で見る。
 
     発売前は 999.9 と仮の人気が混ざって入っていることがある。そのまま使うと
-    「999.9倍なのに4番人気」のような馬が合成1位になり、誤って通知してしまう。
+    「999.9倍なのに4番人気」のような馬が木1位になり、誤って通知してしまう。
     いちばん安い馬が1番人気になっていなければ、まだ信用しない。
     """
     if len(odds) < 5:
@@ -131,24 +131,17 @@ def reliable(odds):
 
 
 def order_by_blend(race, odds):
-    """合成順位の昇順で全馬を返す。各馬に odds / pop / _b（合成順位）を入れる。"""
+    """木の順位だけで並べる。当日の人気（市場）は使わない。
+    各馬に odds / pop（表示用）を入れて木の順位順に返す。"""
     hs = [dict(h) for h in race["horses"] if h["umaban"] in odds]
-    hs.sort(key=lambda h: odds[h["umaban"]][0])
-    for i, h in enumerate(hs):
-        h["odds"], h["pop"] = odds[h["umaban"]]
-        h["_m"] = i                       # 市場順位（0始まり）
     for h in hs:
-        h["_b"] = (h["trank"] - 1) + h["_m"]
-    return sorted(hs, key=lambda h: (h["_b"], h["trank"]))
+        h["odds"], h["pop"] = odds[h["umaban"]]
+        h["_b"] = h["trank"]              # 並びは木の順位そのもの
+    return sorted(hs, key=lambda h: h["trank"])
 
 
 def blend_top(race, odds):
-    """合成1位。同点は木の順位で割る（predict_boost.py と同じ決め方）。
-
-    合成は「木の順位 + 市場の順位」なので上位が同点になりやすい。
-    新潟記念のように上位3頭が全部同点、ということが普通に起きる。
-    そこで割り方を揃えておかないと、ボードと通知で1位が食い違う。
-    """
+    """木の1位（当日オッズが取れている馬の中で）。市場は並びに使わない。"""
     ranked = order_by_blend(race, odds)
     if len(ranked) < 5:
         return None
@@ -230,7 +223,7 @@ def message(race, top, sug=None):
     t = (f"🐎 {race['place']}{race['r']}R {race['post']}発走"
          f"（あと{LEAD_MIN}分）\n"
          f"{race['title'] or ''} {race['surf']}{race['dist']}m {race['n']}頭\n"
-         f"\n合成1位　{top['umaban']} {top['name']}\n"
+         f"\n木1位　{top['umaban']} {top['name']}\n"
          f"単勝 {top['odds']:.1f}倍（{top['pop']}番人気）／木の順位 {top['trank']}位{ev}")
     if sug:
         h, a = sug["jiku"], sug["aite"]
@@ -327,9 +320,9 @@ def main():
             refresh_board(viz_path, board_path, once, od)
         if top and top["odds"] >= ODDS_MIN:
             send_line(message(r, top, suggest(r, od)), dry)
-            print(f"{r['place']}{r['r']}R 通知した（合成1位 {top['odds']:.1f}倍）")
+            print(f"{r['place']}{r['r']}R 通知した（木1位 {top['odds']:.1f}倍）")
         else:
-            print(f"{r['place']}{r['r']}R 条件外（合成1位 "
+            print(f"{r['place']}{r['r']}R 条件外（木1位 "
                   f"{top['odds']:.1f}倍）" if top else f"{r['place']}{r['r']}R 判定できず")
         return
 
@@ -350,7 +343,7 @@ def main():
         return
     print(f"{len(todo)}レースを見張る。最初は {todo[0][0]:%H:%M}"
           f"（{todo[0][1]['place']}{todo[0][1]['r']}R の{LEAD_MIN}分前）")
-    print(f"条件: 合成1位の単勝が {ODDS_MIN} 倍以上", flush=True)
+    print(f"条件: 木1位の単勝が {ODDS_MIN} 倍以上", flush=True)
 
     for when, r in todo:
         wait = (when - datetime.now()).total_seconds()
@@ -363,12 +356,12 @@ def main():
             continue
         top = blend_top(r, od)
         if not top:
-            print(f"{datetime.now():%H:%M} {r['place']}{r['r']}R 合成できない。とばす", flush=True)
+            print(f"{datetime.now():%H:%M} {r['place']}{r['r']}R 木1位が出せない。とばす", flush=True)
             continue
         if viz_path and board_path:
             refresh_board(viz_path, board_path, r["id"], od)
         hit = top["odds"] >= ODDS_MIN
-        print(f"{datetime.now():%H:%M} {r['place']}{r['r']}R 合成1位 "
+        print(f"{datetime.now():%H:%M} {r['place']}{r['r']}R 木1位 "
               f"{top['umaban']}{top['name']} {top['odds']:.1f}倍 "
               f"({top['pop']}番人気/木{top['trank']}位) → "
               f"{'通知' if hit else '条件外'}", flush=True)

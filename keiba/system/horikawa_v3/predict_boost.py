@@ -120,14 +120,14 @@ def main():
         dm = xgb.DMatrix(Z, feature_names=wide)
         s = np.asarray(model.predict(dm), float)
         contrib = np.asarray(model.predict(dm, pred_contribs=True), float)  # (n, F+1)
-        pops = np.array([h["pop"] if h["pop"] else 99 for h in r["rows"]], float)
-        # 順位を足す（0始まり）。同点は木の得点で割る
+        # 並びは木の得点だけで決める。市場（当日の人気）は一切使わない。
+        # 当日の人気は市場そのものなので、これを混ぜると「市場次第」になる。
+        # 人気は表示用に持つだけ（食い違いを見せるため）。
         trank = np.argsort(np.argsort(-s))
-        mrank = np.argsort(np.argsort(pops))
-        blend = trank + mrank
-        order = sorted(range(len(s)), key=lambda i: (blend[i], trank[i]))
-        sd = float(np.std(-blend.astype(float))) or 1.0
-        g12 = float((blend[order[1]] - blend[order[0]]) / sd) if len(order) > 1 else 0.0
+        blend = trank                       # ＝木の順位。合成をやめた
+        order = sorted(range(len(s)), key=lambda i: -s[i])
+        sd = float(np.std(s)) or 1.0
+        g12 = float((s[order[0]] - s[order[1]]) / sd) if len(order) > 1 else 0.0
         # 木の得点差。dominance.py で測った「1強度」「2強度」の材料
         so = np.sort(s)[::-1]
         results[rid] = {"race": r, "s": s, "contrib": contrib, "trank": trank,
@@ -138,13 +138,13 @@ def main():
 
     # ── 出力
     lines = [f"# 予想 {date[:4]}-{date[4:6]}-{date[6:8]}", "",
-             "木48成分（xgboost rank:ndcg）と市場（人気順）の順位を足した合成。",
-             "探索窓1,826Rの実測で 1位が3着内 70.04%（市場65.28%）、",
-             "単勝ROI 96.0%（市場76.3%, t=+6.98）、複勝ROI 94.5%（市場83.8%, t=+7.48）。", "",
-             "> それでも100%は越えていない。控除率20%に対し単勝で4pt、複勝で5.5pt足りない。",
-             "> 未知期間での確認はまだ。買い目と期待値は出していない。", ""]
+             "過去走とタイムの事実だけで学習した木47成分（xgboost rank:ndcg）で並べた。",
+             "市場（人気・オッズ）は並びに一切使っていない。前走人気も成分から除外。",
+             "木単独の3着内率は探索窓1,826Rの実測で 62.4%（市場65.3%）。的中率は市場に",
+             "やや劣るが、市場に左右されず月ごとに揺るがないのが狙い。", "",
+             "> 買い目と期待値は出していない。", ""]
     import datetime as _dt
-    viz = {"names": wide, "level": "木48+市場", "date": date,
+    viz = {"names": wide, "level": "木47・市場なし", "date": date,
            "built": _dt.datetime.now().strftime("%Y-%m-%d %H:%M"),
            "baseRate": round(info["全体3着内率"] * 100, 1),
            "evalTop": sorted(info["words"], key=lambda x: -x["縮小後"])[:6],
@@ -196,7 +196,7 @@ def main():
             "id": rid, "place": place, "r": int(rid[10:12]), "post": post, "title": title,
             "surf": r["surf"], "dist": r["dist"], "ground": r["ground"], "turn": r["turn"],
             "cls": PT.CLSNAME.get(r["cls"], r["cls"]), "n": r["n"],
-            "cell": "木48+市場", "debut": 0,
+            "cell": "木47・市場なし", "debut": 0,
             "weights": [1.0] * len(wide),
             "g12": round(R["g12"], 2), "g23": 0.0, "g34": 0.0,
             "shape": "—", "horses": sorted(hs, key=lambda x: -x["score"])})
