@@ -26,11 +26,13 @@ nav{display:block}
 .two .t1{color:var(--ink)}
 .two .t1 em{font-style:normal;font-size:10px;color:var(--dim);margin-left:1px}
 .two .gapv{font-size:12px;margin-left:auto}
-.hrow{grid-template-columns:30px 40px minmax(130px,1fr) 104px 132px 58px 22px!important}
-/* 得点は右端のオッズの下に小さく（8/29のように＋−が数字で並ぶ） */
-.val{display:flex;flex-direction:column;align-items:flex-end;line-height:1.25}
-.val .odv::after{content:"倍";font-size:10px;color:var(--dim);font-weight:400;margin-left:1px}
-.val .score{font-size:11px;font-weight:600;font-variant-numeric:tabular-nums}
+/* 8/29デザイン：発散バーを幅広の主役に。人気/木は馬名の下に畳む。 */
+.hrow{grid-template-columns:34px 42px minmax(140px,1fr) 116px minmax(160px,1.5fr) 72px 22px!important}
+.nm .n2 b{font-weight:600;color:var(--ink)}
+.val{display:flex;flex-direction:column;align-items:flex-end;line-height:1.3;gap:1px}
+.val .score{font-size:14px;font-weight:700;font-variant-numeric:tabular-nums}
+.val .odv{font-size:11.5px;color:var(--dim);font-variant-numeric:tabular-nums}
+.val .odv::after{content:"倍";font-size:9.5px;margin-left:1px}
 
 /* ── スマホ：7列グリッドをやめて 2段のカードにする ── */
 @media (max-width:600px){
@@ -42,47 +44,41 @@ nav{display:block}
   .rhead .cond{flex-basis:100%;font-size:12px;margin-top:2px}
   .tbl{border-radius:8px}
 
-  /* 行：左に大きな順位バッジ、その右に枠＋馬番、右に馬名/人気木/追い切り */
+  /* 行：左に順位バッジ、右に 馬名/追い切り、右端に 得点＋オッズ。
+     発散バーは馬名の下に細く敷いて＋−を割る。 */
   .hrow{display:grid!important;
-    grid-template-columns:34px 11px auto minmax(0,1fr) auto!important;
+    grid-template-columns:32px 10px auto minmax(0,1fr) auto!important;
     grid-template-areas:
-      "rank waku num name odds"
-      "rank waku num two  chev"
-      "rank waku num ev   ev"!important;
-    column-gap:8px;row-gap:3px;padding:10px 11px;align-items:center}
-  /* 順位を丸バッジにして主役にする。1〜3位は色を変える */
+      "rank waku num name val"
+      "rank waku num sub  chev"!important;
+    column-gap:8px;row-gap:2px;padding:10px 11px;align-items:center}
   .hrow .rank{grid-area:rank;align-self:center;justify-self:center;
     width:30px;height:30px;border-radius:50%;display:grid;place-items:center;
     font-size:16px;font-weight:700;color:var(--dim);
     background:var(--panel2);border:1px solid var(--rule)}
   .hrow[data-rank="1"] .rank{color:#fff;background:var(--pos);border-color:var(--pos)}
-  .hrow[data-rank="2"] .rank{color:var(--pos);border-color:var(--pos);
-    background:var(--keysoft,var(--panel2))}
+  .hrow[data-rank="2"] .rank{color:var(--pos);border-color:var(--pos)}
   .hrow[data-rank="3"] .rank{color:var(--pos);border-color:var(--pos)}
   .hrow .uma{display:contents}
-  .hrow .waku{grid-area:waku;height:38px;width:8px}
+  .hrow .waku{grid-area:waku;height:34px;width:8px}
   .hrow .num{grid-area:num;font-size:14px}
-  .hrow .nm{grid-area:name;align-self:end}
-  .hrow .nm .n1{font-size:15px;white-space:normal;line-height:1.25}
-  .hrow .nm .n2{display:none}                 /* 性齢/斤量/騎手は開いたとき見せる */
-  .hrow .two{grid-area:two;align-self:center;font-size:12px;gap:8px}
-  .hrow .two .t1 em{font-size:9px}
-  .hrow .two .gapv{margin-left:0}
-  .hrow .ev{grid-area:ev;flex-direction:row;gap:6px;font-size:11.5px;align-items:center}
+  .hrow .nm{grid-area:name;align-self:end;min-width:0}
+  .hrow .nm .n1{font-size:15px;white-space:normal;line-height:1.2}
+  .hrow .nm .n2{display:block;font-size:11px}   /* 人気/木/性齢を見せる */
+  .hrow .ev{grid-area:sub;flex-direction:row;gap:6px;font-size:11px;align-items:center;align-self:start}
   .hrow .ev .r{color:var(--dim)}
-  /* 強さバーは name 段の下敷き。中央を0点にして＋は右（緑）、−は左（クレー）に
-     分ける。8/29版のように買える群と消し群がひと目で割れる。 */
-  .hrow .bar{display:block;grid-area:name;align-self:end;height:4px;margin-top:2px;
-    margin-bottom:-5px}
-  .hrow .bar .ax{display:block;left:50%;background:var(--zero);opacity:.5}
+  /* 発散バーは馬名段の下敷き。中央0点で＋右（緑）・−左（クレー）に割る。 */
+  .hrow .bar{display:block;grid-area:name;align-self:end;height:4px;
+    margin-top:1px;margin-bottom:-6px;position:relative}
+  .hrow .bar .ax{left:50%;background:var(--zero);opacity:.5}
   .hrow .bar .fl{top:0;height:4px}
   .hrow .bar .fl.p{left:50%;border-radius:0 2px 2px 0}
   .hrow .bar .fl.n{right:50%;left:auto;border-radius:2px 0 0 2px}
-  .hrow .val{grid-area:odds;align-self:end;font-size:16px;font-weight:700;
-    justify-self:end}
-  .hrow .val .odv{font-size:16px;font-weight:700}
-  .hrow .val .score{font-size:11px}
-  .hrow .chev{grid-area:chev;align-self:center;justify-self:end}
+  .hrow .val{grid-area:val;align-self:center;justify-self:end;
+    flex-direction:column;align-items:flex-end;gap:0}
+  .hrow .val .score{font-size:17px;font-weight:700}
+  .hrow .val .odv{font-size:11px}
+  .hrow .chev{grid-area:chev;align-self:start;justify-self:end}
 
   /* プラスの馬（買える群）とマイナスの馬（消し群）を、カードの左端の色で割る。
      8/29版の「＋と−が分かれる」感じをスマホで再現する。 */
@@ -219,14 +215,12 @@ DATA.races.forEach(R => {
     <button class="hrow" data-top="${k === 0 ? 1 : 0}" data-rank="${k + 1}" data-sign="${sval(h) >= 0 ? 'p' : 'n'}" aria-expanded="false" aria-controls="d${R.id}-${h.umaban}">
       <span class="rank">${k + 1}</span>
       <span class="uma"><span class="waku" style="background:${WAKU[h.waku] || '#ccc'}"></span><span class="num">${h.umaban}</span></span>
-      <span class="nm"><span class="n1">${esc(h.name)}</span><span class="n2">${esc(h.sexage)} ${h.kin} ${esc(h.jockey)}</span></span>
+      <span class="nm"><span class="n1">${esc(h.name)}</span><span class="n2">${h.pop || '—'}人気 <b>木${h.trank}位</b>${gap ? `<span style="color:${gap > 0 ? 'var(--pos)' : 'var(--neg)'}">${gap > 0 ? ' ↑' + gap : ' ↓' + (-gap)}</span>` : ''} · ${esc(h.sexage)} ${esc(h.jockey)}</span></span>
       <span class="ev">${h.evalWord
           ? `<span class="w"><i class="dot" style="background:${rateShade(h.evalRate)}"></i>${esc(h.evalWord)}</span><span class="r">3着内 ${h.evalRate}%</span>`
           : `<span class="w" style="color:var(--dim)">—</span><span class="r">評価なし</span>`}</span>
-      <span class="two"><span class="t1">${h.pop || '—'}<em>人気</em></span>
-        <span class="t1">${h.trank}<em>木</em></span>
-        <span class="gapv" style="color:${gap > 0 ? 'var(--pos)' : (gap < 0 ? 'var(--neg)' : 'var(--dim)')}">${gap > 0 ? '+' + gap : (gap || '±0')}</span></span>
-      <span class="val"><span class="odv">${h.odds ? h.odds.toFixed(1) : '—'}</span><span class="score" style="color:${pos ? 'var(--pos)' : 'var(--neg)'}">${(sval(h) >= 0 ? '+' : '−') + Math.abs(sval(h)).toFixed(2)}</span></span>
+      <span class="bar"><span class="ax"></span><span class="fl ${pos ? 'p' : 'n'}" style="width:${w}%"></span></span>
+      <span class="val"><span class="score" style="color:${pos ? 'var(--pos)' : 'var(--neg)'}">${(sval(h) >= 0 ? '+' : '−') + Math.abs(sval(h)).toFixed(2)}</span><span class="odv">${h.odds ? h.odds.toFixed(1) : '—'}</span></span>
       <span class="chev">▶</span>
     </button>
     <div class="detail" id="d${R.id}-${h.umaban}">
