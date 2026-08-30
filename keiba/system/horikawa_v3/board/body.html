@@ -27,8 +27,55 @@ nav{display:block}
 .two .t1 em{font-style:normal;font-size:10px;color:var(--dim);margin-left:1px}
 .two .gapv{font-size:12px;margin-left:auto}
 .hrow{grid-template-columns:30px 40px minmax(130px,1fr) 104px 132px 58px 22px!important}
-@media (max-width:720px){
-  .hrow{grid-template-columns:24px 36px minmax(90px,1fr) 84px 112px 46px 18px!important}
+
+/* ── スマホ：7列グリッドをやめて 2段のカードにする ── */
+@media (max-width:600px){
+  .wrap{padding:0 12px 72px}
+  header{padding:32px 0 16px}
+  .rhead{gap:0 8px}
+  .rhead .post{font-size:19px}
+  .rhead h2{font-size:19px}
+  .rhead .cond{flex-basis:100%;font-size:12px;margin-top:2px}
+  .tbl{border-radius:8px}
+
+  /* 行：左に順位＋枠＋馬番、右に 馬名/人気木/追い切り を3段で積む */
+  .hrow{display:grid!important;
+    grid-template-columns:26px 11px auto minmax(0,1fr) auto!important;
+    grid-template-areas:
+      "rank waku num name odds"
+      "rank waku num two  chev"
+      "rank waku num ev   ev"!important;
+    column-gap:7px;row-gap:3px;padding:10px 11px;align-items:center}
+  .hrow .rank{grid-area:rank;font-size:16px}
+  .hrow .uma{display:contents}
+  .hrow .waku{grid-area:waku;height:38px;width:8px}
+  .hrow .num{grid-area:num;font-size:14px}
+  .hrow .nm{grid-area:name;align-self:end}
+  .hrow .nm .n1{font-size:15px;white-space:normal;line-height:1.25}
+  .hrow .nm .n2{display:none}                 /* 性齢/斤量/騎手は開いたとき見せる */
+  .hrow .two{grid-area:two;align-self:center;font-size:12px;gap:8px}
+  .hrow .two .t1 em{font-size:9px}
+  .hrow .two .gapv{margin-left:0}
+  .hrow .ev{grid-area:ev;flex-direction:row;gap:6px;font-size:11.5px;align-items:center}
+  .hrow .ev .r{color:var(--dim)}
+  .hrow .bar{display:none}
+  .hrow .val{grid-area:odds;align-self:end;font-size:16px;font-weight:700;
+    justify-self:end}
+  .hrow .val::after{content:"倍";font-size:10px;color:var(--dim);font-weight:400;margin-left:1px}
+  .hrow .chev{grid-area:chev;align-self:center;justify-self:end}
+
+  .detail{padding:6px 11px 16px}
+  .parts{grid-template-columns:1fr!important}   /* 寄与は1列で縦に */
+  .prow{grid-template-columns:70px 1fr 44px}
+  .meta{font-size:11.5px}
+  .filters{gap:6px}
+  nav{position:static}                        /* スマホは固定しない（縦を食うので）*/
+  .navgrp{gap:5px}
+  .navgrp a{padding:4px 8px;font-size:12.5px}
+  .eyebrow{font-size:10px}
+  h1{font-size:26px}
+  .lede,.warn{font-size:12.5px}
+  .words{grid-template-columns:1fr!important}
 }
 </style>
 
