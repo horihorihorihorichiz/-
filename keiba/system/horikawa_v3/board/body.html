@@ -66,18 +66,23 @@ nav{display:block}
   .hrow .two .gapv{margin-left:0}
   .hrow .ev{grid-area:ev;flex-direction:row;gap:6px;font-size:11.5px;align-items:center}
   .hrow .ev .r{color:var(--dim)}
-  /* 強さバーは name 段の下敷きに薄く敷いて、上位ほど濃く見せる */
-  .hrow .bar{display:block;grid-area:name;align-self:end;height:3px;margin-top:2px;
-    margin-bottom:-4px;opacity:.8}
-  .hrow .bar .ax{display:none}
-  .hrow .bar .fl{top:0;height:3px;border-radius:2px}
-  .hrow .bar .fl.p{left:0}
-  .hrow .bar .fl.n{right:auto;left:0}
+  /* 強さバーは name 段の下敷き。中央を0点にして＋は右（緑）、−は左（クレー）に
+     分ける。8/29版のように買える群と消し群がひと目で割れる。 */
+  .hrow .bar{display:block;grid-area:name;align-self:end;height:4px;margin-top:2px;
+    margin-bottom:-5px}
+  .hrow .bar .ax{display:block;left:50%;background:var(--zero);opacity:.5}
+  .hrow .bar .fl{top:0;height:4px}
+  .hrow .bar .fl.p{left:50%;border-radius:0 2px 2px 0}
+  .hrow .bar .fl.n{right:50%;left:auto;border-radius:2px 0 0 2px}
   .hrow .val{grid-area:odds;align-self:end;font-size:16px;font-weight:700;
     justify-self:end}
   .hrow .val::after{content:"倍";font-size:10px;color:var(--dim);font-weight:400;margin-left:1px}
   .hrow .chev{grid-area:chev;align-self:center;justify-self:end}
 
+  /* プラスの馬（買える群）とマイナスの馬（消し群）を、カードの左端の色で割る。
+     8/29版の「＋と−が分かれる」感じをスマホで再現する。 */
+  .hrow[data-sign="p"]{border-left:3px solid var(--pos)}
+  .hrow[data-sign="n"]{border-left:3px solid var(--neg);opacity:.82}
   .detail{padding:6px 11px 16px}
   .parts{grid-template-columns:1fr!important}   /* 寄与は1列で縦に */
   .prow{grid-template-columns:70px 1fr 44px}
@@ -95,7 +100,7 @@ nav{display:block}
 
 <div class="wrap">
 <header>
-  <div class="eyebrow">Horikawa system · 木48成分 + 市場</div>
+  <div class="eyebrow">Horikawa system · 木48成分 + 市場<span id="built"></span></div>
   <h1>堀川ボード 8月30日</h1>
   <p class="lede">札幌・新潟・中京の35レース（障害戦を除く）。木48成分（xgboost）の順位と
   市場（人気順）の順位を足した合成で並べた。行を押すと木の寄与（SHAP値）が開く。
@@ -183,7 +188,10 @@ DATA.races.forEach(R => {
   a.title = `${R.place}${R.r}R ${R.title || ''} ${R.surf}${R.dist}m ${R.shape}`;
   navGroups[R.place].appendChild(a);
 
-  const maxAbs = Math.max(...R.horses.map(h => Math.abs(h.score)), 0.001);
+  // 強さバーは木の生の得点（treeScore）で描く。ゼロを跨いで正負に分かれるので
+  // 「買える群（＋）」と「消し群（−）」がひと目で割れる。無ければ合成順位で代用。
+  const sval = h => (h.treeScore != null ? h.treeScore : h.score);
+  const maxAbs = Math.max(...R.horses.map(h => Math.abs(sval(h))), 0.001);
   const order = R.horses.map((h, i) => i).sort((x, y) => R.horses[y].score - R.horses[x].score);
 
   const sec = document.createElement('section');
@@ -196,14 +204,14 @@ DATA.races.forEach(R => {
   let rows = '';
   order.forEach((i, k) => {
     const h = R.horses[i];
-    const w = Math.abs(h.score) / maxAbs * 50;
-    const pos = h.score >= 0;
+    const w = Math.abs(sval(h)) / maxAbs * 50;
+    const pos = sval(h) >= 0;
     const parts = h.parts.map((v, j) => ({ n: DATA.names[j], v, w: R.weights[j] }))
                          .sort((p, q) => Math.abs(q.v) - Math.abs(p.v));
     const pmax = Math.max(...parts.map(p => Math.abs(p.v)), 0.001);
     const gap = h.pop && h.trank ? h.pop - h.trank : 0;   // ＋なら木のほうが高評価
     rows += `
-    <button class="hrow" data-top="${k === 0 ? 1 : 0}" data-rank="${k + 1}" aria-expanded="false" aria-controls="d${R.id}-${h.umaban}">
+    <button class="hrow" data-top="${k === 0 ? 1 : 0}" data-rank="${k + 1}" data-sign="${sval(h) >= 0 ? 'p' : 'n'}" aria-expanded="false" aria-controls="d${R.id}-${h.umaban}">
       <span class="rank">${k + 1}</span>
       <span class="uma"><span class="waku" style="background:${WAKU[h.waku] || '#ccc'}"></span><span class="num">${h.umaban}</span></span>
       <span class="nm"><span class="n1">${esc(h.name)}</span><span class="n2">${esc(h.sexage)} ${h.kin} ${esc(h.jockey)}</span></span>
@@ -289,6 +297,7 @@ F.addEventListener('click', e => {
 });
 applyFilters();
 
+if (DATA.built) document.getElementById('built').textContent = '　更新 ' + DATA.built;
 document.getElementById('base').textContent = DATA.baseRate;
 const li = x => `<li><span>${esc(x['語'])}</span><span class="p" style="color:${
     x['縮小後'] * 100 >= DATA.baseRate ? 'var(--pos)' : 'var(--neg)'}">${(x['縮小後'] * 100).toFixed(1)}%</span>` +

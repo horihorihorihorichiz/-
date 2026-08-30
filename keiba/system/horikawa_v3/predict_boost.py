@@ -133,7 +133,9 @@ def main():
              "単勝ROI 96.0%（市場76.3%, t=+6.98）、複勝ROI 94.5%（市場83.8%, t=+7.48）。", "",
              "> それでも100%は越えていない。控除率20%に対し単勝で4pt、複勝で5.5pt足りない。",
              "> 未知期間での確認はまだ。買い目と期待値は出していない。", ""]
+    import datetime as _dt
     viz = {"names": wide, "level": "木48+市場", "date": date,
+           "built": _dt.datetime.now().strftime("%Y-%m-%d %H:%M"),
            "baseRate": round(info["全体3着内率"] * 100, 1),
            "evalTop": sorted(info["words"], key=lambda x: -x["縮小後"])[:6],
            "evalBottom": sorted(info["words"], key=lambda x: x["縮小後"])[:6],
@@ -173,6 +175,7 @@ def main():
                 "bw": h["bw"], "pop": h["pop"], "odds": h["odds"],
                 "trank": int(R["trank"][i]) + 1, "blend": int(R["blend"][i]),
                 "score": round(float(-R["blend"][i]), 3),
+                "treeScore": round(float(sum(R["contrib"][i][:len(wide)])), 3),
                 "evalWord": wd,
                 "evalRate": round(by_word[wd] * 100, 1) if wd in by_word else None,
                 "evalN": wcnt.get(wd, {}).get("件数"),
