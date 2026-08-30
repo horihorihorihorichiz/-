@@ -67,8 +67,34 @@ API = "https://race.netkeiba.com/api/api_get_jra_odds.html?type=1&locale=ja&race
 PUSH = "https://api.line.me/v2/bot/message/push"
 
 
+# Chrome が書き出したオッズの置き場。{race_id: {umaban: [odds, "", pop]}}
+ODDS_FILE = None
+
+
+def saved_odds(rid):
+    """Chrome が書き出したオッズファイルから読む。無ければ空。"""
+    if not ODDS_FILE or not os.path.exists(ODDS_FILE):
+        return {}
+    try:
+        d = json.load(open(ODDS_FILE, encoding="utf-8")).get(rid, {})
+    except Exception:
+        return {}
+    out = {}
+    for k, v in d.items():
+        try:
+            o, p = float(v["odds"]), int(v["pop"])
+        except (KeyError, ValueError, TypeError):
+            continue
+        if 0 < o < 999:
+            out[int(k)] = (o, p)
+    return out if reliable(out) else {}
+
+
 def live_odds(rid, session):
-    """{馬番: (単勝オッズ, 人気)}。取れなければ空。"""
+    """まず Chrome が書き出したファイルを見て、無ければ API を叩く。"""
+    got = saved_odds(rid)
+    if got:
+        return got
     try:
         r = session.get(API.format(rid), timeout=15)
         j = r.json()
@@ -266,6 +292,9 @@ def main():
     dry = "--dry" in sys.argv
     opt = lambda k: sys.argv[sys.argv.index(k) + 1] if k in sys.argv else None
     viz_path, board_path = opt("--viz"), opt("--board")
+    global ODDS_FILE
+    ODDS_FILE = opt("--odds-file")
+    once = opt("--race")   # レースIDを1つ渡すと、そのレースだけ即判定して終わる
     global BOARD_URL
     BOARD_URL = opt("--url") or getattr(config, "BOARD_URL", "")
     plan = json.load(open(path, encoding="utf-8"))
@@ -281,6 +310,24 @@ def main():
             print("オッズがまだ出ていないので、見本の文面で送る")
             t = {**r["horses"][0], "odds": 7.7, "pop": 6, "blend": 0}
         send_line("【試し送信】\n" + message(r, t), dry)
+        return
+
+    if once:
+        r = next((x for x in plan["races"] if x["id"] == once), None)
+        if not r:
+            print(f"{once} は予想に無い"); return
+        od = live_odds(once, s)
+        if not od:
+            print(f"{r['place']}{r['r']}R オッズが取れない"); return
+        top = blend_top(r, od)
+        if board_path and viz_path:
+            refresh_board(viz_path, board_path, once, od)
+        if top and top["odds"] >= ODDS_MIN:
+            send_line(message(r, top, suggest(r, od)), dry)
+            print(f"{r['place']}{r['r']}R 通知した（合成1位 {top['odds']:.1f}倍）")
+        else:
+            print(f"{r['place']}{r['r']}R 条件外（合成1位 "
+                  f"{top['odds']:.1f}倍）" if top else f"{r['place']}{r['r']}R 判定できず")
         return
 
     todo = []
