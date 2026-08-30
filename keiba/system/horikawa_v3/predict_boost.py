@@ -31,6 +31,7 @@ from hk.store import Store  # noqa: E402
 import train_eval  # noqa: E402
 import predict_today as PT  # noqa: E402
 from boost import XPARAMS, to_matrix  # noqa: E402
+from facts_boost import facts, NEW as FACT_NAMES  # noqa: E402
 
 EVAL_RAW = "../../data/hk_train_raw.json"
 NAN = float("nan")
@@ -50,6 +51,10 @@ def build_rows(book, b, val, want, date):
                 [mm.get(str(x["umaban"]), NAN) for x in r["rows"]])
             for row, x in zip(Z, col):
                 row.append(x)
+            # 事実成分（道悪の度外視・馬体重の増減）を足す。facts_boost.py で
+            # 検証済み。市場は使わない。
+            for k, row in enumerate(Z):
+                row.extend(facts(book, ri, k))
             d["Z"] = np.array(Z, dtype=np.float32)
             d["race"] = r
             if take:
@@ -82,21 +87,22 @@ def main():
 
     book = features.Book(races, config.CUT_HIST)
     b = features.WideBuilder(book, oikiri={}, market=False)
-    wide = list(b.wide_names) + [train_eval.NAME]
+    wide = list(b.wide_names) + [train_eval.NAME] + list(FACT_NAMES)
     got = build_rows(book, b, val=train_eval.value_map(per_race, tabw),
                      want=set(targets), date=date)
     TR = got.pop("_TR", [])
 
     # 市場に頼らない木にする。木が使う市場由来の成分は「前走人気」ただ1つなので、
-    # それを成分からも Z 行列からも外す。探索窓の実測で、抜いても3着内率は同じ
-    # （62.43%）で、月ごとのブレはむしろ小さくなった（test_nopop.py）。
+    # それを成分からも Z 行列からも外す。探索窓の実測で、抜いても3着内率は同じで、
+    # 月ごとのブレはむしろ小さくなった（test_nopop.py）。そのうえで事実成分を
+    # 足すと全項目が伸びた（facts_boost.py）。
     DROP = {"前走人気"}
     keep = [i for i, n in enumerate(wide) if n not in DROP]
     wide = [wide[i] for i in keep]
     for d in list(got.values()) + TR:
         d["Z"] = np.asarray(d["Z"], np.float32)[:, keep]
     print(f"学習 {len(TR)}R / 対象 {len(got)}R / 成分 {len(wide)}個"
-          f"（前走人気を除外・市場非依存）", flush=True)
+          f"（前走人気を除外＋事実成分を追加・市場非依存）", flush=True)
 
     # 木を学習（本数は内側の時系列分割で決める）
     TRs = sorted(TR, key=lambda d: d["date"])
@@ -138,13 +144,14 @@ def main():
 
     # ── 出力
     lines = [f"# 予想 {date[:4]}-{date[4:6]}-{date[6:8]}", "",
-             "過去走とタイムの事実だけで学習した木47成分（xgboost rank:ndcg）で並べた。",
-             "市場（人気・オッズ）は並びに一切使っていない。前走人気も成分から除外。",
-             "木単独の3着内率は探索窓1,826Rの実測で 62.4%（市場65.3%）。的中率は市場に",
-             "やや劣るが、市場に左右されず月ごとに揺るがないのが狙い。", "",
+             "過去走とタイムの事実だけで学習した木52成分（xgboost rank:ndcg）で並べた。",
+             "市場（人気・オッズ）は並びに一切使っていない。前走人気は除外し、道悪の",
+             "度外視（良馬場に限った近走・道悪実績）と馬体重の増減を事実成分として追加。",
+             "木単独の3着内率は探索窓1,826Rの実測で 63.2%（市場65.3%）。市場に左右されず",
+             "月ごとに揺るがないのが狙い。", "",
              "> 買い目と期待値は出していない。", ""]
     import datetime as _dt
-    viz = {"names": wide, "level": "木47・市場なし", "date": date,
+    viz = {"names": wide, "level": "木52・事実のみ", "date": date,
            "built": _dt.datetime.now().strftime("%Y-%m-%d %H:%M"),
            "baseRate": round(info["全体3着内率"] * 100, 1),
            "evalTop": sorted(info["words"], key=lambda x: -x["縮小後"])[:6],
@@ -196,7 +203,7 @@ def main():
             "id": rid, "place": place, "r": int(rid[10:12]), "post": post, "title": title,
             "surf": r["surf"], "dist": r["dist"], "ground": r["ground"], "turn": r["turn"],
             "cls": PT.CLSNAME.get(r["cls"], r["cls"]), "n": r["n"],
-            "cell": "木47・市場なし", "debut": 0,
+            "cell": "木52・事実のみ", "debut": 0,
             "weights": [1.0] * len(wide),
             "g12": round(R["g12"], 2), "g23": 0.0, "g34": 0.0,
             "shape": "—", "horses": sorted(hs, key=lambda x: -x["score"])})
