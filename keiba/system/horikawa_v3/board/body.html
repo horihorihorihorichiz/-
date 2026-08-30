@@ -27,6 +27,10 @@ nav{display:block}
 .two .t1 em{font-style:normal;font-size:10px;color:var(--dim);margin-left:1px}
 .two .gapv{font-size:12px;margin-left:auto}
 .hrow{grid-template-columns:30px 40px minmax(130px,1fr) 104px 132px 58px 22px!important}
+/* 得点は右端のオッズの下に小さく（8/29のように＋−が数字で並ぶ） */
+.val{display:flex;flex-direction:column;align-items:flex-end;line-height:1.25}
+.val .odv::after{content:"倍";font-size:10px;color:var(--dim);font-weight:400;margin-left:1px}
+.val .score{font-size:11px;font-weight:600;font-variant-numeric:tabular-nums}
 
 /* ── スマホ：7列グリッドをやめて 2段のカードにする ── */
 @media (max-width:600px){
@@ -76,7 +80,8 @@ nav{display:block}
   .hrow .bar .fl.n{right:50%;left:auto;border-radius:2px 0 0 2px}
   .hrow .val{grid-area:odds;align-self:end;font-size:16px;font-weight:700;
     justify-self:end}
-  .hrow .val::after{content:"倍";font-size:10px;color:var(--dim);font-weight:400;margin-left:1px}
+  .hrow .val .odv{font-size:16px;font-weight:700}
+  .hrow .val .score{font-size:11px}
   .hrow .chev{grid-area:chev;align-self:center;justify-self:end}
 
   /* プラスの馬（買える群）とマイナスの馬（消し群）を、カードの左端の色で割る。
@@ -221,7 +226,7 @@ DATA.races.forEach(R => {
       <span class="two"><span class="t1">${h.pop || '—'}<em>人気</em></span>
         <span class="t1">${h.trank}<em>木</em></span>
         <span class="gapv" style="color:${gap > 0 ? 'var(--pos)' : (gap < 0 ? 'var(--neg)' : 'var(--dim)')}">${gap > 0 ? '+' + gap : (gap || '±0')}</span></span>
-      <span class="val">${h.odds ? h.odds.toFixed(1) : '—'}</span>
+      <span class="val"><span class="odv">${h.odds ? h.odds.toFixed(1) : '—'}</span><span class="score" style="color:${pos ? 'var(--pos)' : 'var(--neg)'}">${(sval(h) >= 0 ? '+' : '−') + Math.abs(sval(h)).toFixed(2)}</span></span>
       <span class="chev">▶</span>
     </button>
     <div class="detail" id="d${R.id}-${h.umaban}">
