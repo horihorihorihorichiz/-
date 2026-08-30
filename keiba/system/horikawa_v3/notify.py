@@ -294,6 +294,9 @@ def main():
     viz_path, board_path = opt("--viz"), opt("--board")
     global ODDS_FILE
     ODDS_FILE = opt("--odds-file")
+    global LEAD_MIN
+    if opt("--lead"):
+        LEAD_MIN = int(opt("--lead"))
     once = opt("--race")   # レースIDを1つ渡すと、そのレースだけ即判定して終わる
     global BOARD_URL
     BOARD_URL = opt("--url") or getattr(config, "BOARD_URL", "")

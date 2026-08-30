@@ -19,7 +19,7 @@ import subprocess
 import sys
 from datetime import datetime, timedelta
 
-LEAD_MIN = 10
+LEAD_MIN = 15
 PREFIX = "HorikawaNotify"
 
 
@@ -62,7 +62,7 @@ def main():
         # working dir を here にするため cmd /c cd ... で包む
         cmd = (f'cmd /c cd /d "{here}" ^& '
                f'"{py}" "{notify}" "{alerts}" --race {r["id"]} '
-               f'--odds-file "{odds}" --viz "{viz}" --board "{board}"')
+               f'--odds-file "{odds}" --viz "{viz}" --board "{board}" --lead {LEAD_MIN}')
         subprocess.run(
             ["schtasks", "/create", "/tn", name, "/tr", cmd,
              "/sc", "once", "/st", fire.strftime("%H:%M"), "/sd", day, "/f"],
