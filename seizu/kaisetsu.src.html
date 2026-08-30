@@ -665,12 +665,70 @@ td.n{text-align:right;font-variant-numeric:tabular-nums}
 </table></div>
 
 <h2 class="ch"><span class="n">7章</span>部分詳細図</h2>
-<p class="lead">外壁を切って、材料を1枚ずつ見せる図。1／20です。</p>
+<p class="lead">外壁を切って、材料を1枚ずつ見せる図。この図だけ 1／20 です。</p>
 
-<figure><div class="sh">{{SVG:detail_wall}}</div>
-<figcaption>外壁を横に切ると、6つの層が見える。この順番を丸ごと覚える。</figcaption></figure>
+<h3>まず「どこを切った図」なのか</h3>
+<figure><div class="sh">{{SVG:detail_key}}</div>
+<figcaption>外壁を上から下までまっすぐ切って、横から見た図。
+そのうち A（地面）と B（2階の床）を拡大する。</figcaption></figure>
+<ul>
+<li><b>1／20 は「実物の20分の1」。</b>平面図（1／100）の5倍の大きさなので、
+ボルト1本まで描けます</li>
+<li><b>左が室内、右が屋外。</b>この向きは絶対に変えない</li>
+<li><b>切ったのは外壁1か所だけ。</b>建物ぜんぶを描くわけではありません</li>
+</ul>
+<div class="imp">
+  <div class="t">切断位置を1階平面図に書く</div>
+  <p>「どこを切ったか」は、この部分詳細図には書けません。
+  <b>1階平面図に一点鎖線をひいて、矢印と A—A を打ちます。</b>
+  矢印の向きは<b>見る方向</b>。左が室内・右が屋外に見える向きにします。</p>
+  <p>令和6年の標準解答例では「断面図及び部分詳細図　切断位置」と
+  <b>文字まで書いて</b>ありました。<span class="mark">書き忘れがとても多いところ</span>です。</p>
+</div>
+
+<h3>描く順番 ── よこ線5本が先</h3>
+<figure><div class="sh">{{SVG:shousai}}</div>
+<figcaption>いきなり材料から描くと必ずズレる。高さの線を5本引いてから、
+その間をうめていく。</figcaption></figure>
+<ol>
+<li><b>よこ線を5本</b>　GL・基礎の天ば・1FL・1階の天井・2FL</li>
+<li><b>たて線</b>　柱の左右2本（幅120）と、通り芯の一点鎖線</li>
+<li><b>基礎</b>　立上りは地上371、根入れ300</li>
+<li><b>木</b>　土台120角・床の合板24・胴差120×300</li>
+<li><b>外壁の層</b>　内から外へ 15・120・9・18・16</li>
+<li><b>寸法と材料名</b>　左に高さ、右に引出線で名前</li>
+</ol>
+<div class="imp">
+  <div class="t">6番を飛ばすと点になりません</div>
+  <p>要求図書は「主要な部材の名称・寸法を記入」です。
+  <b>絵だけ描いても、名前と数字がなければ点になりません。</b>
+  4分でいいので、必ず時間を残してください。</p>
+</div>
+
+<h3>1／20 の目盛のとり方</h3>
+<div class="imp">
+  <div class="t">部分詳細図のらんだけ、方眼のマスが大きい</div>
+  <p>問題用紙にこう書いてあります。
+  <b>「答案用紙の１目盛は、4.55mm（部分詳細図にあっては、10mm）である。」</b></p>
+  <p>つまり平面図のらんは 4.55mm きざみ、
+  <b>部分詳細図のらんだけ 10mm きざみ</b>。
+  <span class="mark">1マス＝200mm</span>のつもりで数えます。</p>
+</div>
+<table>
+<tr><th style="width:30%">実物</th><th style="width:24%">紙の上</th><th>10mm方眼で</th></tr>
+<tr><td>910（柱と柱のあいだ）</td><td class="n">45.5mm</td><td>約4.6マス</td></tr>
+<tr><td>300（胴差のせい）</td><td class="n">15mm</td><td>1.5マス</td></tr>
+<tr><td>150（基礎の厚さ）</td><td class="n">7.5mm</td><td>0.75マス</td></tr>
+<tr><td>120（柱・土台）</td><td class="n">6mm</td><td>0.6マス</td></tr>
+<tr><td>15（石膏ボード）</td><td class="n">0.75mm</td><td>目盛では読めない</td></tr>
+</table>
+<p>15mmの層は紙の上で <b>0.75mm</b>。方眼では数えられません。
+<span class="mark">暗算せず、三角スケールの1／20の面をそのまま当てて測ります。</span>
+うすい層は、線2本のすき間として描ければ十分です。</p>
 
 <h3>外壁は6層。内から外へ</h3>
+<figure><div class="sh">{{SVG:detail_wall}}</div>
+<figcaption>外壁を横に切ると、6つの層が見える。この順番を丸ごと覚える。</figcaption></figure>
 <table>
 <tr><th style="width:8%">順</th><th style="width:30%">材料</th><th style="width:14%">厚さ</th><th>役目</th></tr>
 <tr><td>1</td><td>強化石膏ボード</td><td class="n">15</td><td>火に耐える</td></tr>
@@ -680,12 +738,13 @@ td.n{text-align:right;font-variant-numeric:tabular-nums}
 <tr><td>5</td><td>通気胴縁</td><td class="n">18</td><td>湿気を上へ逃がす</td></tr>
 <tr><td>6</td><td>窯業系サイディング</td><td class="n">16</td><td>外側の仕上げ</td></tr>
 </table>
-<p>合計 <b>15＋120＋9＋18＋16 ＝ 178mm</b>。この5つの数字だけ覚えます。</p>
+<p>合計 <b>15＋120＋9＋18＋16 ＝ 178mm</b>。この5つの数字だけ覚えます。
+（透湿防水シートは紙のように薄いので、厚さには数えません。）</p>
 
 <figure><div class="sh">{{SVG:detail_foot}}</div>
-<figcaption>地面のところ。下から順に、作る順番で番号がふってある。</figcaption></figure>
+<figcaption>拡大A　地面のところ。下から順に、作る順番で番号がふってある。</figcaption></figure>
 
-<h3>地面のところ（下から順に）</h3>
+<h3>拡大A　地面のところ（下から順に）</h3>
 <ol>
 <li><b>砕石 t=60 ＋ 防湿フィルム</b> … 地面を固めて湿気を止める</li>
 <li><b>べた基礎 底盤 t=150</b> … 根入れ300mm（240mm以上が必要）</li>
@@ -695,6 +754,54 @@ td.n{text-align:right;font-variant-numeric:tabular-nums}
 <li><b>土台 120×120</b> … 防腐防蟻処理</li>
 <li><b>床断熱・構造用合板24・フローリング15</b> … ここが1FL</li>
 </ol>
+<p>足し算すると <b>371＋20＋120＋24＋15 ＝ 550</b>。だから
+<b>1FL＝GL＋550</b> になります。数字を丸暗記するのではなく、
+<span class="mark">積み上げた結果が550</span>だと分かっていれば忘れません。</p>
+
+<figure><div class="sh">{{SVG:detail_floor2}}</div>
+<figcaption>拡大B　2階の床のところ。胴差で1階と2階の柱をつなぐ。</figcaption></figure>
+
+<h3>拡大B　2階の床のところ</h3>
+<ul>
+<li><b>胴差 120×300</b> … 1階の柱と2階の柱をつなぐ横材。2FLのすぐ下</li>
+<li><b>構造用合板 t=24 ＋ フローリング t=15</b> … この上の面が2FL（GL＋3,650）</li>
+<li><b>1階の天井 GL＋3,250</b> … 天井高2,700。胴差より下にくる</li>
+<li><b>通気層は上まで通す</b> … 胴差のところで止めない。空気の道が切れる</li>
+</ul>
+
+<h3>書きこむのは「高さ」と「材料名」だけ</h3>
+<table>
+<tr><th style="width:26%">どこに</th><th>なにを書く</th></tr>
+<tr><td><b>左がわ</b></td>
+    <td>高さ。GL ±0 ／ 基礎の天ば GL＋371 ／ 1FL GL＋550 ／
+        1階の天井 GL＋3,250 ／ 2FL GL＋3,650 ／ 階高 3,100</td></tr>
+<tr><td><b>右がわ</b></td>
+    <td>材料と厚さ。引出線をひいて名前を書く</td></tr>
+</table>
+<p>引出線は<b>「ななめ → よこ → 文字」</b>の3ステップ。
+文字は線の上にのせるのではなく、よこに書きます。</p>
+
+<figure><div class="sh">{{SVG:detail}}</div>
+<figcaption>★ 本番の解答用紙に描いて提出するのは、この1枚。</figcaption></figure>
+
+<h3>よくある間違い</h3>
+<table>
+<tr><th style="width:38%">× やりがち</th><th>なぜダメ／どうする</th></tr>
+<tr><td>切断位置を平面図に書き忘れる</td>
+    <td>どこを切った図なのか分からなくなる。1階平面図に一点鎖線と A—A を打つ</td></tr>
+<tr><td>基礎の立上りが300より低い</td>
+    <td>平12建告1347号ちがい。地上371で描いておけば安全</td></tr>
+<tr><td>根入れが240より浅い</td>
+    <td>同じく告示ちがい。300で描いておけば安全</td></tr>
+<tr><td>材料の名前を書かない</td>
+    <td>「主要な部材の名称・寸法」が要求図書。絵だけでは点にならない</td></tr>
+<tr><td>1／100の目盛で描いてしまう</td>
+    <td>この図だけ1／20、しかも方眼も10mmきざみ。910mmが約4.6マスになる</td></tr>
+<tr><td>内と外を逆に描く</td>
+    <td>左が室内・右が屋外。石膏ボードが左、サイディングが右</td></tr>
+<tr><td>色をぬる</td>
+    <td>本番は<b>黒の線だけ</b>。この教材の色は覚えるためのもの</td></tr>
+</table>
 
 <h2 class="ch"><span class="n">8章</span>面積表</h2>
 <p class="lead">計算はかんたん。書き方にルールがあります。</p>
