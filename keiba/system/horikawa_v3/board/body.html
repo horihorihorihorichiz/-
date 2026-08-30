@@ -38,15 +38,23 @@ nav{display:block}
   .rhead .cond{flex-basis:100%;font-size:12px;margin-top:2px}
   .tbl{border-radius:8px}
 
-  /* 行：左に順位＋枠＋馬番、右に 馬名/人気木/追い切り を3段で積む */
+  /* 行：左に大きな順位バッジ、その右に枠＋馬番、右に馬名/人気木/追い切り */
   .hrow{display:grid!important;
-    grid-template-columns:26px 11px auto minmax(0,1fr) auto!important;
+    grid-template-columns:34px 11px auto minmax(0,1fr) auto!important;
     grid-template-areas:
       "rank waku num name odds"
       "rank waku num two  chev"
       "rank waku num ev   ev"!important;
-    column-gap:7px;row-gap:3px;padding:10px 11px;align-items:center}
-  .hrow .rank{grid-area:rank;font-size:16px}
+    column-gap:8px;row-gap:3px;padding:10px 11px;align-items:center}
+  /* 順位を丸バッジにして主役にする。1〜3位は色を変える */
+  .hrow .rank{grid-area:rank;align-self:center;justify-self:center;
+    width:30px;height:30px;border-radius:50%;display:grid;place-items:center;
+    font-size:16px;font-weight:700;color:var(--dim);
+    background:var(--panel2);border:1px solid var(--rule)}
+  .hrow[data-rank="1"] .rank{color:#fff;background:var(--pos);border-color:var(--pos)}
+  .hrow[data-rank="2"] .rank{color:var(--pos);border-color:var(--pos);
+    background:var(--keysoft,var(--panel2))}
+  .hrow[data-rank="3"] .rank{color:var(--pos);border-color:var(--pos)}
   .hrow .uma{display:contents}
   .hrow .waku{grid-area:waku;height:38px;width:8px}
   .hrow .num{grid-area:num;font-size:14px}
@@ -58,7 +66,13 @@ nav{display:block}
   .hrow .two .gapv{margin-left:0}
   .hrow .ev{grid-area:ev;flex-direction:row;gap:6px;font-size:11.5px;align-items:center}
   .hrow .ev .r{color:var(--dim)}
-  .hrow .bar{display:none}
+  /* 強さバーは name 段の下敷きに薄く敷いて、上位ほど濃く見せる */
+  .hrow .bar{display:block;grid-area:name;align-self:end;height:3px;margin-top:2px;
+    margin-bottom:-4px;opacity:.8}
+  .hrow .bar .ax{display:none}
+  .hrow .bar .fl{top:0;height:3px;border-radius:2px}
+  .hrow .bar .fl.p{left:0}
+  .hrow .bar .fl.n{right:auto;left:0}
   .hrow .val{grid-area:odds;align-self:end;font-size:16px;font-weight:700;
     justify-self:end}
   .hrow .val::after{content:"倍";font-size:10px;color:var(--dim);font-weight:400;margin-left:1px}
@@ -189,7 +203,7 @@ DATA.races.forEach(R => {
     const pmax = Math.max(...parts.map(p => Math.abs(p.v)), 0.001);
     const gap = h.pop && h.trank ? h.pop - h.trank : 0;   // ＋なら木のほうが高評価
     rows += `
-    <button class="hrow" data-top="${k === 0 ? 1 : 0}" aria-expanded="false" aria-controls="d${R.id}-${h.umaban}">
+    <button class="hrow" data-top="${k === 0 ? 1 : 0}" data-rank="${k + 1}" aria-expanded="false" aria-controls="d${R.id}-${h.umaban}">
       <span class="rank">${k + 1}</span>
       <span class="uma"><span class="waku" style="background:${WAKU[h.waku] || '#ccc'}"></span><span class="num">${h.umaban}</span></span>
       <span class="nm"><span class="n1">${esc(h.name)}</span><span class="n2">${esc(h.sexage)} ${h.kin} ${esc(h.jockey)}</span></span>
