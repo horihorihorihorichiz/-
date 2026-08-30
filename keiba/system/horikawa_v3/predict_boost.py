@@ -86,7 +86,17 @@ def main():
     got = build_rows(book, b, val=train_eval.value_map(per_race, tabw),
                      want=set(targets), date=date)
     TR = got.pop("_TR", [])
-    print(f"学習 {len(TR)}R / 対象 {len(got)}R / 成分 {len(wide)}個", flush=True)
+
+    # 市場に頼らない木にする。木が使う市場由来の成分は「前走人気」ただ1つなので、
+    # それを成分からも Z 行列からも外す。探索窓の実測で、抜いても3着内率は同じ
+    # （62.43%）で、月ごとのブレはむしろ小さくなった（test_nopop.py）。
+    DROP = {"前走人気"}
+    keep = [i for i, n in enumerate(wide) if n not in DROP]
+    wide = [wide[i] for i in keep]
+    for d in list(got.values()) + TR:
+        d["Z"] = np.asarray(d["Z"], np.float32)[:, keep]
+    print(f"学習 {len(TR)}R / 対象 {len(got)}R / 成分 {len(wide)}個"
+          f"（前走人気を除外・市場非依存）", flush=True)
 
     # 木を学習（本数は内側の時系列分割で決める）
     TRs = sorted(TR, key=lambda d: d["date"])
