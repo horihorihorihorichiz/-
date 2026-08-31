@@ -1,0 +1,26 @@
+選ばれた軸: 芝ダ×距離帯
+                 全レースで型選択                期待値プラス方針(他は見送り)        
+    MINE  ROI   90.0% (n=11644)      107.2% (n=1160)
+     VAL  ROI   66.1% (n=874)      41.1% (n=54)
+    CONF  ROI   90.7% (n=676)      116.2% (n=122)
+
+セルごとの選択(MINE):
+  ダL               三連複軸流し4頭(6点)       MINE ROI   85.9% (参考・期待値負)
+  ダM               三連複軸流し4頭(6点)       MINE ROI  107.2% ★買い
+  ダS               複勝1位               MINE ROI   84.0% (参考・期待値負)
+  芝L               複勝1位               MINE ROI   83.0% (参考・期待値負)
+  芝M               複勝1位               MINE ROI   82.8% (参考・期待値負)
+  芝S               複勝1位               MINE ROI   79.3% (参考・期待値負)
+  null#1: VAL 19.5% / CONF 6.4%
+  null#2: VAL 5.0% / CONF 232.9%
+  null#3: VAL 49.5% / CONF 67.0%
+  null#4: VAL 15.2% / CONF 191.8%
+  null#5: VAL 5.1% / CONF 37.8%
+  null#6: VAL 6.6% / CONF 22.6%
+  null#7: VAL 54.3% / CONF 32.8%
+  null#8: VAL 6.2% / CONF 11.7%
+  null#9: VAL 8.0% / CONF 59.0%
+  null#10: VAL 49.0% / CONF 83.7%
+
+null(順位乱数×10・同じ全パイプライン): VAL 平均21.8% 最大54.3% / CONF 平均74.6% 最大232.9%
+saved policy_menu.json

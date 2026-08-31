@@ -19,3 +19,7 @@ keiba/jraw_ds.npz
 # 確定オッズでライブ記帳される」重大バグの原因になった。find_race_path は hist 優先に
 # 修正済みだが、古いキャッシュを持ち越さない方が安全なので追跡から外す。
 keiba/race_*.json
+
+# LINE通知のトークンは環境変数のみ。誤ってファイルに置いた場合の保険
+keiba/line_token.local
+keiba/.env
