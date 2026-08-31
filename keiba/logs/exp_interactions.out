@@ -1,0 +1,40 @@
+races=3081
+candidates=135  (7s)
+screen-train=2765 val=189
+base val capture5 = 64.20%  (11s)
+  screened 20/135 (33s)
+  screened 40/135 (56s)
+  screened 60/135 (81s)
+  screened 80/135 (105s)
+  screened 100/135 (131s)
+  screened 120/135 (156s)
+--- top15 single-add (val capture5) ---
+  +1.41  hg__idx_mean3 (65.61%)
+  +1.06  ix__kinryo__n_runs (65.26%)
+  +0.88  ix__j_top3__wchg (65.08%)
+  +0.88  ix__idx_mean3__kinryo (65.08%)
+  +0.71  sq__wavg (64.90%)
+  +0.71  sq__idx_mean3 (64.90%)
+  +0.71  ix__wavg__fin_frac (64.90%)
+  +0.71  ix__t_top3__corner_frac (64.90%)
+  +0.71  ix__idx_mean3__n_runs (64.90%)
+  +0.71  ix__idx_mean3__idx_best (64.90%)
+  +0.71  ix__agari_best__n_runs (64.90%)
+  +0.71  hg__agari_best (64.90%)
+  +0.53  sq__idx_best (64.73%)
+  +0.53  sq__days_log (64.73%)
+  +0.53  ix__wchg__n_runs (64.73%)
+greedy +hg__idx_mean3 -> val 65.61%
+greedy +ix__idx_mean3__kinryo -> val 65.78%
+greedy +hg__agari_best -> val 65.96%
+selected: ['hg__idx_mean3', 'ix__idx_mean3__kinryo', 'hg__agari_best']  (val 65.96% vs base 64.20%)  (256s)
+[ix_greedy_l2=0.05] train: 捕捉5=67.5% 全3頭=28.8% 勝1位=25.1% ROI=76% 乖離ROI=100%(n=405)
+[ix_greedy_l2=0.05] test: 捕捉5=68.0% 全3頭=24.4% 勝1位=25.2% ROI=67% 乖離ROI=88%(n=12)
+[ix_greedy_l2=0.05] ゲート: 勝ち (基準 train>67.3 test>66.6)
+[ix_greedy_l2=0.10] train: 捕捉5=67.4% 全3頭=28.3% 勝1位=24.7% ROI=75% 乖離ROI=97%(n=415)
+[ix_greedy_l2=0.10] test: 捕捉5=68.2% 全3頭=24.4% 勝1位=26.8% ROI=77% 乖離ROI=171%(n=12)
+[ix_greedy_l2=0.10] ゲート: 勝ち (基準 train>67.3 test>66.6)
+=== summary ===
+{"label": "ix_greedy_l2=0.05", "extra": ["hg__idx_mean3", "ix__idx_mean3__kinryo", "hg__agari_best"], "train_cap5": 67.48, "test_cap5": 67.98, "gate": true}
+{"label": "ix_greedy_l2=0.10", "extra": ["hg__idx_mean3", "ix__idx_mean3__kinryo", "hg__agari_best"], "train_cap5": 67.4, "test_cap5": 68.24, "gate": true}
+total 515s

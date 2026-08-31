@@ -1,0 +1,1 @@
+/home/user/-/keiba/miner_v2.py

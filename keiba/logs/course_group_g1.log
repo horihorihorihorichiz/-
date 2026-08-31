@@ -1,0 +1,38 @@
+[g1] groups=8 folds=28 (202403..202608)
+   芝|中: 1465R
+   ダ|中: 1404R
+   ダ|マ: 1383R
+   ダ|短: 1057R
+   芝|マ: 1041R
+   芝|短: 754R
+   芝|長: 485R
+   ダ|長: 110R
+  [202403] done trainings=14 (2s)
+  [202404] done trainings=38 (8s)
+  [202407] done trainings=66 (12s)
+  [202408] done trainings=94 (16s)
+  [202409] done trainings=122 (31s)
+  [202410] done trainings=150 (42s)
+  [202411] done trainings=178 (103s)
+  [202412] done trainings=208 (111s)
+  [202501] done trainings=238 (131s)
+  [202502] done trainings=270 (140s)
+  [202503] done trainings=302 (305s)
+  [202504] done trainings=334 (873s)
+  [202505] done trainings=366 (881s)
+  [202506] done trainings=398 (890s)
+  [202507] done trainings=430 (898s)
+  [202508] done trainings=462 (908s)
+  [202509] done trainings=494 (919s)
+  [202510] done trainings=526 (964s)
+  [202511] done trainings=558 (974s)
+  [202512] done trainings=590 (986s)
+  [202601] done trainings=622 (1000s)
+  [202602] done trainings=654 (1011s)
+  [202603] done trainings=686 (1023s)
+  [202604] done trainings=718 (1036s)
+  [202605] done trainings=750 (1048s)
+  [202606] done trainings=782 (1062s)
+  [202607] done trainings=814 (1075s)
+  [202608] done trainings=846 (1089s)
+[g1] done trainings=846 fallback_races={('GH', 'place'): 381, ('GH', 'win'): 381, ('GP', 'place'): 24, ('GP', 'win'): 24} (18.1min)

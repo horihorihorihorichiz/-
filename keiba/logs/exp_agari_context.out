@@ -1,0 +1,22 @@
+[A1_ベスト+直近3走残差] train: 捕捉5=67.8% 全3頭=29.9% 勝1位=25.6% ROI=78% 乖離ROI=108%(n=386)
+[A1_ベスト+直近3走残差] test: 捕捉5=69.0% 全3頭=26.8% 勝1位=26.8% ROI=80% 乖離ROI=171%(n=12)
+[A1_ベスト+直近3走残差] ゲート: 勝ち (基準 train>67.3 test>66.6)
+[A2_A1+差し脚の質] train: 捕捉5=67.8% 全3頭=29.9% 勝1位=25.6% ROI=78% 乖離ROI=102%(n=384)
+[A2_A1+差し脚の質] test: 捕捉5=68.8% 全3頭=26.0% 勝1位=26.8% ROI=80% 乖離ROI=158%(n=13)
+[A2_A1+差し脚の質] ゲート: 勝ち (基準 train>67.3 test>66.6)
+[A3_A2+最速歴率] train: 捕捉5=67.6% 全3頭=29.4% 勝1位=25.7% ROI=79% 乖離ROI=106%(n=379)
+[A3_A2+最速歴率] test: 捕捉5=68.5% 全3頭=26.0% 勝1位=26.0% ROI=88% 乖離ROI=259%(n=14)
+[A3_A2+最速歴率] ゲート: 勝ち (基準 train>67.3 test>66.6)
+[A4_距離マッチ版] train: 捕捉5=67.9% 全3頭=29.8% 勝1位=25.8% ROI=79% 乖離ROI=106%(n=382)
+[A4_距離マッチ版] test: 捕捉5=68.5% 全3頭=26.8% 勝1位=26.0% ROI=79% 乖離ROI=146%(n=14)
+[A4_距離マッチ版] ゲート: 勝ち (基準 train>67.3 test>66.6)
+
+==== summary ====
+A1_ベスト+直近3走残差: train=67.8 test=69.0 gate=True
+  weights={'idx_mean3': 0.0666, 'idx_last': 0.0406, 'idx_best': 0.0428, 'wavg': 0.3029, 'j_top3': 0.2354, 't_top3': 0.1229, 'fin_frac': 0.2457, 'agari_best': 0.0619, 'days_log': 0.0758, 'kinryo': 0.0496, 'wchg': 0.0253, 'corner_frac': 0.1731, 'dist_chg': 0.0196, 'csi': 0.0499, 'n_runs': -0.1146, 'agari_best_rel': 0.0882, 'agari_mean3_rel': 0.1159}
+A2_A1+差し脚の質: train=67.8 test=68.8 gate=True
+  weights={'idx_mean3': 0.0652, 'idx_last': 0.0408, 'idx_best': 0.0434, 'wavg': 0.3037, 'j_top3': 0.235, 't_top3': 0.1237, 'fin_frac': 0.2453, 'agari_best': 0.0605, 'days_log': 0.0761, 'kinryo': 0.0497, 'wchg': 0.0252, 'corner_frac': 0.179, 'dist_chg': 0.0193, 'csi': 0.0503, 'n_runs': -0.115, 'agari_best_rel': 0.077, 'agari_mean3_rel': 0.1125, 'agari_close_q': 0.0325}
+A3_A2+最速歴率: train=67.6 test=68.5 gate=True
+  weights={'idx_mean3': 0.0646, 'idx_last': 0.0412, 'idx_best': 0.0434, 'wavg': 0.3016, 'j_top3': 0.2338, 't_top3': 0.1226, 'fin_frac': 0.2445, 'agari_best': 0.0607, 'days_log': 0.0757, 'kinryo': 0.0473, 'wchg': 0.0252, 'corner_frac': 0.1835, 'dist_chg': 0.02, 'csi': 0.0496, 'n_runs': -0.11, 'agari_best_rel': 0.0591, 'agari_mean3_rel': 0.0918, 'agari_fast_rate': 0.0549, 'agari_close_q': 0.0258}
+A4_距離マッチ版: train=67.9 test=68.5 gate=True
+  weights={'idx_mean3': 0.0644, 'idx_last': 0.0412, 'idx_best': 0.0451, 'wavg': 0.3074, 'j_top3': 0.2351, 't_top3': 0.1238, 'fin_frac': 0.2447, 'agari_best': 0.062, 'days_log': 0.0762, 'kinryo': 0.0508, 'wchg': 0.0252, 'corner_frac': 0.1776, 'dist_chg': 0.0156, 'csi': 0.0488, 'n_runs': -0.1116, 'agari_dist_match': 0.0506, 'agari_mean3_rel': 0.1242, 'agari_close_q': 0.0446}

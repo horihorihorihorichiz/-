@@ -1,0 +1,57 @@
+[g3] groups=27 folds=28 (202403..202608)
+   ダ|マ|SHORT|平坦: 544R
+   芝|中|SHORT|平坦: 517R
+   ダ|中|MID|平坦: 476R
+   芝|短|SHORT|平坦: 446R
+   ダ|マ|LONG|緩坂: 402R
+   ダ|中|SHORT|急坂: 330R
+   ダ|短|SHORT|急坂: 289R
+   ダ|短|SHORT|平坦: 268R
+   ダ|中|MID|緩坂: 262R
+   ダ|中|MID|急坂: 261R
+   ダ|短|MID|平坦: 251R
+   芝|マ|MID|平坦: 237R
+   芝|マ|LONG|緩坂: 216R
+   芝|マ|MID|緩坂: 196R
+   芝|中|LONG|緩坂: 188R
+   芝|中|SHORT|急坂: 182R
+   芝|中|MID|平坦: 166R
+   ダ|マ|MID|平坦: 148R
+   ダ|マ|MID|急坂: 145R
+   ダ|マ|MID|緩坂: 144R
+   芝|中|LONG|平坦: 136R
+   芝|マ|SHORT|急坂: 136R
+   芝|中|MID|緩坂: 134R
+   芝|長|MID|平坦: 111R
+   ダ|短|MID|急坂: 107R
+   芝|長|SHORT|平坦: 106R
+   芝|マ|LONG|急坂: 100R
+  [202403] done trainings=10 (1s)
+  [202404] done trainings=36 (2s)
+  [202407] done trainings=46 (3s)
+  [202408] done trainings=68 (5s)
+  [202409] done trainings=112 (9s)
+  [202410] done trainings=124 (10s)
+  [202411] done trainings=188 (15s)
+  [202412] done trainings=238 (19s)
+  [202501] done trainings=288 (23s)
+  [202502] done trainings=340 (28s)
+  [202503] done trainings=396 (34s)
+  [202504] done trainings=480 (42s)
+  [202505] done trainings=520 (45s)
+  [202506] done trainings=592 (53s)
+  [202507] done trainings=648 (60s)
+  [202508] done trainings=704 (67s)
+  [202509] done trainings=756 (74s)
+  [202510] done trainings=796 (79s)
+  [202511] done trainings=852 (87s)
+  [202512] done trainings=900 (93s)
+  [202601] done trainings=972 (104s)
+  [202602] done trainings=1060 (119s)
+  [202603] done trainings=1124 (129s)
+  [202604] done trainings=1212 (145s)
+  [202605] done trainings=1252 (151s)
+  [202606] done trainings=1300 (160s)
+  [202607] done trainings=1352 (169s)
+  [202608] done trainings=1408 (180s)
+[g3] done trainings=1408 fallback_races={('GH', 'place'): 1043, ('GH', 'win'): 1043, ('GP', 'place'): 469, ('GP', 'win'): 469} (3.0min)

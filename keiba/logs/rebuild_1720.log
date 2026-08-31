@@ -1,0 +1,36 @@
+1000/14476
+2000/14476
+3000/14476
+4000/14476
+5000/14476
+6000/14476
+7000/14476
+8000/14476
+9000/14476
+10000/14476
+11000/14476
+12000/14476
+13000/14476
+14000/14476
+保存: comps_v99.pkl  races=13197  例外除外=1279  検算NG=0
+  除外: 202201010105 ValueError('max() arg is an empty sequence')
+  除外: 202201010205 ValueError('max() arg is an empty sequence')
+  除外: 202201010305 ValueError('max() arg is an empty sequence')
+  除外: 202201010405 ValueError('max() arg is an empty sequence')
+  除外: 202201010505 ValueError('max() arg is an empty sequence')
+  除外: 202201010601 ValueError('max() arg is an empty sequence')
+  除外: 202201010605 ValueError('max() arg is an empty sequence')
+  除外: 202201020105 ValueError('max() arg is an empty sequence')
+  除外: 202201020205 ValueError('max() arg is an empty sequence')
+  除外: 202201020305 ValueError('max() arg is an empty sequence')
+  除外: 202201020405 ValueError('max() arg is an empty sequence')
+  除外: 202201020505 ValueError('max() arg is an empty sequence')
+  除外: 202201020605 ValueError('max() arg is an empty sequence')
+  除外: 202201020705 ValueError('max() arg is an empty sequence')
+  除外: 202202010105 ValueError('max() arg is an empty sequence')
+  除外: 202202010205 ValueError('max() arg is an empty sequence')
+  除外: 202202010305 ValueError('max() arg is an empty sequence')
+  除外: 202202010306 ValueError('max() arg is an empty sequence')
+  除外: 202202010405 ValueError('max() arg is an empty sequence')
+  除外: 202202010505 ValueError('max() arg is an empty sequence')
+wrote 13194 races; fingerprint 202610020612 top3 = [5, 8, 15] (expect [5,8,15])

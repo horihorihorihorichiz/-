@@ -1,0 +1,8 @@
+評価対象: 0R (NAR重賞2年分)
+Traceback (most recent call last):
+  File "/home/user/-/keiba/eval_nar.py", line 71, in <module>
+    main()
+  File "/home/user/-/keiba/eval_nar.py", line 63, in main
+    print(f"捕捉5: モデル {cap_h/cap_n*100:.1f}% vs 市場 {mkt_cap/cap_n*100:.1f}%")
+                           ~~~~~^~~~~~
+ZeroDivisionError: division by zero

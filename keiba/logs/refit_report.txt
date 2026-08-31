@@ -1,0 +1,197 @@
+
+$ fit_score.py --l2 0.05 --write
+データ: 全3081R (train 3017 / test 64) T=19 L2=0.05
+
+学習した重み（1.0=現行の等重み）:
+  tsi      +1.000
+  lts      +1.058
+  fsi      +0.859
+  bonus    +0.980
+  dsi      +1.126
+  nsi      +1.004
+  csi      +0.998
+  was      +0.805
+  tas      +0.943
+  hcs      +0.872
+  nrja     +0.964
+  kankai   +0.694
+
+── 3着内の並びPL-NLL（学習スコア vs 現行等重み, 小さいほど良い）──
+  train: 現行 2.3477 → 学習後 2.3250 （改善）
+  test: 現行 2.2214 → 学習後 2.2185 （改善）
+
+params.json に score_weights を保存した。
+
+  iter0: PL-NLL=2.3477
+  iter100: PL-NLL=2.3346
+  iter200: PL-NLL=2.3346
+  iter300: PL-NLL=2.3346
+
+$ fit_score.py --surface 芝 --l2 0.08 --write
+データ: 全1506R (train 1470 / test 36) T=19 L2=0.08
+
+学習した重み（1.0=現行の等重み）:
+  tsi      +1.000
+  lts      +1.013
+  fsi      +0.846
+  bonus    +0.969
+  dsi      +1.084
+  nsi      +0.973
+  csi      +1.001
+  was      +0.874
+  tas      +0.988
+  hcs      +0.897
+  nrja     +0.959
+  kankai   +0.766
+
+── 3着内の並びPL-NLL（学習スコア vs 現行等重み, 小さいほど良い）──
+  train: 現行 2.3665 → 学習後 2.3456 （改善）
+  test: 現行 2.3405 → 学習後 2.3299 （改善）
+
+params.json に score_weights_by_surface[芝] を保存した。
+
+  iter0: PL-NLL=2.3665
+  iter100: PL-NLL=2.3548
+  iter200: PL-NLL=2.3548
+  iter300: PL-NLL=2.3548
+
+$ fit_score.py --surface ダ --l2 0.08 --write
+データ: 全1575R (train 1547 / test 28) T=19 L2=0.08
+
+学習した重み（1.0=現行の等重み）:
+  tsi      +1.000
+  lts      +1.069
+  fsi      +0.959
+  bonus    +0.995
+  dsi      +1.075
+  nsi      +1.029
+  csi      +0.997
+  was      +0.866
+  tas      +0.938
+  hcs      +0.931
+  nrja     +0.994
+  kankai   +0.795
+
+── 3着内の並びPL-NLL（学習スコア vs 現行等重み, 小さいほど良い）──
+  train: 現行 2.3297 → 学習後 2.3152 （改善）
+  test: 現行 2.0682 → 学習後 2.0715 （改善なし）
+
+⚠️ ホールドアウトで改善しなかったため params.json には書かない（現状維持）。
+
+  iter0: PL-NLL=2.3297
+  iter100: PL-NLL=2.3218
+  iter200: PL-NLL=2.3218
+  iter300: PL-NLL=2.3218
+
+$ fit.py --test 20260704,20260705,20260711,20260712 --write
+データ: 全3081R (train 2954 / test 127)
+
+フィット結果: 温度T=20 展開スケールks=0.0 ブレンド α(モデル)=0.0 β(市場)=1.0
+複合券用(3着内の並び): α_place=0.03 β_place=0.9
+── 3着内の並びNLL (train) ──
+  市場のみ                         6.0036 (n=2954)
+  placeブレンド(α=0.03,β=0.9)      5.9828 (n=2954)
+── 3着内の並びNLL (test) ──
+  市場のみ                         6.1463 (n=127)
+  placeブレンド(α=0.03,β=0.9)      6.1101 (n=127)
+
+── 勝者NLL (train, 小さいほど良い) ──
+  市場のみ(最終単勝)                   1.9363 (n=2954)
+  旧モデル(T=14,ks=1)              2.3936 (n=2954)
+  新モデル(T=20,ks=0.0)            2.3705 (n=2954)
+  ブレンド(α=0.0,β=1.0)            1.9363 (n=2954)
+
+── 勝者NLL (test, 小さいほど良い) ──
+  市場のみ(最終単勝)                   1.8458 (n=127)
+  旧モデル(T=14,ks=1)              2.1694 (n=127)
+  新モデル(T=20,ks=0.0)            2.1802 (n=127)
+  ブレンド(α=0.0,β=1.0)            1.8458 (n=127)
+
+── ブレンドのキャリブレーション (test) ──
+  0-3%     n= 765 予測  1.1% 実際  0.4%
+  3-6%     n= 294 予測  4.4% 実際  3.7%
+  6-12%    n= 278 予測  8.7% 実際  8.6%
+  12-20%   n= 189 予測 15.5% 実際 19.6%
+  20-101%  n= 166 予測 31.3% 実際 31.3%
+
+── 選定エッジ診断 ──
+  勝者NLLのα感度(train): α=0.0:1.9363  α=0.05:1.9370  α=0.1:1.9385  α=0.2:1.9442
+  勝者NLLのα感度(test): α=0.0:1.8458  α=0.05:1.8409  α=0.1:1.8372  α=0.2:1.8331
+  乖離バケット(train): モデル1位が4番人気以下=1006R 勝ち75 単勝フラットROI 85%  ←100%超が続けば選定エッジ
+  乖離バケット(test): モデル1位が4番人気以下=36R 勝ち5 単勝フラットROI 160%  ←100%超が続けば選定エッジ
+
+── 3着内確率(Harville)のキャリブレーション (test) ──
+  0-15%: n= 862 予測  5.4% 実際  7.1%
+  15-30%: n= 336 予測 21.3% 実際 25.6%
+  30-50%: n= 256 予測 39.7% 実際 40.6%
+  50-101%: n= 238 予測 67.7% 実際 55.5%
+
+params.json に保存した（calc/predictが次回から使う）
+
+ence
+  skip 202608010402.json: max() arg is an empty sequence
+  skip 202608010504.json: max() arg is an empty sequence
+  skip 202608010505.json: max() arg is an empty sequence
+  skip 202608010604.json: max() arg is an empty sequence
+  skip 202608010705.json: max() arg is an empty sequence
+  skip 202608010803.json: max() arg is an empty sequence
+  skip 202608010905.json: max() arg is an empty sequence
+  skip 202608020105.json: max() arg is an empty sequence
+  skip 202608020204.json: max() arg is an empty sequence
+  skip 202608020304.json: max() arg is an empty sequence
+  skip 202608020405.json: max() arg is an empty sequence
+  skip 202608020505.json: max() arg is an empty sequence
+  skip 202608020602.json: max() arg is an empty sequence
+  skip 202609010104.json: max() arg is an empty sequence
+  skip 202609010204.json: max() arg is an empty sequence
+  skip 202609030105.json: max() arg is an empty sequence
+  skip 202609030205.json: max() arg is an empty sequence
+  skip 202609030305.json: max() arg is an empty sequence
+  skip 202609030306.json: max() arg is an empty sequence
+  skip 202609030405.json: max() arg is an empty sequence
+  skip 202609030505.json: max() arg is an empty sequence
+  skip 202609030605.json: max() arg is an empty sequence
+  skip 202610010106.json: max() arg is an empty sequence
+  skip 202610010205.json: max() arg is an empty sequence
+  skip 202610010405.json: max() arg is an empty sequence
+  skip 202610010605.json: max() arg is an empty sequence
+  skip 202610020105.json: max() arg is an empty sequence
+  skip 202610020205.json: max() arg is an empty sequence
+  skip 202610020206.json: max() arg is an empty sequence
+  skip 202610020305.json: max() arg is an empty sequence
+  skip 202610020405.json: max() arg is an empty sequence
+  skip 202610020406.json: max() arg is an empty sequence
+  skip 202610020505.json: max() arg is an empty sequence
+  skip 202610020605.json: max() arg is an empty sequence
+  skip 202610020606.json: max() arg is an empty sequence
+
+$ validate.py --test 20260704,20260705,20260711,20260712 --scales 0.9,1.0,1.1
+train 3246R / test 144R
+
+== scale=0.9 (train) == GO 596/3246R 投200100円 戻171620円 ROI 85.8%
+   ワイド: 659点 的中55 投78100 戻65540 ROI 84%
+   三連複: 133点 的中2 投13600 戻4690 ROI 34%
+   複勝: 250点 的中92 投108400 戻101390 ROI 94%
+
+== scale=1.0 (train) == GO 300/3246R 投76300円 戻55630円 ROI 72.9%
+   ワイド: 296点 的中17 投35400 戻23600 ROI 67%
+   三連複: 59点 的中0 投6000 戻0 ROI 0%
+   複勝: 100点 的中23 投34900 戻32030 ROI 92%
+
+== scale=1.1 (train) == GO 146/3246R 投36600円 戻18300円 ROI 50.0%
+   ワイド: 140点 的中4 投16700 戻7030 ROI 42%
+   三連複: 27点 的中0 投2700 戻0 ROI 0%
+   複勝: 51点 的中8 投17200 戻11270 ROI 66%
+
+──── ホールドアウト(test) ────
+== scale=0.9 (test) == GO 27/144R 投5000円 戻6090円 ROI 121.8%
+   ワイド: 28点 的中4 投4000 戻5750 ROI 144%
+   三連複: 3点 的中0 投400 戻0 ROI 0%
+   複勝: 3点 的中1 投600 戻340 ROI 57%
+== scale=1.0 (test) == GO 15/144R 投2600円 戻4850円 ROI 186.5%
+   ワイド: 16点 的中3 投2200 戻4850 ROI 220%
+   三連複: 1点 的中0 投200 戻0 ROI 0%
+   複勝: 1点 的中0 投200 戻0 ROI 0%
+== scale=1.1 (test) == GO 5/144R 投700円 戻3290円 ROI 470.0%
+   ワイド: 5点 的中2 投700 戻3290 ROI 470%
+

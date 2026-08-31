@@ -1,0 +1,126 @@
+loaded 468 (obj,method,course) keys (25s)
+  中山ダ1800 evaluated (29s)
+  中山ダ1200 evaluated (34s)
+  京都ダ1800 evaluated (37s)
+  阪神ダ1800 evaluated (42s)
+  東京ダ1600 evaluated (48s)
+  中京ダ1800 evaluated (52s)
+  東京ダ1400 evaluated (57s)
+  新潟ダ1800 evaluated (62s)
+  福島ダ1700 evaluated (67s)
+  札幌ダ1700 evaluated (69s)
+  京都ダ1400 evaluated (72s)
+  福島芝1200 evaluated (75s)
+  阪神ダ1400 evaluated (80s)
+  中京ダ1400 evaluated (82s)
+  新潟ダ1200 evaluated (88s)
+  中山芝1600 evaluated (92s)
+  小倉ダ1700 evaluated (95s)
+  中京芝2000 evaluated (100s)
+  小倉芝1200 evaluated (101s)
+  東京芝1600 evaluated (106s)
+  京都ダ1200 evaluated (108s)
+  中京芝1600 evaluated (112s)
+  京都芝1600 evaluated (114s)
+  東京芝1800 evaluated (116s)
+  福島ダ1150 evaluated (121s)
+  中山芝2000 evaluated (122s)
+  阪神ダ1200 evaluated (125s)
+  阪神芝1600 evaluated (129s)
+{
+ "n_keys": 224,
+ "n_judgeable": 56,
+ "n_primary": 24,
+ "n_secondary": 0,
+ "n_pass": 0,
+ "expect_secondary": 1.306,
+ "expect_both": 0.2903,
+ "verdict": "FAIL",
+ "primary": [
+  "place|M3w3|阪神ダ1800",
+  "place|M1|東京ダ1600",
+  "place|M2|東京ダ1600",
+  "place|M3w3|東京ダ1600",
+  "place|M3w10|東京ダ1600",
+  "win|M1|東京ダ1600",
+  "win|M2|東京ダ1600",
+  "place|M1|東京ダ1400",
+  "place|M2|東京ダ1400",
+  "win|M1|東京ダ1400",
+  "win|M2|東京ダ1400",
+  "place|M1|新潟ダ1800",
+  "place|M2|新潟ダ1800",
+  "place|M1|福島ダ1700",
+  "place|M2|福島ダ1700",
+  "place|M3w3|福島ダ1700",
+  "place|M3w10|福島ダ1700",
+  "win|M2|福島ダ1700",
+  "win|M3w3|福島ダ1700",
+  "place|M3w3|福島芝1200",
+  "win|M3w10|福島芝1200",
+  "win|M1|新潟ダ1200",
+  "win|M2|新潟ダ1200",
+  "win|M3w10|新潟ダ1200"
+ ],
+ "secondary": [],
+ "passed": [],
+ "mc": {
+  "place|中山ダ1800": null,
+  "win|中山ダ1800": null,
+  "place|中山ダ1200": null,
+  "win|中山ダ1200": null,
+  "place|京都ダ1800": null,
+  "win|京都ダ1800": null,
+  "place|阪神ダ1800": 0.033,
+  "win|阪神ダ1800": 0.0395,
+  "place|東京ダ1600": 0.016,
+  "win|東京ダ1600": 0.0195,
+  "place|中京ダ1800": null,
+  "win|中京ダ1800": null,
+  "place|東京ダ1400": 0.015,
+  "win|東京ダ1400": 0.0195,
+  "place|新潟ダ1800": 0.0165,
+  "win|新潟ダ1800": 0.0165,
+  "place|福島ダ1700": 0.0405,
+  "win|福島ダ1700": 0.031,
+  "place|札幌ダ1700": null,
+  "win|札幌ダ1700": null,
+  "place|京都ダ1400": null,
+  "win|京都ダ1400": null,
+  "place|福島芝1200": 0.0105,
+  "win|福島芝1200": 0.015,
+  "place|阪神ダ1400": null,
+  "win|阪神ダ1400": null,
+  "place|中京ダ1400": null,
+  "win|中京ダ1400": null,
+  "place|新潟ダ1200": 0.026,
+  "win|新潟ダ1200": 0.028,
+  "place|中山芝1600": null,
+  "win|中山芝1600": null,
+  "place|小倉ダ1700": null,
+  "win|小倉ダ1700": null,
+  "place|中京芝2000": null,
+  "win|中京芝2000": null,
+  "place|小倉芝1200": null,
+  "win|小倉芝1200": null,
+  "place|東京芝1600": null,
+  "win|東京芝1600": null,
+  "place|京都ダ1200": null,
+  "win|京都ダ1200": null,
+  "place|中京芝1600": null,
+  "win|中京芝1600": null,
+  "place|京都芝1600": null,
+  "win|京都芝1600": null,
+  "place|東京芝1800": null,
+  "win|東京芝1800": null,
+  "place|福島ダ1150": null,
+  "win|福島ダ1150": null,
+  "place|中山芝2000": null,
+  "win|中山芝2000": null,
+  "place|阪神ダ1200": null,
+  "win|阪神ダ1200": null,
+  "place|阪神芝1600": null,
+  "win|阪神芝1600": null
+ }
+}
+saved course_result.json (2.2min)

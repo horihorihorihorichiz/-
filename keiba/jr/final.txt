@@ -1,0 +1,25 @@
+--- H1
+  beta {'chg': np.float64(-0.0088), 'linkj': np.float64(-0.0068)}
+  MINE  nR= 7158 dLL/race=+0.000009 CI95=[-0.000083,+0.000109] p(one-sided)=0.4115
+  VAL   nR=  873 dLL/race=-0.000279 CI95=[-0.000572,+0.000002] p(one-sided)=0.9745
+  CONF  nR=  761 dLL/race=-0.000065 CI95=[-0.000324,+0.000198] p(one-sided)=0.6885
+--- H2
+  beta {'linkj2': np.float64(-0.0086), 'lnrides': np.float64(0.0123), 'newpair': np.float64(0.0199)}
+  MINE  nR= 7158 dLL/race=+0.000012 CI95=[-0.000105,+0.000131] p(one-sided)=0.4210
+  VAL   nR=  873 dLL/race=+0.000077 CI95=[-0.000258,+0.000424] p(one-sided)=0.3420
+  CONF  nR=  761 dLL/race=+0.000078 CI95=[-0.000261,+0.000431] p(one-sided)=0.3185
+--- H3
+  beta {'dk': np.float64(-0.0451), 'dk_pos': np.float64(0.0485), 'linkk': np.float64(-0.0372)}
+  MINE  nR= 7158 dLL/race=+0.000239 CI95=[-0.000268,+0.000753] p(one-sided)=0.1710
+  VAL   nR=  873 dLL/race=-0.000050 CI95=[-0.001455,+0.001380] p(one-sided)=0.5345
+  CONF  nR=  761 dLL/race=+0.000915 CI95=[-0.001225,+0.003097] p(one-sided)=0.2140
+--- H4
+  beta {'lng': np.float64(-0.113), 'wc': np.float64(-0.029), 'wc2': np.float64(0.0184), 'wc_lng': np.float64(0.0948)}
+  MINE  nR= 7158 dLL/race=+0.000563 CI95=[-0.000223,+0.001310] p(one-sided)=0.0745
+  VAL   nR=  873 dLL/race=+0.000348 CI95=[-0.002127,+0.002809] p(one-sided)=0.3745
+  CONF  nR=  761 dLL/race=-0.000918 CI95=[-0.003402,+0.001378] p(one-sided)=0.7810
+--- H1+H2+H3+H4
+  beta {'chg': np.float64(-0.0354), 'dk': np.float64(-0.0493), 'dk_pos': np.float64(0.0596), 'linkj': np.float64(0.6601), 'linkk': np.float64(-0.6804), 'lng': np.float64(-0.1199), 'lnrides': np.float64(-0.0016), 'newpair': np.float64(0.0217), 'wc': np.float64(-0.0304), 'wc2': np.float64(0.0175), 'wc_lng': np.float64(0.0948)}
+  MINE  nR= 7158 dLL/race=+0.001085 CI95=[-0.000008,+0.002096] p(one-sided)=0.0270
+  VAL   nR=  873 dLL/race=+0.000081 CI95=[-0.004322,+0.004138] p(one-sided)=0.4630
+  CONF  nR=  761 dLL/race=-0.001112 CI95=[-0.005607,+0.002824] p(one-sided)=0.7025

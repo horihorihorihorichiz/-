@@ -1,0 +1,45 @@
+{
+ "temp": 21,
+ "kankai_scale": 0.0,
+ "cap": 30.0,
+ "blend": {
+  "alpha": 0.0,
+  "beta": 1.0
+ },
+ "blend_place": {
+  "alpha": 0.1,
+  "beta": 0.8
+ },
+ "fitted_on": 6028,
+ "note": "fit.py Ver.100",
+ "score_weights": {
+  "tsi": 1.0013,
+  "lts": 1.0403,
+  "fsi": 0.8782,
+  "bonus": 0.9804,
+  "dsi": 1.0964,
+  "nsi": 1.0265,
+  "csi": 1.0024,
+  "was": 0.817,
+  "tas": 0.9555,
+  "hcs": 0.8944,
+  "nrja": 0.9752,
+  "kankai": 0.7452
+ },
+ "score_weights_by_surface": {
+  "芝": {
+   "tsi": 0.9564,
+   "lts": 1.0194,
+   "fsi": 0.876,
+   "bonus": 0.9756,
+   "dsi": 1.066,
+   "nsi": 0.9972,
+   "csi": 1.005,
+   "was": 0.8781,
+   "tas": 0.9892,
+   "hcs": 0.9173,
+   "nrja": 0.9757,
+   "kankai": 0.8135
+  }
+ }
+}

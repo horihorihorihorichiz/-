@@ -1,0 +1,254 @@
+{
+ "中京ダ1200": {
+  "strategy": "三連単 mkt1→2→3(1点)",
+  "mine_n": 58,
+  "mine_roi": 274.3,
+  "mine_hit": 1.7
+ },
+ "中京ダ1400": {
+  "strategy": "馬単 mkt1→2(1点)",
+  "mine_n": 85,
+  "mine_roi": 87.8,
+  "mine_hit": 7.1
+ },
+ "中京ダ1800": {
+  "strategy": "三連複 mkt上位3(1点)",
+  "mine_n": 120,
+  "mine_roi": 105.8,
+  "mine_hit": 13.3
+ },
+ "中京芝1400": {
+  "strategy": "馬連 mkt1-2(1点)",
+  "mine_n": 42,
+  "mine_roi": 106.2,
+  "mine_hit": 14.3
+ },
+ "中京芝1600": {
+  "strategy": "馬連 mdl1-2(1点)",
+  "mine_n": 56,
+  "mine_roi": 130.0,
+  "mine_hit": 16.1
+ },
+ "中京芝2000": {
+  "strategy": "三連単 mkt1→2→3(1点)",
+  "mine_n": 66,
+  "mine_roi": 166.7,
+  "mine_hit": 6.1
+ },
+ "中山ダ1200": {
+  "strategy": "馬単 mdl1→2(1点)",
+  "mine_n": 184,
+  "mine_roi": 119.1,
+  "mine_hit": 9.2
+ },
+ "中山ダ1800": {
+  "strategy": "三連単 mkt1→2→3(1点)",
+  "mine_n": 207,
+  "mine_roi": 193.8,
+  "mine_hit": 4.8
+ },
+ "中山芝1200": {
+  "strategy": "三連単 mdl上位3BOX(6点)",
+  "mine_n": 52,
+  "mine_roi": 88.0,
+  "mine_hit": 5.8
+ },
+ "中山芝1600": {
+  "strategy": "単勝 mdl1位(1点)",
+  "mine_n": 90,
+  "mine_roi": 119.4,
+  "mine_hit": 33.3
+ },
+ "中山芝1800": {
+  "strategy": "馬連 mkt1-2(1点)",
+  "mine_n": 47,
+  "mine_roi": 127.7,
+  "mine_hit": 25.5
+ },
+ "中山芝2000": {
+  "strategy": "馬単 mkt1→2(1点)",
+  "mine_n": 68,
+  "mine_roi": 97.1,
+  "mine_hit": 11.8
+ },
+ "京都ダ1200": {
+  "strategy": "三連単 mdl1→2→3(1点)",
+  "mine_n": 95,
+  "mine_roi": 116.1,
+  "mine_hit": 1.1
+ },
+ "京都ダ1400": {
+  "strategy": "馬単 mkt1→2(1点)",
+  "mine_n": 122,
+  "mine_roi": 91.6,
+  "mine_hit": 8.2
+ },
+ "京都ダ1800": {
+  "strategy": "三連複 mkt上位3(1点)",
+  "mine_n": 190,
+  "mine_roi": 94.0,
+  "mine_hit": 13.7
+ },
+ "京都ダ1900": {
+  "strategy": "三連単 mkt1→2→3(1点)",
+  "mine_n": 47,
+  "mine_roi": 409.6,
+  "mine_hit": 6.4
+ },
+ "京都芝1400": {
+  "strategy": "複勝 mkt上位2(2点)",
+  "mine_n": 54,
+  "mine_roi": 67.1,
+  "mine_hit": 66.7
+ },
+ "京都芝1600": {
+  "strategy": "三連単 mdl1→2→3(1点)",
+  "mine_n": 84,
+  "mine_roi": 176.0,
+  "mine_hit": 3.6
+ },
+ "京都芝1800": {
+  "strategy": "三連単 mkt1→2→3(1点)",
+  "mine_n": 59,
+  "mine_roi": 293.2,
+  "mine_hit": 3.4
+ },
+ "京都芝2000": {
+  "strategy": "ワイド mkt1-2(1点)",
+  "mine_n": 68,
+  "mine_roi": 96.5,
+  "mine_hit": 41.2
+ },
+ "小倉ダ1700": {
+  "strategy": "馬連 mdl1-2(1点)",
+  "mine_n": 82,
+  "mine_roi": 124.3,
+  "mine_hit": 11.0
+ },
+ "小倉芝1200": {
+  "strategy": "三連単 mkt1→2→3(1点)",
+  "mine_n": 81,
+  "mine_roi": 143.2,
+  "mine_hit": 2.5
+ },
+ "小倉芝1800": {
+  "strategy": "三連複 mkt上位3(1点)",
+  "mine_n": 45,
+  "mine_roi": 137.8,
+  "mine_hit": 13.3
+ },
+ "小倉芝2000": {
+  "strategy": "三連単 mkt1→2→3(1点)",
+  "mine_n": 49,
+  "mine_roi": 287.1,
+  "mine_hit": 6.1
+ },
+ "新潟ダ1200": {
+  "strategy": "三連複 mkt上位3(1点)",
+  "mine_n": 68,
+  "mine_roi": 117.6,
+  "mine_hit": 8.8
+ },
+ "新潟ダ1800": {
+  "strategy": "三連単 mkt1→2→3(1点)",
+  "mine_n": 88,
+  "mine_roi": 147.8,
+  "mine_hit": 3.4
+ },
+ "札幌ダ1700": {
+  "strategy": "馬単 mkt1→2(1点)",
+  "mine_n": 52,
+  "mine_roi": 165.8,
+  "mine_hit": 15.4
+ },
+ "東京ダ1400": {
+  "strategy": "三連単 mkt1→2→3(1点)",
+  "mine_n": 130,
+  "mine_roi": 136.2,
+  "mine_hit": 4.6
+ },
+ "東京ダ1600": {
+  "strategy": "馬単 mkt1→2(1点)",
+  "mine_n": 151,
+  "mine_roi": 91.7,
+  "mine_hit": 13.9
+ },
+ "東京ダ2100": {
+  "strategy": "三連単 mdl1→2→3(1点)",
+  "mine_n": 53,
+  "mine_roi": 452.1,
+  "mine_hit": 1.9
+ },
+ "東京芝1400": {
+  "strategy": "三連複 mdl上位3(1点)",
+  "mine_n": 66,
+  "mine_roi": 191.5,
+  "mine_hit": 9.1
+ },
+ "東京芝1600": {
+  "strategy": "複勝 mkt上位2(2点)",
+  "mine_n": 87,
+  "mine_roi": 89.0,
+  "mine_hit": 89.7
+ },
+ "東京芝1800": {
+  "strategy": "馬連 mdl1-2(1点)",
+  "mine_n": 80,
+  "mine_roi": 133.2,
+  "mine_hit": 18.8
+ },
+ "東京芝2000": {
+  "strategy": "三連複 mdl上位3(1点)",
+  "mine_n": 56,
+  "mine_roi": 150.7,
+  "mine_hit": 12.5
+ },
+ "東京芝2400": {
+  "strategy": "馬単 mkt1→2(1点)",
+  "mine_n": 41,
+  "mine_roi": 132.0,
+  "mine_hit": 22.0
+ },
+ "福島ダ1150": {
+  "strategy": "三連単 mkt1→2→3(1点)",
+  "mine_n": 46,
+  "mine_roi": 363.5,
+  "mine_hit": 4.3
+ },
+ "福島ダ1700": {
+  "strategy": "三連単 mkt上位3BOX(6点)",
+  "mine_n": 70,
+  "mine_roi": 91.9,
+  "mine_hit": 4.3
+ },
+ "福島芝1200": {
+  "strategy": "三連単 mdl1→2→3(1点)",
+  "mine_n": 65,
+  "mine_roi": 139.7,
+  "mine_hit": 1.5
+ },
+ "阪神ダ1200": {
+  "strategy": "馬連 mkt1-2(1点)",
+  "mine_n": 49,
+  "mine_roi": 118.0,
+  "mine_hit": 18.4
+ },
+ "阪神ダ1400": {
+  "strategy": "三連単 mdl1→2→3(1点)",
+  "mine_n": 72,
+  "mine_roi": 632.9,
+  "mine_hit": 4.2
+ },
+ "阪神ダ1800": {
+  "strategy": "馬単 mdl1→2(1点)",
+  "mine_n": 112,
+  "mine_roi": 137.2,
+  "mine_hit": 10.7
+ },
+ "阪神芝1600": {
+  "strategy": "馬単 mkt1→2(1点)",
+  "mine_n": 50,
+  "mine_roi": 133.6,
+  "mine_hit": 14.0
+ }
+}

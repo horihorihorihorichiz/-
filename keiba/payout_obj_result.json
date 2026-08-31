@@ -1,0 +1,6729 @@
+{
+ "n_races": {
+  "MINE": 4440,
+  "VALIDATE": 874,
+  "CONFIRM": 676
+ },
+ "tau": {
+  "M1": 0.984,
+  "M2": 0.862,
+  "M2c": 0.693,
+  "M3-l2": 0.255,
+  "M3-huber": 0.648,
+  "M3-log": 0.715,
+  "M4-l2": 0.273,
+  "M4-huber": 0.847,
+  "M4-log": 0.89,
+  "M5": 0.29
+ },
+ "flat": {
+  "M1": {
+   "MINE": {
+    "n": 4440,
+    "win_roi_ci": [
+     71.3,
+     81.3
+    ],
+    "win_hit": 26.44,
+    "win_roi": 75.96,
+    "win_avg_pay": 287.3,
+    "pl_hit": 57.03,
+    "pl_roi": 81.77,
+    "pl_avg_pay": 143.4,
+    "avg_ninki": 2.02
+   },
+   "VALIDATE": {
+    "n": 874,
+    "win_roi_ci": [
+     65.4,
+     86.7
+    ],
+    "win_hit": 26.32,
+    "win_roi": 75.58,
+    "win_avg_pay": 287.2,
+    "pl_hit": 59.27,
+    "pl_roi": 82.52,
+    "pl_avg_pay": 139.2,
+    "avg_ninki": 1.93
+   },
+   "CONFIRM": {
+    "n": 676,
+    "win_roi_ci": [
+     65.6,
+     89.7
+    ],
+    "win_hit": 26.48,
+    "win_roi": 77.57,
+    "win_avg_pay": 293.0,
+    "pl_hit": 56.51,
+    "pl_roi": 81.08,
+    "pl_avg_pay": 143.5,
+    "avg_ninki": 1.9
+   }
+  },
+  "M2": {
+   "MINE": {
+    "n": 4440,
+    "win_roi_ci": [
+     71.2,
+     84.1
+    ],
+    "win_hit": 22.41,
+    "win_roi": 77.41,
+    "win_avg_pay": 345.4,
+    "pl_hit": 50.32,
+    "pl_roi": 82.24,
+    "pl_avg_pay": 163.5,
+    "avg_ninki": 2.81
+   },
+   "VALIDATE": {
+    "n": 874,
+    "win_roi_ci": [
+     60.4,
+     86.4
+    ],
+    "win_hit": 22.08,
+    "win_roi": 72.95,
+    "win_avg_pay": 330.4,
+    "pl_hit": 52.86,
+    "pl_roi": 82.99,
+    "pl_avg_pay": 157.0,
+    "avg_ninki": 2.73
+   },
+   "CONFIRM": {
+    "n": 676,
+    "win_roi_ci": [
+     63.4,
+     92.7
+    ],
+    "win_hit": 22.78,
+    "win_roi": 77.49,
+    "win_avg_pay": 340.1,
+    "pl_hit": 51.78,
+    "pl_roi": 80.41,
+    "pl_avg_pay": 155.3,
+    "avg_ninki": 2.76
+   }
+  },
+  "M2c": {
+   "MINE": {
+    "n": 4440,
+    "win_roi_ci": [
+     73.4,
+     83.3
+    ],
+    "win_hit": 27.34,
+    "win_roi": 78.33,
+    "win_avg_pay": 286.5,
+    "pl_hit": 57.12,
+    "pl_roi": 80.87,
+    "pl_avg_pay": 141.6,
+    "avg_ninki": 1.91
+   },
+   "VALIDATE": {
+    "n": 874,
+    "win_roi_ci": [
+     64.9,
+     89.1
+    ],
+    "win_hit": 26.32,
+    "win_roi": 76.3,
+    "win_avg_pay": 290.0,
+    "pl_hit": 57.89,
+    "pl_roi": 80.51,
+    "pl_avg_pay": 139.1,
+    "avg_ninki": 1.96
+   },
+   "CONFIRM": {
+    "n": 676,
+    "win_roi_ci": [
+     65.7,
+     90.3
+    ],
+    "win_hit": 27.22,
+    "win_roi": 77.94,
+    "win_avg_pay": 286.4,
+    "pl_hit": 57.69,
+    "pl_roi": 80.47,
+    "pl_avg_pay": 139.5,
+    "avg_ninki": 1.82
+   }
+  },
+  "M3-l2": {
+   "MINE": {
+    "n": 4440,
+    "win_roi_ci": [
+     49.1,
+     80.2
+    ],
+    "win_hit": 8.09,
+    "win_roi": 62.99,
+    "win_avg_pay": 779.1,
+    "pl_hit": 21.96,
+    "pl_roi": 66.89,
+    "pl_avg_pay": 304.6,
+    "avg_ninki": 7.61
+   },
+   "VALIDATE": {
+    "n": 874,
+    "win_roi_ci": [
+     36.8,
+     196.2
+    ],
+    "win_hit": 6.86,
+    "win_roi": 98.36,
+    "win_avg_pay": 1432.8,
+    "pl_hit": 18.88,
+    "pl_roi": 57.12,
+    "pl_avg_pay": 302.5,
+    "avg_ninki": 8.3
+   },
+   "CONFIRM": {
+    "n": 676,
+    "win_roi_ci": [
+     43.0,
+     141.6
+    ],
+    "win_hit": 7.4,
+    "win_roi": 85.58,
+    "win_avg_pay": 1157.0,
+    "pl_hit": 22.19,
+    "pl_roi": 79.64,
+    "pl_avg_pay": 358.9,
+    "avg_ninki": 8.04
+   }
+  },
+  "M3-huber": {
+   "MINE": {
+    "n": 4440,
+    "win_roi_ci": [
+     74.2,
+     84.7
+    ],
+    "win_hit": 27.43,
+    "win_roi": 79.42,
+    "win_avg_pay": 289.5,
+    "pl_hit": 57.64,
+    "pl_roi": 82.65,
+    "pl_avg_pay": 143.4,
+    "avg_ninki": 1.98
+   },
+   "VALIDATE": {
+    "n": 874,
+    "win_roi_ci": [
+     65.5,
+     88.4
+    ],
+    "win_hit": 26.09,
+    "win_roi": 76.5,
+    "win_avg_pay": 293.2,
+    "pl_hit": 59.5,
+    "pl_roi": 83.97,
+    "pl_avg_pay": 141.1,
+    "avg_ninki": 2.03
+   },
+   "CONFIRM": {
+    "n": 676,
+    "win_roi_ci": [
+     65.6,
+     91.3
+    ],
+    "win_hit": 26.92,
+    "win_roi": 78.33,
+    "win_avg_pay": 290.9,
+    "pl_hit": 58.14,
+    "pl_roi": 84.35,
+    "pl_avg_pay": 145.1,
+    "avg_ninki": 1.89
+   }
+  },
+  "M3-log": {
+   "MINE": {
+    "n": 4440,
+    "win_roi_ci": [
+     72.8,
+     82.3
+    ],
+    "win_hit": 27.0,
+    "win_roi": 77.3,
+    "win_avg_pay": 286.2,
+    "pl_hit": 57.09,
+    "pl_roi": 81.81,
+    "pl_avg_pay": 143.3,
+    "avg_ninki": 1.99
+   },
+   "VALIDATE": {
+    "n": 874,
+    "win_roi_ci": [
+     66.8,
+     91.1
+    ],
+    "win_hit": 26.43,
+    "win_roi": 78.59,
+    "win_avg_pay": 297.4,
+    "pl_hit": 58.24,
+    "pl_roi": 80.9,
+    "pl_avg_pay": 138.9,
+    "avg_ninki": 1.94
+   },
+   "CONFIRM": {
+    "n": 676,
+    "win_roi_ci": [
+     63.6,
+     87.4
+    ],
+    "win_hit": 26.33,
+    "win_roi": 74.93,
+    "win_avg_pay": 284.6,
+    "pl_hit": 57.1,
+    "pl_roi": 82.75,
+    "pl_avg_pay": 144.9,
+    "avg_ninki": 1.89
+   }
+  },
+  "M4-l2": {
+   "MINE": {
+    "n": 4440,
+    "win_roi_ci": [
+     53.9,
+     83.5
+    ],
+    "win_hit": 5.77,
+    "win_roi": 68.54,
+    "win_avg_pay": 1188.7,
+    "pl_hit": 18.27,
+    "pl_roi": 73.46,
+    "pl_avg_pay": 402.2,
+    "avg_ninki": 8.67
+   },
+   "VALIDATE": {
+    "n": 874,
+    "win_roi_ci": [
+     32.5,
+     149.2
+    ],
+    "win_hit": 6.06,
+    "win_roi": 80.84,
+    "win_avg_pay": 1333.0,
+    "pl_hit": 20.94,
+    "pl_roi": 72.86,
+    "pl_avg_pay": 348.0,
+    "avg_ninki": 8.18
+   },
+   "CONFIRM": {
+    "n": 676,
+    "win_roi_ci": [
+     43.2,
+     110.4
+    ],
+    "win_hit": 8.73,
+    "win_roi": 74.11,
+    "win_avg_pay": 849.2,
+    "pl_hit": 23.96,
+    "pl_roi": 71.29,
+    "pl_avg_pay": 297.5,
+    "avg_ninki": 7.61
+   }
+  },
+  "M4-huber": {
+   "MINE": {
+    "n": 4440,
+    "win_roi_ci": [
+     70.4,
+     80.1
+    ],
+    "win_hit": 25.65,
+    "win_roi": 75.2,
+    "win_avg_pay": 293.1,
+    "pl_hit": 56.44,
+    "pl_roi": 81.59,
+    "pl_avg_pay": 144.5,
+    "avg_ninki": 2.03
+   },
+   "VALIDATE": {
+    "n": 874,
+    "win_roi_ci": [
+     66.6,
+     88.3
+    ],
+    "win_hit": 26.77,
+    "win_roi": 76.92,
+    "win_avg_pay": 287.3,
+    "pl_hit": 59.95,
+    "pl_roi": 84.54,
+    "pl_avg_pay": 141.0,
+    "avg_ninki": 1.92
+   },
+   "CONFIRM": {
+    "n": 676,
+    "win_roi_ci": [
+     72.1,
+     98.0
+    ],
+    "win_hit": 27.51,
+    "win_roi": 84.9,
+    "win_avg_pay": 308.5,
+    "pl_hit": 57.1,
+    "pl_roi": 80.5,
+    "pl_avg_pay": 141.0,
+    "avg_ninki": 1.88
+   }
+  },
+  "M4-log": {
+   "MINE": {
+    "n": 4440,
+    "win_roi_ci": [
+     69.6,
+     79.1
+    ],
+    "win_hit": 25.38,
+    "win_roi": 74.26,
+    "win_avg_pay": 292.6,
+    "pl_hit": 55.99,
+    "pl_roi": 81.52,
+    "pl_avg_pay": 145.6,
+    "avg_ninki": 2.08
+   },
+   "VALIDATE": {
+    "n": 874,
+    "win_roi_ci": [
+     64.2,
+     83.4
+    ],
+    "win_hit": 27.23,
+    "win_roi": 73.25,
+    "win_avg_pay": 269.0,
+    "pl_hit": 58.81,
+    "pl_roi": 81.93,
+    "pl_avg_pay": 139.3,
+    "avg_ninki": 1.92
+   },
+   "CONFIRM": {
+    "n": 676,
+    "win_roi_ci": [
+     65.1,
+     89.7
+    ],
+    "win_hit": 26.18,
+    "win_roi": 77.34,
+    "win_avg_pay": 295.4,
+    "pl_hit": 57.54,
+    "pl_roi": 80.12,
+    "pl_avg_pay": 139.2,
+    "avg_ninki": 1.83
+   }
+  },
+  "M5": {
+   "MINE": {
+    "n": 4440,
+    "win_roi_ci": [
+     78.4,
+     130.3
+    ],
+    "win_hit": 13.63,
+    "win_roi": 101.13,
+    "win_avg_pay": 742.2,
+    "pl_hit": 32.34,
+    "pl_roi": 73.88,
+    "pl_avg_pay": 228.4,
+    "avg_ninki": 5.59
+   },
+   "VALIDATE": {
+    "n": 874,
+    "win_roi_ci": [
+     42.7,
+     75.0
+    ],
+    "win_hit": 11.44,
+    "win_roi": 57.7,
+    "win_avg_pay": 504.3,
+    "pl_hit": 31.92,
+    "pl_roi": 74.62,
+    "pl_avg_pay": 233.8,
+    "avg_ninki": 5.91
+   },
+   "CONFIRM": {
+    "n": 676,
+    "win_roi_ci": [
+     49.2,
+     136.2
+    ],
+    "win_hit": 14.35,
+    "win_roi": 86.39,
+    "win_avg_pay": 602.1,
+    "pl_hit": 33.14,
+    "pl_roi": 79.42,
+    "pl_avg_pay": 239.7,
+    "avg_ninki": 5.19
+   }
+  }
+ },
+ "alpha": {
+  "M1": {
+   "MINE": {
+    "win": {
+     "alpha": -0.1294,
+     "se": 0.0278,
+     "z": -4.66,
+     "beta": 1.108,
+     "n": 4440
+    },
+    "place": {
+     "alpha": -0.0363,
+     "se": 0.0165,
+     "z": -2.2,
+     "beta": 0.8482,
+     "n": 4440
+    }
+   },
+   "VALIDATE": {
+    "win": {
+     "alpha": -0.1037,
+     "se": 0.0636,
+     "z": -1.63,
+     "beta": 1.0665,
+     "n": 874
+    },
+    "place": {
+     "alpha": 0.0242,
+     "se": 0.0402,
+     "z": 0.6,
+     "beta": 0.8656,
+     "n": 874
+    }
+   },
+   "CONFIRM": {
+    "win": {
+     "alpha": -0.2217,
+     "se": 0.078,
+     "z": -2.84,
+     "beta": 1.1944,
+     "n": 676
+    },
+    "place": {
+     "alpha": 0.0115,
+     "se": 0.0455,
+     "z": 0.25,
+     "beta": 0.7903,
+     "n": 676
+    }
+   }
+  },
+  "M2": {
+   "MINE": {
+    "win": {
+     "alpha": -0.0807,
+     "se": 0.0268,
+     "z": -3.01,
+     "beta": 1.0645,
+     "n": 4440
+    },
+    "place": {
+     "alpha": -0.0064,
+     "se": 0.0161,
+     "z": -0.4,
+     "beta": 0.8288,
+     "n": 4440
+    }
+   },
+   "VALIDATE": {
+    "win": {
+     "alpha": -0.0955,
+     "se": 0.073,
+     "z": -1.31,
+     "beta": 1.0401,
+     "n": 874
+    },
+    "place": {
+     "alpha": 0.086,
+     "se": 0.0427,
+     "z": 2.02,
+     "beta": 0.8423,
+     "n": 874
+    }
+   },
+   "CONFIRM": {
+    "win": {
+     "alpha": -0.1313,
+     "se": 0.0829,
+     "z": -1.58,
+     "beta": 1.1037,
+     "n": 676
+    },
+    "place": {
+     "alpha": 0.0349,
+     "se": 0.0477,
+     "z": 0.73,
+     "beta": 0.7814,
+     "n": 676
+    }
+   }
+  },
+  "M2c": {
+   "MINE": {
+    "win": {
+     "alpha": -0.0791,
+     "se": 0.0273,
+     "z": -2.9,
+     "beta": 1.0752,
+     "n": 4440
+    },
+    "place": {
+     "alpha": -0.0803,
+     "se": 0.0168,
+     "z": -4.78,
+     "beta": 0.8677,
+     "n": 4440
+    }
+   },
+   "VALIDATE": {
+    "win": {
+     "alpha": -0.1301,
+     "se": 0.0619,
+     "z": -2.1,
+     "beta": 1.0834,
+     "n": 874
+    },
+    "place": {
+     "alpha": -0.0634,
+     "se": 0.0408,
+     "z": -1.56,
+     "beta": 0.9146,
+     "n": 874
+    }
+   },
+   "CONFIRM": {
+    "win": {
+     "alpha": -0.2377,
+     "se": 0.0753,
+     "z": -3.16,
+     "beta": 1.2062,
+     "n": 676
+    },
+    "place": {
+     "alpha": -0.0735,
+     "se": 0.0465,
+     "z": -1.58,
+     "beta": 0.8374,
+     "n": 676
+    }
+   }
+  },
+  "M3-l2": {
+   "MINE": {
+    "win": {
+     "alpha": 0.0016,
+     "se": 0.0332,
+     "z": 0.05,
+     "beta": 1.0242,
+     "n": 4440
+    },
+    "place": {
+     "alpha": 0.0567,
+     "se": 0.0213,
+     "z": 2.66,
+     "beta": 0.8216,
+     "n": 4440
+    }
+   },
+   "VALIDATE": {
+    "win": {
+     "alpha": -0.139,
+     "se": 0.0807,
+     "z": -1.72,
+     "beta": 1.0068,
+     "n": 874
+    },
+    "place": {
+     "alpha": 0.0223,
+     "se": 0.0503,
+     "z": 0.44,
+     "beta": 0.8793,
+     "n": 874
+    }
+   },
+   "CONFIRM": {
+    "win": {
+     "alpha": 0.0817,
+     "se": 0.0915,
+     "z": 0.89,
+     "beta": 1.0397,
+     "n": 676
+    },
+    "place": {
+     "alpha": 0.1538,
+     "se": 0.0536,
+     "z": 2.87,
+     "beta": 0.7872,
+     "n": 676
+    }
+   }
+  },
+  "M3-huber": {
+   "MINE": {
+    "win": {
+     "alpha": -0.0646,
+     "se": 0.0268,
+     "z": -2.41,
+     "beta": 1.064,
+     "n": 4440
+    },
+    "place": {
+     "alpha": -0.0652,
+     "se": 0.0168,
+     "z": -3.87,
+     "beta": 0.8573,
+     "n": 4440
+    }
+   },
+   "VALIDATE": {
+    "win": {
+     "alpha": -0.1189,
+     "se": 0.0618,
+     "z": -1.92,
+     "beta": 1.0712,
+     "n": 874
+    },
+    "place": {
+     "alpha": -0.0602,
+     "se": 0.0405,
+     "z": -1.49,
+     "beta": 0.9103,
+     "n": 874
+    }
+   },
+   "CONFIRM": {
+    "win": {
+     "alpha": -0.214,
+     "se": 0.0777,
+     "z": -2.75,
+     "beta": 1.1822,
+     "n": 676
+    },
+    "place": {
+     "alpha": -0.0929,
+     "se": 0.0469,
+     "z": -1.98,
+     "beta": 0.8442,
+     "n": 676
+    }
+   }
+  },
+  "M3-log": {
+   "MINE": {
+    "win": {
+     "alpha": -0.0753,
+     "se": 0.0271,
+     "z": -2.77,
+     "beta": 1.0721,
+     "n": 4440
+    },
+    "place": {
+     "alpha": -0.0713,
+     "se": 0.017,
+     "z": -4.2,
+     "beta": 0.8632,
+     "n": 4440
+    }
+   },
+   "VALIDATE": {
+    "win": {
+     "alpha": -0.1307,
+     "se": 0.0631,
+     "z": -2.07,
+     "beta": 1.0825,
+     "n": 874
+    },
+    "place": {
+     "alpha": -0.0834,
+     "se": 0.0411,
+     "z": -2.03,
+     "beta": 0.9257,
+     "n": 874
+    }
+   },
+   "CONFIRM": {
+    "win": {
+     "alpha": -0.2356,
+     "se": 0.0768,
+     "z": -3.07,
+     "beta": 1.202,
+     "n": 676
+    },
+    "place": {
+     "alpha": -0.0831,
+     "se": 0.047,
+     "z": -1.77,
+     "beta": 0.843,
+     "n": 676
+    }
+   }
+  },
+  "M4-l2": {
+   "MINE": {
+    "win": {
+     "alpha": -0.006,
+     "se": 0.0334,
+     "z": -0.18,
+     "beta": 1.0247,
+     "n": 4440
+    },
+    "place": {
+     "alpha": 0.1443,
+     "se": 0.0214,
+     "z": 6.75,
+     "beta": 0.8159,
+     "n": 4440
+    }
+   },
+   "VALIDATE": {
+    "win": {
+     "alpha": -0.1252,
+     "se": 0.0756,
+     "z": -1.66,
+     "beta": 1.0069,
+     "n": 874
+    },
+    "place": {
+     "alpha": 0.1733,
+     "se": 0.0522,
+     "z": 3.32,
+     "beta": 0.8676,
+     "n": 874
+    }
+   },
+   "CONFIRM": {
+    "win": {
+     "alpha": 0.0715,
+     "se": 0.0907,
+     "z": 0.79,
+     "beta": 1.0391,
+     "n": 676
+    },
+    "place": {
+     "alpha": 0.1496,
+     "se": 0.0554,
+     "z": 2.7,
+     "beta": 0.7842,
+     "n": 676
+    }
+   }
+  },
+  "M4-huber": {
+   "MINE": {
+    "win": {
+     "alpha": -0.1078,
+     "se": 0.0276,
+     "z": -3.9,
+     "beta": 1.0945,
+     "n": 4440
+    },
+    "place": {
+     "alpha": -0.0255,
+     "se": 0.0169,
+     "z": -1.51,
+     "beta": 0.8409,
+     "n": 4440
+    }
+   },
+   "VALIDATE": {
+    "win": {
+     "alpha": -0.0873,
+     "se": 0.065,
+     "z": -1.34,
+     "beta": 1.0568,
+     "n": 874
+    },
+    "place": {
+     "alpha": 0.0148,
+     "se": 0.0411,
+     "z": 0.36,
+     "beta": 0.8716,
+     "n": 874
+    }
+   },
+   "CONFIRM": {
+    "win": {
+     "alpha": -0.2072,
+     "se": 0.0785,
+     "z": -2.64,
+     "beta": 1.186,
+     "n": 676
+    },
+    "place": {
+     "alpha": -0.0046,
+     "se": 0.0464,
+     "z": -0.1,
+     "beta": 0.8004,
+     "n": 676
+    }
+   }
+  },
+  "M4-log": {
+   "MINE": {
+    "win": {
+     "alpha": -0.1028,
+     "se": 0.0275,
+     "z": -3.74,
+     "beta": 1.0912,
+     "n": 4440
+    },
+    "place": {
+     "alpha": -0.0164,
+     "se": 0.0168,
+     "z": -0.98,
+     "beta": 0.8356,
+     "n": 4440
+    }
+   },
+   "VALIDATE": {
+    "win": {
+     "alpha": -0.1023,
+     "se": 0.0657,
+     "z": -1.56,
+     "beta": 1.0676,
+     "n": 874
+    },
+    "place": {
+     "alpha": 0.0388,
+     "se": 0.042,
+     "z": 0.92,
+     "beta": 0.8564,
+     "n": 874
+    }
+   },
+   "CONFIRM": {
+    "win": {
+     "alpha": -0.1992,
+     "se": 0.0795,
+     "z": -2.51,
+     "beta": 1.1812,
+     "n": 676
+    },
+    "place": {
+     "alpha": 0.023,
+     "se": 0.0465,
+     "z": 0.49,
+     "beta": 0.7831,
+     "n": 676
+    }
+   }
+  },
+  "M5": {
+   "MINE": {
+    "win": {
+     "alpha": -0.0375,
+     "se": 0.0353,
+     "z": -1.06,
+     "beta": 1.0279,
+     "n": 4440
+    },
+    "place": {
+     "alpha": -0.0122,
+     "se": 0.0228,
+     "z": -0.54,
+     "beta": 0.8267,
+     "n": 4440
+    }
+   },
+   "VALIDATE": {
+    "win": {
+     "alpha": -0.0989,
+     "se": 0.084,
+     "z": -1.18,
+     "beta": 1.0054,
+     "n": 874
+    },
+    "place": {
+     "alpha": 0.0018,
+     "se": 0.0553,
+     "z": 0.03,
+     "beta": 0.8806,
+     "n": 874
+    }
+   },
+   "CONFIRM": {
+    "win": {
+     "alpha": -0.0187,
+     "se": 0.0891,
+     "z": -0.21,
+     "beta": 1.0469,
+     "n": 676
+    },
+    "place": {
+     "alpha": -0.0283,
+     "se": 0.0551,
+     "z": -0.51,
+     "beta": 0.8002,
+     "n": 676
+    }
+   }
+  }
+ },
+ "ev": {
+  "M1": {
+   "MINE": {
+    "win": {
+     "n": 29335,
+     "hit": 1.88,
+     "roi": 59.76
+    },
+    "place": {
+     "n": 11340,
+     "hit": 4.4,
+     "roi": 49.5
+    }
+   },
+   "VALIDATE": {
+    "win": {
+     "n": 5938,
+     "hit": 1.82,
+     "roi": 67.52
+    },
+    "place": {
+     "n": 2500,
+     "hit": 4.08,
+     "roi": 42.16
+    }
+   },
+   "CONFIRM": {
+    "win": {
+     "n": 4270,
+     "hit": 1.97,
+     "roi": 51.01
+    },
+    "place": {
+     "n": 1486,
+     "hit": 5.38,
+     "roi": 63.03
+    }
+   }
+  },
+  "M2": {
+   "MINE": {
+    "win": {
+     "n": 32042,
+     "hit": 1.87,
+     "roi": 61.92
+    },
+    "place": {
+     "n": 14907,
+     "hit": 5.11,
+     "roi": 55.01
+    }
+   },
+   "VALIDATE": {
+    "win": {
+     "n": 6707,
+     "hit": 1.86,
+     "roi": 71.75
+    },
+    "place": {
+     "n": 3222,
+     "hit": 4.25,
+     "roi": 45.59
+    }
+   },
+   "CONFIRM": {
+    "win": {
+     "n": 4795,
+     "hit": 1.75,
+     "roi": 55.2
+    },
+    "place": {
+     "n": 2042,
+     "hit": 5.24,
+     "roi": 58.25
+    }
+   }
+  },
+  "M2c": {
+   "MINE": {
+    "win": {
+     "n": 31016,
+     "hit": 1.78,
+     "roi": 61.69
+    },
+    "place": {
+     "n": 16999,
+     "hit": 3.79,
+     "roi": 54.07
+    }
+   },
+   "VALIDATE": {
+    "win": {
+     "n": 6199,
+     "hit": 1.6,
+     "roi": 68.65
+    },
+    "place": {
+     "n": 3650,
+     "hit": 3.37,
+     "roi": 49.74
+    }
+   },
+   "CONFIRM": {
+    "win": {
+     "n": 4472,
+     "hit": 1.77,
+     "roi": 53.19
+    },
+    "place": {
+     "n": 2375,
+     "hit": 3.79,
+     "roi": 53.34
+    }
+   }
+  },
+  "M3-l2": {
+   "MINE": {
+    "win": {
+     "n": 36263,
+     "hit": 1.63,
+     "roi": 67.22
+    },
+    "place": {
+     "n": 23890,
+     "hit": 4.29,
+     "roi": 59.29
+    }
+   },
+   "VALIDATE": {
+    "win": {
+     "n": 7275,
+     "hit": 1.5,
+     "roi": 71.98
+    },
+    "place": {
+     "n": 5002,
+     "hit": 3.9,
+     "roi": 55.41
+    }
+   },
+   "CONFIRM": {
+    "win": {
+     "n": 5287,
+     "hit": 1.65,
+     "roi": 62.58
+    },
+    "place": {
+     "n": 3494,
+     "hit": 5.24,
+     "roi": 64.39
+    }
+   }
+  },
+  "M3-huber": {
+   "MINE": {
+    "win": {
+     "n": 31525,
+     "hit": 1.78,
+     "roi": 62.46
+    },
+    "place": {
+     "n": 18063,
+     "hit": 3.87,
+     "roi": 53.95
+    }
+   },
+   "VALIDATE": {
+    "win": {
+     "n": 6344,
+     "hit": 1.62,
+     "roi": 69.33
+    },
+    "place": {
+     "n": 3825,
+     "hit": 3.61,
+     "roi": 52.2
+    }
+   },
+   "CONFIRM": {
+    "win": {
+     "n": 4554,
+     "hit": 1.8,
+     "roi": 55.09
+    },
+    "place": {
+     "n": 2518,
+     "hit": 3.89,
+     "roi": 54.17
+    }
+   }
+  },
+  "M3-log": {
+   "MINE": {
+    "win": {
+     "n": 31164,
+     "hit": 1.79,
+     "roi": 61.36
+    },
+    "place": {
+     "n": 16689,
+     "hit": 3.85,
+     "roi": 52.83
+    }
+   },
+   "VALIDATE": {
+    "win": {
+     "n": 6246,
+     "hit": 1.83,
+     "roi": 71.08
+    },
+    "place": {
+     "n": 3608,
+     "hit": 3.52,
+     "roi": 49.0
+    }
+   },
+   "CONFIRM": {
+    "win": {
+     "n": 4497,
+     "hit": 1.76,
+     "roi": 52.84
+    },
+    "place": {
+     "n": 2308,
+     "hit": 3.73,
+     "roi": 52.33
+    }
+   }
+  },
+  "M4-l2": {
+   "MINE": {
+    "win": {
+     "n": 36340,
+     "hit": 1.63,
+     "roi": 67.39
+    },
+    "place": {
+     "n": 23966,
+     "hit": 4.39,
+     "roi": 59.32
+    }
+   },
+   "VALIDATE": {
+    "win": {
+     "n": 7372,
+     "hit": 1.59,
+     "roi": 72.59
+    },
+    "place": {
+     "n": 4965,
+     "hit": 3.95,
+     "roi": 55.73
+    }
+   },
+   "CONFIRM": {
+    "win": {
+     "n": 5317,
+     "hit": 1.73,
+     "roi": 63.09
+    },
+    "place": {
+     "n": 3471,
+     "hit": 4.84,
+     "roi": 61.56
+    }
+   }
+  },
+  "M4-huber": {
+   "MINE": {
+    "win": {
+     "n": 30241,
+     "hit": 1.86,
+     "roi": 61.13
+    },
+    "place": {
+     "n": 13425,
+     "hit": 3.89,
+     "roi": 49.19
+    }
+   },
+   "VALIDATE": {
+    "win": {
+     "n": 6018,
+     "hit": 1.96,
+     "roi": 74.47
+    },
+    "place": {
+     "n": 2891,
+     "hit": 3.56,
+     "roi": 43.5
+    }
+   },
+   "CONFIRM": {
+    "win": {
+     "n": 4370,
+     "hit": 2.04,
+     "roi": 52.16
+    },
+    "place": {
+     "n": 1833,
+     "hit": 3.93,
+     "roi": 54.1
+    }
+   }
+  },
+  "M4-log": {
+   "MINE": {
+    "win": {
+     "n": 30015,
+     "hit": 1.85,
+     "roi": 59.67
+    },
+    "place": {
+     "n": 12628,
+     "hit": 4.01,
+     "roi": 48.66
+    }
+   },
+   "VALIDATE": {
+    "win": {
+     "n": 6034,
+     "hit": 1.92,
+     "roi": 71.89
+    },
+    "place": {
+     "n": 2738,
+     "hit": 3.58,
+     "roi": 44.42
+    }
+   },
+   "CONFIRM": {
+    "win": {
+     "n": 4334,
+     "hit": 1.87,
+     "roi": 48.3
+    },
+    "place": {
+     "n": 1682,
+     "hit": 4.46,
+     "roi": 58.55
+    }
+   }
+  },
+  "M5": {
+   "MINE": {
+    "win": {
+     "n": 36046,
+     "hit": 1.6,
+     "roi": 66.69
+    },
+    "place": {
+     "n": 23734,
+     "hit": 4.23,
+     "roi": 58.62
+    }
+   },
+   "VALIDATE": {
+    "win": {
+     "n": 7239,
+     "hit": 1.59,
+     "roi": 73.61
+    },
+    "place": {
+     "n": 4928,
+     "hit": 4.22,
+     "roi": 59.03
+    }
+   },
+   "CONFIRM": {
+    "win": {
+     "n": 5257,
+     "hit": 1.56,
+     "roi": 60.72
+    },
+    "place": {
+     "n": 3446,
+     "hit": 4.76,
+     "roi": 61.18
+    }
+   }
+  }
+ },
+ "ev_direct": {
+  "M3-l2": {
+   "MINE": {
+    "pred>=0": {
+     "n": 3162,
+     "hit": 7.08,
+     "roi": 77.29
+    },
+    "pred>=20": {
+     "n": 1912,
+     "hit": 6.38,
+     "roi": 73.81
+    },
+    "pred>=50": {
+     "n": 1045,
+     "hit": 6.12,
+     "roi": 72.05
+    },
+    "pred>=100": {
+     "n": 474,
+     "hit": 5.49,
+     "roi": 111.03
+    }
+   },
+   "VALIDATE": {
+    "pred>=0": {
+     "n": 274,
+     "hit": 3.65,
+     "roi": 44.27
+    },
+    "pred>=20": {
+     "n": 130,
+     "hit": 3.08,
+     "roi": 16.62
+    },
+    "pred>=50": {
+     "n": 55,
+     "hit": 3.64,
+     "roi": 26.0
+    },
+    "pred>=100": {
+     "n": 29,
+     "hit": 3.45,
+     "roi": 27.93
+    }
+   },
+   "CONFIRM": {
+    "pred>=0": {
+     "n": 188,
+     "hit": 4.26,
+     "roi": 57.13
+    },
+    "pred>=20": {
+     "n": 77,
+     "hit": 3.9,
+     "roi": 87.66
+    },
+    "pred>=50": {
+     "n": 25,
+     "hit": 4.0,
+     "roi": 40.0
+    },
+    "pred>=100": {
+     "n": 8,
+     "hit": 0.0,
+     "roi": 0.0
+    }
+   }
+  },
+  "M3-huber": {
+   "MINE": {
+    "pred>=0": {
+     "n": 65,
+     "hit": 44.62,
+     "roi": 68.77
+    },
+    "pred>=20": {
+     "n": 10,
+     "hit": 50.0,
+     "roi": 71.0
+    },
+    "pred>=50": {
+     "n": 0,
+     "hit": 0.0,
+     "roi": 0.0
+    },
+    "pred>=100": {
+     "n": 0,
+     "hit": 0.0,
+     "roi": 0.0
+    }
+   },
+   "VALIDATE": {
+    "pred>=0": {
+     "n": 4,
+     "hit": 25.0,
+     "roi": 47.5
+    },
+    "pred>=20": {
+     "n": 0,
+     "hit": 0.0,
+     "roi": 0.0
+    },
+    "pred>=50": {
+     "n": 0,
+     "hit": 0.0,
+     "roi": 0.0
+    },
+    "pred>=100": {
+     "n": 0,
+     "hit": 0.0,
+     "roi": 0.0
+    }
+   },
+   "CONFIRM": {
+    "pred>=0": {
+     "n": 5,
+     "hit": 40.0,
+     "roi": 64.0
+    },
+    "pred>=20": {
+     "n": 2,
+     "hit": 0.0,
+     "roi": 0.0
+    },
+    "pred>=50": {
+     "n": 0,
+     "hit": 0.0,
+     "roi": 0.0
+    },
+    "pred>=100": {
+     "n": 0,
+     "hit": 0.0,
+     "roi": 0.0
+    }
+   }
+  },
+  "M3-log": {
+   "MINE": {
+    "pred>=0": {
+     "n": 138,
+     "hit": 42.03,
+     "roi": 68.33
+    },
+    "pred>=20": {
+     "n": 0,
+     "hit": 0.0,
+     "roi": 0.0
+    },
+    "pred>=50": {
+     "n": 0,
+     "hit": 0.0,
+     "roi": 0.0
+    },
+    "pred>=100": {
+     "n": 0,
+     "hit": 0.0,
+     "roi": 0.0
+    }
+   },
+   "VALIDATE": {
+    "pred>=0": {
+     "n": 26,
+     "hit": 53.85,
+     "roi": 97.69
+    },
+    "pred>=20": {
+     "n": 0,
+     "hit": 0.0,
+     "roi": 0.0
+    },
+    "pred>=50": {
+     "n": 0,
+     "hit": 0.0,
+     "roi": 0.0
+    },
+    "pred>=100": {
+     "n": 0,
+     "hit": 0.0,
+     "roi": 0.0
+    }
+   },
+   "CONFIRM": {
+    "pred>=0": {
+     "n": 18,
+     "hit": 50.0,
+     "roi": 80.0
+    },
+    "pred>=20": {
+     "n": 0,
+     "hit": 0.0,
+     "roi": 0.0
+    },
+    "pred>=50": {
+     "n": 0,
+     "hit": 0.0,
+     "roi": 0.0
+    },
+    "pred>=100": {
+     "n": 0,
+     "hit": 0.0,
+     "roi": 0.0
+    }
+   }
+  },
+  "M4-l2": {
+   "MINE": {
+    "pred>=0": {
+     "n": 2998,
+     "hit": 3.67,
+     "roi": 64.46
+    },
+    "pred>=20": {
+     "n": 1306,
+     "hit": 3.29,
+     "roi": 72.96
+    },
+    "pred>=50": {
+     "n": 460,
+     "hit": 2.61,
+     "roi": 39.8
+    },
+    "pred>=100": {
+     "n": 117,
+     "hit": 5.13,
+     "roi": 52.65
+    }
+   },
+   "VALIDATE": {
+    "pred>=0": {
+     "n": 366,
+     "hit": 2.19,
+     "roi": 47.13
+    },
+    "pred>=20": {
+     "n": 162,
+     "hit": 1.23,
+     "roi": 6.54
+    },
+    "pred>=50": {
+     "n": 62,
+     "hit": 1.61,
+     "roi": 12.58
+    },
+    "pred>=100": {
+     "n": 18,
+     "hit": 0.0,
+     "roi": 0.0
+    }
+   },
+   "CONFIRM": {
+    "pred>=0": {
+     "n": 237,
+     "hit": 3.8,
+     "roi": 65.78
+    },
+    "pred>=20": {
+     "n": 95,
+     "hit": 3.16,
+     "roi": 64.84
+    },
+    "pred>=50": {
+     "n": 35,
+     "hit": 5.71,
+     "roi": 142.0
+    },
+    "pred>=100": {
+     "n": 7,
+     "hit": 0.0,
+     "roi": 0.0
+    }
+   }
+  },
+  "M4-huber": {
+   "MINE": {
+    "pred>=0": {
+     "n": 231,
+     "hit": 42.42,
+     "roi": 87.01
+    },
+    "pred>=20": {
+     "n": 0,
+     "hit": 0.0,
+     "roi": 0.0
+    },
+    "pred>=50": {
+     "n": 0,
+     "hit": 0.0,
+     "roi": 0.0
+    },
+    "pred>=100": {
+     "n": 0,
+     "hit": 0.0,
+     "roi": 0.0
+    }
+   },
+   "VALIDATE": {
+    "pred>=0": {
+     "n": 44,
+     "hit": 50.0,
+     "roi": 99.77
+    },
+    "pred>=20": {
+     "n": 0,
+     "hit": 0.0,
+     "roi": 0.0
+    },
+    "pred>=50": {
+     "n": 0,
+     "hit": 0.0,
+     "roi": 0.0
+    },
+    "pred>=100": {
+     "n": 0,
+     "hit": 0.0,
+     "roi": 0.0
+    }
+   },
+   "CONFIRM": {
+    "pred>=0": {
+     "n": 36,
+     "hit": 30.56,
+     "roi": 52.78
+    },
+    "pred>=20": {
+     "n": 0,
+     "hit": 0.0,
+     "roi": 0.0
+    },
+    "pred>=50": {
+     "n": 0,
+     "hit": 0.0,
+     "roi": 0.0
+    },
+    "pred>=100": {
+     "n": 0,
+     "hit": 0.0,
+     "roi": 0.0
+    }
+   }
+  },
+  "M4-log": {
+   "MINE": {
+    "pred>=0": {
+     "n": 3216,
+     "hit": 29.35,
+     "roi": 78.92
+    },
+    "pred>=20": {
+     "n": 0,
+     "hit": 0.0,
+     "roi": 0.0
+    },
+    "pred>=50": {
+     "n": 0,
+     "hit": 0.0,
+     "roi": 0.0
+    },
+    "pred>=100": {
+     "n": 0,
+     "hit": 0.0,
+     "roi": 0.0
+    }
+   },
+   "VALIDATE": {
+    "pred>=0": {
+     "n": 649,
+     "hit": 31.12,
+     "roi": 79.57
+    },
+    "pred>=20": {
+     "n": 0,
+     "hit": 0.0,
+     "roi": 0.0
+    },
+    "pred>=50": {
+     "n": 0,
+     "hit": 0.0,
+     "roi": 0.0
+    },
+    "pred>=100": {
+     "n": 0,
+     "hit": 0.0,
+     "roi": 0.0
+    }
+   },
+   "CONFIRM": {
+    "pred>=0": {
+     "n": 510,
+     "hit": 29.02,
+     "roi": 76.55
+    },
+    "pred>=20": {
+     "n": 0,
+     "hit": 0.0,
+     "roi": 0.0
+    },
+    "pred>=50": {
+     "n": 0,
+     "hit": 0.0,
+     "roi": 0.0
+    },
+    "pred>=100": {
+     "n": 0,
+     "hit": 0.0,
+     "roi": 0.0
+    }
+   }
+  }
+ },
+ "filters": {
+  "M1": {
+   "a_top10%": {
+    "VALIDATE": {
+     "n": 123,
+     "win_roi_ci": [
+      58.1,
+      94.8
+     ],
+     "win_hit": 39.02,
+     "win_roi": 75.53,
+     "win_avg_pay": 193.5,
+     "pl_hit": 73.17,
+     "pl_roi": 86.67,
+     "pl_avg_pay": 118.4,
+     "avg_ninki": 1.2,
+     "skip_rate": 85.9
+    },
+    "CONFIRM": {
+     "n": 75,
+     "win_roi_ci": [
+      45.6,
+      91.2
+     ],
+     "win_hit": 37.33,
+     "win_roi": 67.6,
+     "win_avg_pay": 181.1,
+     "pl_hit": 66.67,
+     "pl_roi": 79.07,
+     "pl_avg_pay": 118.6,
+     "avg_ninki": 1.09,
+     "skip_rate": 88.9
+    }
+   },
+   "b_gap10%": {
+    "VALIDATE": {
+     "n": 100,
+     "win_roi_ci": [
+      49.4,
+      86.5
+     ],
+     "win_hit": 38.0,
+     "win_roi": 66.6,
+     "win_avg_pay": 175.3,
+     "pl_hit": 72.0,
+     "pl_roi": 86.3,
+     "pl_avg_pay": 119.9,
+     "avg_ninki": 1.13,
+     "skip_rate": 88.6
+    },
+    "CONFIRM": {
+     "n": 69,
+     "win_roi_ci": [
+      52.6,
+      96.8
+     ],
+     "win_hit": 43.48,
+     "win_roi": 73.48,
+     "win_avg_pay": 169.0,
+     "pl_hit": 75.36,
+     "pl_roi": 88.99,
+     "pl_avg_pay": 118.1,
+     "avg_ninki": 1.17,
+     "skip_rate": 89.8
+    }
+   },
+   "a_top20%": {
+    "VALIDATE": {
+     "n": 215,
+     "win_roi_ci": [
+      61.6,
+      89.8
+     ],
+     "win_hit": 37.21,
+     "win_roi": 75.16,
+     "win_avg_pay": 202.0,
+     "pl_hit": 73.95,
+     "pl_roi": 90.05,
+     "pl_avg_pay": 121.8,
+     "avg_ninki": 1.2,
+     "skip_rate": 75.4
+    },
+    "CONFIRM": {
+     "n": 137,
+     "win_roi_ci": [
+      53.6,
+      91.8
+     ],
+     "win_hit": 35.04,
+     "win_roi": 71.75,
+     "win_avg_pay": 204.8,
+     "pl_hit": 70.07,
+     "pl_roi": 87.66,
+     "pl_avg_pay": 125.1,
+     "avg_ninki": 1.33,
+     "skip_rate": 79.7
+    }
+   },
+   "b_gap20%": {
+    "VALIDATE": {
+     "n": 182,
+     "win_roi_ci": [
+      50.0,
+      81.0
+     ],
+     "win_hit": 32.97,
+     "win_roi": 64.95,
+     "win_avg_pay": 197.0,
+     "pl_hit": 70.33,
+     "pl_roi": 85.16,
+     "pl_avg_pay": 121.1,
+     "avg_ninki": 1.39,
+     "skip_rate": 79.2
+    },
+    "CONFIRM": {
+     "n": 136,
+     "win_roi_ci": [
+      70.1,
+      129.9
+     ],
+     "win_hit": 41.91,
+     "win_roi": 96.84,
+     "win_avg_pay": 231.1,
+     "pl_hit": 72.79,
+     "pl_roi": 90.59,
+     "pl_avg_pay": 124.4,
+     "avg_ninki": 1.39,
+     "skip_rate": 79.9
+    }
+   },
+   "a_top30%": {
+    "VALIDATE": {
+     "n": 303,
+     "win_roi_ci": [
+      59.1,
+      85.1
+     ],
+     "win_hit": 33.66,
+     "win_roi": 71.85,
+     "win_avg_pay": 213.4,
+     "pl_hit": 72.61,
+     "pl_roi": 90.1,
+     "pl_avg_pay": 124.1,
+     "avg_ninki": 1.35,
+     "skip_rate": 65.3
+    },
+    "CONFIRM": {
+     "n": 206,
+     "win_roi_ci": [
+      59.7,
+      105.2
+     ],
+     "win_hit": 32.04,
+     "win_roi": 80.39,
+     "win_avg_pay": 250.9,
+     "pl_hit": 69.9,
+     "pl_roi": 89.37,
+     "pl_avg_pay": 127.8,
+     "avg_ninki": 1.44,
+     "skip_rate": 69.5
+    }
+   },
+   "b_gap30%": {
+    "VALIDATE": {
+     "n": 273,
+     "win_roi_ci": [
+      56.6,
+      85.0
+     ],
+     "win_hit": 32.97,
+     "win_roi": 70.07,
+     "win_avg_pay": 212.6,
+     "pl_hit": 67.4,
+     "pl_roi": 82.12,
+     "pl_avg_pay": 121.8,
+     "avg_ninki": 1.41,
+     "skip_rate": 68.8
+    },
+    "CONFIRM": {
+     "n": 196,
+     "win_roi_ci": [
+      70.3,
+      115.0
+     ],
+     "win_hit": 39.8,
+     "win_roi": 91.12,
+     "win_avg_pay": 229.0,
+     "pl_hit": 70.41,
+     "pl_roi": 89.18,
+     "pl_avg_pay": 126.7,
+     "avg_ninki": 1.45,
+     "skip_rate": 71.0
+    }
+   },
+   "a_top50%": {
+    "VALIDATE": {
+     "n": 476,
+     "win_roi_ci": [
+      60.7,
+      82.7
+     ],
+     "win_hit": 30.04,
+     "win_roi": 71.53,
+     "win_avg_pay": 238.1,
+     "pl_hit": 66.6,
+     "pl_roi": 85.69,
+     "pl_avg_pay": 128.7,
+     "avg_ninki": 1.51,
+     "skip_rate": 45.5
+    },
+    "CONFIRM": {
+     "n": 329,
+     "win_roi_ci": [
+      59.6,
+      91.5
+     ],
+     "win_hit": 30.09,
+     "win_roi": 75.02,
+     "win_avg_pay": 249.3,
+     "pl_hit": 65.05,
+     "pl_roi": 85.87,
+     "pl_avg_pay": 132.0,
+     "avg_ninki": 1.57,
+     "skip_rate": 51.3
+    }
+   },
+   "b_gap50%": {
+    "VALIDATE": {
+     "n": 439,
+     "win_roi_ci": [
+      60.6,
+      90.7
+     ],
+     "win_hit": 29.84,
+     "win_roi": 74.94,
+     "win_avg_pay": 251.1,
+     "pl_hit": 62.41,
+     "pl_roi": 79.64,
+     "pl_avg_pay": 127.6,
+     "avg_ninki": 1.59,
+     "skip_rate": 49.8
+    },
+    "CONFIRM": {
+     "n": 337,
+     "win_roi_ci": [
+      66.7,
+      101.8
+     ],
+     "win_hit": 32.94,
+     "win_roi": 83.77,
+     "win_avg_pay": 254.3,
+     "pl_hit": 64.39,
+     "pl_roi": 89.55,
+     "pl_avg_pay": 139.1,
+     "avg_ninki": 1.62,
+     "skip_rate": 50.1
+    }
+   },
+   "c_odds<2": {
+    "VALIDATE": {
+     "n": 153,
+     "win_roi_ci": [
+      68.6,
+      94.2
+     ],
+     "win_hit": 50.98,
+     "win_roi": 81.18,
+     "win_avg_pay": 159.2,
+     "pl_hit": 83.01,
+     "pl_roi": 91.05,
+     "pl_avg_pay": 109.7,
+     "avg_ninki": 1.0,
+     "skip_rate": 82.5
+    },
+    "CONFIRM": {
+     "n": 125,
+     "win_roi_ci": [
+      66.1,
+      93.4
+     ],
+     "win_hit": 51.2,
+     "win_roi": 79.92,
+     "win_avg_pay": 156.1,
+     "pl_hit": 81.6,
+     "pl_roi": 89.68,
+     "pl_avg_pay": 109.9,
+     "avg_ninki": 1.0,
+     "skip_rate": 81.5
+    }
+   },
+   "c_odds2-4": {
+    "VALIDATE": {
+     "n": 438,
+     "win_roi_ci": [
+      59.2,
+      82.2
+     ],
+     "win_hit": 26.48,
+     "win_roi": 70.55,
+     "win_avg_pay": 266.4,
+     "pl_hit": 66.21,
+     "pl_roi": 86.51,
+     "pl_avg_pay": 130.7,
+     "avg_ninki": 1.29,
+     "skip_rate": 49.9
+    },
+    "CONFIRM": {
+     "n": 317,
+     "win_roi_ci": [
+      58.3,
+      85.8
+     ],
+     "win_hit": 25.87,
+     "win_roi": 71.55,
+     "win_avg_pay": 276.6,
+     "pl_hit": 59.62,
+     "pl_roi": 79.12,
+     "pl_avg_pay": 132.7,
+     "avg_ninki": 1.26,
+     "skip_rate": 53.1
+    }
+   },
+   "c_odds4-7": {
+    "VALIDATE": {
+     "n": 196,
+     "win_roi_ci": [
+      52.4,
+      105.9
+     ],
+     "win_hit": 14.8,
+     "win_roi": 76.84,
+     "win_avg_pay": 519.3,
+     "pl_hit": 41.84,
+     "pl_roi": 73.93,
+     "pl_avg_pay": 176.7,
+     "avg_ninki": 2.51,
+     "skip_rate": 77.6
+    },
+    "CONFIRM": {
+     "n": 171,
+     "win_roi_ci": [
+      49.7,
+      103.7
+     ],
+     "win_hit": 15.2,
+     "win_roi": 76.14,
+     "win_avg_pay": 500.8,
+     "pl_hit": 42.11,
+     "pl_roi": 74.04,
+     "pl_avg_pay": 175.8,
+     "avg_ninki": 2.57,
+     "skip_rate": 74.7
+    }
+   },
+   "c_odds7-15": {
+    "VALIDATE": {
+     "n": 68,
+     "win_roi_ci": [
+      12.8,
+      112.2
+     ],
+     "win_hit": 7.35,
+     "win_roi": 60.29,
+     "win_avg_pay": 820.0,
+     "pl_hit": 20.59,
+     "pl_roi": 56.91,
+     "pl_avg_pay": 276.4,
+     "avg_ninki": 4.76,
+     "skip_rate": 92.2
+    },
+    "CONFIRM": {
+     "n": 51,
+     "win_roi_ci": [
+      36.5,
+      231.0
+     ],
+     "win_hit": 13.73,
+     "win_roi": 132.35,
+     "win_avg_pay": 964.3,
+     "pl_hit": 33.33,
+     "pl_roi": 76.27,
+     "pl_avg_pay": 228.8,
+     "avg_ninki": 4.49,
+     "skip_rate": 92.5
+    }
+   },
+   "c_odds15-50": {
+    "VALIDATE": {
+     "n": 19,
+     "win_roi_ci": [
+      0.0,
+      458.9
+     ],
+     "win_hit": 10.53,
+     "win_roi": 188.42,
+     "win_avg_pay": 1790.0,
+     "pl_hit": 26.32,
+     "pl_roi": 102.11,
+     "pl_avg_pay": 388.0,
+     "avg_ninki": 8.11,
+     "skip_rate": 97.8
+    },
+    "CONFIRM": {
+     "n": 10,
+     "win_roi_ci": [
+      0.0,
+      0.0
+     ],
+     "win_hit": 0.0,
+     "win_roi": 0.0,
+     "win_avg_pay": 0.0,
+     "pl_hit": 20.0,
+     "pl_roi": 197.0,
+     "pl_avg_pay": 985.0,
+     "avg_ninki": 7.2,
+     "skip_rate": 98.5
+    }
+   },
+   "c_odds>=50": {
+    "VALIDATE": {
+     "n": 0,
+     "skip_rate": 100.0
+    },
+    "CONFIRM": {
+     "n": 2,
+     "win_roi_ci": [
+      0.0,
+      0.0
+     ],
+     "win_hit": 0.0,
+     "win_roi": 0.0,
+     "win_avg_pay": 0.0,
+     "pl_hit": 0.0,
+     "pl_roi": 0.0,
+     "pl_avg_pay": 0.0,
+     "avg_ninki": 11.0,
+     "skip_rate": 99.7
+    }
+   }
+  },
+  "M2": {
+   "a_top10%": {
+    "VALIDATE": {
+     "n": 3,
+     "win_roi_ci": [
+      0.0,
+      0.0
+     ],
+     "win_hit": 0.0,
+     "win_roi": 0.0,
+     "win_avg_pay": 0.0,
+     "pl_hit": 66.67,
+     "pl_roi": 90.0,
+     "pl_avg_pay": 135.0,
+     "avg_ninki": 1.0,
+     "skip_rate": 99.7
+    },
+    "CONFIRM": {
+     "n": 2,
+     "win_roi_ci": [
+      0.0,
+      0.0
+     ],
+     "win_hit": 0.0,
+     "win_roi": 0.0,
+     "win_avg_pay": 0.0,
+     "pl_hit": 50.0,
+     "pl_roi": 55.0,
+     "pl_avg_pay": 110.0,
+     "avg_ninki": 1.0,
+     "skip_rate": 99.7
+    }
+   },
+   "b_gap10%": {
+    "VALIDATE": {
+     "n": 11,
+     "win_roi_ci": [
+      26.4,
+      137.3
+     ],
+     "win_hit": 45.45,
+     "win_roi": 79.09,
+     "win_avg_pay": 174.0,
+     "pl_hit": 63.64,
+     "pl_roi": 83.64,
+     "pl_avg_pay": 131.4,
+     "avg_ninki": 1.36,
+     "skip_rate": 98.7
+    },
+    "CONFIRM": {
+     "n": 11,
+     "win_roi_ci": [
+      0.0,
+      70.0
+     ],
+     "win_hit": 27.27,
+     "win_roi": 33.64,
+     "win_avg_pay": 123.3,
+     "pl_hit": 54.55,
+     "pl_roi": 70.91,
+     "pl_avg_pay": 130.0,
+     "avg_ninki": 2.0,
+     "skip_rate": 98.4
+    }
+   },
+   "a_top20%": {
+    "VALIDATE": {
+     "n": 21,
+     "win_roi_ci": [
+      34.3,
+      305.7
+     ],
+     "win_hit": 38.1,
+     "win_roi": 136.19,
+     "win_avg_pay": 357.5,
+     "pl_hit": 76.19,
+     "pl_roi": 114.76,
+     "pl_avg_pay": 150.6,
+     "avg_ninki": 1.76,
+     "skip_rate": 97.6
+    },
+    "CONFIRM": {
+     "n": 9,
+     "win_roi_ci": [
+      0.0,
+      83.3
+     ],
+     "win_hit": 22.22,
+     "win_roi": 35.56,
+     "win_avg_pay": 160.0,
+     "pl_hit": 55.56,
+     "pl_roi": 73.33,
+     "pl_avg_pay": 132.0,
+     "avg_ninki": 1.78,
+     "skip_rate": 98.7
+    }
+   },
+   "b_gap20%": {
+    "VALIDATE": {
+     "n": 62,
+     "win_roi_ci": [
+      36.9,
+      156.0
+     ],
+     "win_hit": 29.03,
+     "win_roi": 88.55,
+     "win_avg_pay": 305.0,
+     "pl_hit": 59.68,
+     "pl_roi": 85.48,
+     "pl_avg_pay": 143.2,
+     "avg_ninki": 2.27,
+     "skip_rate": 92.9
+    },
+    "CONFIRM": {
+     "n": 37,
+     "win_roi_ci": [
+      24.9,
+      86.2
+     ],
+     "win_hit": 27.03,
+     "win_roi": 52.97,
+     "win_avg_pay": 196.0,
+     "pl_hit": 59.46,
+     "pl_roi": 80.27,
+     "pl_avg_pay": 135.0,
+     "avg_ninki": 2.03,
+     "skip_rate": 94.5
+    }
+   },
+   "a_top30%": {
+    "VALIDATE": {
+     "n": 52,
+     "win_roi_ci": [
+      30.0,
+      148.1
+     ],
+     "win_hit": 28.85,
+     "win_roi": 76.35,
+     "win_avg_pay": 264.7,
+     "pl_hit": 63.46,
+     "pl_roi": 92.5,
+     "pl_avg_pay": 145.8,
+     "avg_ninki": 1.81,
+     "skip_rate": 94.1
+    },
+    "CONFIRM": {
+     "n": 25,
+     "win_roi_ci": [
+      15.2,
+      124.8
+     ],
+     "win_hit": 24.0,
+     "win_roi": 61.6,
+     "win_avg_pay": 256.7,
+     "pl_hit": 56.0,
+     "pl_roi": 78.4,
+     "pl_avg_pay": 140.0,
+     "avg_ninki": 1.84,
+     "skip_rate": 96.3
+    }
+   },
+   "b_gap30%": {
+    "VALIDATE": {
+     "n": 128,
+     "win_roi_ci": [
+      61.0,
+      163.7
+     ],
+     "win_hit": 30.47,
+     "win_roi": 105.08,
+     "win_avg_pay": 344.9,
+     "pl_hit": 64.06,
+     "pl_roi": 98.2,
+     "pl_avg_pay": 153.3,
+     "avg_ninki": 2.27,
+     "skip_rate": 85.4
+    },
+    "CONFIRM": {
+     "n": 79,
+     "win_roi_ci": [
+      32.8,
+      89.2
+     ],
+     "win_hit": 22.78,
+     "win_roi": 58.48,
+     "win_avg_pay": 256.7,
+     "pl_hit": 58.23,
+     "pl_roi": 80.13,
+     "pl_avg_pay": 137.6,
+     "avg_ninki": 2.08,
+     "skip_rate": 88.3
+    }
+   },
+   "a_top50%": {
+    "VALIDATE": {
+     "n": 157,
+     "win_roi_ci": [
+      54.8,
+      121.5
+     ],
+     "win_hit": 29.3,
+     "win_roi": 85.1,
+     "win_avg_pay": 290.4,
+     "pl_hit": 64.33,
+     "pl_roi": 105.29,
+     "pl_avg_pay": 163.7,
+     "avg_ninki": 2.17,
+     "skip_rate": 82.0
+    },
+    "CONFIRM": {
+     "n": 83,
+     "win_roi_ci": [
+      34.3,
+      94.9
+     ],
+     "win_hit": 25.3,
+     "win_roi": 63.37,
+     "win_avg_pay": 250.5,
+     "pl_hit": 59.04,
+     "pl_roi": 80.12,
+     "pl_avg_pay": 135.7,
+     "avg_ninki": 2.18,
+     "skip_rate": 87.7
+    }
+   },
+   "b_gap50%": {
+    "VALIDATE": {
+     "n": 294,
+     "win_roi_ci": [
+      58.5,
+      109.2
+     ],
+     "win_hit": 26.19,
+     "win_roi": 81.22,
+     "win_avg_pay": 310.1,
+     "pl_hit": 59.18,
+     "pl_roi": 92.62,
+     "pl_avg_pay": 156.5,
+     "avg_ninki": 2.41,
+     "skip_rate": 66.4
+    },
+    "CONFIRM": {
+     "n": 214,
+     "win_roi_ci": [
+      68.6,
+      128.8
+     ],
+     "win_hit": 28.5,
+     "win_roi": 96.78,
+     "win_avg_pay": 339.5,
+     "pl_hit": 57.01,
+     "pl_roi": 82.71,
+     "pl_avg_pay": 145.1,
+     "avg_ninki": 2.29,
+     "skip_rate": 68.3
+    }
+   },
+   "c_odds<2": {
+    "VALIDATE": {
+     "n": 113,
+     "win_roi_ci": [
+      64.6,
+      93.7
+     ],
+     "win_hit": 50.44,
+     "win_roi": 78.85,
+     "win_avg_pay": 156.3,
+     "pl_hit": 83.19,
+     "pl_roi": 90.44,
+     "pl_avg_pay": 108.7,
+     "avg_ninki": 1.0,
+     "skip_rate": 87.1
+    },
+    "CONFIRM": {
+     "n": 97,
+     "win_roi_ci": [
+      67.5,
+      99.9
+     ],
+     "win_hit": 53.61,
+     "win_roi": 83.2,
+     "win_avg_pay": 155.2,
+     "pl_hit": 83.51,
+     "pl_roi": 91.75,
+     "pl_avg_pay": 109.9,
+     "avg_ninki": 1.0,
+     "skip_rate": 85.7
+    }
+   },
+   "c_odds2-4": {
+    "VALIDATE": {
+     "n": 348,
+     "win_roi_ci": [
+      60.8,
+      86.1
+     ],
+     "win_hit": 27.3,
+     "win_roi": 72.96,
+     "win_avg_pay": 267.3,
+     "pl_hit": 64.66,
+     "pl_roi": 84.11,
+     "pl_avg_pay": 130.1,
+     "avg_ninki": 1.29,
+     "skip_rate": 60.2
+    },
+    "CONFIRM": {
+     "n": 239,
+     "win_roi_ci": [
+      53.6,
+      84.6
+     ],
+     "win_hit": 25.1,
+     "win_roi": 68.49,
+     "win_avg_pay": 272.8,
+     "pl_hit": 64.85,
+     "pl_roi": 88.66,
+     "pl_avg_pay": 136.7,
+     "avg_ninki": 1.34,
+     "skip_rate": 64.6
+    }
+   },
+   "c_odds4-7": {
+    "VALIDATE": {
+     "n": 202,
+     "win_roi_ci": [
+      42.0,
+      89.4
+     ],
+     "win_hit": 12.87,
+     "win_roi": 64.16,
+     "win_avg_pay": 498.5,
+     "pl_hit": 43.56,
+     "pl_roi": 76.93,
+     "pl_avg_pay": 176.6,
+     "avg_ninki": 2.61,
+     "skip_rate": 76.9
+    },
+    "CONFIRM": {
+     "n": 168,
+     "win_roi_ci": [
+      65.5,
+      127.3
+     ],
+     "win_hit": 18.45,
+     "win_roi": 94.7,
+     "win_avg_pay": 513.2,
+     "pl_hit": 42.26,
+     "pl_roi": 76.79,
+     "pl_avg_pay": 181.7,
+     "avg_ninki": 2.68,
+     "skip_rate": 75.1
+    }
+   },
+   "c_odds7-15": {
+    "VALIDATE": {
+     "n": 130,
+     "win_roi_ci": [
+      33.2,
+      114.2
+     ],
+     "win_hit": 8.46,
+     "win_roi": 71.38,
+     "win_avg_pay": 843.6,
+     "pl_hit": 30.77,
+     "pl_roi": 75.69,
+     "pl_avg_pay": 246.0,
+     "avg_ninki": 4.85,
+     "skip_rate": 85.1
+    },
+    "CONFIRM": {
+     "n": 112,
+     "win_roi_ci": [
+      31.0,
+      121.3
+     ],
+     "win_hit": 8.04,
+     "win_roi": 72.14,
+     "win_avg_pay": 897.8,
+     "pl_hit": 31.25,
+     "pl_roi": 74.2,
+     "pl_avg_pay": 237.4,
+     "avg_ninki": 4.72,
+     "skip_rate": 83.4
+    }
+   },
+   "c_odds15-50": {
+    "VALIDATE": {
+     "n": 65,
+     "win_roi_ci": [
+      23.5,
+      228.8
+     ],
+     "win_hit": 6.15,
+     "win_roi": 111.08,
+     "win_avg_pay": 1805.0,
+     "pl_hit": 21.54,
+     "pl_roi": 96.31,
+     "pl_avg_pay": 447.1,
+     "avg_ninki": 7.28,
+     "skip_rate": 92.6
+    },
+    "CONFIRM": {
+     "n": 55,
+     "win_roi_ci": [
+      0.0,
+      182.9
+     ],
+     "win_hit": 3.64,
+     "win_roi": 71.82,
+     "win_avg_pay": 1975.0,
+     "pl_hit": 14.55,
+     "pl_roi": 55.64,
+     "pl_avg_pay": 382.5,
+     "avg_ninki": 7.55,
+     "skip_rate": 91.9
+    }
+   },
+   "c_odds>=50": {
+    "VALIDATE": {
+     "n": 16,
+     "win_roi_ci": [
+      0.0,
+      0.0
+     ],
+     "win_hit": 0.0,
+     "win_roi": 0.0,
+     "win_avg_pay": 0.0,
+     "pl_hit": 6.25,
+     "pl_roi": 87.5,
+     "pl_avg_pay": 1400.0,
+     "avg_ninki": 12.19,
+     "skip_rate": 98.2
+    },
+    "CONFIRM": {
+     "n": 5,
+     "win_roi_ci": [
+      0.0,
+      0.0
+     ],
+     "win_hit": 0.0,
+     "win_roi": 0.0,
+     "win_avg_pay": 0.0,
+     "pl_hit": 0.0,
+     "pl_roi": 0.0,
+     "pl_avg_pay": 0.0,
+     "avg_ninki": 10.8,
+     "skip_rate": 99.3
+    }
+   }
+  },
+  "M2c": {
+   "a_top10%": {
+    "VALIDATE": {
+     "n": 110,
+     "win_roi_ci": [
+      37.7,
+      69.4
+     ],
+     "win_hit": 30.0,
+     "win_roi": 52.64,
+     "win_avg_pay": 175.5,
+     "pl_hit": 69.09,
+     "pl_roi": 81.73,
+     "pl_avg_pay": 118.3,
+     "avg_ninki": 1.18,
+     "skip_rate": 87.4
+    },
+    "CONFIRM": {
+     "n": 62,
+     "win_roi_ci": [
+      35.0,
+      77.6
+     ],
+     "win_hit": 32.26,
+     "win_roi": 55.97,
+     "win_avg_pay": 173.5,
+     "pl_hit": 70.97,
+     "pl_roi": 85.16,
+     "pl_avg_pay": 120.0,
+     "avg_ninki": 1.13,
+     "skip_rate": 90.8
+    }
+   },
+   "b_gap10%": {
+    "VALIDATE": {
+     "n": 105,
+     "win_roi_ci": [
+      44.2,
+      80.3
+     ],
+     "win_hit": 34.29,
+     "win_roi": 61.71,
+     "win_avg_pay": 180.0,
+     "pl_hit": 67.62,
+     "pl_roi": 80.95,
+     "pl_avg_pay": 119.7,
+     "avg_ninki": 1.27,
+     "skip_rate": 88.0
+    },
+    "CONFIRM": {
+     "n": 67,
+     "win_roi_ci": [
+      35.5,
+      72.9
+     ],
+     "win_hit": 32.84,
+     "win_roi": 53.43,
+     "win_avg_pay": 162.7,
+     "pl_hit": 67.16,
+     "pl_roi": 79.7,
+     "pl_avg_pay": 118.7,
+     "avg_ninki": 1.16,
+     "skip_rate": 90.1
+    }
+   },
+   "a_top20%": {
+    "VALIDATE": {
+     "n": 198,
+     "win_roi_ci": [
+      46.1,
+      74.4
+     ],
+     "win_hit": 29.8,
+     "win_roi": 59.6,
+     "win_avg_pay": 200.0,
+     "pl_hit": 65.15,
+     "pl_roi": 79.8,
+     "pl_avg_pay": 122.5,
+     "avg_ninki": 1.34,
+     "skip_rate": 77.3
+    },
+    "CONFIRM": {
+     "n": 119,
+     "win_roi_ci": [
+      43.4,
+      80.0
+     ],
+     "win_hit": 31.09,
+     "win_roi": 60.5,
+     "win_avg_pay": 194.6,
+     "pl_hit": 65.55,
+     "pl_roi": 80.59,
+     "pl_avg_pay": 122.9,
+     "avg_ninki": 1.23,
+     "skip_rate": 82.4
+    }
+   },
+   "b_gap20%": {
+    "VALIDATE": {
+     "n": 201,
+     "win_roi_ci": [
+      47.8,
+      76.2
+     ],
+     "win_hit": 31.34,
+     "win_roi": 61.64,
+     "win_avg_pay": 196.7,
+     "pl_hit": 63.68,
+     "pl_roi": 77.26,
+     "pl_avg_pay": 121.3,
+     "avg_ninki": 1.36,
+     "skip_rate": 77.0
+    },
+    "CONFIRM": {
+     "n": 128,
+     "win_roi_ci": [
+      54.0,
+      86.7
+     ],
+     "win_hit": 39.06,
+     "win_roi": 70.23,
+     "win_avg_pay": 179.8,
+     "pl_hit": 71.88,
+     "pl_roi": 86.64,
+     "pl_avg_pay": 120.5,
+     "avg_ninki": 1.29,
+     "skip_rate": 81.1
+    }
+   },
+   "a_top30%": {
+    "VALIDATE": {
+     "n": 304,
+     "win_roi_ci": [
+      55.2,
+      80.9
+     ],
+     "win_hit": 30.92,
+     "win_roi": 67.66,
+     "win_avg_pay": 218.8,
+     "pl_hit": 63.49,
+     "pl_roi": 79.11,
+     "pl_avg_pay": 124.6,
+     "avg_ninki": 1.42,
+     "skip_rate": 65.2
+    },
+    "CONFIRM": {
+     "n": 179,
+     "win_roi_ci": [
+      45.8,
+      90.2
+     ],
+     "win_hit": 27.93,
+     "win_roi": 65.08,
+     "win_avg_pay": 233.0,
+     "pl_hit": 63.13,
+     "pl_roi": 81.12,
+     "pl_avg_pay": 128.5,
+     "avg_ninki": 1.34,
+     "skip_rate": 73.5
+    }
+   },
+   "b_gap30%": {
+    "VALIDATE": {
+     "n": 283,
+     "win_roi_ci": [
+      51.4,
+      77.5
+     ],
+     "win_hit": 30.04,
+     "win_roi": 64.1,
+     "win_avg_pay": 213.4,
+     "pl_hit": 61.48,
+     "pl_roi": 75.8,
+     "pl_avg_pay": 123.3,
+     "avg_ninki": 1.42,
+     "skip_rate": 67.6
+    },
+    "CONFIRM": {
+     "n": 198,
+     "win_roi_ci": [
+      53.6,
+      81.5
+     ],
+     "win_hit": 35.35,
+     "win_roi": 67.22,
+     "win_avg_pay": 190.1,
+     "pl_hit": 69.7,
+     "pl_roi": 86.97,
+     "pl_avg_pay": 124.8,
+     "avg_ninki": 1.35,
+     "skip_rate": 70.7
+    }
+   },
+   "a_top50%": {
+    "VALIDATE": {
+     "n": 466,
+     "win_roi_ci": [
+      58.5,
+      81.9
+     ],
+     "win_hit": 28.97,
+     "win_roi": 69.81,
+     "win_avg_pay": 241.0,
+     "pl_hit": 63.3,
+     "pl_roi": 82.68,
+     "pl_avg_pay": 130.6,
+     "avg_ninki": 1.5,
+     "skip_rate": 46.7
+    },
+    "CONFIRM": {
+     "n": 312,
+     "win_roi_ci": [
+      55.4,
+      87.4
+     ],
+     "win_hit": 29.49,
+     "win_roi": 70.48,
+     "win_avg_pay": 239.0,
+     "pl_hit": 62.5,
+     "pl_roi": 81.99,
+     "pl_avg_pay": 131.2,
+     "avg_ninki": 1.46,
+     "skip_rate": 53.8
+    }
+   },
+   "b_gap50%": {
+    "VALIDATE": {
+     "n": 449,
+     "win_roi_ci": [
+      53.0,
+      75.3
+     ],
+     "win_hit": 27.84,
+     "win_roi": 63.94,
+     "win_avg_pay": 229.7,
+     "pl_hit": 61.92,
+     "pl_roi": 79.13,
+     "pl_avg_pay": 127.8,
+     "avg_ninki": 1.52,
+     "skip_rate": 48.6
+    },
+    "CONFIRM": {
+     "n": 334,
+     "win_roi_ci": [
+      57.5,
+      88.1
+     ],
+     "win_hit": 30.24,
+     "win_roi": 72.19,
+     "win_avg_pay": 238.7,
+     "pl_hit": 62.87,
+     "pl_roi": 81.47,
+     "pl_avg_pay": 129.6,
+     "avg_ninki": 1.48,
+     "skip_rate": 50.6
+    }
+   },
+   "c_odds<2": {
+    "VALIDATE": {
+     "n": 159,
+     "win_roi_ci": [
+      66.0,
+      91.5
+     ],
+     "win_hit": 49.06,
+     "win_roi": 78.18,
+     "win_avg_pay": 159.4,
+     "pl_hit": 83.02,
+     "pl_roi": 91.07,
+     "pl_avg_pay": 109.7,
+     "avg_ninki": 1.0,
+     "skip_rate": 81.8
+    },
+    "CONFIRM": {
+     "n": 133,
+     "win_roi_ci": [
+      69.2,
+      96.8
+     ],
+     "win_hit": 52.63,
+     "win_roi": 83.01,
+     "win_avg_pay": 157.7,
+     "pl_hit": 84.21,
+     "pl_roi": 93.23,
+     "pl_avg_pay": 110.7,
+     "avg_ninki": 1.0,
+     "skip_rate": 80.3
+    }
+   },
+   "c_odds2-4": {
+    "VALIDATE": {
+     "n": 436,
+     "win_roi_ci": [
+      62.0,
+      84.9
+     ],
+     "win_hit": 27.52,
+     "win_roi": 72.84,
+     "win_avg_pay": 264.7,
+     "pl_hit": 65.37,
+     "pl_roi": 85.11,
+     "pl_avg_pay": 130.2,
+     "avg_ninki": 1.27,
+     "skip_rate": 50.1
+    },
+    "CONFIRM": {
+     "n": 344,
+     "win_roi_ci": [
+      55.2,
+      80.9
+     ],
+     "win_hit": 24.42,
+     "win_roi": 67.7,
+     "win_avg_pay": 277.3,
+     "pl_hit": 58.14,
+     "pl_roi": 78.17,
+     "pl_avg_pay": 134.4,
+     "avg_ninki": 1.29,
+     "skip_rate": 49.1
+    }
+   },
+   "c_odds4-7": {
+    "VALIDATE": {
+     "n": 190,
+     "win_roi_ci": [
+      34.3,
+      80.7
+     ],
+     "win_hit": 11.58,
+     "win_roi": 56.84,
+     "win_avg_pay": 490.9,
+     "pl_hit": 34.74,
+     "pl_roi": 59.74,
+     "pl_avg_pay": 172.0,
+     "avg_ninki": 2.54,
+     "skip_rate": 78.3
+    },
+    "CONFIRM": {
+     "n": 147,
+     "win_roi_ci": [
+      53.5,
+      116.5
+     ],
+     "win_hit": 16.33,
+     "win_roi": 84.35,
+     "win_avg_pay": 516.7,
+     "pl_hit": 41.5,
+     "pl_roi": 73.95,
+     "pl_avg_pay": 178.2,
+     "avg_ninki": 2.53,
+     "skip_rate": 78.3
+    }
+   },
+   "c_odds7-15": {
+    "VALIDATE": {
+     "n": 64,
+     "win_roi_ci": [
+      34.4,
+      168.0
+     ],
+     "win_hit": 10.94,
+     "win_roi": 94.84,
+     "win_avg_pay": 867.1,
+     "pl_hit": 25.0,
+     "pl_roi": 69.53,
+     "pl_avg_pay": 278.1,
+     "avg_ninki": 4.84,
+     "skip_rate": 92.7
+    },
+    "CONFIRM": {
+     "n": 42,
+     "win_roi_ci": [
+      42.4,
+      261.2
+     ],
+     "win_hit": 14.29,
+     "win_roi": 141.9,
+     "win_avg_pay": 993.3,
+     "pl_hit": 38.1,
+     "pl_roi": 90.0,
+     "pl_avg_pay": 236.2,
+     "avg_ninki": 4.67,
+     "skip_rate": 93.8
+    }
+   },
+   "c_odds15-50": {
+    "VALIDATE": {
+     "n": 25,
+     "win_roi_ci": [
+      0.0,
+      470.0
+     ],
+     "win_hit": 12.0,
+     "win_roi": 225.2,
+     "win_avg_pay": 1876.7,
+     "pl_hit": 28.0,
+     "pl_roi": 119.2,
+     "pl_avg_pay": 425.7,
+     "avg_ninki": 8.4,
+     "skip_rate": 97.1
+    },
+    "CONFIRM": {
+     "n": 9,
+     "win_roi_ci": [
+      0.0,
+      0.0
+     ],
+     "win_hit": 0.0,
+     "win_roi": 0.0,
+     "win_avg_pay": 0.0,
+     "pl_hit": 11.11,
+     "pl_roi": 51.11,
+     "pl_avg_pay": 460.0,
+     "avg_ninki": 8.67,
+     "skip_rate": 98.7
+    }
+   },
+   "c_odds>=50": {
+    "VALIDATE": {
+     "n": 0,
+     "skip_rate": 100.0
+    },
+    "CONFIRM": {
+     "n": 1,
+     "win_roi_ci": [
+      0.0,
+      0.0
+     ],
+     "win_hit": 0.0,
+     "win_roi": 0.0,
+     "win_avg_pay": 0.0,
+     "pl_hit": 0.0,
+     "pl_roi": 0.0,
+     "pl_avg_pay": 0.0,
+     "avg_ninki": 9.0,
+     "skip_rate": 99.9
+    }
+   }
+  },
+  "M3-l2": {
+   "a_top10%": {
+    "VALIDATE": {
+     "n": 85,
+     "win_roi_ci": [
+      0.0,
+      7.4
+     ],
+     "win_hit": 1.18,
+     "win_roi": 2.47,
+     "win_avg_pay": 210.0,
+     "pl_hit": 5.88,
+     "pl_roi": 19.18,
+     "pl_avg_pay": 326.0,
+     "avg_ninki": 10.79,
+     "skip_rate": 90.3
+    },
+    "CONFIRM": {
+     "n": 42,
+     "win_roi_ci": [
+      0.0,
+      122.9
+     ],
+     "win_hit": 2.38,
+     "win_roi": 40.95,
+     "win_avg_pay": 1720.0,
+     "pl_hit": 4.76,
+     "pl_roi": 27.14,
+     "pl_avg_pay": 570.0,
+     "avg_ninki": 11.81,
+     "skip_rate": 93.8
+    }
+   },
+   "b_gap10%": {
+    "VALIDATE": {
+     "n": 77,
+     "win_roi_ci": [
+      0.0,
+      0.0
+     ],
+     "win_hit": 0.0,
+     "win_roi": 0.0,
+     "win_avg_pay": 0.0,
+     "pl_hit": 6.49,
+     "pl_roi": 11.95,
+     "pl_avg_pay": 184.0,
+     "avg_ninki": 10.45,
+     "skip_rate": 91.2
+    },
+    "CONFIRM": {
+     "n": 51,
+     "win_roi_ci": [
+      0.0,
+      101.2
+     ],
+     "win_hit": 1.96,
+     "win_roi": 33.73,
+     "win_avg_pay": 1720.0,
+     "pl_hit": 3.92,
+     "pl_roi": 22.35,
+     "pl_avg_pay": 570.0,
+     "avg_ninki": 11.65,
+     "skip_rate": 92.5
+    }
+   },
+   "a_top20%": {
+    "VALIDATE": {
+     "n": 160,
+     "win_roi_ci": [
+      1.3,
+      44.1
+     ],
+     "win_hit": 2.5,
+     "win_roi": 18.88,
+     "win_avg_pay": 755.0,
+     "pl_hit": 8.75,
+     "pl_roi": 25.25,
+     "pl_avg_pay": 288.6,
+     "avg_ninki": 10.66,
+     "skip_rate": 81.7
+    },
+    "CONFIRM": {
+     "n": 111,
+     "win_roi_ci": [
+      0.0,
+      160.6
+     ],
+     "win_hit": 2.7,
+     "win_roi": 67.21,
+     "win_avg_pay": 2486.7,
+     "pl_hit": 7.21,
+     "pl_roi": 36.4,
+     "pl_avg_pay": 505.0,
+     "avg_ninki": 11.13,
+     "skip_rate": 83.6
+    }
+   },
+   "b_gap20%": {
+    "VALIDATE": {
+     "n": 161,
+     "win_roi_ci": [
+      1.3,
+      65.7
+     ],
+     "win_hit": 2.48,
+     "win_roi": 27.52,
+     "win_avg_pay": 1107.5,
+     "pl_hit": 8.07,
+     "pl_roi": 21.93,
+     "pl_avg_pay": 271.5,
+     "avg_ninki": 9.88,
+     "skip_rate": 81.6
+    },
+    "CONFIRM": {
+     "n": 135,
+     "win_roi_ci": [
+      0.0,
+      126.8
+     ],
+     "win_hit": 2.22,
+     "win_roi": 50.0,
+     "win_avg_pay": 2250.0,
+     "pl_hit": 11.11,
+     "pl_roi": 59.11,
+     "pl_avg_pay": 532.0,
+     "avg_ninki": 10.47,
+     "skip_rate": 80.0
+    }
+   },
+   "a_top30%": {
+    "VALIDATE": {
+     "n": 262,
+     "win_roi_ci": [
+      8.0,
+      59.4
+     ],
+     "win_hit": 3.05,
+     "win_roi": 31.07,
+     "win_avg_pay": 1017.5,
+     "pl_hit": 9.92,
+     "pl_roi": 45.8,
+     "pl_avg_pay": 461.5,
+     "avg_ninki": 10.49,
+     "skip_rate": 70.0
+    },
+    "CONFIRM": {
+     "n": 196,
+     "win_roi_ci": [
+      23.1,
+      147.0
+     ],
+     "win_hit": 4.59,
+     "win_roi": 74.74,
+     "win_avg_pay": 1627.8,
+     "pl_hit": 11.73,
+     "pl_roi": 51.22,
+     "pl_avg_pay": 436.5,
+     "avg_ninki": 10.54,
+     "skip_rate": 71.0
+    }
+   },
+   "b_gap30%": {
+    "VALIDATE": {
+     "n": 269,
+     "win_roi_ci": [
+      12.9,
+      448.9
+     ],
+     "win_hit": 2.97,
+     "win_roi": 166.54,
+     "win_avg_pay": 5600.0,
+     "pl_hit": 10.41,
+     "pl_roi": 57.1,
+     "pl_avg_pay": 548.6,
+     "avg_ninki": 9.97,
+     "skip_rate": 69.2
+    },
+    "CONFIRM": {
+     "n": 220,
+     "win_roi_ci": [
+      29.7,
+      155.2
+     ],
+     "win_hit": 5.0,
+     "win_roi": 84.64,
+     "win_avg_pay": 1692.7,
+     "pl_hit": 15.0,
+     "pl_roi": 66.36,
+     "pl_avg_pay": 442.4,
+     "avg_ninki": 9.83,
+     "skip_rate": 67.5
+    }
+   },
+   "a_top50%": {
+    "VALIDATE": {
+     "n": 430,
+     "win_roi_ci": [
+      20.1,
+      308.7
+     ],
+     "win_hit": 3.26,
+     "win_roi": 127.19,
+     "win_avg_pay": 3906.4,
+     "pl_hit": 11.4,
+     "pl_roi": 60.74,
+     "pl_avg_pay": 533.1,
+     "avg_ninki": 9.99,
+     "skip_rate": 50.8
+    },
+    "CONFIRM": {
+     "n": 336,
+     "win_roi_ci": [
+      53.1,
+      246.7
+     ],
+     "win_hit": 5.65,
+     "win_roi": 134.23,
+     "win_avg_pay": 2373.7,
+     "pl_hit": 16.67,
+     "pl_roi": 103.3,
+     "pl_avg_pay": 619.8,
+     "avg_ninki": 9.74,
+     "skip_rate": 50.3
+    }
+   },
+   "b_gap50%": {
+    "VALIDATE": {
+     "n": 447,
+     "win_roi_ci": [
+      12.8,
+      337.2
+     ],
+     "win_hit": 2.46,
+     "win_roi": 107.49,
+     "win_avg_pay": 4368.2,
+     "pl_hit": 10.51,
+     "pl_roi": 52.55,
+     "pl_avg_pay": 499.8,
+     "avg_ninki": 9.76,
+     "skip_rate": 48.9
+    },
+    "CONFIRM": {
+     "n": 382,
+     "win_roi_ci": [
+      44.7,
+      214.5
+     ],
+     "win_hit": 4.45,
+     "win_roi": 115.42,
+     "win_avg_pay": 2593.5,
+     "pl_hit": 15.18,
+     "pl_roi": 95.97,
+     "pl_avg_pay": 632.1,
+     "avg_ninki": 9.64,
+     "skip_rate": 43.5
+    }
+   },
+   "c_odds<2": {
+    "VALIDATE": {
+     "n": 24,
+     "win_roi_ci": [
+      45.8,
+      109.2
+     ],
+     "win_hit": 50.0,
+     "win_roi": 76.67,
+     "win_avg_pay": 153.3,
+     "pl_hit": 87.5,
+     "pl_roi": 95.83,
+     "pl_avg_pay": 109.5,
+     "avg_ninki": 1.0,
+     "skip_rate": 97.3
+    },
+    "CONFIRM": {
+     "n": 24,
+     "win_roi_ci": [
+      61.2,
+      125.8
+     ],
+     "win_hit": 58.33,
+     "win_roi": 93.75,
+     "win_avg_pay": 160.7,
+     "pl_hit": 87.5,
+     "pl_roi": 95.83,
+     "pl_avg_pay": 109.5,
+     "avg_ninki": 1.0,
+     "skip_rate": 96.4
+    }
+   },
+   "c_odds2-4": {
+    "VALIDATE": {
+     "n": 68,
+     "win_roi_ci": [
+      56.0,
+      120.2
+     ],
+     "win_hit": 32.35,
+     "win_roi": 88.24,
+     "win_avg_pay": 272.7,
+     "pl_hit": 69.12,
+     "pl_roi": 92.5,
+     "pl_avg_pay": 133.8,
+     "avg_ninki": 1.37,
+     "skip_rate": 92.2
+    },
+    "CONFIRM": {
+     "n": 66,
+     "win_roi_ci": [
+      23.5,
+      77.3
+     ],
+     "win_hit": 15.15,
+     "win_roi": 48.48,
+     "win_avg_pay": 320.0,
+     "pl_hit": 57.58,
+     "pl_roi": 80.61,
+     "pl_avg_pay": 140.0,
+     "avg_ninki": 1.59,
+     "skip_rate": 90.2
+    }
+   },
+   "c_odds4-7": {
+    "VALIDATE": {
+     "n": 96,
+     "win_roi_ci": [
+      23.9,
+      90.7
+     ],
+     "win_hit": 10.42,
+     "win_roi": 57.19,
+     "win_avg_pay": 549.0,
+     "pl_hit": 37.5,
+     "pl_roi": 70.83,
+     "pl_avg_pay": 188.9,
+     "avg_ninki": 2.82,
+     "skip_rate": 89.0
+    },
+    "CONFIRM": {
+     "n": 56,
+     "win_roi_ci": [
+      34.1,
+      130.4
+     ],
+     "win_hit": 16.07,
+     "win_roi": 81.25,
+     "win_avg_pay": 505.6,
+     "pl_hit": 35.71,
+     "pl_roi": 65.54,
+     "pl_avg_pay": 183.5,
+     "avg_ninki": 2.77,
+     "skip_rate": 91.7
+    }
+   },
+   "c_odds7-15": {
+    "VALIDATE": {
+     "n": 98,
+     "win_roi_ci": [
+      16.1,
+      98.0
+     ],
+     "win_hit": 6.12,
+     "win_roi": 53.98,
+     "win_avg_pay": 881.7,
+     "pl_hit": 26.53,
+     "pl_roi": 64.8,
+     "pl_avg_pay": 244.2,
+     "avg_ninki": 4.8,
+     "skip_rate": 88.8
+    },
+    "CONFIRM": {
+     "n": 88,
+     "win_roi_ci": [
+      29.8,
+      149.9
+     ],
+     "win_hit": 7.95,
+     "win_roi": 83.75,
+     "win_avg_pay": 1052.9,
+     "pl_hit": 38.64,
+     "pl_roi": 102.61,
+     "pl_avg_pay": 265.6,
+     "avg_ninki": 4.76,
+     "skip_rate": 87.0
+    }
+   },
+   "c_odds15-50": {
+    "VALIDATE": {
+     "n": 203,
+     "win_roi_ci": [
+      17.9,
+      108.1
+     ],
+     "win_hit": 2.96,
+     "win_roi": 58.82,
+     "win_avg_pay": 1990.0,
+     "pl_hit": 12.81,
+     "pl_roi": 67.78,
+     "pl_avg_pay": 529.2,
+     "avg_ninki": 8.02,
+     "skip_rate": 76.8
+    },
+    "CONFIRM": {
+     "n": 156,
+     "win_roi_ci": [
+      43.8,
+      229.3
+     ],
+     "win_hit": 5.13,
+     "win_roi": 126.67,
+     "win_avg_pay": 2470.0,
+     "pl_hit": 16.67,
+     "pl_roi": 87.05,
+     "pl_avg_pay": 522.3,
+     "avg_ninki": 8.19,
+     "skip_rate": 76.9
+    }
+   },
+   "c_odds>=50": {
+    "VALIDATE": {
+     "n": 385,
+     "win_roi_ci": [
+      14.6,
+      353.3
+     ],
+     "win_hit": 1.04,
+     "win_roi": 143.92,
+     "win_avg_pay": 13852.5,
+     "pl_hit": 2.34,
+     "pl_roi": 37.45,
+     "pl_avg_pay": 1602.2,
+     "avg_ninki": 12.39,
+     "skip_rate": 55.9
+    },
+    "CONFIRM": {
+     "n": 286,
+     "win_roi_ci": [
+      0.0,
+      185.7
+     ],
+     "win_hit": 0.7,
+     "win_roi": 72.45,
+     "win_avg_pay": 10360.0,
+     "pl_hit": 3.85,
+     "pl_roi": 69.72,
+     "pl_avg_pay": 1812.7,
+     "avg_ninki": 12.09,
+     "skip_rate": 57.7
+    }
+   },
+   "d_pred>=0": {
+    "VALIDATE": {
+     "n": 232,
+     "win_roi_ci": [
+      9.1,
+      110.8
+     ],
+     "win_hit": 3.88,
+     "win_roi": 49.22,
+     "win_avg_pay": 1268.9,
+     "pl_hit": 11.21,
+     "pl_roi": 53.36,
+     "pl_avg_pay": 476.2,
+     "avg_ninki": 9.97,
+     "skip_rate": 73.5
+    },
+    "CONFIRM": {
+     "n": 170,
+     "win_roi_ci": [
+      14.6,
+      122.3
+     ],
+     "win_hit": 4.12,
+     "win_roi": 60.29,
+     "win_avg_pay": 1464.3,
+     "pl_hit": 11.18,
+     "pl_roi": 51.59,
+     "pl_avg_pay": 461.6,
+     "avg_ninki": 9.92,
+     "skip_rate": 74.9
+    }
+   },
+   "d_pred>=20": {
+    "VALIDATE": {
+     "n": 118,
+     "win_roi_ci": [
+      2.3,
+      39.6
+     ],
+     "win_hit": 3.39,
+     "win_roi": 18.31,
+     "win_avg_pay": 540.0,
+     "pl_hit": 5.93,
+     "pl_roi": 27.12,
+     "pl_avg_pay": 457.1,
+     "avg_ninki": 10.55,
+     "skip_rate": 86.5
+    },
+    "CONFIRM": {
+     "n": 76,
+     "win_roi_ci": [
+      0.0,
+      225.3
+     ],
+     "win_hit": 3.95,
+     "win_roi": 88.82,
+     "win_avg_pay": 2250.0,
+     "pl_hit": 7.89,
+     "pl_roi": 35.53,
+     "pl_avg_pay": 450.0,
+     "avg_ninki": 10.08,
+     "skip_rate": 88.8
+    }
+   },
+   "d_pred>=50": {
+    "VALIDATE": {
+     "n": 50,
+     "win_roi_ci": [
+      0.0,
+      73.4
+     ],
+     "win_hit": 4.0,
+     "win_roi": 28.6,
+     "win_avg_pay": 715.0,
+     "pl_hit": 6.0,
+     "pl_roi": 17.8,
+     "pl_avg_pay": 296.7,
+     "avg_ninki": 10.86,
+     "skip_rate": 94.3
+    },
+    "CONFIRM": {
+     "n": 25,
+     "win_roi_ci": [
+      0.0,
+      120.0
+     ],
+     "win_hit": 4.0,
+     "win_roi": 40.0,
+     "win_avg_pay": 1000.0,
+     "pl_hit": 4.0,
+     "pl_roi": 8.0,
+     "pl_avg_pay": 200.0,
+     "avg_ninki": 10.4,
+     "skip_rate": 96.3
+    }
+   },
+   "d_pred>=100": {
+    "VALIDATE": {
+     "n": 27,
+     "win_roi_ci": [
+      0.0,
+      90.7
+     ],
+     "win_hit": 3.7,
+     "win_roi": 30.0,
+     "win_avg_pay": 810.0,
+     "pl_hit": 7.41,
+     "pl_roi": 26.67,
+     "pl_avg_pay": 360.0,
+     "avg_ninki": 10.19,
+     "skip_rate": 96.9
+    },
+    "CONFIRM": {
+     "n": 8,
+     "win_roi_ci": [
+      0.0,
+      0.0
+     ],
+     "win_hit": 0.0,
+     "win_roi": 0.0,
+     "win_avg_pay": 0.0,
+     "pl_hit": 0.0,
+     "pl_roi": 0.0,
+     "pl_avg_pay": 0.0,
+     "avg_ninki": 10.88,
+     "skip_rate": 98.8
+    }
+   }
+  },
+  "M3-huber": {
+   "a_top10%": {
+    "VALIDATE": {
+     "n": 92,
+     "win_roi_ci": [
+      30.1,
+      62.4
+     ],
+     "win_hit": 26.09,
+     "win_roi": 46.09,
+     "win_avg_pay": 176.7,
+     "pl_hit": 67.39,
+     "pl_roi": 80.54,
+     "pl_avg_pay": 119.5,
+     "avg_ninki": 1.22,
+     "skip_rate": 89.5
+    },
+    "CONFIRM": {
+     "n": 56,
+     "win_roi_ci": [
+      35.4,
+      93.6
+     ],
+     "win_hit": 30.36,
+     "win_roi": 62.32,
+     "win_avg_pay": 205.3,
+     "pl_hit": 71.43,
+     "pl_roi": 88.04,
+     "pl_avg_pay": 123.2,
+     "avg_ninki": 1.16,
+     "skip_rate": 91.7
+    }
+   },
+   "b_gap10%": {
+    "VALIDATE": {
+     "n": 96,
+     "win_roi_ci": [
+      48.0,
+      84.6
+     ],
+     "win_hit": 38.54,
+     "win_roi": 65.52,
+     "win_avg_pay": 170.0,
+     "pl_hit": 65.62,
+     "pl_roi": 77.5,
+     "pl_avg_pay": 118.1,
+     "avg_ninki": 1.27,
+     "skip_rate": 89.0
+    },
+    "CONFIRM": {
+     "n": 57,
+     "win_roi_ci": [
+      42.3,
+      88.2
+     ],
+     "win_hit": 36.84,
+     "win_roi": 63.16,
+     "win_avg_pay": 171.4,
+     "pl_hit": 70.18,
+     "pl_roi": 83.68,
+     "pl_avg_pay": 119.2,
+     "avg_ninki": 1.11,
+     "skip_rate": 91.6
+    }
+   },
+   "a_top20%": {
+    "VALIDATE": {
+     "n": 188,
+     "win_roi_ci": [
+      46.8,
+      73.9
+     ],
+     "win_hit": 30.32,
+     "win_roi": 59.84,
+     "win_avg_pay": 197.4,
+     "pl_hit": 66.49,
+     "pl_roi": 81.06,
+     "pl_avg_pay": 121.9,
+     "avg_ninki": 1.27,
+     "skip_rate": 78.5
+    },
+    "CONFIRM": {
+     "n": 107,
+     "win_roi_ci": [
+      35.3,
+      74.7
+     ],
+     "win_hit": 28.04,
+     "win_roi": 53.93,
+     "win_avg_pay": 192.3,
+     "pl_hit": 66.36,
+     "pl_roi": 83.18,
+     "pl_avg_pay": 125.4,
+     "avg_ninki": 1.24,
+     "skip_rate": 84.2
+    }
+   },
+   "b_gap20%": {
+    "VALIDATE": {
+     "n": 174,
+     "win_roi_ci": [
+      47.9,
+      75.5
+     ],
+     "win_hit": 32.76,
+     "win_roi": 61.78,
+     "win_avg_pay": 188.6,
+     "pl_hit": 63.79,
+     "pl_roi": 76.55,
+     "pl_avg_pay": 120.0,
+     "avg_ninki": 1.3,
+     "skip_rate": 80.1
+    },
+    "CONFIRM": {
+     "n": 115,
+     "win_roi_ci": [
+      61.6,
+      102.8
+     ],
+     "win_hit": 41.74,
+     "win_roi": 81.65,
+     "win_avg_pay": 195.6,
+     "pl_hit": 73.04,
+     "pl_roi": 88.43,
+     "pl_avg_pay": 121.1,
+     "avg_ninki": 1.21,
+     "skip_rate": 83.0
+    }
+   },
+   "a_top30%": {
+    "VALIDATE": {
+     "n": 280,
+     "win_roi_ci": [
+      54.8,
+      91.7
+     ],
+     "win_hit": 30.36,
+     "win_roi": 71.36,
+     "win_avg_pay": 235.1,
+     "pl_hit": 65.0,
+     "pl_roi": 82.32,
+     "pl_avg_pay": 126.6,
+     "avg_ninki": 1.41,
+     "skip_rate": 68.0
+    },
+    "CONFIRM": {
+     "n": 163,
+     "win_roi_ci": [
+      49.9,
+      98.7
+     ],
+     "win_hit": 29.45,
+     "win_roi": 71.47,
+     "win_avg_pay": 242.7,
+     "pl_hit": 64.42,
+     "pl_roi": 83.93,
+     "pl_avg_pay": 130.3,
+     "avg_ninki": 1.36,
+     "skip_rate": 75.9
+    }
+   },
+   "b_gap30%": {
+    "VALIDATE": {
+     "n": 261,
+     "win_roi_ci": [
+      53.6,
+      93.1
+     ],
+     "win_hit": 30.65,
+     "win_roi": 70.84,
+     "win_avg_pay": 231.1,
+     "pl_hit": 63.22,
+     "pl_roi": 78.62,
+     "pl_avg_pay": 124.4,
+     "avg_ninki": 1.39,
+     "skip_rate": 70.1
+    },
+    "CONFIRM": {
+     "n": 186,
+     "win_roi_ci": [
+      59.3,
+      92.9
+     ],
+     "win_hit": 36.56,
+     "win_roi": 76.18,
+     "win_avg_pay": 208.4,
+     "pl_hit": 69.35,
+     "pl_roi": 87.69,
+     "pl_avg_pay": 126.4,
+     "avg_ninki": 1.33,
+     "skip_rate": 72.5
+    }
+   },
+   "a_top50%": {
+    "VALIDATE": {
+     "n": 455,
+     "win_roi_ci": [
+      60.7,
+      91.7
+     ],
+     "win_hit": 29.01,
+     "win_roi": 74.97,
+     "win_avg_pay": 258.4,
+     "pl_hit": 64.4,
+     "pl_roi": 84.51,
+     "pl_avg_pay": 131.2,
+     "avg_ninki": 1.55,
+     "skip_rate": 47.9
+    },
+    "CONFIRM": {
+     "n": 300,
+     "win_roi_ci": [
+      56.6,
+      91.3
+     ],
+     "win_hit": 28.33,
+     "win_roi": 72.93,
+     "win_avg_pay": 257.4,
+     "pl_hit": 60.33,
+     "pl_roi": 78.87,
+     "pl_avg_pay": 130.7,
+     "avg_ninki": 1.45,
+     "skip_rate": 55.6
+    }
+   },
+   "b_gap50%": {
+    "VALIDATE": {
+     "n": 435,
+     "win_roi_ci": [
+      61.2,
+      92.3
+     ],
+     "win_hit": 29.89,
+     "win_roi": 75.98,
+     "win_avg_pay": 254.2,
+     "pl_hit": 63.45,
+     "pl_roi": 83.22,
+     "pl_avg_pay": 131.2,
+     "avg_ninki": 1.6,
+     "skip_rate": 50.2
+    },
+    "CONFIRM": {
+     "n": 319,
+     "win_roi_ci": [
+      61.5,
+      97.1
+     ],
+     "win_hit": 30.72,
+     "win_roi": 78.18,
+     "win_avg_pay": 254.5,
+     "pl_hit": 62.07,
+     "pl_roi": 80.41,
+     "pl_avg_pay": 129.5,
+     "avg_ninki": 1.51,
+     "skip_rate": 52.8
+    }
+   },
+   "c_odds<2": {
+    "VALIDATE": {
+     "n": 158,
+     "win_roi_ci": [
+      67.2,
+      92.7
+     ],
+     "win_hit": 50.0,
+     "win_roi": 79.87,
+     "win_avg_pay": 159.7,
+     "pl_hit": 84.18,
+     "pl_roi": 92.22,
+     "pl_avg_pay": 109.5,
+     "avg_ninki": 1.0,
+     "skip_rate": 81.9
+    },
+    "CONFIRM": {
+     "n": 133,
+     "win_roi_ci": [
+      69.5,
+      96.4
+     ],
+     "win_hit": 52.63,
+     "win_roi": 83.01,
+     "win_avg_pay": 157.7,
+     "pl_hit": 83.46,
+     "pl_roi": 92.41,
+     "pl_avg_pay": 110.7,
+     "avg_ninki": 1.0,
+     "skip_rate": 80.3
+    }
+   },
+   "c_odds2-4": {
+    "VALIDATE": {
+     "n": 423,
+     "win_roi_ci": [
+      58.9,
+      81.9
+     ],
+     "win_hit": 26.48,
+     "win_roi": 70.19,
+     "win_avg_pay": 265.1,
+     "pl_hit": 66.9,
+     "pl_roi": 87.94,
+     "pl_avg_pay": 131.4,
+     "avg_ninki": 1.29,
+     "skip_rate": 51.6
+    },
+    "CONFIRM": {
+     "n": 341,
+     "win_roi_ci": [
+      52.3,
+      77.6
+     ],
+     "win_hit": 23.46,
+     "win_roi": 64.34,
+     "win_avg_pay": 274.2,
+     "pl_hit": 57.48,
+     "pl_roi": 76.42,
+     "pl_avg_pay": 133.0,
+     "avg_ninki": 1.28,
+     "skip_rate": 49.6
+    }
+   },
+   "c_odds4-7": {
+    "VALIDATE": {
+     "n": 194,
+     "win_roi_ci": [
+      44.1,
+      93.7
+     ],
+     "win_hit": 13.4,
+     "win_roi": 68.04,
+     "win_avg_pay": 507.7,
+     "pl_hit": 38.66,
+     "pl_roi": 66.7,
+     "pl_avg_pay": 172.5,
+     "avg_ninki": 2.58,
+     "skip_rate": 77.8
+    },
+    "CONFIRM": {
+     "n": 139,
+     "win_roi_ci": [
+      55.5,
+      119.4
+     ],
+     "win_hit": 17.27,
+     "win_roi": 86.69,
+     "win_avg_pay": 502.1,
+     "pl_hit": 46.04,
+     "pl_roi": 82.37,
+     "pl_avg_pay": 178.9,
+     "avg_ninki": 2.63,
+     "skip_rate": 79.4
+    }
+   },
+   "c_odds7-15": {
+    "VALIDATE": {
+     "n": 73,
+     "win_roi_ci": [
+      43.0,
+      177.8
+     ],
+     "win_hit": 12.33,
+     "win_roi": 106.44,
+     "win_avg_pay": 863.3,
+     "pl_hit": 34.25,
+     "pl_roi": 96.44,
+     "pl_avg_pay": 281.6,
+     "avg_ninki": 4.73,
+     "skip_rate": 91.6
+    },
+    "CONFIRM": {
+     "n": 51,
+     "win_roi_ci": [
+      62.5,
+      260.0
+     ],
+     "win_hit": 15.69,
+     "win_roi": 155.29,
+     "win_avg_pay": 990.0,
+     "pl_hit": 39.22,
+     "pl_roi": 102.94,
+     "pl_avg_pay": 262.5,
+     "avg_ninki": 4.67,
+     "skip_rate": 92.5
+    }
+   },
+   "c_odds15-50": {
+    "VALIDATE": {
+     "n": 25,
+     "win_roi_ci": [
+      0.0,
+      349.3
+     ],
+     "win_hit": 8.0,
+     "win_roi": 143.2,
+     "win_avg_pay": 1790.0,
+     "pl_hit": 16.0,
+     "pl_roi": 65.6,
+     "pl_avg_pay": 410.0,
+     "avg_ninki": 8.36,
+     "skip_rate": 97.1
+    },
+    "CONFIRM": {
+     "n": 9,
+     "win_roi_ci": [
+      0.0,
+      0.0
+     ],
+     "win_hit": 0.0,
+     "win_roi": 0.0,
+     "win_avg_pay": 0.0,
+     "pl_hit": 22.22,
+     "pl_roi": 218.89,
+     "pl_avg_pay": 985.0,
+     "avg_ninki": 7.56,
+     "skip_rate": 98.7
+    }
+   },
+   "c_odds>=50": {
+    "VALIDATE": {
+     "n": 1,
+     "win_roi_ci": [
+      0.0,
+      0.0
+     ],
+     "win_hit": 0.0,
+     "win_roi": 0.0,
+     "win_avg_pay": 0.0,
+     "pl_hit": 0.0,
+     "pl_roi": 0.0,
+     "pl_avg_pay": 0.0,
+     "avg_ninki": 12.0,
+     "skip_rate": 99.9
+    },
+    "CONFIRM": {
+     "n": 3,
+     "win_roi_ci": [
+      0.0,
+      0.0
+     ],
+     "win_hit": 0.0,
+     "win_roi": 0.0,
+     "win_avg_pay": 0.0,
+     "pl_hit": 0.0,
+     "pl_roi": 0.0,
+     "pl_avg_pay": 0.0,
+     "avg_ninki": 11.0,
+     "skip_rate": 99.6
+    }
+   },
+   "d_pred>=0": {
+    "VALIDATE": {
+     "n": 4,
+     "win_roi_ci": [
+      0.0,
+      142.5
+     ],
+     "win_hit": 25.0,
+     "win_roi": 47.5,
+     "win_avg_pay": 190.0,
+     "pl_hit": 100.0,
+     "pl_roi": 152.5,
+     "pl_avg_pay": 152.5,
+     "avg_ninki": 1.25,
+     "skip_rate": 99.5
+    },
+    "CONFIRM": {
+     "n": 5,
+     "win_roi_ci": [
+      0.0,
+      132.0
+     ],
+     "win_hit": 40.0,
+     "win_roi": 64.0,
+     "win_avg_pay": 160.0,
+     "pl_hit": 80.0,
+     "pl_roi": 86.0,
+     "pl_avg_pay": 107.5,
+     "avg_ninki": 1.0,
+     "skip_rate": 99.3
+    }
+   },
+   "d_pred>=20": {
+    "VALIDATE": {
+     "n": 0,
+     "skip_rate": 100.0
+    },
+    "CONFIRM": {
+     "n": 2,
+     "win_roi_ci": [
+      0.0,
+      0.0
+     ],
+     "win_hit": 0.0,
+     "win_roi": 0.0,
+     "win_avg_pay": 0.0,
+     "pl_hit": 50.0,
+     "pl_roi": 55.0,
+     "pl_avg_pay": 110.0,
+     "avg_ninki": 1.0,
+     "skip_rate": 99.7
+    }
+   },
+   "d_pred>=50": {
+    "VALIDATE": {
+     "n": 0,
+     "skip_rate": 100.0
+    },
+    "CONFIRM": {
+     "n": 0,
+     "skip_rate": 100.0
+    }
+   },
+   "d_pred>=100": {
+    "VALIDATE": {
+     "n": 0,
+     "skip_rate": 100.0
+    },
+    "CONFIRM": {
+     "n": 0,
+     "skip_rate": 100.0
+    }
+   }
+  },
+  "M3-log": {
+   "a_top10%": {
+    "VALIDATE": {
+     "n": 101,
+     "win_roi_ci": [
+      43.5,
+      80.4
+     ],
+     "win_hit": 33.66,
+     "win_roi": 60.99,
+     "win_avg_pay": 181.2,
+     "pl_hit": 68.32,
+     "pl_roi": 81.39,
+     "pl_avg_pay": 119.1,
+     "avg_ninki": 1.27,
+     "skip_rate": 88.4
+    },
+    "CONFIRM": {
+     "n": 59,
+     "win_roi_ci": [
+      35.6,
+      80.5
+     ],
+     "win_hit": 33.9,
+     "win_roi": 57.63,
+     "win_avg_pay": 170.0,
+     "pl_hit": 66.1,
+     "pl_roi": 78.81,
+     "pl_avg_pay": 119.2,
+     "avg_ninki": 1.12,
+     "skip_rate": 91.3
+    }
+   },
+   "b_gap10%": {
+    "VALIDATE": {
+     "n": 105,
+     "win_roi_ci": [
+      47.0,
+      83.2
+     ],
+     "win_hit": 35.24,
+     "win_roi": 64.48,
+     "win_avg_pay": 183.0,
+     "pl_hit": 65.71,
+     "pl_roi": 77.62,
+     "pl_avg_pay": 118.1,
+     "avg_ninki": 1.31,
+     "skip_rate": 88.0
+    },
+    "CONFIRM": {
+     "n": 66,
+     "win_roi_ci": [
+      47.4,
+      92.3
+     ],
+     "win_hit": 39.39,
+     "win_roi": 69.09,
+     "win_avg_pay": 175.4,
+     "pl_hit": 69.7,
+     "pl_roi": 81.97,
+     "pl_avg_pay": 117.6,
+     "avg_ninki": 1.05,
+     "skip_rate": 90.2
+    }
+   },
+   "a_top20%": {
+    "VALIDATE": {
+     "n": 188,
+     "win_roi_ci": [
+      48.4,
+      78.3
+     ],
+     "win_hit": 31.38,
+     "win_roi": 62.66,
+     "win_avg_pay": 199.7,
+     "pl_hit": 68.09,
+     "pl_roi": 81.91,
+     "pl_avg_pay": 120.3,
+     "avg_ninki": 1.26,
+     "skip_rate": 78.5
+    },
+    "CONFIRM": {
+     "n": 110,
+     "win_roi_ci": [
+      36.4,
+      67.8
+     ],
+     "win_hit": 29.09,
+     "win_roi": 51.45,
+     "win_avg_pay": 176.9,
+     "pl_hit": 65.45,
+     "pl_roi": 79.27,
+     "pl_avg_pay": 121.1,
+     "avg_ninki": 1.21,
+     "skip_rate": 83.7
+    }
+   },
+   "b_gap20%": {
+    "VALIDATE": {
+     "n": 185,
+     "win_roi_ci": [
+      46.2,
+      72.8
+     ],
+     "win_hit": 31.89,
+     "win_roi": 59.35,
+     "win_avg_pay": 186.1,
+     "pl_hit": 64.32,
+     "pl_roi": 76.32,
+     "pl_avg_pay": 118.7,
+     "avg_ninki": 1.27,
+     "skip_rate": 78.8
+    },
+    "CONFIRM": {
+     "n": 123,
+     "win_roi_ci": [
+      55.2,
+      88.3
+     ],
+     "win_hit": 39.84,
+     "win_roi": 71.38,
+     "win_avg_pay": 179.2,
+     "pl_hit": 70.73,
+     "pl_roi": 85.2,
+     "pl_avg_pay": 120.5,
+     "avg_ninki": 1.2,
+     "skip_rate": 81.8
+    }
+   },
+   "a_top30%": {
+    "VALIDATE": {
+     "n": 285,
+     "win_roi_ci": [
+      60.7,
+      97.4
+     ],
+     "win_hit": 32.28,
+     "win_roi": 77.19,
+     "win_avg_pay": 239.1,
+     "pl_hit": 66.32,
+     "pl_roi": 83.61,
+     "pl_avg_pay": 126.1,
+     "avg_ninki": 1.39,
+     "skip_rate": 67.4
+    },
+    "CONFIRM": {
+     "n": 168,
+     "win_roi_ci": [
+      49.0,
+      85.2
+     ],
+     "win_hit": 30.95,
+     "win_roi": 66.43,
+     "win_avg_pay": 214.6,
+     "pl_hit": 66.07,
+     "pl_roi": 83.75,
+     "pl_avg_pay": 126.8,
+     "avg_ninki": 1.33,
+     "skip_rate": 75.1
+    }
+   },
+   "b_gap30%": {
+    "VALIDATE": {
+     "n": 278,
+     "win_roi_ci": [
+      46.6,
+      70.1
+     ],
+     "win_hit": 29.14,
+     "win_roi": 58.27,
+     "win_avg_pay": 200.0,
+     "pl_hit": 63.67,
+     "pl_roi": 78.35,
+     "pl_avg_pay": 123.1,
+     "avg_ninki": 1.4,
+     "skip_rate": 68.2
+    },
+    "CONFIRM": {
+     "n": 190,
+     "win_roi_ci": [
+      58.0,
+      94.3
+     ],
+     "win_hit": 36.32,
+     "win_roi": 75.89,
+     "win_avg_pay": 209.0,
+     "pl_hit": 68.42,
+     "pl_roi": 85.37,
+     "pl_avg_pay": 124.8,
+     "avg_ninki": 1.39,
+     "skip_rate": 71.9
+    }
+   },
+   "a_top50%": {
+    "VALIDATE": {
+     "n": 472,
+     "win_roi_ci": [
+      61.0,
+      90.9
+     ],
+     "win_hit": 28.6,
+     "win_roi": 74.92,
+     "win_avg_pay": 261.9,
+     "pl_hit": 63.14,
+     "pl_roi": 83.07,
+     "pl_avg_pay": 131.6,
+     "avg_ninki": 1.53,
+     "skip_rate": 46.0
+    },
+    "CONFIRM": {
+     "n": 322,
+     "win_roi_ci": [
+      56.9,
+      89.1
+     ],
+     "win_hit": 28.88,
+     "win_roi": 72.02,
+     "win_avg_pay": 249.4,
+     "pl_hit": 61.49,
+     "pl_roi": 80.84,
+     "pl_avg_pay": 131.5,
+     "avg_ninki": 1.46,
+     "skip_rate": 52.4
+    }
+   },
+   "b_gap50%": {
+    "VALIDATE": {
+     "n": 442,
+     "win_roi_ci": [
+      58.8,
+      86.9
+     ],
+     "win_hit": 29.41,
+     "win_roi": 72.4,
+     "win_avg_pay": 246.2,
+     "pl_hit": 62.9,
+     "pl_roi": 81.49,
+     "pl_avg_pay": 129.6,
+     "avg_ninki": 1.6,
+     "skip_rate": 49.4
+    },
+    "CONFIRM": {
+     "n": 317,
+     "win_roi_ci": [
+      53.2,
+      85.2
+     ],
+     "win_hit": 29.34,
+     "win_roi": 68.23,
+     "win_avg_pay": 232.6,
+     "pl_hit": 62.46,
+     "pl_roi": 80.63,
+     "pl_avg_pay": 129.1,
+     "avg_ninki": 1.49,
+     "skip_rate": 53.1
+    }
+   },
+   "c_odds<2": {
+    "VALIDATE": {
+     "n": 156,
+     "win_roi_ci": [
+      65.6,
+      91.0
+     ],
+     "win_hit": 48.72,
+     "win_roi": 78.14,
+     "win_avg_pay": 160.4,
+     "pl_hit": 83.33,
+     "pl_roi": 91.28,
+     "pl_avg_pay": 109.5,
+     "avg_ninki": 1.0,
+     "skip_rate": 82.2
+    },
+    "CONFIRM": {
+     "n": 127,
+     "win_roi_ci": [
+      68.5,
+      96.1
+     ],
+     "win_hit": 51.97,
+     "win_roi": 82.28,
+     "win_avg_pay": 158.3,
+     "pl_hit": 83.46,
+     "pl_roi": 92.36,
+     "pl_avg_pay": 110.7,
+     "avg_ninki": 1.0,
+     "skip_rate": 81.2
+    }
+   },
+   "c_odds2-4": {
+    "VALIDATE": {
+     "n": 430,
+     "win_roi_ci": [
+      62.4,
+      85.5
+     ],
+     "win_hit": 27.67,
+     "win_roi": 73.84,
+     "win_avg_pay": 266.8,
+     "pl_hit": 66.05,
+     "pl_roi": 86.72,
+     "pl_avg_pay": 131.3,
+     "avg_ninki": 1.3,
+     "skip_rate": 50.8
+    },
+    "CONFIRM": {
+     "n": 335,
+     "win_roi_ci": [
+      54.7,
+      80.0
+     ],
+     "win_hit": 24.78,
+     "win_roi": 67.22,
+     "win_avg_pay": 271.3,
+     "pl_hit": 57.31,
+     "pl_roi": 76.24,
+     "pl_avg_pay": 133.0,
+     "avg_ninki": 1.28,
+     "skip_rate": 50.4
+    }
+   },
+   "c_odds4-7": {
+    "VALIDATE": {
+     "n": 202,
+     "win_roi_ci": [
+      35.9,
+      78.1
+     ],
+     "win_hit": 11.39,
+     "win_roi": 55.94,
+     "win_avg_pay": 491.3,
+     "pl_hit": 35.64,
+     "pl_roi": 60.79,
+     "pl_avg_pay": 170.6,
+     "avg_ninki": 2.53,
+     "skip_rate": 76.9
+    },
+    "CONFIRM": {
+     "n": 152,
+     "win_roi_ci": [
+      50.5,
+      110.0
+     ],
+     "win_hit": 15.13,
+     "win_roi": 78.36,
+     "win_avg_pay": 517.8,
+     "pl_hit": 44.74,
+     "pl_roi": 79.8,
+     "pl_avg_pay": 178.4,
+     "avg_ninki": 2.57,
+     "skip_rate": 77.5
+    }
+   },
+   "c_odds7-15": {
+    "VALIDATE": {
+     "n": 65,
+     "win_roi_ci": [
+      70.9,
+      222.5
+     ],
+     "win_hit": 16.92,
+     "win_roi": 144.31,
+     "win_avg_pay": 852.7,
+     "pl_hit": 30.77,
+     "pl_roi": 84.62,
+     "pl_avg_pay": 275.0,
+     "avg_ninki": 4.66,
+     "skip_rate": 92.6
+    },
+    "CONFIRM": {
+     "n": 49,
+     "win_roi_ci": [
+      33.3,
+      214.1
+     ],
+     "win_hit": 12.24,
+     "win_roi": 117.76,
+     "win_avg_pay": 961.7,
+     "pl_hit": 36.73,
+     "pl_roi": 93.27,
+     "pl_avg_pay": 253.9,
+     "avg_ninki": 4.73,
+     "skip_rate": 92.8
+    }
+   },
+   "c_odds15-50": {
+    "VALIDATE": {
+     "n": 20,
+     "win_roi_ci": [
+      0.0,
+      508.0
+     ],
+     "win_hit": 10.0,
+     "win_roi": 203.5,
+     "win_avg_pay": 2035.0,
+     "pl_hit": 15.0,
+     "pl_roi": 70.0,
+     "pl_avg_pay": 466.7,
+     "avg_ninki": 8.0,
+     "skip_rate": 97.7
+    },
+    "CONFIRM": {
+     "n": 12,
+     "win_roi_ci": [
+      0.0,
+      0.0
+     ],
+     "win_hit": 0.0,
+     "win_roi": 0.0,
+     "win_avg_pay": 0.0,
+     "pl_hit": 16.67,
+     "pl_roi": 164.17,
+     "pl_avg_pay": 985.0,
+     "avg_ninki": 7.42,
+     "skip_rate": 98.2
+    }
+   },
+   "c_odds>=50": {
+    "VALIDATE": {
+     "n": 1,
+     "win_roi_ci": [
+      0.0,
+      0.0
+     ],
+     "win_hit": 0.0,
+     "win_roi": 0.0,
+     "win_avg_pay": 0.0,
+     "pl_hit": 0.0,
+     "pl_roi": 0.0,
+     "pl_avg_pay": 0.0,
+     "avg_ninki": 11.0,
+     "skip_rate": 99.9
+    },
+    "CONFIRM": {
+     "n": 1,
+     "win_roi_ci": [
+      0.0,
+      0.0
+     ],
+     "win_hit": 0.0,
+     "win_roi": 0.0,
+     "win_avg_pay": 0.0,
+     "pl_hit": 0.0,
+     "pl_roi": 0.0,
+     "pl_avg_pay": 0.0,
+     "avg_ninki": 9.0,
+     "skip_rate": 99.9
+    }
+   },
+   "d_pred>=0": {
+    "VALIDATE": {
+     "n": 26,
+     "win_roi_ci": [
+      60.0,
+      137.3
+     ],
+     "win_hit": 53.85,
+     "win_roi": 97.69,
+     "win_avg_pay": 181.4,
+     "pl_hit": 88.46,
+     "pl_roi": 103.85,
+     "pl_avg_pay": 117.4,
+     "avg_ninki": 1.12,
+     "skip_rate": 97.0
+    },
+    "CONFIRM": {
+     "n": 18,
+     "win_roi_ci": [
+      41.1,
+      122.2
+     ],
+     "win_hit": 50.0,
+     "win_roi": 80.0,
+     "win_avg_pay": 160.0,
+     "pl_hit": 88.89,
+     "pl_roi": 98.33,
+     "pl_avg_pay": 110.6,
+     "avg_ninki": 1.0,
+     "skip_rate": 97.3
+    }
+   },
+   "d_pred>=20": {
+    "VALIDATE": {
+     "n": 0,
+     "skip_rate": 100.0
+    },
+    "CONFIRM": {
+     "n": 0,
+     "skip_rate": 100.0
+    }
+   },
+   "d_pred>=50": {
+    "VALIDATE": {
+     "n": 0,
+     "skip_rate": 100.0
+    },
+    "CONFIRM": {
+     "n": 0,
+     "skip_rate": 100.0
+    }
+   },
+   "d_pred>=100": {
+    "VALIDATE": {
+     "n": 0,
+     "skip_rate": 100.0
+    },
+    "CONFIRM": {
+     "n": 0,
+     "skip_rate": 100.0
+    }
+   }
+  },
+  "M4-l2": {
+   "a_top10%": {
+    "VALIDATE": {
+     "n": 81,
+     "win_roi_ci": [
+      0.0,
+      28.9
+     ],
+     "win_hit": 1.23,
+     "win_roi": 9.63,
+     "win_avg_pay": 780.0,
+     "pl_hit": 7.41,
+     "pl_roi": 84.69,
+     "pl_avg_pay": 1143.3,
+     "avg_ninki": 12.17,
+     "skip_rate": 90.7
+    },
+    "CONFIRM": {
+     "n": 43,
+     "win_roi_ci": [
+      0.0,
+      318.8
+     ],
+     "win_hit": 2.33,
+     "win_roi": 106.28,
+     "win_avg_pay": 4570.0,
+     "pl_hit": 6.98,
+     "pl_roi": 44.42,
+     "pl_avg_pay": 636.7,
+     "avg_ninki": 11.95,
+     "skip_rate": 93.6
+    }
+   },
+   "b_gap10%": {
+    "VALIDATE": {
+     "n": 76,
+     "win_roi_ci": [
+      0.0,
+      30.8
+     ],
+     "win_hit": 1.32,
+     "win_roi": 10.26,
+     "win_avg_pay": 780.0,
+     "pl_hit": 7.89,
+     "pl_roi": 79.74,
+     "pl_avg_pay": 1010.0,
+     "avg_ninki": 12.21,
+     "skip_rate": 91.3
+    },
+    "CONFIRM": {
+     "n": 48,
+     "win_roi_ci": [
+      0.0,
+      302.3
+     ],
+     "win_hit": 4.17,
+     "win_roi": 103.54,
+     "win_avg_pay": 2485.0,
+     "pl_hit": 12.5,
+     "pl_roi": 46.25,
+     "pl_avg_pay": 370.0,
+     "avg_ninki": 10.35,
+     "skip_rate": 92.9
+    }
+   },
+   "a_top20%": {
+    "VALIDATE": {
+     "n": 137,
+     "win_roi_ci": [
+      0.0,
+      17.1
+     ],
+     "win_hit": 0.73,
+     "win_roi": 5.69,
+     "win_avg_pay": 780.0,
+     "pl_hit": 8.76,
+     "pl_roi": 74.6,
+     "pl_avg_pay": 851.7,
+     "avg_ninki": 11.77,
+     "skip_rate": 84.3
+    },
+    "CONFIRM": {
+     "n": 95,
+     "win_roi_ci": [
+      0.0,
+      161.4
+     ],
+     "win_hit": 2.11,
+     "win_roi": 56.63,
+     "win_avg_pay": 2690.0,
+     "pl_hit": 7.37,
+     "pl_roi": 29.58,
+     "pl_avg_pay": 401.4,
+     "avg_ninki": 10.89,
+     "skip_rate": 85.9
+    }
+   },
+   "b_gap20%": {
+    "VALIDATE": {
+     "n": 141,
+     "win_roi_ci": [
+      0.0,
+      16.6
+     ],
+     "win_hit": 0.71,
+     "win_roi": 5.53,
+     "win_avg_pay": 780.0,
+     "pl_hit": 9.93,
+     "pl_roi": 101.91,
+     "pl_avg_pay": 1026.4,
+     "avg_ninki": 11.41,
+     "skip_rate": 83.9
+    },
+    "CONFIRM": {
+     "n": 97,
+     "win_roi_ci": [
+      0.0,
+      162.2
+     ],
+     "win_hit": 3.09,
+     "win_roi": 59.59,
+     "win_avg_pay": 1926.7,
+     "pl_hit": 8.25,
+     "pl_roi": 30.52,
+     "pl_avg_pay": 370.0,
+     "avg_ninki": 10.35,
+     "skip_rate": 85.7
+    }
+   },
+   "a_top30%": {
+    "VALIDATE": {
+     "n": 203,
+     "win_roi_ci": [
+      0.0,
+      169.0
+     ],
+     "win_hit": 1.48,
+     "win_roi": 57.14,
+     "win_avg_pay": 3866.7,
+     "pl_hit": 9.36,
+     "pl_roi": 81.08,
+     "pl_avg_pay": 866.3,
+     "avg_ninki": 11.32,
+     "skip_rate": 76.8
+    },
+    "CONFIRM": {
+     "n": 125,
+     "win_roi_ci": [
+      3.2,
+      227.4
+     ],
+     "win_hit": 3.2,
+     "win_roi": 95.52,
+     "win_avg_pay": 2985.0,
+     "pl_hit": 8.0,
+     "pl_roi": 39.44,
+     "pl_avg_pay": 493.0,
+     "avg_ninki": 10.54,
+     "skip_rate": 81.5
+    }
+   },
+   "b_gap30%": {
+    "VALIDATE": {
+     "n": 206,
+     "win_roi_ci": [
+      0.0,
+      15.0
+     ],
+     "win_hit": 0.97,
+     "win_roi": 5.0,
+     "win_avg_pay": 515.0,
+     "pl_hit": 10.19,
+     "pl_roi": 77.43,
+     "pl_avg_pay": 759.5,
+     "avg_ninki": 10.79,
+     "skip_rate": 76.4
+    },
+    "CONFIRM": {
+     "n": 145,
+     "win_roi_ci": [
+      12.9,
+      232.7
+     ],
+     "win_hit": 4.83,
+     "win_roi": 99.59,
+     "win_avg_pay": 2062.9,
+     "pl_hit": 11.03,
+     "pl_roi": 47.66,
+     "pl_avg_pay": 431.9,
+     "avg_ninki": 10.14,
+     "skip_rate": 78.6
+    }
+   },
+   "a_top50%": {
+    "VALIDATE": {
+     "n": 335,
+     "win_roi_ci": [
+      2.3,
+      120.4
+     ],
+     "win_hit": 1.49,
+     "win_roi": 44.66,
+     "win_avg_pay": 2992.0,
+     "pl_hit": 11.04,
+     "pl_roi": 69.79,
+     "pl_avg_pay": 631.9,
+     "avg_ninki": 10.53,
+     "skip_rate": 61.7
+    },
+    "CONFIRM": {
+     "n": 230,
+     "win_roi_ci": [
+      22.3,
+      150.1
+     ],
+     "win_hit": 5.22,
+     "win_roi": 78.83,
+     "win_avg_pay": 1510.8,
+     "pl_hit": 13.04,
+     "pl_roi": 46.91,
+     "pl_avg_pay": 359.7,
+     "avg_ninki": 9.74,
+     "skip_rate": 66.0
+    }
+   },
+   "b_gap50%": {
+    "VALIDATE": {
+     "n": 380,
+     "win_roi_ci": [
+      7.8,
+      115.2
+     ],
+     "win_hit": 2.37,
+     "win_roi": 48.55,
+     "win_avg_pay": 2050.0,
+     "pl_hit": 12.37,
+     "pl_roi": 68.29,
+     "pl_avg_pay": 552.1,
+     "avg_ninki": 10.04,
+     "skip_rate": 56.5
+    },
+    "CONFIRM": {
+     "n": 261,
+     "win_roi_ci": [
+      27.8,
+      146.2
+     ],
+     "win_hit": 6.13,
+     "win_roi": 78.2,
+     "win_avg_pay": 1275.6,
+     "pl_hit": 14.18,
+     "pl_roi": 46.63,
+     "pl_avg_pay": 328.9,
+     "avg_ninki": 9.38,
+     "skip_rate": 61.4
+    }
+   },
+   "c_odds<2": {
+    "VALIDATE": {
+     "n": 12,
+     "win_roi_ci": [
+      65.0,
+      155.0
+     ],
+     "win_hit": 66.67,
+     "win_roi": 111.67,
+     "win_avg_pay": 167.5,
+     "pl_hit": 91.67,
+     "pl_roi": 100.83,
+     "pl_avg_pay": 110.0,
+     "avg_ninki": 1.0,
+     "skip_rate": 98.6
+    },
+    "CONFIRM": {
+     "n": 21,
+     "win_roi_ci": [
+      75.2,
+      138.1
+     ],
+     "win_hit": 71.43,
+     "win_roi": 107.62,
+     "win_avg_pay": 150.7,
+     "pl_hit": 85.71,
+     "pl_roi": 93.81,
+     "pl_avg_pay": 109.4,
+     "avg_ninki": 1.0,
+     "skip_rate": 96.9
+    }
+   },
+   "c_odds2-4": {
+    "VALIDATE": {
+     "n": 54,
+     "win_roi_ci": [
+      43.1,
+      113.0
+     ],
+     "win_hit": 25.93,
+     "win_roi": 75.37,
+     "win_avg_pay": 290.7,
+     "pl_hit": 66.67,
+     "pl_roi": 92.04,
+     "pl_avg_pay": 138.1,
+     "avg_ninki": 1.46,
+     "skip_rate": 93.8
+    },
+    "CONFIRM": {
+     "n": 58,
+     "win_roi_ci": [
+      40.0,
+      105.9
+     ],
+     "win_hit": 24.14,
+     "win_roi": 71.9,
+     "win_avg_pay": 297.9,
+     "pl_hit": 63.79,
+     "pl_roi": 86.38,
+     "pl_avg_pay": 135.4,
+     "avg_ninki": 1.59,
+     "skip_rate": 91.4
+    }
+   },
+   "c_odds4-7": {
+    "VALIDATE": {
+     "n": 97,
+     "win_roi_ci": [
+      16.8,
+      74.0
+     ],
+     "win_hit": 8.25,
+     "win_roi": 42.37,
+     "win_avg_pay": 513.8,
+     "pl_hit": 40.21,
+     "pl_roi": 75.26,
+     "pl_avg_pay": 187.2,
+     "avg_ninki": 2.84,
+     "skip_rate": 88.9
+    },
+    "CONFIRM": {
+     "n": 71,
+     "win_roi_ci": [
+      42.0,
+      130.1
+     ],
+     "win_hit": 16.9,
+     "win_roi": 83.52,
+     "win_avg_pay": 494.2,
+     "pl_hit": 52.11,
+     "pl_roi": 92.96,
+     "pl_avg_pay": 178.4,
+     "avg_ninki": 2.7,
+     "skip_rate": 89.5
+    }
+   },
+   "c_odds7-15": {
+    "VALIDATE": {
+     "n": 123,
+     "win_roi_ci": [
+      57.0,
+      159.8
+     ],
+     "win_hit": 12.2,
+     "win_roi": 104.23,
+     "win_avg_pay": 854.7,
+     "pl_hit": 39.02,
+     "pl_roi": 101.79,
+     "pl_avg_pay": 260.8,
+     "avg_ninki": 4.84,
+     "skip_rate": 85.9
+    },
+    "CONFIRM": {
+     "n": 110,
+     "win_roi_ci": [
+      44.2,
+      155.6
+     ],
+     "win_hit": 10.0,
+     "win_roi": 95.55,
+     "win_avg_pay": 955.5,
+     "pl_hit": 30.91,
+     "pl_roi": 76.18,
+     "pl_avg_pay": 246.5,
+     "avg_ninki": 4.92,
+     "skip_rate": 83.7
+    }
+   },
+   "c_odds15-50": {
+    "VALIDATE": {
+     "n": 249,
+     "win_roi_ci": [
+      13.4,
+      96.6
+     ],
+     "win_hit": 2.41,
+     "win_roi": 50.2,
+     "win_avg_pay": 2083.3,
+     "pl_hit": 15.66,
+     "pl_roi": 78.31,
+     "pl_avg_pay": 500.0,
+     "avg_ninki": 7.54,
+     "skip_rate": 71.5
+    },
+    "CONFIRM": {
+     "n": 191,
+     "win_roi_ci": [
+      13.7,
+      153.2
+     ],
+     "win_hit": 2.62,
+     "win_roi": 73.82,
+     "win_avg_pay": 2820.0,
+     "pl_hit": 14.14,
+     "pl_roi": 71.26,
+     "pl_avg_pay": 504.1,
+     "avg_ninki": 7.76,
+     "skip_rate": 71.7
+    }
+   },
+   "c_odds>=50": {
+    "VALIDATE": {
+     "n": 339,
+     "win_roi_ci": [
+      0.0,
+      285.9
+     ],
+     "win_hit": 0.59,
+     "win_roi": 105.63,
+     "win_avg_pay": 17905.0,
+     "pl_hit": 2.95,
+     "pl_roi": 53.63,
+     "pl_avg_pay": 1818.0,
+     "avg_ninki": 12.73,
+     "skip_rate": 61.2
+    },
+    "CONFIRM": {
+     "n": 225,
+     "win_roi_ci": [
+      0.0,
+      147.7
+     ],
+     "win_hit": 0.89,
+     "win_roi": 58.36,
+     "win_avg_pay": 6565.0,
+     "pl_hit": 4.0,
+     "pl_roi": 56.09,
+     "pl_avg_pay": 1402.2,
+     "avg_ninki": 12.51,
+     "skip_rate": 66.7
+    }
+   },
+   "d_pred>=0": {
+    "VALIDATE": {
+     "n": 309,
+     "win_roi_ci": [
+      4.6,
+      133.0
+     ],
+     "win_hit": 1.94,
+     "win_roi": 50.52,
+     "win_avg_pay": 2601.7,
+     "pl_hit": 11.33,
+     "pl_roi": 74.37,
+     "pl_avg_pay": 656.6,
+     "avg_ninki": 10.61,
+     "skip_rate": 64.6
+    },
+    "CONFIRM": {
+     "n": 209,
+     "win_roi_ci": [
+      10.3,
+      153.0
+     ],
+     "win_hit": 3.83,
+     "win_roi": 68.9,
+     "win_avg_pay": 1800.0,
+     "pl_hit": 11.0,
+     "pl_roi": 43.06,
+     "pl_avg_pay": 391.3,
+     "avg_ninki": 9.89,
+     "skip_rate": 69.1
+    }
+   },
+   "d_pred>=20": {
+    "VALIDATE": {
+     "n": 152,
+     "win_roi_ci": [
+      0.0,
+      15.4
+     ],
+     "win_hit": 0.66,
+     "win_roi": 5.13,
+     "win_avg_pay": 780.0,
+     "pl_hit": 10.53,
+     "pl_roi": 99.41,
+     "pl_avg_pay": 944.4,
+     "avg_ninki": 11.89,
+     "skip_rate": 82.6
+    },
+    "CONFIRM": {
+     "n": 92,
+     "win_roi_ci": [
+      0.0,
+      157.7
+     ],
+     "win_hit": 2.17,
+     "win_roi": 54.02,
+     "win_avg_pay": 2485.0,
+     "pl_hit": 7.61,
+     "pl_roi": 25.87,
+     "pl_avg_pay": 340.0,
+     "avg_ninki": 10.25,
+     "skip_rate": 86.4
+    }
+   },
+   "d_pred>=50": {
+    "VALIDATE": {
+     "n": 60,
+     "win_roi_ci": [
+      0.0,
+      39.0
+     ],
+     "win_hit": 1.67,
+     "win_roi": 13.0,
+     "win_avg_pay": 780.0,
+     "pl_hit": 8.33,
+     "pl_roi": 46.17,
+     "pl_avg_pay": 554.0,
+     "avg_ninki": 11.98,
+     "skip_rate": 93.1
+    },
+    "CONFIRM": {
+     "n": 35,
+     "win_roi_ci": [
+      0.0,
+      414.6
+     ],
+     "win_hit": 5.71,
+     "win_roi": 142.0,
+     "win_avg_pay": 2485.0,
+     "pl_hit": 8.57,
+     "pl_roi": 47.71,
+     "pl_avg_pay": 556.7,
+     "avg_ninki": 11.31,
+     "skip_rate": 94.8
+    }
+   },
+   "d_pred>=100": {
+    "VALIDATE": {
+     "n": 18,
+     "win_roi_ci": [
+      0.0,
+      0.0
+     ],
+     "win_hit": 0.0,
+     "win_roi": 0.0,
+     "win_avg_pay": 0.0,
+     "pl_hit": 5.56,
+     "pl_roi": 27.22,
+     "pl_avg_pay": 490.0,
+     "avg_ninki": 12.67,
+     "skip_rate": 97.9
+    },
+    "CONFIRM": {
+     "n": 7,
+     "win_roi_ci": [
+      0.0,
+      0.0
+     ],
+     "win_hit": 0.0,
+     "win_roi": 0.0,
+     "win_avg_pay": 0.0,
+     "pl_hit": 0.0,
+     "pl_roi": 0.0,
+     "pl_avg_pay": 0.0,
+     "avg_ninki": 12.57,
+     "skip_rate": 99.0
+    }
+   }
+  },
+  "M4-huber": {
+   "a_top10%": {
+    "VALIDATE": {
+     "n": 115,
+     "win_roi_ci": [
+      41.2,
+      79.3
+     ],
+     "win_hit": 29.57,
+     "win_roi": 60.09,
+     "win_avg_pay": 203.2,
+     "pl_hit": 67.83,
+     "pl_roi": 85.57,
+     "pl_avg_pay": 126.2,
+     "avg_ninki": 1.37,
+     "skip_rate": 86.8
+    },
+    "CONFIRM": {
+     "n": 64,
+     "win_roi_ci": [
+      42.3,
+      137.8
+     ],
+     "win_hit": 29.69,
+     "win_roi": 81.72,
+     "win_avg_pay": 275.3,
+     "pl_hit": 59.38,
+     "pl_roi": 77.03,
+     "pl_avg_pay": 129.7,
+     "avg_ninki": 1.25,
+     "skip_rate": 90.5
+    }
+   },
+   "b_gap10%": {
+    "VALIDATE": {
+     "n": 92,
+     "win_roi_ci": [
+      34.2,
+      73.9
+     ],
+     "win_hit": 26.09,
+     "win_roi": 52.72,
+     "win_avg_pay": 202.1,
+     "pl_hit": 61.96,
+     "pl_roi": 78.37,
+     "pl_avg_pay": 126.5,
+     "avg_ninki": 1.29,
+     "skip_rate": 89.5
+    },
+    "CONFIRM": {
+     "n": 69,
+     "win_roi_ci": [
+      49.9,
+      150.7
+     ],
+     "win_hit": 33.33,
+     "win_roi": 93.48,
+     "win_avg_pay": 280.4,
+     "pl_hit": 66.67,
+     "pl_roi": 88.12,
+     "pl_avg_pay": 132.2,
+     "avg_ninki": 1.33,
+     "skip_rate": 89.8
+    }
+   },
+   "a_top20%": {
+    "VALIDATE": {
+     "n": 220,
+     "win_roi_ci": [
+      60.6,
+      108.5
+     ],
+     "win_hit": 31.36,
+     "win_roi": 82.82,
+     "win_avg_pay": 264.1,
+     "pl_hit": 70.45,
+     "pl_roi": 94.55,
+     "pl_avg_pay": 134.2,
+     "avg_ninki": 1.51,
+     "skip_rate": 74.8
+    },
+    "CONFIRM": {
+     "n": 119,
+     "win_roi_ci": [
+      61.6,
+      135.9
+     ],
+     "win_hit": 31.93,
+     "win_roi": 94.96,
+     "win_avg_pay": 297.4,
+     "pl_hit": 58.82,
+     "pl_roi": 77.14,
+     "pl_avg_pay": 131.1,
+     "avg_ninki": 1.44,
+     "skip_rate": 82.4
+    }
+   },
+   "b_gap20%": {
+    "VALIDATE": {
+     "n": 190,
+     "win_roi_ci": [
+      50.9,
+      85.1
+     ],
+     "win_hit": 31.05,
+     "win_roi": 68.0,
+     "win_avg_pay": 219.0,
+     "pl_hit": 62.63,
+     "pl_roi": 80.32,
+     "pl_avg_pay": 128.2,
+     "avg_ninki": 1.46,
+     "skip_rate": 78.3
+    },
+    "CONFIRM": {
+     "n": 122,
+     "win_roi_ci": [
+      55.0,
+      117.3
+     ],
+     "win_hit": 31.97,
+     "win_roi": 82.13,
+     "win_avg_pay": 256.9,
+     "pl_hit": 64.75,
+     "pl_roi": 85.25,
+     "pl_avg_pay": 131.6,
+     "avg_ninki": 1.39,
+     "skip_rate": 82.0
+    }
+   },
+   "a_top30%": {
+    "VALIDATE": {
+     "n": 318,
+     "win_roi_ci": [
+      63.3,
+      100.9
+     ],
+     "win_hit": 30.19,
+     "win_roi": 80.79,
+     "win_avg_pay": 267.6,
+     "pl_hit": 68.24,
+     "pl_roi": 91.92,
+     "pl_avg_pay": 134.7,
+     "avg_ninki": 1.53,
+     "skip_rate": 63.6
+    },
+    "CONFIRM": {
+     "n": 183,
+     "win_roi_ci": [
+      65.4,
+      117.9
+     ],
+     "win_hit": 30.6,
+     "win_roi": 90.87,
+     "win_avg_pay": 297.0,
+     "pl_hit": 58.47,
+     "pl_roi": 78.47,
+     "pl_avg_pay": 134.2,
+     "avg_ninki": 1.5,
+     "skip_rate": 72.9
+    }
+   },
+   "b_gap30%": {
+    "VALIDATE": {
+     "n": 270,
+     "win_roi_ci": [
+      65.9,
+      109.0
+     ],
+     "win_hit": 33.7,
+     "win_roi": 85.44,
+     "win_avg_pay": 253.5,
+     "pl_hit": 62.59,
+     "pl_roi": 81.0,
+     "pl_avg_pay": 129.4,
+     "avg_ninki": 1.53,
+     "skip_rate": 69.1
+    },
+    "CONFIRM": {
+     "n": 203,
+     "win_roi_ci": [
+      64.9,
+      113.2
+     ],
+     "win_hit": 33.0,
+     "win_roi": 86.31,
+     "win_avg_pay": 261.5,
+     "pl_hit": 65.02,
+     "pl_roi": 86.95,
+     "pl_avg_pay": 133.7,
+     "avg_ninki": 1.47,
+     "skip_rate": 70.0
+    }
+   },
+   "a_top50%": {
+    "VALIDATE": {
+     "n": 501,
+     "win_roi_ci": [
+      63.7,
+      91.7
+     ],
+     "win_hit": 29.14,
+     "win_roi": 77.6,
+     "win_avg_pay": 266.3,
+     "pl_hit": 64.47,
+     "pl_roi": 85.89,
+     "pl_avg_pay": 133.2,
+     "avg_ninki": 1.64,
+     "skip_rate": 42.7
+    },
+    "CONFIRM": {
+     "n": 330,
+     "win_roi_ci": [
+      61.1,
+      96.6
+     ],
+     "win_hit": 26.67,
+     "win_roi": 78.3,
+     "win_avg_pay": 293.6,
+     "pl_hit": 59.09,
+     "pl_roi": 80.7,
+     "pl_avg_pay": 136.6,
+     "avg_ninki": 1.6,
+     "skip_rate": 51.2
+    }
+   },
+   "b_gap50%": {
+    "VALIDATE": {
+     "n": 431,
+     "win_roi_ci": [
+      65.1,
+      96.7
+     ],
+     "win_hit": 30.39,
+     "win_roi": 80.07,
+     "win_avg_pay": 263.4,
+     "pl_hit": 61.72,
+     "pl_roi": 81.93,
+     "pl_avg_pay": 132.7,
+     "avg_ninki": 1.65,
+     "skip_rate": 50.7
+    },
+    "CONFIRM": {
+     "n": 332,
+     "win_roi_ci": [
+      68.9,
+      103.9
+     ],
+     "win_hit": 31.93,
+     "win_roi": 85.39,
+     "win_avg_pay": 267.5,
+     "pl_hit": 61.14,
+     "pl_roi": 82.11,
+     "pl_avg_pay": 134.3,
+     "avg_ninki": 1.7,
+     "skip_rate": 50.9
+    }
+   },
+   "c_odds<2": {
+    "VALIDATE": {
+     "n": 156,
+     "win_roi_ci": [
+      66.3,
+      91.3
+     ],
+     "win_hit": 50.0,
+     "win_roi": 78.97,
+     "win_avg_pay": 157.9,
+     "pl_hit": 82.69,
+     "pl_roi": 90.58,
+     "pl_avg_pay": 109.5,
+     "avg_ninki": 1.0,
+     "skip_rate": 82.2
+    },
+    "CONFIRM": {
+     "n": 118,
+     "win_roi_ci": [
+      68.7,
+      98.1
+     ],
+     "win_hit": 53.39,
+     "win_roi": 84.15,
+     "win_avg_pay": 157.6,
+     "pl_hit": 84.75,
+     "pl_roi": 93.31,
+     "pl_avg_pay": 110.1,
+     "avg_ninki": 1.0,
+     "skip_rate": 82.5
+    }
+   },
+   "c_odds2-4": {
+    "VALIDATE": {
+     "n": 429,
+     "win_roi_ci": [
+      62.8,
+      86.3
+     ],
+     "win_hit": 27.97,
+     "win_roi": 74.9,
+     "win_avg_pay": 267.8,
+     "pl_hit": 67.13,
+     "pl_roi": 88.55,
+     "pl_avg_pay": 131.9,
+     "avg_ninki": 1.28,
+     "skip_rate": 50.9
+    },
+    "CONFIRM": {
+     "n": 327,
+     "win_roi_ci": [
+      58.0,
+      85.0
+     ],
+     "win_hit": 25.08,
+     "win_roi": 70.86,
+     "win_avg_pay": 282.6,
+     "pl_hit": 57.8,
+     "pl_roi": 77.37,
+     "pl_avg_pay": 133.9,
+     "avg_ninki": 1.31,
+     "skip_rate": 51.6
+    }
+   },
+   "c_odds4-7": {
+    "VALIDATE": {
+     "n": 203,
+     "win_roi_ci": [
+      42.7,
+      89.9
+     ],
+     "win_hit": 13.3,
+     "win_roi": 65.42,
+     "win_avg_pay": 491.9,
+     "pl_hit": 40.39,
+     "pl_roi": 70.44,
+     "pl_avg_pay": 174.4,
+     "avg_ninki": 2.54,
+     "skip_rate": 76.8
+    },
+    "CONFIRM": {
+     "n": 176,
+     "win_roi_ci": [
+      68.1,
+      126.9
+     ],
+     "win_hit": 19.32,
+     "win_roi": 95.97,
+     "win_avg_pay": 496.8,
+     "pl_hit": 44.32,
+     "pl_roi": 77.39,
+     "pl_avg_pay": 174.6,
+     "avg_ninki": 2.57,
+     "skip_rate": 74.0
+    }
+   },
+   "c_odds7-15": {
+    "VALIDATE": {
+     "n": 69,
+     "win_roi_ci": [
+      32.2,
+      139.1
+     ],
+     "win_hit": 10.14,
+     "win_roi": 78.7,
+     "win_avg_pay": 775.7,
+     "pl_hit": 26.09,
+     "pl_roi": 66.23,
+     "pl_avg_pay": 253.9,
+     "avg_ninki": 4.72,
+     "skip_rate": 92.1
+    },
+    "CONFIRM": {
+     "n": 50,
+     "win_roi_ci": [
+      57.6,
+      249.3
+     ],
+     "win_hit": 14.0,
+     "win_roi": 148.0,
+     "win_avg_pay": 1057.1,
+     "pl_hit": 38.0,
+     "pl_roi": 89.8,
+     "pl_avg_pay": 236.3,
+     "avg_ninki": 4.52,
+     "skip_rate": 92.6
+    }
+   },
+   "c_odds15-50": {
+    "VALIDATE": {
+     "n": 17,
+     "win_roi_ci": [
+      0.0,
+      597.6
+     ],
+     "win_hit": 11.76,
+     "win_roi": 239.41,
+     "win_avg_pay": 2035.0,
+     "pl_hit": 41.18,
+     "pl_roi": 170.59,
+     "pl_avg_pay": 414.3,
+     "avg_ninki": 7.71,
+     "skip_rate": 98.1
+    },
+    "CONFIRM": {
+     "n": 3,
+     "win_roi_ci": [
+      0.0,
+      0.0
+     ],
+     "win_hit": 0.0,
+     "win_roi": 0.0,
+     "win_avg_pay": 0.0,
+     "pl_hit": 0.0,
+     "pl_roi": 0.0,
+     "pl_avg_pay": 0.0,
+     "avg_ninki": 8.0,
+     "skip_rate": 99.6
+    }
+   },
+   "c_odds>=50": {
+    "VALIDATE": {
+     "n": 0,
+     "skip_rate": 100.0
+    },
+    "CONFIRM": {
+     "n": 2,
+     "win_roi_ci": [
+      0.0,
+      0.0
+     ],
+     "win_hit": 0.0,
+     "win_roi": 0.0,
+     "win_avg_pay": 0.0,
+     "pl_hit": 0.0,
+     "pl_roi": 0.0,
+     "pl_avg_pay": 0.0,
+     "avg_ninki": 11.0,
+     "skip_rate": 99.7
+    }
+   },
+   "d_pred>=0": {
+    "VALIDATE": {
+     "n": 44,
+     "win_roi_ci": [
+      68.6,
+      132.5
+     ],
+     "win_hit": 50.0,
+     "win_roi": 99.77,
+     "win_avg_pay": 199.5,
+     "pl_hit": 81.82,
+     "pl_roi": 98.18,
+     "pl_avg_pay": 120.0,
+     "avg_ninki": 1.16,
+     "skip_rate": 95.0
+    },
+    "CONFIRM": {
+     "n": 36,
+     "win_roi_ci": [
+      27.2,
+      82.8
+     ],
+     "win_hit": 30.56,
+     "win_roi": 52.78,
+     "win_avg_pay": 172.7,
+     "pl_hit": 77.78,
+     "pl_roi": 92.22,
+     "pl_avg_pay": 118.6,
+     "avg_ninki": 1.28,
+     "skip_rate": 94.7
+    }
+   },
+   "d_pred>=20": {
+    "VALIDATE": {
+     "n": 0,
+     "skip_rate": 100.0
+    },
+    "CONFIRM": {
+     "n": 0,
+     "skip_rate": 100.0
+    }
+   },
+   "d_pred>=50": {
+    "VALIDATE": {
+     "n": 0,
+     "skip_rate": 100.0
+    },
+    "CONFIRM": {
+     "n": 0,
+     "skip_rate": 100.0
+    }
+   },
+   "d_pred>=100": {
+    "VALIDATE": {
+     "n": 0,
+     "skip_rate": 100.0
+    },
+    "CONFIRM": {
+     "n": 0,
+     "skip_rate": 100.0
+    }
+   }
+  },
+  "M4-log": {
+   "a_top10%": {
+    "VALIDATE": {
+     "n": 123,
+     "win_roi_ci": [
+      45.9,
+      85.6
+     ],
+     "win_hit": 31.71,
+     "win_roi": 65.45,
+     "win_avg_pay": 206.4,
+     "pl_hit": 70.73,
+     "pl_roi": 90.16,
+     "pl_avg_pay": 127.5,
+     "avg_ninki": 1.29,
+     "skip_rate": 85.9
+    },
+    "CONFIRM": {
+     "n": 68,
+     "win_roi_ci": [
+      42.9,
+      144.4
+     ],
+     "win_hit": 27.94,
+     "win_roi": 87.5,
+     "win_avg_pay": 313.2,
+     "pl_hit": 61.76,
+     "pl_roi": 80.15,
+     "pl_avg_pay": 129.8,
+     "avg_ninki": 1.26,
+     "skip_rate": 89.9
+    }
+   },
+   "b_gap10%": {
+    "VALIDATE": {
+     "n": 99,
+     "win_roi_ci": [
+      44.6,
+      79.7
+     ],
+     "win_hit": 34.34,
+     "win_roi": 61.01,
+     "win_avg_pay": 177.6,
+     "pl_hit": 69.7,
+     "pl_roi": 84.14,
+     "pl_avg_pay": 120.7,
+     "avg_ninki": 1.2,
+     "skip_rate": 88.7
+    },
+    "CONFIRM": {
+     "n": 72,
+     "win_roi_ci": [
+      51.8,
+      154.9
+     ],
+     "win_hit": 34.72,
+     "win_roi": 95.56,
+     "win_avg_pay": 275.2,
+     "pl_hit": 69.44,
+     "pl_roi": 90.97,
+     "pl_avg_pay": 131.0,
+     "avg_ninki": 1.33,
+     "skip_rate": 89.3
+    }
+   },
+   "a_top20%": {
+    "VALIDATE": {
+     "n": 217,
+     "win_roi_ci": [
+      50.4,
+      96.0
+     ],
+     "win_hit": 29.49,
+     "win_roi": 70.0,
+     "win_avg_pay": 237.3,
+     "pl_hit": 70.51,
+     "pl_roi": 90.46,
+     "pl_avg_pay": 128.3,
+     "avg_ninki": 1.36,
+     "skip_rate": 75.2
+    },
+    "CONFIRM": {
+     "n": 124,
+     "win_roi_ci": [
+      58.6,
+      125.6
+     ],
+     "win_hit": 32.26,
+     "win_roi": 87.82,
+     "win_avg_pay": 272.2,
+     "pl_hit": 66.13,
+     "pl_roi": 86.37,
+     "pl_avg_pay": 130.6,
+     "avg_ninki": 1.37,
+     "skip_rate": 81.7
+    }
+   },
+   "b_gap20%": {
+    "VALIDATE": {
+     "n": 193,
+     "win_roi_ci": [
+      53.4,
+      100.6
+     ],
+     "win_hit": 33.68,
+     "win_roi": 74.66,
+     "win_avg_pay": 221.7,
+     "pl_hit": 67.36,
+     "pl_roi": 84.15,
+     "pl_avg_pay": 124.9,
+     "avg_ninki": 1.39,
+     "skip_rate": 77.9
+    },
+    "CONFIRM": {
+     "n": 131,
+     "win_roi_ci": [
+      68.7,
+      131.4
+     ],
+     "win_hit": 38.93,
+     "win_roi": 97.48,
+     "win_avg_pay": 250.4,
+     "pl_hit": 67.94,
+     "pl_roi": 88.47,
+     "pl_avg_pay": 130.2,
+     "avg_ninki": 1.33,
+     "skip_rate": 80.6
+    }
+   },
+   "a_top30%": {
+    "VALIDATE": {
+     "n": 314,
+     "win_roi_ci": [
+      59.8,
+      97.7
+     ],
+     "win_hit": 30.57,
+     "win_roi": 77.23,
+     "win_avg_pay": 252.6,
+     "pl_hit": 68.47,
+     "pl_roi": 89.2,
+     "pl_avg_pay": 130.3,
+     "avg_ninki": 1.46,
+     "skip_rate": 64.1
+    },
+    "CONFIRM": {
+     "n": 175,
+     "win_roi_ci": [
+      63.5,
+      115.9
+     ],
+     "win_hit": 31.43,
+     "win_roi": 88.46,
+     "win_avg_pay": 281.5,
+     "pl_hit": 62.86,
+     "pl_roi": 82.34,
+     "pl_avg_pay": 131.0,
+     "avg_ninki": 1.38,
+     "skip_rate": 74.1
+    }
+   },
+   "b_gap30%": {
+    "VALIDATE": {
+     "n": 274,
+     "win_roi_ci": [
+      59.3,
+      98.9
+     ],
+     "win_hit": 32.85,
+     "win_roi": 77.15,
+     "win_avg_pay": 234.9,
+     "pl_hit": 66.06,
+     "pl_roi": 83.61,
+     "pl_avg_pay": 126.6,
+     "avg_ninki": 1.45,
+     "skip_rate": 68.6
+    },
+    "CONFIRM": {
+     "n": 207,
+     "win_roi_ci": [
+      72.9,
+      117.8
+     ],
+     "win_hit": 37.2,
+     "win_roi": 93.48,
+     "win_avg_pay": 251.3,
+     "pl_hit": 68.12,
+     "pl_roi": 89.13,
+     "pl_avg_pay": 130.9,
+     "avg_ninki": 1.39,
+     "skip_rate": 69.4
+    }
+   },
+   "a_top50%": {
+    "VALIDATE": {
+     "n": 492,
+     "win_roi_ci": [
+      67.2,
+      95.3
+     ],
+     "win_hit": 30.89,
+     "win_roi": 81.0,
+     "win_avg_pay": 262.2,
+     "pl_hit": 65.85,
+     "pl_roi": 87.17,
+     "pl_avg_pay": 132.4,
+     "avg_ninki": 1.58,
+     "skip_rate": 43.7
+    },
+    "CONFIRM": {
+     "n": 336,
+     "win_roi_ci": [
+      66.8,
+      102.0
+     ],
+     "win_hit": 29.46,
+     "win_roi": 83.87,
+     "win_avg_pay": 284.6,
+     "pl_hit": 61.01,
+     "pl_roi": 82.65,
+     "pl_avg_pay": 135.5,
+     "avg_ninki": 1.55,
+     "skip_rate": 50.3
+    }
+   },
+   "b_gap50%": {
+    "VALIDATE": {
+     "n": 444,
+     "win_roi_ci": [
+      56.4,
+      84.7
+     ],
+     "win_hit": 28.83,
+     "win_roi": 69.84,
+     "win_avg_pay": 242.3,
+     "pl_hit": 62.39,
+     "pl_roi": 81.46,
+     "pl_avg_pay": 130.6,
+     "avg_ninki": 1.6,
+     "skip_rate": 49.2
+    },
+    "CONFIRM": {
+     "n": 318,
+     "win_roi_ci": [
+      66.5,
+      101.9
+     ],
+     "win_hit": 32.08,
+     "win_roi": 83.24,
+     "win_avg_pay": 259.5,
+     "pl_hit": 64.78,
+     "pl_roi": 85.91,
+     "pl_avg_pay": 132.6,
+     "avg_ninki": 1.52,
+     "skip_rate": 53.0
+    }
+   },
+   "c_odds<2": {
+    "VALIDATE": {
+     "n": 157,
+     "win_roi_ci": [
+      70.4,
+      96.2
+     ],
+     "win_hit": 52.23,
+     "win_roi": 83.44,
+     "win_avg_pay": 159.8,
+     "pl_hit": 83.44,
+     "pl_roi": 91.46,
+     "pl_avg_pay": 109.6,
+     "avg_ninki": 1.0,
+     "skip_rate": 82.0
+    },
+    "CONFIRM": {
+     "n": 120,
+     "win_roi_ci": [
+      67.6,
+      95.9
+     ],
+     "win_hit": 52.5,
+     "win_roi": 82.0,
+     "win_avg_pay": 156.2,
+     "pl_hit": 82.5,
+     "pl_roi": 90.83,
+     "pl_avg_pay": 110.1,
+     "avg_ninki": 1.0,
+     "skip_rate": 82.2
+    }
+   },
+   "c_odds2-4": {
+    "VALIDATE": {
+     "n": 428,
+     "win_roi_ci": [
+      67.2,
+      90.5
+     ],
+     "win_hit": 29.44,
+     "win_roi": 78.64,
+     "win_avg_pay": 267.1,
+     "pl_hit": 65.42,
+     "pl_roi": 85.21,
+     "pl_avg_pay": 130.2,
+     "avg_ninki": 1.28,
+     "skip_rate": 51.0
+    },
+    "CONFIRM": {
+     "n": 335,
+     "win_roi_ci": [
+      53.2,
+      78.6
+     ],
+     "win_hit": 23.58,
+     "win_roi": 65.73,
+     "win_avg_pay": 278.7,
+     "pl_hit": 58.21,
+     "pl_roi": 77.43,
+     "pl_avg_pay": 133.0,
+     "avg_ninki": 1.27,
+     "skip_rate": 50.4
+    }
+   },
+   "c_odds4-7": {
+    "VALIDATE": {
+     "n": 202,
+     "win_roi_ci": [
+      35.2,
+      78.6
+     ],
+     "win_hit": 11.88,
+     "win_roi": 55.79,
+     "win_avg_pay": 469.6,
+     "pl_hit": 38.61,
+     "pl_roi": 67.33,
+     "pl_avg_pay": 174.4,
+     "avg_ninki": 2.55,
+     "skip_rate": 76.9
+    },
+    "CONFIRM": {
+     "n": 169,
+     "win_roi_ci": [
+      57.0,
+      113.3
+     ],
+     "win_hit": 17.16,
+     "win_roi": 84.79,
+     "win_avg_pay": 494.1,
+     "pl_hit": 45.56,
+     "pl_roi": 78.82,
+     "pl_avg_pay": 173.0,
+     "avg_ninki": 2.5,
+     "skip_rate": 75.0
+    }
+   },
+   "c_odds7-15": {
+    "VALIDATE": {
+     "n": 71,
+     "win_roi_ci": [
+      10.3,
+      107.6
+     ],
+     "win_hit": 7.04,
+     "win_roi": 55.92,
+     "win_avg_pay": 794.0,
+     "pl_hit": 29.58,
+     "pl_roi": 77.89,
+     "pl_avg_pay": 263.3,
+     "avg_ninki": 4.75,
+     "skip_rate": 91.9
+    },
+    "CONFIRM": {
+     "n": 44,
+     "win_roi_ci": [
+      47.7,
+      248.0
+     ],
+     "win_hit": 13.64,
+     "win_roi": 138.41,
+     "win_avg_pay": 1015.0,
+     "pl_hit": 40.91,
+     "pl_roi": 90.91,
+     "pl_avg_pay": 222.2,
+     "avg_ninki": 4.57,
+     "skip_rate": 93.5
+    }
+   },
+   "c_odds15-50": {
+    "VALIDATE": {
+     "n": 16,
+     "win_roi_ci": [
+      0.0,
+      378.8
+     ],
+     "win_hit": 6.25,
+     "win_roi": 126.25,
+     "win_avg_pay": 2020.0,
+     "pl_hit": 25.0,
+     "pl_roi": 103.12,
+     "pl_avg_pay": 412.5,
+     "avg_ninki": 7.75,
+     "skip_rate": 98.2
+    },
+    "CONFIRM": {
+     "n": 6,
+     "win_roi_ci": [
+      0.0,
+      0.0
+     ],
+     "win_hit": 0.0,
+     "win_roi": 0.0,
+     "win_avg_pay": 0.0,
+     "pl_hit": 0.0,
+     "pl_roi": 0.0,
+     "pl_avg_pay": 0.0,
+     "avg_ninki": 7.17,
+     "skip_rate": 99.1
+    }
+   },
+   "c_odds>=50": {
+    "VALIDATE": {
+     "n": 0,
+     "skip_rate": 100.0
+    },
+    "CONFIRM": {
+     "n": 2,
+     "win_roi_ci": [
+      0.0,
+      0.0
+     ],
+     "win_hit": 0.0,
+     "win_roi": 0.0,
+     "win_avg_pay": 0.0,
+     "pl_hit": 0.0,
+     "pl_roi": 0.0,
+     "pl_avg_pay": 0.0,
+     "avg_ninki": 11.0,
+     "skip_rate": 99.7
+    }
+   },
+   "d_pred>=0": {
+    "VALIDATE": {
+     "n": 491,
+     "win_roi_ci": [
+      69.9,
+      92.8
+     ],
+     "win_hit": 34.01,
+     "win_roi": 81.08,
+     "win_avg_pay": 238.4,
+     "pl_hit": 69.25,
+     "pl_roi": 87.45,
+     "pl_avg_pay": 126.3,
+     "avg_ninki": 1.49,
+     "skip_rate": 43.8
+    },
+    "CONFIRM": {
+     "n": 393,
+     "win_roi_ci": [
+      62.7,
+      89.2
+     ],
+     "win_hit": 30.28,
+     "win_roi": 75.52,
+     "win_avg_pay": 249.4,
+     "pl_hit": 64.38,
+     "pl_roi": 83.59,
+     "pl_avg_pay": 129.8,
+     "avg_ninki": 1.56,
+     "skip_rate": 41.9
+    }
+   },
+   "d_pred>=20": {
+    "VALIDATE": {
+     "n": 0,
+     "skip_rate": 100.0
+    },
+    "CONFIRM": {
+     "n": 0,
+     "skip_rate": 100.0
+    }
+   },
+   "d_pred>=50": {
+    "VALIDATE": {
+     "n": 0,
+     "skip_rate": 100.0
+    },
+    "CONFIRM": {
+     "n": 0,
+     "skip_rate": 100.0
+    }
+   },
+   "d_pred>=100": {
+    "VALIDATE": {
+     "n": 0,
+     "skip_rate": 100.0
+    },
+    "CONFIRM": {
+     "n": 0,
+     "skip_rate": 100.0
+    }
+   }
+  },
+  "M5": {
+   "a_top10%": {
+    "VALIDATE": {
+     "n": 93,
+     "win_roi_ci": [
+      34.4,
+      126.5
+     ],
+     "win_hit": 13.98,
+     "win_roi": 76.88,
+     "win_avg_pay": 550.0,
+     "pl_hit": 35.48,
+     "pl_roi": 108.17,
+     "pl_avg_pay": 304.8,
+     "avg_ninki": 5.54,
+     "skip_rate": 89.4
+    },
+    "CONFIRM": {
+     "n": 61,
+     "win_roi_ci": [
+      34.8,
+      367.4
+     ],
+     "win_hit": 19.67,
+     "win_roi": 156.56,
+     "win_avg_pay": 795.8,
+     "pl_hit": 40.98,
+     "pl_roi": 110.16,
+     "pl_avg_pay": 268.8,
+     "avg_ninki": 4.31,
+     "skip_rate": 91.0
+    }
+   },
+   "b_gap10%": {
+    "VALIDATE": {
+     "n": 88,
+     "win_roi_ci": [
+      40.6,
+      243.1
+     ],
+     "win_hit": 17.05,
+     "win_roi": 117.61,
+     "win_avg_pay": 690.0,
+     "pl_hit": 38.64,
+     "pl_roi": 130.45,
+     "pl_avg_pay": 337.6,
+     "avg_ninki": 5.44,
+     "skip_rate": 89.9
+    },
+    "CONFIRM": {
+     "n": 72,
+     "win_roi_ci": [
+      39.2,
+      319.5
+     ],
+     "win_hit": 26.39,
+     "win_roi": 142.78,
+     "win_avg_pay": 541.1,
+     "pl_hit": 52.78,
+     "pl_roi": 118.19,
+     "pl_avg_pay": 223.9,
+     "avg_ninki": 3.82,
+     "skip_rate": 89.3
+    }
+   },
+   "a_top20%": {
+    "VALIDATE": {
+     "n": 180,
+     "win_roi_ci": [
+      36.1,
+      139.4
+     ],
+     "win_hit": 12.78,
+     "win_roi": 81.33,
+     "win_avg_pay": 636.5,
+     "pl_hit": 31.11,
+     "pl_roi": 96.94,
+     "pl_avg_pay": 311.6,
+     "avg_ninki": 5.61,
+     "skip_rate": 79.4
+    },
+    "CONFIRM": {
+     "n": 128,
+     "win_roi_ci": [
+      28.8,
+      197.6
+     ],
+     "win_hit": 16.41,
+     "win_roi": 91.64,
+     "win_avg_pay": 558.6,
+     "pl_hit": 34.38,
+     "pl_roi": 90.7,
+     "pl_avg_pay": 263.9,
+     "avg_ninki": 4.43,
+     "skip_rate": 81.1
+    }
+   },
+   "b_gap20%": {
+    "VALIDATE": {
+     "n": 169,
+     "win_roi_ci": [
+      52.7,
+      177.5
+     ],
+     "win_hit": 15.38,
+     "win_roi": 104.79,
+     "win_avg_pay": 681.2,
+     "pl_hit": 37.28,
+     "pl_roi": 102.43,
+     "pl_avg_pay": 274.8,
+     "avg_ninki": 5.26,
+     "skip_rate": 80.7
+    },
+    "CONFIRM": {
+     "n": 129,
+     "win_roi_ci": [
+      48.7,
+      213.6
+     ],
+     "win_hit": 25.58,
+     "win_roi": 112.09,
+     "win_avg_pay": 438.2,
+     "pl_hit": 44.96,
+     "pl_roi": 104.57,
+     "pl_avg_pay": 232.6,
+     "avg_ninki": 4.12,
+     "skip_rate": 80.9
+    }
+   },
+   "a_top30%": {
+    "VALIDATE": {
+     "n": 258,
+     "win_roi_ci": [
+      32.4,
+      111.0
+     ],
+     "win_hit": 11.24,
+     "win_roi": 66.01,
+     "win_avg_pay": 587.2,
+     "pl_hit": 30.62,
+     "pl_roi": 84.19,
+     "pl_avg_pay": 274.9,
+     "avg_ninki": 5.79,
+     "skip_rate": 70.5
+    },
+    "CONFIRM": {
+     "n": 189,
+     "win_roi_ci": [
+      49.2,
+      309.1
+     ],
+     "win_hit": 20.63,
+     "win_roi": 151.06,
+     "win_avg_pay": 732.1,
+     "pl_hit": 39.15,
+     "pl_roi": 112.91,
+     "pl_avg_pay": 288.4,
+     "avg_ninki": 4.41,
+     "skip_rate": 72.0
+    }
+   },
+   "b_gap30%": {
+    "VALIDATE": {
+     "n": 263,
+     "win_roi_ci": [
+      43.5,
+      124.9
+     ],
+     "win_hit": 13.69,
+     "win_roi": 79.77,
+     "win_avg_pay": 582.8,
+     "pl_hit": 34.6,
+     "pl_roi": 84.41,
+     "pl_avg_pay": 244.0,
+     "avg_ninki": 5.51,
+     "skip_rate": 69.9
+    },
+    "CONFIRM": {
+     "n": 202,
+     "win_roi_ci": [
+      43.4,
+      153.8
+     ],
+     "win_hit": 21.29,
+     "win_roi": 86.98,
+     "win_avg_pay": 408.6,
+     "pl_hit": 39.11,
+     "pl_roi": 83.22,
+     "pl_avg_pay": 212.8,
+     "avg_ninki": 4.21,
+     "skip_rate": 70.1
+    }
+   },
+   "a_top50%": {
+    "VALIDATE": {
+     "n": 436,
+     "win_roi_ci": [
+      32.7,
+      79.9
+     ],
+     "win_hit": 10.55,
+     "win_roi": 53.14,
+     "win_avg_pay": 503.7,
+     "pl_hit": 30.5,
+     "pl_roi": 73.53,
+     "pl_avg_pay": 241.1,
+     "avg_ninki": 5.85,
+     "skip_rate": 50.1
+    },
+    "CONFIRM": {
+     "n": 306,
+     "win_roi_ci": [
+      55.1,
+      216.5
+     ],
+     "win_hit": 19.28,
+     "win_roi": 119.64,
+     "win_avg_pay": 620.5,
+     "pl_hit": 35.95,
+     "pl_roi": 92.48,
+     "pl_avg_pay": 257.3,
+     "avg_ninki": 4.65,
+     "skip_rate": 54.7
+    }
+   },
+   "b_gap50%": {
+    "VALIDATE": {
+     "n": 418,
+     "win_roi_ci": [
+      39.8,
+      97.6
+     ],
+     "win_hit": 11.96,
+     "win_roi": 65.98,
+     "win_avg_pay": 551.6,
+     "pl_hit": 32.54,
+     "pl_roi": 72.8,
+     "pl_avg_pay": 223.8,
+     "avg_ninki": 5.67,
+     "skip_rate": 52.2
+    },
+    "CONFIRM": {
+     "n": 327,
+     "win_roi_ci": [
+      51.0,
+      203.9
+     ],
+     "win_hit": 19.27,
+     "win_roi": 113.36,
+     "win_avg_pay": 588.4,
+     "pl_hit": 37.31,
+     "pl_roi": 96.18,
+     "pl_avg_pay": 257.8,
+     "avg_ninki": 4.64,
+     "skip_rate": 51.6
+    }
+   },
+   "c_odds<2": {
+    "VALIDATE": {
+     "n": 40,
+     "win_roi_ci": [
+      55.5,
+      105.0
+     ],
+     "win_hit": 50.0,
+     "win_roi": 80.25,
+     "win_avg_pay": 160.5,
+     "pl_hit": 87.5,
+     "pl_roi": 96.25,
+     "pl_avg_pay": 110.0,
+     "avg_ninki": 1.0,
+     "skip_rate": 95.4
+    },
+    "CONFIRM": {
+     "n": 50,
+     "win_roi_ci": [
+      85.6,
+      125.6
+     ],
+     "win_hit": 70.0,
+     "win_roi": 106.2,
+     "win_avg_pay": 151.7,
+     "pl_hit": 90.0,
+     "pl_roi": 98.6,
+     "pl_avg_pay": 109.6,
+     "avg_ninki": 1.0,
+     "skip_rate": 92.6
+    }
+   },
+   "c_odds2-4": {
+    "VALIDATE": {
+     "n": 161,
+     "win_roi_ci": [
+      59.3,
+      101.4
+     ],
+     "win_hit": 26.71,
+     "win_roi": 79.32,
+     "win_avg_pay": 297.0,
+     "pl_hit": 63.35,
+     "pl_roi": 84.91,
+     "pl_avg_pay": 134.0,
+     "avg_ninki": 1.44,
+     "skip_rate": 81.6
+    },
+    "CONFIRM": {
+     "n": 127,
+     "win_roi_ci": [
+      52.6,
+      96.5
+     ],
+     "win_hit": 25.98,
+     "win_roi": 73.54,
+     "win_avg_pay": 283.0,
+     "pl_hit": 59.06,
+     "pl_roi": 78.58,
+     "pl_avg_pay": 133.1,
+     "avg_ninki": 1.38,
+     "skip_rate": 81.2
+    }
+   },
+   "c_odds4-7": {
+    "VALIDATE": {
+     "n": 155,
+     "win_roi_ci": [
+      30.4,
+      81.2
+     ],
+     "win_hit": 10.97,
+     "win_roi": 55.1,
+     "win_avg_pay": 502.4,
+     "pl_hit": 42.58,
+     "pl_roi": 73.81,
+     "pl_avg_pay": 173.3,
+     "avg_ninki": 2.7,
+     "skip_rate": 82.3
+    },
+    "CONFIRM": {
+     "n": 109,
+     "win_roi_ci": [
+      48.1,
+      119.2
+     ],
+     "win_hit": 15.6,
+     "win_roi": 82.48,
+     "win_avg_pay": 528.8,
+     "pl_hit": 43.12,
+     "pl_roi": 80.18,
+     "pl_avg_pay": 186.0,
+     "avg_ninki": 2.86,
+     "skip_rate": 83.9
+    }
+   },
+   "c_odds7-15": {
+    "VALIDATE": {
+     "n": 144,
+     "win_roi_ci": [
+      50.4,
+      139.2
+     ],
+     "win_hit": 10.42,
+     "win_roi": 92.64,
+     "win_avg_pay": 889.3,
+     "pl_hit": 34.03,
+     "pl_roi": 99.03,
+     "pl_avg_pay": 291.0,
+     "avg_ninki": 4.85,
+     "skip_rate": 83.5
+    },
+    "CONFIRM": {
+     "n": 146,
+     "win_roi_ci": [
+      14.6,
+      80.2
+     ],
+     "win_hit": 4.79,
+     "win_roi": 45.68,
+     "win_avg_pay": 952.9,
+     "pl_hit": 25.34,
+     "pl_roi": 68.15,
+     "pl_avg_pay": 268.9,
+     "avg_ninki": 4.78,
+     "skip_rate": 78.4
+    }
+   },
+   "c_odds15-50": {
+    "VALIDATE": {
+     "n": 189,
+     "win_roi_ci": [
+      10.3,
+      136.9
+     ],
+     "win_hit": 2.65,
+     "win_roi": 66.51,
+     "win_avg_pay": 2514.0,
+     "pl_hit": 10.58,
+     "pl_roi": 51.16,
+     "pl_avg_pay": 483.5,
+     "avg_ninki": 7.85,
+     "skip_rate": 78.4
+    },
+    "CONFIRM": {
+     "n": 146,
+     "win_roi_ci": [
+      0.0,
+      67.9
+     ],
+     "win_hit": 1.37,
+     "win_roi": 26.58,
+     "win_avg_pay": 1940.0,
+     "pl_hit": 9.59,
+     "pl_roi": 48.9,
+     "pl_avg_pay": 510.0,
+     "avg_ninki": 7.64,
+     "skip_rate": 78.4
+    }
+   },
+   "c_odds>=50": {
+    "VALIDATE": {
+     "n": 185,
+     "win_roi_ci": [
+      0.0,
+      0.0
+     ],
+     "win_hit": 0.0,
+     "win_roi": 0.0,
+     "win_avg_pay": 0.0,
+     "pl_hit": 3.78,
+     "pl_roi": 66.65,
+     "pl_avg_pay": 1761.4,
+     "avg_ninki": 12.41,
+     "skip_rate": 78.8
+    },
+    "CONFIRM": {
+     "n": 98,
+     "win_roi_ci": [
+      0.0,
+      562.9
+     ],
+     "win_hit": 3.06,
+     "win_roi": 247.04,
+     "win_avg_pay": 8070.0,
+     "pl_hit": 6.12,
+     "pl_roi": 132.14,
+     "pl_avg_pay": 2158.3,
+     "avg_ninki": 11.81,
+     "skip_rate": 85.5
+    }
+   }
+  }
+ },
+ "trials": 184
+}

@@ -1,0 +1,315 @@
+{
+ "screening": {
+  "pos_var": {
+   "dll_va20": 1.482,
+   "va20_n": 1291,
+   "dll_va20_per_race": 0.00115,
+   "selected": true,
+   "gamma_tr80": 0.0344,
+   "b_tr80": -0.093,
+   "gamma_mine": 0.0337,
+   "se_mine": 0.0081,
+   "z_mine": 4.19,
+   "dll_insample_mine": 8.705,
+   "groups": {
+    "('ダ', 'L')": {
+     "va20_dll": 1.644,
+     "va20_n": 275,
+     "gamma_mine": 0.0901,
+     "n_mine": 1289
+    },
+    "('ダ', 'M')": {
+     "va20_dll": 0.749,
+     "va20_n": 98,
+     "gamma_mine": 0.0375,
+     "n_mine": 616
+    },
+    "('ダ', 'S')": {
+     "va20_dll": 0.154,
+     "va20_n": 310,
+     "gamma_mine": 0.0392,
+     "n_mine": 1437
+    },
+    "('芝', 'L')": {
+     "va20_dll": -0.493,
+     "va20_n": 314,
+     "gamma_mine": -0.0017,
+     "n_mine": 1612
+    },
+    "('芝', 'M')": {
+     "va20_dll": -0.289,
+     "va20_n": 135,
+     "gamma_mine": 0.0268,
+     "n_mine": 588
+    },
+    "('芝', 'S')": {
+     "va20_dll": -0.284,
+     "va20_n": 159,
+     "gamma_mine": 0.0115,
+     "n_mine": 910
+    }
+   }
+  },
+  "pace_lv": {
+   "dll_va20": 0.002,
+   "va20_n": 1291,
+   "dll_va20_per_race": 0.0,
+   "selected": true,
+   "gamma_tr80": 0.0004,
+   "b_tr80": -0.0978,
+   "gamma_mine": 0.0007,
+   "se_mine": 0.0085,
+   "z_mine": 0.08,
+   "dll_insample_mine": 0.003,
+   "groups": {
+    "('ダ', 'L')": {
+     "va20_dll": -0.0,
+     "va20_n": 275,
+     "gamma_mine": -0.0341,
+     "n_mine": 1289
+    },
+    "('ダ', 'M')": {
+     "va20_dll": 0.005,
+     "va20_n": 98,
+     "gamma_mine": 0.013,
+     "n_mine": 616
+    },
+    "('ダ', 'S')": {
+     "va20_dll": 0.021,
+     "va20_n": 310,
+     "gamma_mine": 0.0546,
+     "n_mine": 1437
+    },
+    "('芝', 'L')": {
+     "va20_dll": 0.013,
+     "va20_n": 314,
+     "gamma_mine": 0.0209,
+     "n_mine": 1612
+    },
+    "('芝', 'M')": {
+     "va20_dll": -0.022,
+     "va20_n": 135,
+     "gamma_mine": -0.0736,
+     "n_mine": 588
+    },
+    "('芝', 'S')": {
+     "va20_dll": -0.014,
+     "va20_n": 159,
+     "gamma_mine": -0.035,
+     "n_mine": 910
+    }
+   }
+  },
+  "pace_gap": {
+   "dll_va20": 0.89,
+   "va20_n": 1291,
+   "dll_va20_per_race": 0.00069,
+   "selected": true,
+   "gamma_tr80": -0.0115,
+   "b_tr80": -0.0977,
+   "gamma_mine": -0.0159,
+   "se_mine": 0.0085,
+   "z_mine": -1.88,
+   "dll_insample_mine": 1.762,
+   "groups": {
+    "('ダ', 'L')": {
+     "va20_dll": 0.393,
+     "va20_n": 275,
+     "gamma_mine": -0.0548,
+     "n_mine": 1289
+    },
+    "('ダ', 'M')": {
+     "va20_dll": 0.039,
+     "va20_n": 98,
+     "gamma_mine": -0.0173,
+     "n_mine": 616
+    },
+    "('ダ', 'S')": {
+     "va20_dll": -0.173,
+     "va20_n": 310,
+     "gamma_mine": 0.0198,
+     "n_mine": 1437
+    },
+    "('芝', 'L')": {
+     "va20_dll": -0.26,
+     "va20_n": 314,
+     "gamma_mine": 0.0131,
+     "n_mine": 1612
+    },
+    "('芝', 'M')": {
+     "va20_dll": 0.638,
+     "va20_n": 135,
+     "gamma_mine": -0.0733,
+     "n_mine": 588
+    },
+    "('芝', 'S')": {
+     "va20_dll": 0.253,
+     "va20_n": 159,
+     "gamma_mine": -0.0237,
+     "n_mine": 910
+    }
+   }
+  },
+  "fwd_fin": {
+   "dll_va20": 0.601,
+   "va20_n": 1291,
+   "dll_va20_per_race": 0.00047,
+   "selected": true,
+   "gamma_tr80": -0.0693,
+   "b_tr80": -0.0575,
+   "gamma_mine": -0.0635,
+   "se_mine": 0.011,
+   "z_mine": -5.78,
+   "dll_insample_mine": 16.65,
+   "groups": {
+    "('ダ', 'L')": {
+     "va20_dll": -0.176,
+     "va20_n": 275,
+     "gamma_mine": -0.0569,
+     "n_mine": 1289
+    },
+    "('ダ', 'M')": {
+     "va20_dll": -0.114,
+     "va20_n": 98,
+     "gamma_mine": -0.0338,
+     "n_mine": 616
+    },
+    "('ダ', 'S')": {
+     "va20_dll": 1.98,
+     "va20_n": 310,
+     "gamma_mine": -0.1554,
+     "n_mine": 1437
+    },
+    "('芝', 'L')": {
+     "va20_dll": -3.175,
+     "va20_n": 314,
+     "gamma_mine": -0.0121,
+     "n_mine": 1612
+    },
+    "('芝', 'M')": {
+     "va20_dll": 0.505,
+     "va20_n": 135,
+     "gamma_mine": -0.059,
+     "n_mine": 588
+    },
+    "('芝', 'S')": {
+     "va20_dll": 1.581,
+     "va20_n": 159,
+     "gamma_mine": -0.0656,
+     "n_mine": 910
+    }
+   }
+  },
+  "grind": {
+   "dll_va20": 6.987,
+   "va20_n": 1291,
+   "dll_va20_per_race": 0.00541,
+   "selected": true,
+   "gamma_tr80": -0.0526,
+   "b_tr80": -0.0669,
+   "gamma_mine": -0.0548,
+   "se_mine": 0.0075,
+   "z_mine": -7.27,
+   "dll_insample_mine": 26.605,
+   "groups": {
+    "('ダ', 'L')": {
+     "va20_dll": 3.294,
+     "va20_n": 275,
+     "gamma_mine": -0.0802,
+     "n_mine": 1289
+    },
+    "('ダ', 'M')": {
+     "va20_dll": 0.514,
+     "va20_n": 98,
+     "gamma_mine": -0.0676,
+     "n_mine": 616
+    },
+    "('ダ', 'S')": {
+     "va20_dll": 2.599,
+     "va20_n": 310,
+     "gamma_mine": -0.0798,
+     "n_mine": 1437
+    },
+    "('芝', 'L')": {
+     "va20_dll": 1.832,
+     "va20_n": 314,
+     "gamma_mine": -0.0355,
+     "n_mine": 1612
+    },
+    "('芝', 'M')": {
+     "va20_dll": -1.588,
+     "va20_n": 135,
+     "gamma_mine": 0.013,
+     "n_mine": 588
+    },
+    "('芝', 'S')": {
+     "va20_dll": 0.337,
+     "va20_n": 159,
+     "gamma_mine": -0.0451,
+     "n_mine": 910
+    }
+   }
+  },
+  "unlucky": {
+   "dll_va20": -0.006,
+   "va20_n": 1291,
+   "dll_va20_per_race": -0.0,
+   "selected": false,
+   "gamma_tr80": 0.0001,
+   "b_tr80": -0.0978,
+   "gamma_mine": -0.0043,
+   "se_mine": 0.0086,
+   "z_mine": -0.5,
+   "dll_insample_mine": 0.125,
+   "groups": {
+    "('ダ', 'L')": {
+     "va20_dll": -0.005,
+     "va20_n": 275,
+     "gamma_mine": -0.0489,
+     "n_mine": 1289
+    },
+    "('ダ', 'M')": {
+     "va20_dll": -0.002,
+     "va20_n": 98,
+     "gamma_mine": -0.0401,
+     "n_mine": 616
+    },
+    "('ダ', 'S')": {
+     "va20_dll": -0.002,
+     "va20_n": 310,
+     "gamma_mine": -0.0212,
+     "n_mine": 1437
+    },
+    "('芝', 'L')": {
+     "va20_dll": -0.001,
+     "va20_n": 314,
+     "gamma_mine": 0.0266,
+     "n_mine": 1612
+    },
+    "('芝', 'M')": {
+     "va20_dll": 0.004,
+     "va20_n": 135,
+     "gamma_mine": 0.0414,
+     "n_mine": 588
+    },
+    "('芝', 'S')": {
+     "va20_dll": 0.001,
+     "va20_n": 159,
+     "gamma_mine": 0.0258,
+     "n_mine": 910
+    }
+   }
+  }
+ },
+ "selected": [
+  "pos_var",
+  "pace_lv",
+  "pace_gap",
+  "fwd_fin",
+  "grind"
+ ],
+ "lg22": 0.0003,
+ "lsd22": 0.1,
+ "va20_nll_Bsd22": 6.6563,
+ "va20_nll_Bsd16_frozen": 6.6883
+}

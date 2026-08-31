@@ -1,0 +1,98 @@
+loaded spec keys=168 genq=13126 gen=13782 (121s)
+  KMk3 evaluated (138s)
+  KMk5 evaluated (156s)
+  KMk8 evaluated (174s)
+  KMk12 evaluated (200s)
+  WARDk3 evaluated (216s)
+  WARDk5 evaluated (235s)
+  WARDk8 evaluated (255s)
+  WARDk12 evaluated (282s)
+  GMMk3 evaluated (299s)
+  GMMk5 evaluated (316s)
+  GMMk8 evaluated (338s)
+  GMMk12 evaluated (358s)
+{
+ "n_keys": 168,
+ "n_judgeable": 122,
+ "primary_pass": 64,
+ "primary_expect": 61.0,
+ "primary_binom_p": 0.32548,
+ "primary_verdict": "FAIL",
+ "secondary_pass": 3,
+ "secondary_expect": 5.76,
+ "secondary_verdict": "FAIL",
+ "tertiary_pass": [],
+ "n_trials": 292,
+ "primary_list": [
+  "KMk3|c0|place",
+  "KMk3|c1|place",
+  "KMk3|c2|win",
+  "KMk5|c1|win",
+  "KMk5|c1|place",
+  "KMk5|c2|win",
+  "KMk5|c2|place",
+  "KMk5|c3|place",
+  "KMk5|c4|place",
+  "KMk8|c0|win",
+  "KMk8|c3|place",
+  "KMk8|c4|place",
+  "KMk8|c5|place",
+  "KMk8|c6|place",
+  "KMk8|c7|win",
+  "KMk12|c0|win",
+  "KMk12|c0|place",
+  "KMk12|c1|place",
+  "KMk12|c2|place",
+  "KMk12|c3|win",
+  "KMk12|c3|place",
+  "KMk12|c9|win",
+  "KMk12|c9|place",
+  "WARDk3|c0|win",
+  "WARDk3|c1|win",
+  "WARDk3|c1|place",
+  "WARDk3|c2|place",
+  "WARDk5|c1|win",
+  "WARDk5|c1|place",
+  "WARDk5|c2|place",
+  "WARDk5|c4|place",
+  "WARDk8|c0|win",
+  "WARDk8|c0|place",
+  "WARDk8|c2|place",
+  "WARDk8|c4|win",
+  "WARDk8|c4|place",
+  "WARDk8|c5|place",
+  "WARDk8|c7|place",
+  "WARDk12|c2|place",
+  "WARDk12|c5|place",
+  "WARDk12|c7|win",
+  "WARDk12|c7|place",
+  "WARDk12|c8|place",
+  "GMMk3|c0|win",
+  "GMMk3|c1|win",
+  "GMMk3|c1|place",
+  "GMMk3|c2|place",
+  "GMMk5|c0|place",
+  "GMMk5|c2|place",
+  "GMMk5|c3|win",
+  "GMMk5|c3|place",
+  "GMMk5|c4|win",
+  "GMMk5|c4|place",
+  "GMMk8|c1|place",
+  "GMMk8|c3|win",
+  "GMMk8|c3|place",
+  "GMMk8|c6|win",
+  "GMMk8|c6|place",
+  "GMMk8|c7|win",
+  "GMMk12|c3|win",
+  "GMMk12|c4|place",
+  "GMMk12|c6|win",
+  "GMMk12|c6|place",
+  "GMMk12|c7|place"
+ ],
+ "secondary_list": [
+  "KMk8|c3|place",
+  "KMk8|c4|place",
+  "GMMk12|c4|win"
+ ]
+}
+saved cluster_result.json (6.0min)

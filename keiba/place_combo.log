@@ -1,0 +1,114 @@
+
+========================================================================
+v3place
+========================================================================
+races=6891 months=202403..202608
+組合せテーブル作成 6891R
+202403[MINE] γmodel=None γmarket=None trio_cal=None wide_cal=None
+202404[MINE] γmodel=1.1133106514453681 γmarket=0.8743520626398398 trio_cal=None wide_cal=None
+202407[MINE] γmodel=1.0932107518935712 γmarket=0.8571123415902142 trio_cal=[0.183, 0.885] wide_cal=[0.023, 0.886]
+202408[MINE] γmodel=1.0239053952440058 γmarket=0.8376095526131803 trio_cal=[0.116, 0.899] wide_cal=[0.018, 0.886]
+202409[MINE] γmodel=1.031363002624084 γmarket=0.8245969377147079 trio_cal=[0.108, 0.899] wide_cal=[0.005, 0.89]
+202410[MINE] γmodel=1.0353466588031544 γmarket=0.8251188584044991 trio_cal=[0.086, 0.904] wide_cal=[-0.016, 0.897]
+202411[MINE] γmodel=1.0371249193687226 γmarket=0.8309864271211235 trio_cal=[0.037, 0.915] wide_cal=[-0.039, 0.904]
+202412[MINE] γmodel=1.0048692094357847 γmarket=0.8193867116488932 trio_cal=[0.038, 0.916] wide_cal=[-0.039, 0.905]
+202501[MINE] γmodel=1.0005116507407223 γmarket=0.805204260524355 trio_cal=[0.036, 0.916] wide_cal=[-0.042, 0.905]
+202502[MINE] γmodel=1.0035751092543144 γmarket=0.8008940408933459 trio_cal=[0.023, 0.919] wide_cal=[-0.053, 0.91]
+202503[MINE] γmodel=1.024194205364449 γmarket=0.8153069161315012 trio_cal=[0.015, 0.921] wide_cal=[-0.062, 0.914]
+202504[MINE] γmodel=1.0105057135508368 γmarket=0.8067874192651427 trio_cal=[0.009, 0.921] wide_cal=[-0.066, 0.914]
+202505[MINE] γmodel=0.9961390951121655 γmarket=0.7967259540500606 trio_cal=[0.001, 0.923] wide_cal=[-0.073, 0.917]
+202506[MINE] γmodel=0.9754706927778394 γmarket=0.7831823679284888 trio_cal=[-0.017, 0.928] wide_cal=[-0.08, 0.921]
+202507[MINE] γmodel=0.9865522252517608 γmarket=0.8004621700640306 trio_cal=[-0.026, 0.93] wide_cal=[-0.086, 0.923]
+202508[MINE] γmodel=0.9726282910260158 γmarket=0.7977019261568313 trio_cal=[-0.034, 0.932] wide_cal=[-0.091, 0.925]
+202509[MINE] γmodel=0.9808443315725728 γmarket=0.8065113205350067 trio_cal=[-0.038, 0.933] wide_cal=[-0.095, 0.926]
+202510[MINE] γmodel=0.9915619738416594 γmarket=0.8041887367026622 trio_cal=[-0.038, 0.932] wide_cal=[-0.096, 0.926]
+202511[MINE] γmodel=0.9991935027390467 γmarket=0.8192718368966941 trio_cal=[-0.047, 0.934] wide_cal=[-0.1, 0.928]
+202512[MINE] γmodel=1.0227473789814776 γmarket=0.8394692052207846 trio_cal=[-0.053, 0.936] wide_cal=[-0.102, 0.929]
+202601[MINE] γmodel=1.0203781133253993 γmarket=0.8372401877429211 trio_cal=[-0.047, 0.934] wide_cal=[-0.099, 0.928]
+202602[MINE] γmodel=1.0394506393613296 γmarket=0.8488788407531289 trio_cal=[-0.045, 0.934] wide_cal=[-0.099, 0.928]
+202603[VALIDATE] γmodel=1.0501595199057143 γmarket=0.8599355555648233 trio_cal=[-0.046, 0.933] wide_cal=[-0.097, 0.926]
+202604[VALIDATE] γmodel=1.0649008871010057 γmarket=0.8725842774222103 trio_cal=[-0.044, 0.933] wide_cal=[-0.095, 0.925]
+202605[VALIDATE] γmodel=1.0729906517717405 γmarket=0.8766986391340802 trio_cal=[-0.042, 0.932] wide_cal=[-0.094, 0.925]
+202606[CONFIRM] γmodel=1.0771870596545914 γmarket=0.8738557979552161 trio_cal=[-0.036, 0.931] wide_cal=[-0.091, 0.924]
+202607[CONFIRM] γmodel=1.0594314031280534 γmarket=0.8641222479006628 trio_cal=[-0.028, 0.929] wide_cal=[-0.087, 0.923]
+202608[CONFIRM] γmodel=1.0256747250196645 γmarket=0.8512642605537653 trio_cal=[-0.019, 0.927] wide_cal=[-0.083, 0.921]
+
+[較正後 組合せEV≥1.2]
+  MINE      三連複      n=782870 的中  601 ROI=38.2% 平均EV=3.248 全組合せ中の最大EV=418.712
+  MINE      ワイド      n=149371 的中 1667 ROI=49.4% 平均EV=2.292 全組合せ中の最大EV=42.753
+  MINE      三連複blend n=    18 的中    1 ROI=19.4% 平均EV=1.253 全組合せ中の最大EV=1.321
+  MINE      ワイドblend n=     0 的中    0 ROI=—% 平均EV=None 全組合せ中の最大EV=1.083
+  VALIDATE  三連複      n=153618 的中  115 ROI=19.6% 平均EV=3.593 全組合せ中の最大EV=217.378
+  VALIDATE  ワイド      n= 29181 的中  346 ROI=39.5% 平均EV=2.441 全組合せ中の最大EV=33.808
+  VALIDATE  三連複blend n=     0 的中    0 ROI=—% 平均EV=None 全組合せ中の最大EV=0.971
+  VALIDATE  ワイドblend n=     0 的中    0 ROI=—% 平均EV=None 全組合せ中の最大EV=0.918
+  CONFIRM   三連複      n= 94085 的中   96 ROI=34.8% 平均EV=3.352 全組合せ中の最大EV=400.934
+  CONFIRM   ワイド      n= 18790 的中  281 ROI=55.0% 平均EV=2.32 全組合せ中の最大EV=55.278
+  CONFIRM   三連複blend n=     0 的中    0 ROI=—% 平均EV=None 全組合せ中の最大EV=0.981
+  CONFIRM   ワイドblend n=     0 的中    0 ROI=—% 平均EV=None 全組合せ中の最大EV=0.93
+
+[オッズ推定なし top-k flat（実払戻のみ）]
+  MINE      trio  modeltop1  67.6%(336/5014R) | modeltop5  65.4%(1056/5014R) | modeltop20  64.0%(2261/4998R) | blendtop1  77.9%(455/5014R) | blendtop5  79.9%(1466/5014R) | blendtop20  77.1%(2844/4998R) | markettop1  76.9%(453/5014R) | markettop5  80.9%(1475/5014R) | markettop20  77.5%(2849/4998R)
+  MINE      wide  modeltop1  73.7%(1239/5014R) | modeltop3  72.0%(3075/5014R) | blendtop1  77.6%(1558/5014R) | blendtop3  80.0%(3851/5014R) | markettop1  78.2%(1564/5014R) | markettop3  80.4%(3858/5014R)
+  VALIDATE  trio  modeltop1  89.8%(74/874R) | modeltop5  72.2%(213/874R) | modeltop20  74.6%(440/873R) | blendtop1  89.4%(101/874R) | blendtop5  77.9%(268/874R) | blendtop20  74.3%(507/873R) | markettop1  91.5%(102/874R) | markettop5  80.3%(271/874R) | markettop20  74.5%(507/873R)
+  VALIDATE  wide  modeltop1  77.0%(249/874R) | modeltop3  80.5%(615/874R) | blendtop1  79.9%(304/874R) | blendtop3  79.2%(703/874R) | markettop1  80.3%(304/874R) | markettop3  80.2%(706/874R)
+  CONFIRM   trio  modeltop1  85.8%(47/675R) | modeltop5  66.7%(151/675R) | modeltop20  63.4%(310/674R) | blendtop1  83.5%(58/675R) | blendtop5  78.7%(188/675R) | blendtop20  82.7%(387/674R) | markettop1  81.2%(57/675R) | markettop5  76.3%(184/675R) | markettop20  80.3%(382/674R)
+  CONFIRM   wide  modeltop1  72.3%(174/675R) | modeltop3  73.3%(431/675R) | blendtop1  81.0%(214/675R) | blendtop3  77.8%(504/675R) | markettop1  78.4%(210/675R) | markettop3  79.1%(509/675R)
+
+========================================================================
+v8place
+========================================================================
+races=6891 months=202403..202608
+組合せテーブル作成 6891R
+202403[MINE] γmodel=None γmarket=None trio_cal=None wide_cal=None
+202404[MINE] γmodel=1.1259633290673072 γmarket=0.8743520625929012 trio_cal=None wide_cal=None
+202407[MINE] γmodel=1.089739979722161 γmarket=0.8571123415902142 trio_cal=[0.183, 0.885] wide_cal=[0.023, 0.886]
+202408[MINE] γmodel=1.0094243977554713 γmarket=0.8376095526131803 trio_cal=[0.116, 0.899] wide_cal=[0.018, 0.886]
+202409[MINE] γmodel=1.0245465250725552 γmarket=0.8245969377146298 trio_cal=[0.108, 0.899] wide_cal=[0.005, 0.89]
+202410[MINE] γmodel=1.0340109671794853 γmarket=0.8251188584039727 trio_cal=[0.086, 0.904] wide_cal=[-0.016, 0.897]
+202411[MINE] γmodel=1.0248176448917814 γmarket=0.8309864271211236 trio_cal=[0.037, 0.915] wide_cal=[-0.039, 0.904]
+202412[MINE] γmodel=0.9986631382303569 γmarket=0.8193867116484448 trio_cal=[0.038, 0.916] wide_cal=[-0.039, 0.905]
+202501[MINE] γmodel=0.9898771509137589 γmarket=0.8052042605241662 trio_cal=[0.036, 0.916] wide_cal=[-0.042, 0.905]
+202502[MINE] γmodel=0.9914530368890413 γmarket=0.8008940408932302 trio_cal=[0.023, 0.919] wide_cal=[-0.053, 0.91]
+202503[MINE] γmodel=1.0167274023883477 γmarket=0.8153069161310997 trio_cal=[0.015, 0.921] wide_cal=[-0.062, 0.914]
+202504[MINE] γmodel=0.9941662876660362 γmarket=0.8067874192651496 trio_cal=[0.009, 0.921] wide_cal=[-0.066, 0.914]
+202505[MINE] γmodel=0.9914002207784939 γmarket=0.7967259540498007 trio_cal=[0.001, 0.923] wide_cal=[-0.073, 0.917]
+202506[MINE] γmodel=0.9704528460014631 γmarket=0.783182367928325 trio_cal=[-0.017, 0.928] wide_cal=[-0.08, 0.921]
+202507[MINE] γmodel=0.9895927134026651 γmarket=0.8004621700640306 trio_cal=[-0.026, 0.93] wide_cal=[-0.086, 0.923]
+202508[MINE] γmodel=0.9741822445303082 γmarket=0.7977019261565416 trio_cal=[-0.034, 0.932] wide_cal=[-0.091, 0.925]
+202509[MINE] γmodel=0.9883654621093384 γmarket=0.8065113205345765 trio_cal=[-0.038, 0.933] wide_cal=[-0.095, 0.926]
+202510[MINE] γmodel=0.9946467299799424 γmarket=0.8041887367027962 trio_cal=[-0.038, 0.932] wide_cal=[-0.096, 0.926]
+202511[MINE] γmodel=0.995815978125211 γmarket=0.8192718368974917 trio_cal=[-0.047, 0.934] wide_cal=[-0.1, 0.928]
+202512[MINE] γmodel=1.0186722616096713 γmarket=0.8394692052209548 trio_cal=[-0.053, 0.936] wide_cal=[-0.102, 0.929]
+202601[MINE] γmodel=1.0110205415817795 γmarket=0.8372401877432295 trio_cal=[-0.047, 0.934] wide_cal=[-0.099, 0.928]
+202602[MINE] γmodel=1.028140778003686 γmarket=0.8488788407531289 trio_cal=[-0.045, 0.934] wide_cal=[-0.099, 0.928]
+202603[VALIDATE] γmodel=1.03256362588631 γmarket=0.8599355555648233 trio_cal=[-0.046, 0.933] wide_cal=[-0.097, 0.926]
+202604[VALIDATE] γmodel=1.0482382391603386 γmarket=0.8725842774222103 trio_cal=[-0.044, 0.933] wide_cal=[-0.095, 0.925]
+202605[VALIDATE] γmodel=1.0540135557743207 γmarket=0.8766986391340802 trio_cal=[-0.042, 0.932] wide_cal=[-0.094, 0.925]
+202606[CONFIRM] γmodel=1.054114761490344 γmarket=0.8738557979552157 trio_cal=[-0.036, 0.931] wide_cal=[-0.091, 0.924]
+202607[CONFIRM] γmodel=1.036700285745735 γmarket=0.8641222479006485 trio_cal=[-0.028, 0.929] wide_cal=[-0.087, 0.923]
+202608[CONFIRM] γmodel=1.0099393867316004 γmarket=0.8512642605518822 trio_cal=[-0.019, 0.927] wide_cal=[-0.083, 0.921]
+
+[較正後 組合せEV≥1.2]
+  MINE      三連複      n=769260 的中  604 ROI=38.9% 平均EV=3.224 全組合せ中の最大EV=446.437
+  MINE      ワイド      n=147320 的中 1708 ROI=49.5% 平均EV=2.282 全組合せ中の最大EV=66.194
+  MINE      三連複blend n=    16 的中    1 ROI=21.9% 平均EV=1.251 全組合せ中の最大EV=1.307
+  MINE      ワイドblend n=     0 的中    0 ROI=—% 平均EV=None 全組合せ中の最大EV=1.078
+  VALIDATE  三連複      n=148133 的中  123 ROI=24.0% 平均EV=3.493 全組合せ中の最大EV=205.538
+  VALIDATE  ワイド      n= 28089 的中  334 ROI=40.2% 平均EV=2.413 全組合せ中の最大EV=43.927
+  VALIDATE  三連複blend n=     0 的中    0 ROI=—% 平均EV=None 全組合せ中の最大EV=0.952
+  VALIDATE  ワイドblend n=     0 的中    0 ROI=—% 平均EV=None 全組合せ中の最大EV=0.906
+  CONFIRM   三連複      n= 97075 的中   93 ROI=29.5% 平均EV=3.306 全組合せ中の最大EV=343.078
+  CONFIRM   ワイド      n= 19181 的中  282 ROI=50.3% 平均EV=2.301 全組合せ中の最大EV=44.282
+  CONFIRM   三連複blend n=     0 的中    0 ROI=—% 平均EV=None 全組合せ中の最大EV=0.946
+  CONFIRM   ワイドblend n=     0 的中    0 ROI=—% 平均EV=None 全組合せ中の最大EV=0.908
+
+[オッズ推定なし top-k flat（実払戻のみ）]
+  MINE      trio  modeltop1  66.3%(337/5014R) | modeltop5  65.3%(1066/5014R) | modeltop20  64.3%(2273/4998R) | blendtop1  77.8%(454/5014R) | blendtop5  80.4%(1471/5014R) | blendtop20  77.1%(2843/4998R) | markettop1  76.9%(453/5014R) | markettop5  80.9%(1474/5014R) | markettop20  77.5%(2848/4998R)
+  MINE      wide  modeltop1  73.4%(1250/5014R) | modeltop3  71.9%(3086/5014R) | blendtop1  77.7%(1560/5014R) | blendtop3  80.2%(3861/5014R) | markettop1  78.3%(1567/5014R) | markettop3  80.4%(3857/5014R)
+  VALIDATE  trio  modeltop1  81.6%(72/874R) | modeltop5  71.2%(219/874R) | modeltop20  74.8%(443/873R) | blendtop1  89.4%(101/874R) | blendtop5  77.6%(267/874R) | blendtop20  74.1%(507/873R) | markettop1  89.4%(101/874R) | markettop5  79.4%(270/874R) | markettop20  74.5%(507/873R)
+  VALIDATE  wide  modeltop1  75.4%(256/874R) | modeltop3  82.7%(620/874R) | blendtop1  79.2%(302/874R) | blendtop3  79.4%(705/874R) | markettop1  79.9%(303/874R) | markettop3  80.4%(707/874R)
+  CONFIRM   trio  modeltop1  95.1%(55/675R) | modeltop5  70.8%(157/675R) | modeltop20  78.1%(319/674R) | blendtop1  83.5%(58/675R) | blendtop5  78.1%(187/675R) | blendtop20  82.7%(387/674R) | markettop1  79.1%(56/675R) | markettop5  76.3%(184/675R) | markettop20  80.3%(382/674R)
+  CONFIRM   wide  modeltop1  79.6%(182/675R) | modeltop3  76.6%(446/675R) | blendtop1  80.7%(213/675R) | blendtop3  77.3%(502/675R) | markettop1  77.7%(208/675R) | markettop3  79.0%(509/675R)
+
+wrote place_combo_result.json

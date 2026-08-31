@@ -1,0 +1,19 @@
+{"race_id": "202601010808", "kind": "pre15", "date": "20260816", "due": "13:46", "note": "札幌8R SS", "planned_at": "11:02", "sent_at": "13:37"}
+{"race_id": "202601010808", "kind": "result", "date": "20260816", "due": "14:16", "note": "札幌8R", "planned_at": "11:02", "sent_at": "14:09"}
+{"race_id": "202601010809", "kind": "pre15", "date": "20260816", "due": "14:20", "note": "札幌9R A", "planned_at": "11:02", "sent_at": "14:20"}
+{"race_id": "202601010809", "kind": "result", "date": "20260816", "due": "14:50", "note": "札幌9R", "planned_at": "11:02", "sent_at": "14:49"}
+{"race_id": "202607020808", "kind": "pre15", "date": "20260816", "due": "16:00", "note": "中京8R B", "planned_at": "11:02", "sent_at": "15:57"}
+{"race_id": "202607020808", "kind": "result", "date": "20260816", "due": "16:30", "note": "中京8R", "planned_at": "11:02", "sent_at": "16:32"}
+{"race_id": "202607020812", "kind": "pre15", "date": "20260816", "due": "18:15", "note": "中京12R B", "planned_at": "11:02", "sent_at": "18:40"}
+{"race_id": "202607020812", "kind": "result", "date": "20260816", "due": "18:45", "note": "中京12R", "planned_at": "11:02", "sent_at": "18:41"}
+{"race_id": "202644081601", "kind": "recheck", "date": "20260816", "due": "15:25", "note": "", "planned_at": "14:57", "sent_at": "15:16"}
+{"race_id": "202607020807", "kind": "recheck", "date": "20260816", "due": "15:18", "note": "", "planned_at": "14:57", "sent_at": "15:16"}
+{"race_id": "202644081603", "kind": "recheck", "date": "20260816", "due": "16:30", "note": "", "planned_at": "14:57", "sent_at": "16:32"}
+{"race_id": "202644081604", "kind": "recheck", "date": "20260816", "due": "17:02", "note": "", "planned_at": "14:57", "sent_at": "17:01"}
+{"race_id": "202601050811", "kind": "recheck", "date": "20260816", "due": "17:28", "note": "", "planned_at": "14:57", "sent_at": "17:25"}
+{"race_id": "202644081606", "kind": "recheck", "date": "20260816", "due": "18:07", "note": "", "planned_at": "14:57", "sent_at": "18:08"}
+{"race_id": "202644081607", "kind": "recheck", "date": "20260816", "due": "18:40", "note": "", "planned_at": "14:57", "sent_at": "18:40"}
+{"race_id": "202644081608", "kind": "recheck", "date": "20260816", "due": "19:15", "note": "", "planned_at": "14:57", "sent_at": "19:11"}
+{"race_id": "202644081609", "kind": "pre15", "date": "20260816", "due": "19:55", "note": "", "planned_at": "14:57", "sent_at": "19:43"}
+{"race_id": "202644081609", "kind": "result", "date": "20260816", "due": "20:25", "note": "", "planned_at": "14:57", "sent_at": "19:43"}
+{"race_id": "202644081610", "kind": "recheck", "date": "20260816", "due": "20:35", "note": "", "planned_at": "14:57", "sent_at": "20:35"}

@@ -1,0 +1,10 @@
+# 再生成できる中間物(load_datasetで14秒・34MB)
+wf_ds_cache.pkl
+wf_ds_cache_v8.pkl
+# V8 as-ofインデックス(course_bias.py が5秒で再生成。台帳の増加を検知して自動更新)
+cb_cache.pkl
+# Ver.99.27成分データセット(build_comps_v99.pyで再生成)
+comps_v99.pkl
+v8run/
+hist_combo/
+odds_timeline_probe/

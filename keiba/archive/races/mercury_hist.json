@@ -1,0 +1,919 @@
+{
+ "2016": {
+  "order": [
+   {
+    "rank": "1",
+    "num": 13,
+    "name": "ストロングサウザー",
+    "odds": 2.0,
+    "time_sec": 122.4,
+    "agari": null
+   },
+   {
+    "rank": "2",
+    "num": 1,
+    "name": "タイムズアロー",
+    "odds": 9.0,
+    "time_sec": 122.7,
+    "agari": null
+   },
+   {
+    "rank": "3",
+    "num": 10,
+    "name": "マイネルバイカ",
+    "odds": 5.0,
+    "time_sec": 122.7,
+    "agari": null
+   },
+   {
+    "rank": "4",
+    "num": 8,
+    "name": "ユーロビート",
+    "odds": 3.0,
+    "time_sec": 122.8,
+    "agari": null
+   },
+   {
+    "rank": "5",
+    "num": 3,
+    "name": "マイネルバウンス",
+    "odds": 8.0,
+    "time_sec": 122.8,
+    "agari": 33.8
+   },
+   {
+    "rank": "6",
+    "num": 12,
+    "name": "クラージュドール",
+    "odds": 6.0,
+    "time_sec": 123.6,
+    "agari": null
+   },
+   {
+    "rank": "7",
+    "num": 6,
+    "name": "ソリタリーキング",
+    "odds": 4.0,
+    "time_sec": 123.6,
+    "agari": null
+   },
+   {
+    "rank": "8",
+    "num": 9,
+    "name": "ケイアイレオーネ",
+    "odds": 1.0,
+    "time_sec": 123.7,
+    "agari": null
+   }
+  ],
+  "payout": {
+   "単勝": {
+    "13": 470
+   },
+   "三連複": {
+    "1-10-13": 23090
+   },
+   "馬連": {
+    "1-13": 18670
+   }
+  }
+ },
+ "2017": {
+  "order": [
+   {
+    "rank": "1",
+    "num": 2,
+    "name": "ミツバ",
+    "odds": 1.0,
+    "time_sec": 122.1,
+    "agari": null
+   },
+   {
+    "rank": "2",
+    "num": 3,
+    "name": "ピオネロ",
+    "odds": 2.0,
+    "time_sec": 122.2,
+    "agari": null
+   },
+   {
+    "rank": "3",
+    "num": 5,
+    "name": "クリノスターオー",
+    "odds": 3.0,
+    "time_sec": 122.3,
+    "agari": null
+   },
+   {
+    "rank": "4",
+    "num": 6,
+    "name": "ドリームキラリ",
+    "odds": 5.0,
+    "time_sec": 122.6,
+    "agari": null
+   },
+   {
+    "rank": "5",
+    "num": 14,
+    "name": "ドラゴンエアル",
+    "odds": 6.0,
+    "time_sec": 123.1,
+    "agari": 39.3
+   },
+   {
+    "rank": "6",
+    "num": 10,
+    "name": "ディアデルレイ",
+    "odds": 4.0,
+    "time_sec": 123.1,
+    "agari": null
+   },
+   {
+    "rank": "7",
+    "num": 12,
+    "name": "ミッキーヘネシー",
+    "odds": 8.0,
+    "time_sec": 123.8,
+    "agari": null
+   },
+   {
+    "rank": "8",
+    "num": 8,
+    "name": "グルームアイランド",
+    "odds": 7.0,
+    "time_sec": 123.8,
+    "agari": null
+   }
+  ],
+  "payout": {
+   "単勝": {
+    "2": 230
+   },
+   "三連複": {
+    "2-3-5": 340
+   },
+   "馬連": {
+    "2-3": 220
+   }
+  }
+ },
+ "2018": {
+  "order": [
+   {
+    "rank": "1",
+    "num": 10,
+    "name": "ミツバ",
+    "odds": 1.0,
+    "time_sec": 123.5,
+    "agari": null
+   },
+   {
+    "rank": "2",
+    "num": 8,
+    "name": "ヨシオ",
+    "odds": 4.0,
+    "time_sec": 123.7,
+    "agari": null
+   },
+   {
+    "rank": "3",
+    "num": 14,
+    "name": "フェニックスマーク",
+    "odds": 2.0,
+    "time_sec": 124.3,
+    "agari": null
+   },
+   {
+    "rank": "4",
+    "num": 7,
+    "name": "ドラゴンエアル",
+    "odds": 7.0,
+    "time_sec": 124.7,
+    "agari": null
+   },
+   {
+    "rank": "5",
+    "num": 9,
+    "name": "マイネルバサラ",
+    "odds": 5.0,
+    "time_sec": 124.7,
+    "agari": null
+   },
+   {
+    "rank": "6",
+    "num": 3,
+    "name": "ザイディックメア",
+    "odds": 3.0,
+    "time_sec": 124.7,
+    "agari": null
+   },
+   {
+    "rank": "7",
+    "num": 5,
+    "name": "エンパイアペガサス",
+    "odds": 6.0,
+    "time_sec": 125.7,
+    "agari": null
+   },
+   {
+    "rank": "8",
+    "num": 6,
+    "name": "ミッキーヘネシー",
+    "odds": 8.0,
+    "time_sec": 126.2,
+    "agari": null
+   }
+  ],
+  "payout": {
+   "単勝": {
+    "10": 220
+   },
+   "三連複": {
+    "8-10-14": 450
+   },
+   "馬連": {
+    "8-10": 940
+   }
+  }
+ },
+ "2019": {
+  "order": [
+   {
+    "rank": "1",
+    "num": 1,
+    "name": "グリム",
+    "odds": 1.0,
+    "time_sec": 123.2,
+    "agari": null
+   },
+   {
+    "rank": "2",
+    "num": 3,
+    "name": "ノーブルサターン",
+    "odds": 4.0,
+    "time_sec": 123.5,
+    "agari": 34.2
+   },
+   {
+    "rank": "3",
+    "num": 9,
+    "name": "テルペリオン",
+    "odds": 3.0,
+    "time_sec": 123.7,
+    "agari": null
+   },
+   {
+    "rank": "4",
+    "num": 14,
+    "name": "ロードゴラッソ",
+    "odds": 2.0,
+    "time_sec": 123.9,
+    "agari": null
+   },
+   {
+    "rank": "5",
+    "num": 6,
+    "name": "チェリーピッカー",
+    "odds": 6.0,
+    "time_sec": 125.8,
+    "agari": null
+   },
+   {
+    "rank": "6",
+    "num": 11,
+    "name": "コパノチャーリー",
+    "odds": 5.0,
+    "time_sec": 125.9,
+    "agari": 39.8
+   },
+   {
+    "rank": "7",
+    "num": 4,
+    "name": "コミュニティ",
+    "odds": 9.0,
+    "time_sec": 126.8,
+    "agari": null
+   },
+   {
+    "rank": "8",
+    "num": 7,
+    "name": "センティグレード",
+    "odds": 8.0,
+    "time_sec": 127.3,
+    "agari": null
+   }
+  ],
+  "payout": {
+   "単勝": {
+    "1": 130
+   },
+   "三連複": {
+    "1-3-9": 790
+   },
+   "馬連": {
+    "1-3": 1510
+   }
+  }
+ },
+ "2022": {
+  "order": [
+   {
+    "rank": "1",
+    "num": 8,
+    "name": "バーデンヴァイラー",
+    "odds": 2.0,
+    "time_sec": 122.5,
+    "agari": null
+   },
+   {
+    "rank": "2",
+    "num": 2,
+    "name": "テリオスベル",
+    "odds": 7.0,
+    "time_sec": 122.6,
+    "agari": null
+   },
+   {
+    "rank": "3",
+    "num": 1,
+    "name": "ヴァケーション",
+    "odds": 10.0,
+    "time_sec": 123.5,
+    "agari": null
+   },
+   {
+    "rank": "4",
+    "num": 9,
+    "name": "ケイアイパープル",
+    "odds": 1.0,
+    "time_sec": 123.5,
+    "agari": null
+   },
+   {
+    "rank": "5",
+    "num": 3,
+    "name": "ギガキング",
+    "odds": 4.0,
+    "time_sec": 123.9,
+    "agari": null
+   },
+   {
+    "rank": "6",
+    "num": 12,
+    "name": "エルデュクラージュ",
+    "odds": 8.0,
+    "time_sec": 124.0,
+    "agari": 37.5
+   },
+   {
+    "rank": "7",
+    "num": 10,
+    "name": "メイショウフンジン",
+    "odds": 6.0,
+    "time_sec": 124.1,
+    "agari": null
+   },
+   {
+    "rank": "8",
+    "num": 4,
+    "name": "ノーヴァレンダ",
+    "odds": 3.0,
+    "time_sec": 124.6,
+    "agari": null
+   }
+  ],
+  "payout": {
+   "単勝": {
+    "8": 500
+   },
+   "三連複": {
+    "1-2-8": 145300
+   },
+   "馬連": {
+    "2-8": 2930
+   }
+  }
+ },
+ "2023": {
+  "order": [
+   {
+    "rank": "1",
+    "num": 9,
+    "name": "ウィルソンテソーロ",
+    "odds": 1.0,
+    "time_sec": 121.8,
+    "agari": null
+   },
+   {
+    "rank": "2",
+    "num": 4,
+    "name": "テリオスベル",
+    "odds": 3.0,
+    "time_sec": 122.4,
+    "agari": null
+   },
+   {
+    "rank": "3",
+    "num": 13,
+    "name": "メイショウフンジン",
+    "odds": 4.0,
+    "time_sec": 122.6,
+    "agari": null
+   },
+   {
+    "rank": "4",
+    "num": 7,
+    "name": "バーデンヴァイラー",
+    "odds": 2.0,
+    "time_sec": 123.7,
+    "agari": null
+   },
+   {
+    "rank": "5",
+    "num": 2,
+    "name": "サンライズホープ",
+    "odds": 5.0,
+    "time_sec": 124.5,
+    "agari": null
+   },
+   {
+    "rank": "6",
+    "num": 8,
+    "name": "フレイムウィングス",
+    "odds": 10.0,
+    "time_sec": 124.7,
+    "agari": null
+   },
+   {
+    "rank": "7",
+    "num": 3,
+    "name": "ヴァケーション",
+    "odds": 6.0,
+    "time_sec": 125.1,
+    "agari": null
+   },
+   {
+    "rank": "8",
+    "num": 11,
+    "name": "レールガン",
+    "odds": 8.0,
+    "time_sec": 125.7,
+    "agari": null
+   }
+  ],
+  "payout": {
+   "単勝": {
+    "9": 220
+   },
+   "三連複": {
+    "4-9-13": 750
+   },
+   "馬連": {
+    "4-9": 620
+   }
+  }
+ },
+ "2024": {
+  "order": [
+   {
+    "rank": "1",
+    "num": 9,
+    "name": "クラウンプライド",
+    "odds": 2.0,
+    "time_sec": 123.8,
+    "agari": null
+   },
+   {
+    "rank": "2",
+    "num": 13,
+    "name": "ビヨンドザファザー",
+    "odds": 5.0,
+    "time_sec": 123.8,
+    "agari": null
+   },
+   {
+    "rank": "3",
+    "num": 5,
+    "name": "ロードアヴニール",
+    "odds": 3.0,
+    "time_sec": 123.9,
+    "agari": null
+   },
+   {
+    "rank": "4",
+    "num": 3,
+    "name": "テンカハル",
+    "odds": 4.0,
+    "time_sec": 124.4,
+    "agari": null
+   },
+   {
+    "rank": "5",
+    "num": 6,
+    "name": "スワーヴアラミス",
+    "odds": 11.0,
+    "time_sec": 124.9,
+    "agari": null
+   },
+   {
+    "rank": "6",
+    "num": 8,
+    "name": "ケイアイパープル",
+    "odds": 8.0,
+    "time_sec": 125.9,
+    "agari": null
+   },
+   {
+    "rank": "7",
+    "num": 7,
+    "name": "アラジンバローズ",
+    "odds": 9.0,
+    "time_sec": 126.0,
+    "agari": null
+   },
+   {
+    "rank": "8",
+    "num": 1,
+    "name": "メイショウフンジン",
+    "odds": 1.0,
+    "time_sec": 126.2,
+    "agari": null
+   }
+  ],
+  "payout": {
+   "単勝": {
+    "9": 280
+   },
+   "三連複": {
+    "5-9-13": 3280
+   },
+   "馬連": {
+    "9-13": 1370
+   }
+  }
+ },
+ "2025": {
+  "order": [
+   {
+    "rank": "1",
+    "num": 2,
+    "name": "カズタンジャー",
+    "odds": 1.0,
+    "time_sec": 123.9,
+    "agari": null
+   },
+   {
+    "rank": "2",
+    "num": 5,
+    "name": "クラウンプライド",
+    "odds": 4.0,
+    "time_sec": 124.1,
+    "agari": null
+   },
+   {
+    "rank": "3",
+    "num": 3,
+    "name": "ディープリボーン",
+    "odds": 3.0,
+    "time_sec": 124.7,
+    "agari": null
+   },
+   {
+    "rank": "4",
+    "num": 4,
+    "name": "サクラトップキッド",
+    "odds": 9.0,
+    "time_sec": 125.5,
+    "agari": null
+   },
+   {
+    "rank": "5",
+    "num": 10,
+    "name": "セラフィックコール",
+    "odds": 2.0,
+    "time_sec": 125.7,
+    "agari": null
+   },
+   {
+    "rank": "6",
+    "num": 1,
+    "name": "ライトウォーリア",
+    "odds": 5.0,
+    "time_sec": 125.9,
+    "agari": null
+   },
+   {
+    "rank": "7",
+    "num": 9,
+    "name": "マルカイグアス",
+    "odds": 7.0,
+    "time_sec": 127.2,
+    "agari": null
+   },
+   {
+    "rank": "8",
+    "num": 7,
+    "name": "メイショウフンジン",
+    "odds": 6.0,
+    "time_sec": 128.0,
+    "agari": null
+   }
+  ],
+  "payout": {
+   "単勝": {
+    "2": 300
+   },
+   "三連複": {
+    "2-3-5": 1000
+   },
+   "馬連": {
+    "2-5": 1070
+   }
+  }
+ },
+ "2015": {
+  "order": [
+   {
+    "rank": "1",
+    "num": 14,
+    "name": "ユーロビート",
+    "odds": 6.0,
+    "time_sec": 127.8,
+    "agari": null
+   },
+   {
+    "rank": "2",
+    "num": 7,
+    "name": "ソリタリーキング",
+    "odds": 3.0,
+    "time_sec": 128.7,
+    "agari": null
+   },
+   {
+    "rank": "3",
+    "num": 12,
+    "name": "トウショウフリーク",
+    "odds": 5.0,
+    "time_sec": 128.9,
+    "agari": null
+   },
+   {
+    "rank": "4",
+    "num": 13,
+    "name": "タイムズアロー",
+    "odds": 7.0,
+    "time_sec": 128.9,
+    "agari": null
+   },
+   {
+    "rank": "5",
+    "num": 6,
+    "name": "メイショウコロンボ",
+    "odds": 1.0,
+    "time_sec": 129.2,
+    "agari": null
+   },
+   {
+    "rank": "6",
+    "num": 4,
+    "name": "トーセンアレス",
+    "odds": 9.0,
+    "time_sec": 129.5,
+    "agari": null
+   },
+   {
+    "rank": "7",
+    "num": 10,
+    "name": "コミュニティ",
+    "odds": 8.0,
+    "time_sec": 129.6,
+    "agari": null
+   },
+   {
+    "rank": "8",
+    "num": 1,
+    "name": "トウシンイーグル",
+    "odds": 4.0,
+    "time_sec": 129.8,
+    "agari": null
+   },
+   {
+    "rank": "9",
+    "num": 2,
+    "name": "テイエムダイパワー",
+    "odds": 2.0,
+    "time_sec": 130.4,
+    "agari": null
+   },
+   {
+    "rank": "10",
+    "num": 9,
+    "name": "トーホクアロー",
+    "odds": 12.0,
+    "time_sec": 131.8,
+    "agari": null
+   }
+  ],
+  "payout": {
+   "単勝": {
+    "14": 2720
+   },
+   "三連複": {
+    "7-12-14": 9850
+   },
+   "馬連": {
+    "7-14": 4300
+   }
+  }
+ },
+ "2020": {
+  "order": [
+   {
+    "rank": "1",
+    "num": 3,
+    "name": "マスターフェンサー",
+    "odds": 1.0,
+    "time_sec": 123.0,
+    "agari": null
+   },
+   {
+    "rank": "2",
+    "num": 9,
+    "name": "デルマルーヴル",
+    "odds": 3.0,
+    "time_sec": 123.2,
+    "agari": null
+   },
+   {
+    "rank": "3",
+    "num": 1,
+    "name": "ランガディア",
+    "odds": 6.0,
+    "time_sec": 124.0,
+    "agari": null
+   },
+   {
+    "rank": "4",
+    "num": 8,
+    "name": "ヒストリーメイカー",
+    "odds": 2.0,
+    "time_sec": 124.1,
+    "agari": null
+   },
+   {
+    "rank": "5",
+    "num": 7,
+    "name": "アポロテネシー",
+    "odds": 4.0,
+    "time_sec": 124.6,
+    "agari": null
+   },
+   {
+    "rank": "6",
+    "num": 12,
+    "name": "ヨシオ",
+    "odds": 7.0,
+    "time_sec": 125.1,
+    "agari": null
+   },
+   {
+    "rank": "7",
+    "num": 5,
+    "name": "リンノレジェンド",
+    "odds": 5.0,
+    "time_sec": 125.4,
+    "agari": null
+   },
+   {
+    "rank": "8",
+    "num": 11,
+    "name": "アリオンダンス",
+    "odds": 10.0,
+    "time_sec": 125.7,
+    "agari": null
+   },
+   {
+    "rank": "9",
+    "num": 4,
+    "name": "ヤマショウブラック",
+    "odds": 8.0,
+    "time_sec": 125.7,
+    "agari": null
+   },
+   {
+    "rank": "10",
+    "num": 2,
+    "name": "ディグニファイド",
+    "odds": 13.0,
+    "time_sec": 126.8,
+    "agari": null
+   }
+  ],
+  "payout": {
+   "単勝": {
+    "3": 190
+   },
+   "三連複": {
+    "1-3-9": 2120
+   },
+   "馬連": {
+    "3-9": 350
+   }
+  }
+ },
+ "2021": {
+  "order": [
+   {
+    "rank": "1",
+    "num": 2,
+    "name": "マスターフェンサー",
+    "odds": 4.0,
+    "time_sec": 125.7,
+    "agari": null
+   },
+   {
+    "rank": "2",
+    "num": 3,
+    "name": "バンクオブクラウズ",
+    "odds": 1.0,
+    "time_sec": 126.0,
+    "agari": null
+   },
+   {
+    "rank": "3",
+    "num": 9,
+    "name": "ヒストリーメイカー",
+    "odds": 2.0,
+    "time_sec": 127.6,
+    "agari": null
+   },
+   {
+    "rank": "4",
+    "num": 11,
+    "name": "デルマルーヴル",
+    "odds": 3.0,
+    "time_sec": 127.8,
+    "agari": null
+   },
+   {
+    "rank": "5",
+    "num": 7,
+    "name": "ラストマン",
+    "odds": 5.0,
+    "time_sec": 127.8,
+    "agari": null
+   },
+   {
+    "rank": "6",
+    "num": 13,
+    "name": "ホーリーブレイズ",
+    "odds": 8.0,
+    "time_sec": 129.2,
+    "agari": null
+   },
+   {
+    "rank": "7",
+    "num": 4,
+    "name": "エンパイアペガサス",
+    "odds": 7.0,
+    "time_sec": 129.6,
+    "agari": null
+   },
+   {
+    "rank": "8",
+    "num": 1,
+    "name": "クインズサターン",
+    "odds": 6.0,
+    "time_sec": 129.8,
+    "agari": null
+   },
+   {
+    "rank": "9",
+    "num": 10,
+    "name": "ヤマショウブラック",
+    "odds": 11.0,
+    "time_sec": 129.8,
+    "agari": null
+   },
+   {
+    "rank": "10",
+    "num": 8,
+    "name": "ブラックカード",
+    "odds": 10.0,
+    "time_sec": 130.9,
+    "agari": null
+   }
+  ],
+  "payout": {
+   "単勝": {
+    "2": 580
+   },
+   "三連複": {
+    "2-3-9": 400
+   },
+   "馬連": {
+    "2-3": 620
+   }
+  }
+ }
+}

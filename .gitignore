@@ -3,3 +3,23 @@ node_modules/
 slides/exports/*.pptx
 slides/exports/*.pdf
 slides/exports/*.png
+__pycache__/
+*.pyc
+
+# i-PAT認証情報（本物だけ無視・.exampleは可）
+keiba/ipat_secret.local
+keiba/horse_cache/
+keiba/mktcond_ds.pkl
+keiba/v99w_result.pkl
+keiba/v99w2_result.pkl
+keiba/corner_bench_cache.json
+keiba/jraw_ds.npz
+# 当日の馬柱キャッシュ(day_board.load_or_fetch が再取得する)。
+# 2026-08-21: 監査B1で「古い race_*.json が hist より優先され、終わったレースが
+# 確定オッズでライブ記帳される」重大バグの原因になった。find_race_path は hist 優先に
+# 修正済みだが、古いキャッシュを持ち越さない方が安全なので追跡から外す。
+keiba/race_*.json
+
+# LINE通知のトークンは環境変数のみ。誤ってファイルに置いた場合の保険
+keiba/line_token.local
+keiba/.env

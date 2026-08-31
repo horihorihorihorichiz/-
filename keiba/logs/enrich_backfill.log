@@ -1,0 +1,38 @@
+enrich対象: 3313/6701R
+  100R done
+  200R done
+  300R done
+  400R done
+  500R done
+  600R done
+  700R done
+  800R done
+  900R done
+  1000R done
+  1100R done
+  1200R done
+  1300R done
+  1400R done
+  1500R done
+  1600R done
+  1700R done
+  1800R done
+  1900R done
+  2000R done
+  2100R done
+  2200R done
+  2300R done
+  2400R done
+  2500R done
+  2600R done
+  2700R done
+  2800R done
+  2900R done
+  3000R done
+  3100R done
+  3200R done
+  3300R done
+完了: 成功3310 失敗3
+  202505010504 FAIL <urlopen error [Errno 104] Connection reset by peer>
+  202407020610 FAIL <urlopen error [Errno 104] Connection reset by peer>
+  202403020810 FAIL <urlopen error [Errno 104] Connection reset by peer>

@@ -1,0 +1,29 @@
+[
+ {
+  "pattern": "三連複軸×市場上位3ながし(3点)×軸10-30倍",
+  "dev_roi": 108.5,
+  "dev_n": 59,
+  "conf_roi": 307.8,
+  "conf_n": 24,
+  "total_roi": 166.1,
+  "total_n": 83
+ },
+ {
+  "pattern": "三連単軸3着固定F(市場3→市場3→軸)×芝",
+  "dev_roi": 130.5,
+  "dev_n": 87,
+  "conf_roi": 157.0,
+  "conf_n": 41,
+  "total_roi": 139.0,
+  "total_n": 128
+ },
+ {
+  "pattern": "三連単軸3着固定F(市場3→市場3→軸)×混戦(gap小)",
+  "dev_roi": 115.9,
+  "dev_n": 150,
+  "conf_roi": 105.5,
+  "conf_n": 61,
+  "total_roi": 112.9,
+  "total_n": 211
+ }
+]

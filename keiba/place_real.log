@@ -1,0 +1,542 @@
+
+==============================================================================
+v3place
+==============================================================================
+races=6890 dropped(ledger)=1 no_real_odds=1 months=202403..202608
+
+[1] α_place の月次WF（市場側=実複勝オッズ / 旧=単勝Harville）
+  α推定に使うレース（8頭以上・複勝3着まで）= 6723 R / 5〜7頭立て 167 R は除外
+  参考: 全レースでの Harville α（旧報告と同一集合）最終fold = +0.0357
+  fold     real α(se,z)             harville α(se,z)         both α(se,z)            
+  202404  [MINE    ] tr=  318R  +0.0871(0.0742,+1.17) +0.0766(0.0721,+1.06) +0.0712(0.0745,+0.96) 
+  202407  [MINE    ] tr=  469R  +0.0575(0.0605,+0.95) +0.0538(0.0588,+0.92) +0.0371(0.0606,+0.61) 
+  202408  [MINE    ] tr=  629R  -0.0195(0.0515,-0.38) -0.0079(0.0499,-0.16) -0.0378(0.0518,-0.73) 
+  202409  [MINE    ] tr=  877R  -0.0240(0.0451,-0.53) +0.0107(0.0425,+0.25) -0.0387(0.0451,-0.86) 
+  202410  [MINE    ] tr= 1077R  -0.0085(0.0411,-0.21) +0.0253(0.0387,+0.65) -0.0268(0.0411,-0.65) 
+  202411  [MINE    ] tr= 1300R  -0.0030(0.0368,-0.08) +0.0221(0.0348,+0.63) -0.0263(0.0369,-0.71) 
+  202412  [MINE    ] tr= 1542R  -0.0139(0.0334,-0.41) +0.0096(0.0316,+0.30) -0.0371(0.0335,-1.11) 
+  202501  [MINE    ] tr= 1748R  -0.0036(0.0315,-0.11) +0.0228(0.0296,+0.77) -0.0281(0.0314,-0.90) 
+  202502  [MINE    ] tr= 1954R  +0.0081(0.0299,+0.27) +0.0319(0.0282,+1.13) -0.0180(0.0298,-0.60) 
+  202503  [MINE    ] tr= 2207R  -0.0089(0.0284,-0.31) +0.0155(0.0268,+0.58) -0.0364(0.0284,-1.28) 
+  202504  [MINE    ] tr= 2533R  -0.0081(0.0265,-0.31) +0.0115(0.0251,+0.46) -0.0417(0.0265,-1.58) 
+  202505  [MINE    ] tr= 2784R  -0.0089(0.0251,-0.36) +0.0054(0.0239,+0.22) -0.0468(0.0251,-1.86) 
+  202506  [MINE    ] tr= 3074R  -0.0090(0.0240,-0.38) +0.0027(0.0228,+0.12) -0.0480(0.0240,-2.00) 
+  202507  [MINE    ] tr= 3320R  -0.0018(0.0232,-0.08) +0.0103(0.0221,+0.47) -0.0413(0.0233,-1.77) 
+  202508  [MINE    ] tr= 3560R  +0.0029(0.0225,+0.13) +0.0158(0.0214,+0.74) -0.0362(0.0226,-1.60) 
+  202509  [MINE    ] tr= 3854R  +0.0069(0.0217,+0.32) +0.0203(0.0206,+0.99) -0.0326(0.0218,-1.50) 
+  202510  [MINE    ] tr= 4041R  +0.0102(0.0212,+0.48) +0.0228(0.0201,+1.13) -0.0302(0.0213,-1.42) 
+  202511  [MINE    ] tr= 4244R  +0.0078(0.0207,+0.37) +0.0217(0.0197,+1.10) -0.0330(0.0208,-1.59) 
+  202512  [MINE    ] tr= 4495R  +0.0042(0.0202,+0.21) +0.0180(0.0192,+0.94) -0.0371(0.0203,-1.83) 
+  202601  [MINE    ] tr= 4713R  +0.0081(0.0197,+0.41) +0.0195(0.0187,+1.04) -0.0340(0.0198,-1.72) 
+  202602  [MINE    ] tr= 4950R  +0.0147(0.0192,+0.76) +0.0244(0.0183,+1.34) -0.0286(0.0194,-1.48) 
+  202603  [VALIDATE] tr= 5200R  +0.0131(0.0188,+0.70) +0.0240(0.0178,+1.35) -0.0305(0.0189,-1.61) 
+  202604  [VALIDATE] tr= 5487R  +0.0213(0.0184,+1.16) +0.0283(0.0175,+1.61) -0.0253(0.0185,-1.36) 
+  202605  [VALIDATE] tr= 5739R  +0.0204(0.0180,+1.13) +0.0277(0.0172,+1.61) -0.0268(0.0182,-1.47) 
+  202606  [CONFIRM ] tr= 6060R  +0.0298(0.0175,+1.70) +0.0351(0.0167,+2.10) -0.0185(0.0177,-1.04) 
+  202607  [CONFIRM ] tr= 6286R  +0.0273(0.0173,+1.58) +0.0326(0.0165,+1.98) -0.0211(0.0175,-1.21) 
+  202608  [CONFIRM ] tr= 6541R  +0.0267(0.0170,+1.58) +0.0315(0.0162,+1.95) -0.0224(0.0171,-1.31) 
+  → α>0: 16/27fold 最長連続=13 最終fold α=+0.0267  [実複勝オッズ]
+  → α>0: 26/27fold 最長連続=24 最終fold α=+0.0315  [単勝Harville]
+  → α>0: 2/27fold 最長連続=2 最終fold α=-0.0224  [両方入り]
+
+  [OOS対数損失/頭]  split   市場のみ   +モデル    改善
+   MINE      real      0.403184  0.403222  -0.000038  (n=68842頭)
+   MINE      hv        0.400622  0.400644  -0.000022  (n=68842頭)
+   VALIDATE  real      0.388781  0.388695  +0.000086  (n=12267頭)
+   VALIDATE  hv        0.385261  0.385159  +0.000102  (n=12267頭)
+   CONFIRM   real      0.417047  0.417017  +0.000030  (n=9065頭)
+   CONFIRM   hv        0.413823  0.413790  +0.000033  (n=9065頭)
+
+  [ヌル検査] 最終foldでモデル確率をレース内シャッフル
+   実データ α=+0.0267 / ヌル8本 平均-0.0042 最大+0.0159 実データ以上 0/8
+
+[2] 券種テーブル構築（実オッズ）
+   1000/6562 (62s)
+   2000/6562 (66s)
+   3000/6562 (70s)
+   4000/6562 (75s)
+   5000/6562 (79s)
+   6000/6562 (83s)
+
+[3] 控除率の実測（実オッズ）
+   券種      Σ(1/odds)  的中組数  実測控除率  EV1に必要なエッジ(p_model/p_market)
+   複勝         4.4695       3      32.9%   ×1.490
+   ワイド        4.1018       3      26.9%   ×1.367
+   三連複        1.3336       1      25.0%   ×1.334
+   馬連         1.2944       1      22.7%   ×1.294
+   ※複勝・ワイドは台帳が**下限**オッズのため控除率が過大に出る（実払戻/下限=複勝1.19倍・ワイド1.05倍を掛け戻すと実効20〜23%）
+
+[3b] 下限→期待払戻の写像（MINE期のみ）
+   複勝     n=  14929 平均比1.186  写像: 1.2→×1.16 1.5→×1.17 2.0→×1.19 3.0→×1.24 5.0→×1.24 10.0→×1.24 30.0→×1.25
+   ワイド    n=  15068 平均比1.049  写像: 1.2→×1.05 1.5→×1.05 2.0→×1.06 3.0→×1.07 5.0→×1.06 10.0→×1.05 30.0→×1.03
+
+[4] 較正器の学習（MINE期のみ・isotonic）
+   複勝    /model n=    69705  平均予測0.21390 → 実測0.21417 (倍率 1.00×)
+   複勝    /blend n=    69705  平均予測0.21390 → 実測0.21417 (倍率 1.00×)
+   ワイド   /model n=   470382  平均予測0.03198 → 実測0.03203 (倍率 1.00×)
+   ワイド   /blend n=   470382  平均予測0.03198 → 実測0.03203 (倍率 1.00×)
+   三連複   /model n=  2035358  平均予測0.00246 → 実測0.00247 (倍率 1.00×)
+   三連複   /blend n=  2035358  平均予測0.00246 → 実測0.00247 (倍率 1.00×)
+   馬連    /model n=   470304  平均予測0.01066 → 実測0.01069 (倍率 1.00×)
+   馬連    /blend n=   470304  平均予測0.01066 → 実測0.01069 (倍率 1.00×)
+
+[5] 券種別EV検証（実オッズ）
+
+  ── 複勝 ──  (odds: floor=台帳下限 / exp=下限×期待払戻倍率)
+   split     src    cal  odds  rule           n   hits     ROI% ROI_floor  meanEV
+   MINE      model  raw  floor ev1.1      14284    711     58.5      47.1    1.74
+   MINE      model  raw  floor ev1.2      11794    514     59.0      47.1    1.86
+   MINE      model  raw  floor ev1.3       9873    388     60.6      47.9    1.98
+   MINE      model  raw  exp   ev1.1      21982   1597     61.9      49.8    1.85
+   MINE      model  raw  exp   ev1.2      18765   1174     61.1      49.0    1.97
+   MINE      model  raw  exp   ev1.3      16068    874     59.3      47.8    2.09
+   MINE      model  iso  floor ev1.1      13358    723     62.3      50.2    1.76
+   MINE      model  iso  floor ev1.2      11125    531     62.3      50.1    1.89
+   MINE      model  iso  floor ev1.3       9256    388     62.2      49.1    2.01
+   MINE      model  iso  exp   ev1.1      20720   1628     64.1      51.6    1.86
+   MINE      model  iso  exp   ev1.2      17700   1191     63.1      50.8    1.98
+   MINE      model  iso  exp   ev1.3      15112    912     63.3      51.1    2.11
+   MINE      blend  raw  exp   ev1.1          4      3     82.5      82.5    1.12
+   MINE      blend  iso  floor top1           1      1    130.0     130.0    1.02 (1R)
+   MINE      blend  iso  floor top3           1      1    130.0     130.0    1.02 (1R)
+   MINE      blend  iso  floor top5           1      1    130.0     130.0    1.02 (1R)
+   MINE      blend  iso  floor top10          1      1    130.0     130.0    1.02 (1R)
+   MINE      blend  iso  floor top20          1      1    130.0     130.0    1.02 (1R)
+   MINE      blend  iso  exp   ev1.1         34     20     76.5      72.9    1.12
+   MINE      blend  iso  exp   top1          92     56     82.0      77.5    1.07 (92R)
+   MINE      blend  iso  exp   top3         103     62     81.4      77.0    1.07 (92R)
+   MINE      blend  iso  exp   top5         103     62     81.4      77.0    1.07 (92R)
+   MINE      blend  iso  exp   top10        103     62     81.4      77.0    1.07 (92R)
+   MINE      blend  iso  exp   top20        103     62     81.4      77.0    1.07 (92R)
+   VALIDATE  model  raw  floor ev1.1       2554    112     46.2      37.7    1.74
+   VALIDATE  model  raw  floor ev1.2       2152     86     46.7      38.9    1.85
+   VALIDATE  model  raw  floor ev1.3       1815     64     46.5      39.3    1.96
+   VALIDATE  model  raw  exp   ev1.1       3863    258     53.2      42.9    1.85
+   VALIDATE  model  raw  exp   ev1.2       3305    185     51.7      41.4    1.97
+   VALIDATE  model  raw  exp   ev1.3       2849    134     49.1      39.9    2.09
+   VALIDATE  model  iso  floor ev1.1       2362    111     43.7      34.9    1.76
+   VALIDATE  model  iso  floor ev1.2       1976     85     45.8      36.0    1.88
+   VALIDATE  model  iso  floor ev1.3       1678     62     40.0      32.3    2.00
+   VALIDATE  model  iso  exp   ev1.1       3589    254     51.1      40.6    1.87
+   VALIDATE  model  iso  exp   ev1.2       3061    193     51.7      40.5    2.00
+   VALIDATE  model  iso  exp   ev1.3       2633    142     49.1      38.9    2.12
+   VALIDATE  blend  raw  exp   ev1.1          2      2    110.0     110.0    1.15
+   VALIDATE  blend  iso  exp   ev1.1          5      2     54.0      48.0    1.11
+   VALIDATE  blend  iso  exp   top1           6      2     45.0      40.0    1.10 (6R)
+   VALIDATE  blend  iso  exp   top3           8      3     53.8      47.5    1.09 (6R)
+   VALIDATE  blend  iso  exp   top5           8      3     53.8      47.5    1.09 (6R)
+   VALIDATE  blend  iso  exp   top10          8      3     53.8      47.5    1.09 (6R)
+   VALIDATE  blend  iso  exp   top20          8      3     53.8      47.5    1.09 (6R)
+   CONFIRM   model  raw  floor ev1.1       1485     85     61.7      47.3    1.64
+   CONFIRM   model  raw  floor ev1.2       1185     56     60.0      44.8    1.76
+   CONFIRM   model  raw  floor ev1.3        972     40     55.7      40.7    1.87
+   CONFIRM   model  raw  exp   ev1.1       2433    213     71.0      57.3    1.73
+   CONFIRM   model  raw  exp   ev1.2       2023    149     66.0      52.3    1.84
+   CONFIRM   model  raw  exp   ev1.3       1692    109     66.8      51.9    1.96
+   CONFIRM   model  iso  floor ev1.1       1386     81     63.0      48.0    1.66
+   CONFIRM   model  iso  floor ev1.2       1114     55     60.4      44.7    1.78
+   CONFIRM   model  iso  floor ev1.3        923     42     63.0      45.9    1.89
+   CONFIRM   model  iso  exp   ev1.1       2312    208     65.0      52.2    1.74
+   CONFIRM   model  iso  exp   ev1.2       1911    151     65.8      52.0    1.86
+   CONFIRM   model  iso  exp   ev1.3       1602    111     66.7      51.8    1.98
+   CONFIRM   blend  iso  exp   ev1.1          7      1     21.4      18.6    1.11
+   CONFIRM   blend  iso  exp   top1           6      0      0.0       0.0    1.10 (6R)
+   CONFIRM   blend  iso  exp   top3           9      1     16.7      14.4    1.10 (6R)
+   CONFIRM   blend  iso  exp   top5           9      1     16.7      14.4    1.10 (6R)
+   CONFIRM   blend  iso  exp   top10          9      1     16.7      14.4    1.10 (6R)
+   CONFIRM   blend  iso  exp   top20          9      1     16.7      14.4    1.10 (6R)
+
+  ── ワイド ──  (odds: floor=台帳下限 / exp=下限×期待払戻倍率)
+   split     src    cal  odds  rule           n   hits     ROI% ROI_floor  meanEV
+   MINE      model  raw  floor ev1.2     172426   1486     52.5      51.6    2.33
+   MINE      model  raw  exp   ev1.2     177547   1637     52.6      51.7    2.34
+   MINE      model  iso  floor ev1.2     164550   1491     55.0      53.9    2.35
+   MINE      model  iso  exp   ev1.2     169432   1643     55.0      53.8    2.36
+   MINE      blend  raw  floor ev1.2      10735    255     62.2      60.5    1.40
+   MINE      blend  raw  exp   ev1.2      13176    378     64.3      62.6    1.40
+   MINE      blend  iso  floor ev1.2      13106    237     66.0      64.6    1.40
+   MINE      blend  iso  floor top1        4760    155     73.5      71.6    1.38 (4760R)
+   MINE      blend  iso  floor top3       13324    418     69.6      67.6    1.29 (4760R)
+   MINE      blend  iso  floor top5       20293    605     68.9      66.9    1.25 (4760R)
+   MINE      blend  iso  floor top10      31249    870     68.8      66.8    1.21 (4760R)
+   MINE      blend  iso  floor top20      38687   1016     65.8      64.0    1.19 (4760R)
+   MINE      blend  iso  exp   ev1.2      15530    331     65.8      64.4    1.40
+   MINE      blend  iso  exp   top1        4879    187     74.7      72.4    1.41 (4879R)
+   MINE      blend  iso  exp   top3       14055    524     71.0      68.9    1.31 (4879R)
+   MINE      blend  iso  exp   top5       21986    806     69.2      67.1    1.26 (4879R)
+   MINE      blend  iso  exp   top10      35484   1228     71.3      69.1    1.21 (4879R)
+   MINE      blend  iso  exp   top20      45302   1467     68.8      66.8    1.19 (4879R)
+   VALIDATE  model  raw  floor ev1.2      31797    284     42.4      41.6    2.32
+   VALIDATE  model  raw  exp   ev1.2      32668    317     43.7      42.7    2.33
+   VALIDATE  model  iso  floor ev1.2      30068    283     45.7      44.8    2.34
+   VALIDATE  model  iso  exp   ev1.2      30943    313     46.7      45.7    2.34
+   VALIDATE  blend  raw  floor ev1.2       2275     54     84.3      81.3    1.41
+   VALIDATE  blend  raw  exp   ev1.2       2679     74     87.2      83.7    1.42
+   VALIDATE  blend  iso  floor ev1.2       2793     60     79.6      76.6    1.42
+   VALIDATE  blend  iso  floor top1         828     30     76.7      74.4    1.41 (828R)
+   VALIDATE  blend  iso  floor top3        2332     77     77.3      73.9    1.32 (828R)
+   VALIDATE  blend  iso  floor top5        3576    108     78.0      74.7    1.28 (828R)
+   VALIDATE  blend  iso  floor top10       5641    161     78.5      75.5    1.23 (828R)
+   VALIDATE  blend  iso  floor top20       7167    190     79.9      77.0    1.21 (828R)
+   VALIDATE  blend  iso  exp   ev1.2       3216     72     77.0      73.9    1.42
+   VALIDATE  blend  iso  exp   top1         856     36     77.5      75.0    1.43 (856R)
+   VALIDATE  blend  iso  exp   top3        2454     94     78.5      75.0    1.34 (856R)
+   VALIDATE  blend  iso  exp   top5        3870    142     70.7      67.7    1.29 (856R)
+   VALIDATE  blend  iso  exp   top10       6346    215     76.5      73.5    1.24 (856R)
+   VALIDATE  blend  iso  exp   top20       8291    267     77.5      74.6    1.21 (856R)
+   CONFIRM   model  raw  floor ev1.2      18123    193     53.6      52.6    2.13
+   CONFIRM   model  raw  exp   ev1.2      18804    224     54.2      53.2    2.14
+   CONFIRM   model  iso  floor ev1.2      17262    194     54.5      53.4    2.16
+   CONFIRM   model  iso  exp   ev1.2      17909    216     55.2      54.1    2.16
+   CONFIRM   blend  raw  floor ev1.2       1222     35     92.7      89.9    1.38
+   CONFIRM   blend  raw  exp   ev1.2       1531     51     89.1      86.6    1.38
+   CONFIRM   blend  iso  floor ev1.2       1457     31     77.7      75.6    1.38
+   CONFIRM   blend  iso  floor top1         640     26    163.6     159.7    1.34 (640R)
+   CONFIRM   blend  iso  floor top3        1764     67     97.4      94.9    1.26 (640R)
+   CONFIRM   blend  iso  floor top5        2653     86     81.7      79.7    1.23 (640R)
+   CONFIRM   blend  iso  floor top10       3962    130     85.1      82.9    1.19 (640R)
+   CONFIRM   blend  iso  floor top20       4684    145     80.5      78.4    1.17 (640R)
+   CONFIRM   blend  iso  exp   ev1.2       1767     49     81.5      79.3    1.38
+   CONFIRM   blend  iso  exp   top1         659     34    166.4     161.9    1.37 (659R)
+   CONFIRM   blend  iso  exp   top3        1889     80     93.8      91.5    1.28 (659R)
+   CONFIRM   blend  iso  exp   top5        2909    115     82.0      79.9    1.24 (659R)
+   CONFIRM   blend  iso  exp   top10       4596    176     81.8      79.6    1.19 (659R)
+   CONFIRM   blend  iso  exp   top20       5613    198     76.0      73.9    1.17 (659R)
+
+  ── 三連複 ──  (odds: floor=台帳下限 / exp=下限×期待払戻倍率)
+   split     src    cal  odds  rule           n   hits     ROI% ROI_floor  meanEV
+   MINE      model  raw  floor ev1.2     914365    564     43.1      43.7    3.09
+   MINE      model  iso  floor ev1.2     867654    556     46.6      47.2    3.15
+   MINE      blend  raw  floor ev1.2     120040    255     39.6      39.6    1.57
+   MINE      blend  iso  floor ev1.2     160536    236     43.4      46.5    1.58
+   MINE      blend  iso  floor top1        4923     23     50.2      50.2    2.03 (4923R)
+   MINE      blend  iso  floor top3       14637     64     61.7      61.8    1.89 (4923R)
+   MINE      blend  iso  floor top5       24219     94     84.7     105.2    1.80 (4923R)
+   MINE      blend  iso  floor top10      47432    165     62.2      72.7    1.68 (4923R)
+   MINE      blend  iso  floor top20      89546    276     56.8      62.3    1.56 (4923R)
+   VALIDATE  model  raw  floor ev1.2     170221    111     28.6      28.6    3.09
+   VALIDATE  model  iso  floor ev1.2     160089    103     27.4      27.5    3.14
+   VALIDATE  blend  raw  floor ev1.2      25550     47     71.5      71.5    1.63
+   VALIDATE  blend  iso  floor ev1.2      34178     45     56.3      56.3    1.64
+   VALIDATE  blend  iso  floor top1         862      2     12.8      12.8    2.18 (862R)
+   VALIDATE  blend  iso  floor top3        2577      4     13.6      13.6    2.01 (862R)
+   VALIDATE  blend  iso  floor top5        4262      6      9.1       9.1    1.92 (862R)
+   VALIDATE  blend  iso  floor top10       8346     26     47.8      47.8    1.79 (862R)
+   VALIDATE  blend  iso  floor top20      15902     45     55.5      55.5    1.65 (862R)
+   CONFIRM   model  raw  floor ev1.2      95087     73     35.6      36.3    2.76
+   CONFIRM   model  iso  floor ev1.2      90068     68     37.7      38.5    2.81
+   CONFIRM   blend  raw  floor ev1.2      13755     34     74.6      74.6    1.53
+   CONFIRM   blend  iso  floor ev1.2      18081     31     56.4      56.4    1.55
+   CONFIRM   blend  iso  floor top1         664      1      2.5       2.5    1.95 (664R)
+   CONFIRM   blend  iso  floor top3        1980      6     23.1      23.1    1.81 (664R)
+   CONFIRM   blend  iso  floor top5        3279     11     30.0      30.0    1.72 (664R)
+   CONFIRM   blend  iso  floor top10       6401     23     33.4      33.4    1.61 (664R)
+   CONFIRM   blend  iso  floor top20      11927     38     39.7      39.7    1.50 (664R)
+
+  ── 馬連 ──  (odds: floor=台帳下限 / exp=下限×期待払戻倍率)
+   split     src    cal  odds  rule           n   hits     ROI% ROI_floor  meanEV
+   MINE      model  raw  floor ev1.2     241976    573     48.2      48.2    2.91
+   MINE      model  iso  floor ev1.2     203105    580     49.5      49.5    2.78
+   MINE      blend  raw  floor ev1.2      64561    301     46.2      46.2    1.57
+   MINE      blend  iso  floor ev1.2      43148    245     52.2      52.2    1.56
+   MINE      blend  iso  floor top1        4972     40     45.9      45.9    1.74 (4972R)
+   MINE      blend  iso  floor top3       14685    133     55.6      55.6    1.60 (4972R)
+   MINE      blend  iso  floor top5       23852    196     53.3      53.3    1.52 (4972R)
+   MINE      blend  iso  floor top10      43258    356     54.7      54.7    1.42 (4972R)
+   MINE      blend  iso  floor top20      66105    554     61.8      61.8    1.36 (4972R)
+   VALIDATE  model  raw  floor ev1.2      43157    125     43.9      44.8    2.82
+   VALIDATE  model  iso  floor ev1.2      35564    121     49.9      51.0    2.69
+   VALIDATE  blend  raw  floor ev1.2      11228     58     72.5      74.0    1.60
+   VALIDATE  blend  iso  floor ev1.2       7577     56     90.7      90.7    1.59
+   VALIDATE  blend  iso  floor top1         869      5     49.8      49.8    1.75 (869R)
+   VALIDATE  blend  iso  floor top3        2571     23     85.4      85.4    1.60 (869R)
+   VALIDATE  blend  iso  floor top5        4168     44     79.0      79.0    1.53 (869R)
+   VALIDATE  blend  iso  floor top10       7466     79     73.5      73.5    1.44 (869R)
+   VALIDATE  blend  iso  floor top20      11307    101     74.8      74.8    1.38 (869R)
+   CONFIRM   model  raw  floor ev1.2      26695     86     60.4      60.6    2.56
+   CONFIRM   model  iso  floor ev1.2      21860     89     64.6      64.9    2.48
+   CONFIRM   blend  raw  floor ev1.2       7372     44     61.5      61.5    1.52
+   CONFIRM   blend  iso  floor ev1.2       4744     36     57.4      57.4    1.51
+   CONFIRM   blend  iso  floor top1         670     10     83.8      83.8    1.66 (670R)
+   CONFIRM   blend  iso  floor top3        1981     17     61.0      61.0    1.52 (670R)
+   CONFIRM   blend  iso  floor top5        3231     27     68.4      68.4    1.45 (670R)
+   CONFIRM   blend  iso  floor top10       5825     46     85.8      85.8    1.36 (670R)
+   CONFIRM   blend  iso  floor top20       8488     63     70.4      70.4    1.31 (670R)
+
+[6] 合否判定（事前登録: VAL n>=40 & ROI>=110 / CONF n>=25 & ROI>=105）
+   合格 0 / 139 組合せ
+   ❌ 合格なし = 不合格
+
+(v3place 完了 106s)
+
+==============================================================================
+v8place
+==============================================================================
+races=6890 dropped(ledger)=1 no_real_odds=1 months=202403..202608
+
+[1] α_place の月次WF（市場側=実複勝オッズ / 旧=単勝Harville）
+  α推定に使うレース（8頭以上・複勝3着まで）= 6723 R / 5〜7頭立て 167 R は除外
+  参考: 全レースでの Harville α（旧報告と同一集合）最終fold = +0.0423
+  fold     real α(se,z)             harville α(se,z)         both α(se,z)            
+  202404  [MINE    ] tr=  318R  +0.0776(0.0762,+1.02) +0.0668(0.0747,+0.89) +0.0604(0.0768,+0.79) 
+  202407  [MINE    ] tr=  469R  +0.0575(0.0604,+0.95) +0.0508(0.0590,+0.86) +0.0340(0.0604,+0.56) 
+  202408  [MINE    ] tr=  629R  -0.0209(0.0506,-0.41) -0.0111(0.0491,-0.23) -0.0408(0.0509,-0.80) 
+  202409  [MINE    ] tr=  877R  -0.0265(0.0446,-0.59) +0.0077(0.0421,+0.18) -0.0414(0.0446,-0.93) 
+  202410  [MINE    ] tr= 1077R  -0.0047(0.0409,-0.11) +0.0295(0.0387,+0.76) -0.0219(0.0409,-0.54) 
+  202411  [MINE    ] tr= 1300R  +0.0016(0.0364,+0.05) +0.0259(0.0345,+0.75) -0.0215(0.0364,-0.59) 
+  202412  [MINE    ] tr= 1542R  -0.0058(0.0332,-0.18) +0.0163(0.0315,+0.52) -0.0291(0.0332,-0.88) 
+  202501  [MINE    ] tr= 1748R  +0.0012(0.0313,+0.04) +0.0257(0.0295,+0.87) -0.0242(0.0312,-0.77) 
+  202502  [MINE    ] tr= 1954R  +0.0139(0.0296,+0.47) +0.0351(0.0280,+1.25) -0.0134(0.0296,-0.45) 
+  202503  [MINE    ] tr= 2207R  +0.0022(0.0282,+0.08) +0.0239(0.0267,+0.89) -0.0262(0.0282,-0.93) 
+  202504  [MINE    ] tr= 2533R  +0.0012(0.0262,+0.05) +0.0187(0.0249,+0.75) -0.0330(0.0262,-1.26) 
+  202505  [MINE    ] tr= 2784R  +0.0012(0.0249,+0.05) +0.0140(0.0237,+0.59) -0.0368(0.0250,-1.47) 
+  202506  [MINE    ] tr= 3074R  +0.0010(0.0238,+0.04) +0.0114(0.0226,+0.50) -0.0382(0.0239,-1.60) 
+  202507  [MINE    ] tr= 3320R  +0.0097(0.0231,+0.42) +0.0206(0.0220,+0.94) -0.0297(0.0232,-1.28) 
+  202508  [MINE    ] tr= 3560R  +0.0120(0.0224,+0.54) +0.0237(0.0213,+1.11) -0.0272(0.0225,-1.21) 
+  202509  [MINE    ] tr= 3854R  +0.0148(0.0216,+0.68) +0.0271(0.0206,+1.32) -0.0250(0.0217,-1.15) 
+  202510  [MINE    ] tr= 4041R  +0.0175(0.0212,+0.83) +0.0292(0.0201,+1.45) -0.0232(0.0213,-1.09) 
+  202511  [MINE    ] tr= 4244R  +0.0153(0.0207,+0.74) +0.0282(0.0196,+1.43) -0.0257(0.0208,-1.24) 
+  202512  [MINE    ] tr= 4495R  +0.0144(0.0201,+0.71) +0.0265(0.0191,+1.39) -0.0273(0.0203,-1.35) 
+  202601  [MINE    ] tr= 4713R  +0.0177(0.0197,+0.90) +0.0275(0.0187,+1.47) -0.0250(0.0198,-1.26) 
+  202602  [MINE    ] tr= 4950R  +0.0247(0.0192,+1.29) +0.0326(0.0182,+1.79) -0.0192(0.0193,-1.00) 
+  202603  [VALIDATE] tr= 5200R  +0.0230(0.0186,+1.23) +0.0319(0.0177,+1.80) -0.0213(0.0188,-1.14) 
+  202604  [VALIDATE] tr= 5487R  +0.0327(0.0182,+1.79) +0.0372(0.0174,+2.13) -0.0149(0.0184,-0.81) 
+  202605  [VALIDATE] tr= 5739R  +0.0309(0.0179,+1.73) +0.0356(0.0171,+2.08) -0.0174(0.0181,-0.96) 
+  202606  [CONFIRM ] tr= 6060R  +0.0393(0.0174,+2.26) +0.0419(0.0167,+2.52) -0.0103(0.0176,-0.58) 
+  202607  [CONFIRM ] tr= 6286R  +0.0371(0.0172,+2.16) +0.0395(0.0164,+2.41) -0.0127(0.0173,-0.73) 
+  202608  [CONFIRM ] tr= 6541R  +0.0359(0.0168,+2.13) +0.0379(0.0161,+2.35) -0.0148(0.0170,-0.87) 
+  → α>0: 23/27fold 最長連続=20 最終fold α=+0.0359  [実複勝オッズ]
+  → α>0: 26/27fold 最長連続=24 最終fold α=+0.0379  [単勝Harville]
+  → α>0: 2/27fold 最長連続=2 最終fold α=-0.0148  [両方入り]
+
+  [OOS対数損失/頭]  split   市場のみ   +モデル    改善
+   MINE      real      0.403184  0.403211  -0.000027  (n=68842頭)
+   MINE      hv        0.400622  0.400629  -0.000007  (n=68842頭)
+   VALIDATE  real      0.388781  0.388643  +0.000138  (n=12267頭)
+   VALIDATE  hv        0.385261  0.385133  +0.000128  (n=12267頭)
+   CONFIRM   real      0.417047  0.417000  +0.000047  (n=9065頭)
+   CONFIRM   hv        0.413823  0.413775  +0.000047  (n=9065頭)
+
+  [ヌル検査] 最終foldでモデル確率をレース内シャッフル
+   実データ α=+0.0359 / ヌル8本 平均-0.0046 最大+0.0036 実データ以上 0/8
+
+[2] 券種テーブル構築（実オッズ）
+   1000/6562 (85s)
+   2000/6562 (89s)
+   3000/6562 (93s)
+   4000/6562 (98s)
+   5000/6562 (102s)
+   6000/6562 (106s)
+
+[3] 控除率の実測（実オッズ）
+   券種      Σ(1/odds)  的中組数  実測控除率  EV1に必要なエッジ(p_model/p_market)
+   複勝         4.4695       3      32.9%   ×1.490
+   ワイド        4.1018       3      26.9%   ×1.367
+   三連複        1.3336       1      25.0%   ×1.334
+   馬連         1.2944       1      22.7%   ×1.294
+   ※複勝・ワイドは台帳が**下限**オッズのため控除率が過大に出る（実払戻/下限=複勝1.19倍・ワイド1.05倍を掛け戻すと実効20〜23%）
+
+[3b] 下限→期待払戻の写像（MINE期のみ）
+   複勝     n=  14929 平均比1.186  写像: 1.2→×1.16 1.5→×1.17 2.0→×1.19 3.0→×1.24 5.0→×1.24 10.0→×1.24 30.0→×1.25
+   ワイド    n=  15068 平均比1.049  写像: 1.2→×1.05 1.5→×1.05 2.0→×1.06 3.0→×1.07 5.0→×1.06 10.0→×1.05 30.0→×1.03
+
+[4] 較正器の学習（MINE期のみ・isotonic）
+   複勝    /model n=    69705  平均予測0.21390 → 実測0.21417 (倍率 1.00×)
+   複勝    /blend n=    69705  平均予測0.21390 → 実測0.21417 (倍率 1.00×)
+   ワイド   /model n=   470382  平均予測0.03198 → 実測0.03203 (倍率 1.00×)
+   ワイド   /blend n=   470382  平均予測0.03198 → 実測0.03203 (倍率 1.00×)
+   三連複   /model n=  2035358  平均予測0.00246 → 実測0.00247 (倍率 1.00×)
+   三連複   /blend n=  2035358  平均予測0.00246 → 実測0.00247 (倍率 1.00×)
+   馬連    /model n=   470304  平均予測0.01066 → 実測0.01069 (倍率 1.00×)
+   馬連    /blend n=   470304  平均予測0.01066 → 実測0.01069 (倍率 1.00×)
+
+[5] 券種別EV検証（実オッズ）
+
+  ── 複勝 ──  (odds: floor=台帳下限 / exp=下限×期待払戻倍率)
+   split     src    cal  odds  rule           n   hits     ROI% ROI_floor  meanEV
+   MINE      model  raw  floor ev1.1      13805    707     58.8      47.4    1.74
+   MINE      model  raw  floor ev1.2      11396    502     58.4      47.2    1.86
+   MINE      model  raw  floor ev1.3       9487    383     59.6      47.8    1.98
+   MINE      model  raw  exp   ev1.1      21573   1611     61.5      49.6    1.83
+   MINE      model  raw  exp   ev1.2      18151   1136     59.2      47.7    1.96
+   MINE      model  raw  exp   ev1.3      15501    851     59.0      47.4    2.08
+   MINE      model  iso  floor ev1.1      13104    727     62.2      50.2    1.76
+   MINE      model  iso  floor ev1.2      10904    531     62.1      50.2    1.89
+   MINE      model  iso  floor ev1.3       9079    395     61.7      49.5    2.01
+   MINE      model  iso  exp   ev1.1      20461   1647     64.6      51.9    1.85
+   MINE      model  iso  exp   ev1.2      17244   1173     63.3      51.0    1.99
+   MINE      model  iso  exp   ev1.3      14740    885     63.0      50.8    2.11
+   MINE      blend  raw  exp   ev1.1          4      3     82.5      82.5    1.12
+   MINE      blend  iso  floor top1           2      1     65.0      65.0    1.01 (2R)
+   MINE      blend  iso  floor top3           2      1     65.0      65.0    1.01 (2R)
+   MINE      blend  iso  floor top5           2      1     65.0      65.0    1.01 (2R)
+   MINE      blend  iso  floor top10          2      1     65.0      65.0    1.01 (2R)
+   MINE      blend  iso  floor top20          2      1     65.0      65.0    1.01 (2R)
+   MINE      blend  iso  exp   ev1.1         37     23     80.0      76.8    1.12
+   MINE      blend  iso  exp   top1          90     53     78.9      75.0    1.07 (90R)
+   MINE      blend  iso  exp   top3         102     60     79.3      75.2    1.07 (90R)
+   MINE      blend  iso  exp   top5         102     60     79.3      75.2    1.07 (90R)
+   MINE      blend  iso  exp   top10        102     60     79.3      75.2    1.07 (90R)
+   MINE      blend  iso  exp   top20        102     60     79.3      75.2    1.07 (90R)
+   VALIDATE  model  raw  floor ev1.1       2383    111     49.2      40.1    1.71
+   VALIDATE  model  raw  floor ev1.2       1997     83     48.4      38.9    1.82
+   VALIDATE  model  raw  floor ev1.3       1678     61     47.0      38.3    1.93
+   VALIDATE  model  raw  exp   ev1.1       3685    256     52.4      42.7    1.82
+   VALIDATE  model  raw  exp   ev1.2       3100    176     50.0      40.7    1.95
+   VALIDATE  model  raw  exp   ev1.3       2657    129     48.1      39.1    2.06
+   VALIDATE  model  iso  floor ev1.1       2226    117     48.1      37.8    1.75
+   VALIDATE  model  iso  floor ev1.2       1868     83     45.6      35.3    1.86
+   VALIDATE  model  iso  floor ev1.3       1576     60     43.5      33.1    1.98
+   VALIDATE  model  iso  exp   ev1.1       3430    257     56.1      45.6    1.85
+   VALIDATE  model  iso  exp   ev1.2       2871    178     52.3      42.2    1.99
+   VALIDATE  model  iso  exp   ev1.3       2478    132     51.0      40.9    2.10
+   VALIDATE  blend  raw  exp   ev1.1          2      2    110.0     110.0    1.15
+   VALIDATE  blend  iso  exp   ev1.1          5      2     54.0      48.0    1.12
+   VALIDATE  blend  iso  exp   top1           6      2     45.0      40.0    1.10 (6R)
+   VALIDATE  blend  iso  exp   top3           8      3     53.8      47.5    1.09 (6R)
+   VALIDATE  blend  iso  exp   top5           8      3     53.8      47.5    1.09 (6R)
+   VALIDATE  blend  iso  exp   top10          8      3     53.8      47.5    1.09 (6R)
+   VALIDATE  blend  iso  exp   top20          8      3     53.8      47.5    1.09 (6R)
+   CONFIRM   model  raw  floor ev1.1       1439     88     64.5      49.6    1.62
+   CONFIRM   model  raw  floor ev1.2       1150     60     67.3      50.4    1.74
+   CONFIRM   model  raw  floor ev1.3        936     41     61.1      45.0    1.85
+   CONFIRM   model  raw  exp   ev1.1       2439    226     67.6      54.5    1.70
+   CONFIRM   model  raw  exp   ev1.2       1991    151     65.8      51.8    1.82
+   CONFIRM   model  raw  exp   ev1.3       1635    103     62.8      48.8    1.95
+   CONFIRM   model  iso  floor ev1.1       1364     94     68.7      53.0    1.65
+   CONFIRM   model  iso  floor ev1.2       1100     57     62.4      45.9    1.76
+   CONFIRM   model  iso  floor ev1.3        900     46     68.2      49.3    1.88
+   CONFIRM   model  iso  exp   ev1.1       2292    227     69.0      55.1    1.72
+   CONFIRM   model  iso  exp   ev1.2       1854    151     66.7      52.3    1.85
+   CONFIRM   model  iso  exp   ev1.3       1555    109     65.3      50.8    1.97
+   CONFIRM   blend  iso  exp   ev1.1          7      1     21.4      18.6    1.12
+   CONFIRM   blend  iso  exp   top1           6      0      0.0       0.0    1.10 (6R)
+   CONFIRM   blend  iso  exp   top3           9      1     16.7      14.4    1.10 (6R)
+   CONFIRM   blend  iso  exp   top5           9      1     16.7      14.4    1.10 (6R)
+   CONFIRM   blend  iso  exp   top10          9      1     16.7      14.4    1.10 (6R)
+   CONFIRM   blend  iso  exp   top20          9      1     16.7      14.4    1.10 (6R)
+
+  ── ワイド ──  (odds: floor=台帳下限 / exp=下限×期待払戻倍率)
+   split     src    cal  odds  rule           n   hits     ROI% ROI_floor  meanEV
+   MINE      model  raw  floor ev1.2     167382   1482     52.3      51.2    2.32
+   MINE      model  raw  exp   ev1.2     172567   1642     52.5      51.4    2.32
+   MINE      model  iso  floor ev1.2     161407   1500     55.4      54.3    2.34
+   MINE      model  iso  exp   ev1.2     166328   1634     55.3      54.2    2.35
+   MINE      blend  raw  floor ev1.2      10562    252     61.4      59.8    1.40
+   MINE      blend  raw  exp   ev1.2      13020    373     63.7      61.9    1.39
+   MINE      blend  iso  floor ev1.2      13057    241     65.9      64.5    1.40
+   MINE      blend  iso  floor top1        4751    157     74.9      73.0    1.38 (4751R)
+   MINE      blend  iso  floor top3       13294    414     72.6      70.7    1.29 (4751R)
+   MINE      blend  iso  floor top5       20261    606     68.7      66.7    1.25 (4751R)
+   MINE      blend  iso  floor top10      31171    872     69.6      67.7    1.21 (4751R)
+   MINE      blend  iso  floor top20      38602   1017     67.4      65.6    1.19 (4751R)
+   MINE      blend  iso  exp   ev1.2      15479    323     64.5      63.0    1.40
+   MINE      blend  iso  exp   top1        4885    194     73.6      71.4    1.40 (4885R)
+   MINE      blend  iso  exp   top3       14040    528     72.4      70.3    1.31 (4885R)
+   MINE      blend  iso  exp   top5       21961    807     70.3      68.1    1.26 (4885R)
+   MINE      blend  iso  exp   top10      35464   1224     70.6      68.4    1.21 (4885R)
+   MINE      blend  iso  exp   top20      45297   1463     69.1      67.1    1.19 (4885R)
+   VALIDATE  model  raw  floor ev1.2      29702    282     41.7      40.8    2.28
+   VALIDATE  model  raw  exp   ev1.2      30596    307     42.5      41.6    2.28
+   VALIDATE  model  iso  floor ev1.2      28398    267     43.0      42.1    2.30
+   VALIDATE  model  iso  exp   ev1.2      29247    295     43.0      42.1    2.31
+   VALIDATE  blend  raw  floor ev1.2       2223     50     79.1      76.1    1.41
+   VALIDATE  blend  raw  exp   ev1.2       2644     74     88.3      84.8    1.41
+   VALIDATE  blend  iso  floor ev1.2       2760     58     79.4      76.2    1.42
+   VALIDATE  blend  iso  floor top1         826     32     78.8      76.2    1.41 (826R)
+   VALIDATE  blend  iso  floor top3        2318     69     70.1      67.3    1.32 (826R)
+   VALIDATE  blend  iso  floor top5        3559    101     73.6      70.5    1.28 (826R)
+   VALIDATE  blend  iso  floor top10       5633    158     78.5      75.6    1.23 (826R)
+   VALIDATE  blend  iso  floor top20       7178    185     77.2      74.4    1.21 (826R)
+   VALIDATE  blend  iso  exp   ev1.2       3176     70     75.1      72.2    1.42
+   VALIDATE  blend  iso  exp   top1         858     34     74.1      71.8    1.43 (858R)
+   VALIDATE  blend  iso  exp   top3        2457     92     81.3      77.4    1.33 (858R)
+   VALIDATE  blend  iso  exp   top5        3864    142     75.2      72.0    1.29 (858R)
+   VALIDATE  blend  iso  exp   top10       6355    223     80.3      77.3    1.23 (858R)
+   VALIDATE  blend  iso  exp   top20       8308    269     78.0      75.2    1.21 (858R)
+   CONFIRM   model  raw  floor ev1.2      17714    201     55.5      54.5    2.11
+   CONFIRM   model  raw  exp   ev1.2      18393    225     55.0      53.9    2.11
+   CONFIRM   model  iso  floor ev1.2      17116    190     56.5      55.4    2.13
+   CONFIRM   model  iso  exp   ev1.2      17764    217     56.9      55.8    2.13
+   CONFIRM   blend  raw  floor ev1.2       1183     35     95.7      92.9    1.38
+   CONFIRM   blend  raw  exp   ev1.2       1500     49     89.6      87.0    1.38
+   CONFIRM   blend  iso  floor ev1.2       1429     30     78.6      76.5    1.38
+   CONFIRM   blend  iso  floor top1         642     24    118.2     114.5    1.33 (642R)
+   CONFIRM   blend  iso  floor top3        1767     65     94.6      92.1    1.26 (642R)
+   CONFIRM   blend  iso  floor top5        2662     86     85.7      83.6    1.23 (642R)
+   CONFIRM   blend  iso  floor top10       3952    125     79.7      77.7    1.19 (642R)
+   CONFIRM   blend  iso  floor top20       4666    139     76.2      74.1    1.17 (642R)
+   CONFIRM   blend  iso  exp   ev1.2       1731     47     81.5      79.4    1.38
+   CONFIRM   blend  iso  exp   top1         661     30    119.1     115.1    1.36 (661R)
+   CONFIRM   blend  iso  exp   top3        1892     78     93.8      91.4    1.28 (661R)
+   CONFIRM   blend  iso  exp   top5        2918    112     85.1      82.9    1.24 (661R)
+   CONFIRM   blend  iso  exp   top10       4605    166     76.4      74.4    1.19 (661R)
+   CONFIRM   blend  iso  exp   top20       5609    192     72.5      70.4    1.17 (661R)
+
+  ── 三連複 ──  (odds: floor=台帳下限 / exp=下限×期待払戻倍率)
+   split     src    cal  odds  rule           n   hits     ROI% ROI_floor  meanEV
+   MINE      model  raw  floor ev1.2     885946    592     46.2      46.8    3.06
+   MINE      model  iso  floor ev1.2     861879    560     48.5      49.2    3.11
+   MINE      blend  raw  floor ev1.2     118848    257     41.4      41.4    1.56
+   MINE      blend  iso  floor ev1.2     160622    237     46.6      49.7    1.58
+   MINE      blend  iso  floor top1        4925     18     34.3      34.3    2.03 (4925R)
+   MINE      blend  iso  floor top3       14632     63     55.0      55.0    1.89 (4925R)
+   MINE      blend  iso  floor top5       24212     98     81.7     102.1    1.80 (4925R)
+   MINE      blend  iso  floor top10      47435    167     64.4      74.9    1.68 (4925R)
+   MINE      blend  iso  floor top20      89572    273     56.1      61.6    1.56 (4925R)
+   VALIDATE  model  raw  floor ev1.2     158267    109     25.5      25.5    3.00
+   VALIDATE  model  iso  floor ev1.2     153185     98     26.0      26.0    3.05
+   VALIDATE  blend  raw  floor ev1.2      25255     46     68.8      68.8    1.62
+   VALIDATE  blend  iso  floor ev1.2      34066     43     52.9      52.9    1.63
+   VALIDATE  blend  iso  floor top1         862      2     12.8      12.8    2.17 (862R)
+   VALIDATE  blend  iso  floor top3        2575      4     13.6      13.6    2.01 (862R)
+   VALIDATE  blend  iso  floor top5        4263      8     21.7      21.7    1.92 (862R)
+   VALIDATE  blend  iso  floor top10       8353     25     47.4      47.4    1.78 (862R)
+   VALIDATE  blend  iso  floor top20      15892     44     54.0      54.0    1.65 (862R)
+   CONFIRM   model  raw  floor ev1.2      93325     79     33.1      33.9    2.70
+   CONFIRM   model  iso  floor ev1.2      90686     71     34.7      35.4    2.74
+   CONFIRM   blend  raw  floor ev1.2      13595     34     75.5      75.5    1.53
+   CONFIRM   blend  iso  floor ev1.2      18101     29     67.3      67.3    1.54
+   CONFIRM   blend  iso  floor top1         665      2     15.7      15.7    1.95 (665R)
+   CONFIRM   blend  iso  floor top3        1984      7     29.2      29.2    1.80 (665R)
+   CONFIRM   blend  iso  floor top5        3280     12     31.8      31.8    1.72 (665R)
+   CONFIRM   blend  iso  floor top10       6390     20     29.4      29.4    1.61 (665R)
+   CONFIRM   blend  iso  floor top20      11916     39     42.3      42.3    1.50 (665R)
+
+  ── 馬連 ──  (odds: floor=台帳下限 / exp=下限×期待払戻倍率)
+   split     src    cal  odds  rule           n   hits     ROI% ROI_floor  meanEV
+   MINE      model  raw  floor ev1.2     236723    588     48.8      48.9    2.88
+   MINE      model  iso  floor ev1.2     201457    600     49.3      49.5    2.75
+   MINE      blend  raw  floor ev1.2      64252    294     45.9      45.9    1.56
+   MINE      blend  iso  floor ev1.2      42877    242     52.2      52.2    1.55
+   MINE      blend  iso  floor top1        4972     42     49.1      49.1    1.73 (4972R)
+   MINE      blend  iso  floor top3       14675    128     54.4      54.4    1.59 (4972R)
+   MINE      blend  iso  floor top5       23821    195     53.9      53.9    1.51 (4972R)
+   MINE      blend  iso  floor top10      43123    361     59.3      59.4    1.42 (4972R)
+   MINE      blend  iso  floor top20      65860    545     63.1      63.2    1.36 (4972R)
+   VALIDATE  model  raw  floor ev1.2      41085    127     45.4      46.3    2.73
+   VALIDATE  model  iso  floor ev1.2      34246    123     47.1      48.9    2.62
+   VALIDATE  blend  raw  floor ev1.2      11148     57     73.0      74.5    1.59
+   VALIDATE  blend  iso  floor ev1.2       7511     53     83.1      83.1    1.59
+   VALIDATE  blend  iso  floor top1         868      7     85.6      85.6    1.74 (868R)
+   VALIDATE  blend  iso  floor top3        2564     25     88.3      88.3    1.60 (868R)
+   VALIDATE  blend  iso  floor top5        4150     44     77.5      77.5    1.52 (868R)
+   VALIDATE  blend  iso  floor top10       7433     79     73.4      75.6    1.44 (868R)
+   VALIDATE  blend  iso  floor top20      11269    102     74.3      75.7    1.38 (868R)
+   CONFIRM   model  raw  floor ev1.2      26336     80     57.5      57.7    2.52
+   CONFIRM   model  iso  floor ev1.2      21833     83     64.0      64.3    2.44
+   CONFIRM   blend  raw  floor ev1.2       7337     44     61.8      61.8    1.51
+   CONFIRM   blend  iso  floor ev1.2       4696     38     78.7      78.7    1.51
+   CONFIRM   blend  iso  floor top1         670      9     76.5      76.5    1.65 (670R)
+   CONFIRM   blend  iso  floor top3        1979     16     85.6      85.6    1.52 (670R)
+   CONFIRM   blend  iso  floor top5        3226     27     73.2      73.2    1.45 (670R)
+   CONFIRM   blend  iso  floor top10       5776     46     68.0      68.0    1.36 (670R)
+   CONFIRM   blend  iso  floor top20       8434     62     71.2      71.2    1.30 (670R)
+
+[6] 合否判定（事前登録: VAL n>=40 & ROI>=110 / CONF n>=25 & ROI>=105）
+   合格 0 / 139 組合せ
+   ❌ 合格なし = 不合格
+
+(v8place 完了 133s)
+
+wrote place_real_result.json

@@ -1,0 +1,20 @@
+条件: ['ダL', 'ダM', 'ダS', '芝L', '芝M', '芝S']
+  ダL t5: MINE 27.5% (素21.2%) → VAL 32.2% CONF 22.6%
+  ダL win: MINE 27.2% (素21.5%) → VAL 28.0% CONF 23.8%
+  ダL ax: MINE 30.4% (素21.9%) → VAL 28.4% CONF 22.6%
+  ダM t5: MINE 25.5% (素16.2%) → VAL 24.1% CONF 31.1%
+  ダM win: MINE 26.6% (素21.4%) → VAL 13.0% CONF 20.5%
+  ダM ax: MINE 24.8% (素18.0%) → VAL 18.5% CONF 24.6%
+  ダS t5: MINE 23.3% (素16.4%) → VAL 23.4% CONF 32.7%
+  ダS win: MINE 26.3% (素20.7%) → VAL 20.4% CONF 25.7%
+  ダS ax: MINE 24.6% (素16.0%) → VAL 25.9% CONF 37.2%
+  芝L t5: MINE 29.5% (素23.3%) → VAL 26.7% CONF 27.8%
+  芝L win: MINE 24.5% (素18.4%) → VAL 24.9% CONF 23.5%
+  芝L ax: MINE 29.8% (素22.0%) → VAL 29.0% CONF 28.9%
+  芝M t5: MINE 29.6% (素21.1%) → VAL 21.0% CONF 17.1%
+  芝M win: MINE 22.4% (素16.2%) → VAL 17.3% CONF 14.6%
+  芝M ax: MINE 29.3% (素19.4%) → VAL 21.0% CONF 19.5%
+  芝S t5: MINE 21.2% (素13.5%) → VAL 13.2% CONF 24.0%
+  芝S win: MINE 21.4% (素15.4%) → VAL 10.4% CONF 18.6%
+  芝S ax: MINE 21.6% (素14.4%) → VAL 17.0% CONF 19.4%
+saved box5_result.json
