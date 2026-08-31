@@ -130,11 +130,11 @@ def stairs():
     s.text(W / 2.0, 34, '階段の段数の割付（ここを間違えると不適合）', size=20,
            weight='700')
     s.text(W / 2.0, 57,
-           '階高 ÷ 段数 ＝ 蹴上（1段の高さ）。踏面はどちらも 210mm でそろえる',
+           '階高 ÷ 段数 ＝ 蹴上（1段の高さ）。踏面はどちらも 227.5mm（910÷4）でそろえる',
            size=11.5, fill='#666')
 
     def one(ox, oy, rise_total, steps, title, ok_shop, note):
-        tread = 210.0
+        tread = 227.5
         r = rise_total / steps
         run = tread * (steps - 1)
         # 階段の輪郭
@@ -160,7 +160,7 @@ def stairs():
         s.dim_v(oy, oy - rise_total * S, ox - 46,
                 '階高 %s' % format(int(rise_total), ','), color='#444')
         s.text(ox + run * S / 2.0, oy - rise_total * S - 14,
-               '%d段　／　蹴上 %.1f　／　踏面 210' % (steps, r), size=13,
+               '%d段　／　蹴上 %.1f　／　踏面 227.5' % (steps, r), size=13,
                weight='700', fill='#8a6d00')
         # 判定
         col = '#1e7e34' if ok_shop else '#c0392b'
@@ -168,20 +168,20 @@ def stairs():
                weight='700')
 
     one(110, 340, 3100, 15, '1階 → 2階（階高 3,100）', True,
-        '蹴上 206.7 ≦ 220　→ 店舗の基準もOK')
+        '蹴上 206.7 ≦ 220　→ 「その他の階段」の基準もOK')
     one(430, 340, 2900, 14, '2階 → 3階（階高 2,900）', True,
-        '蹴上 207.1 ≦ 220　→ 店舗の基準もOK')
+        '蹴上 207.1 ≦ 220　→ 「その他の階段」の基準もOK')
 
     s.rect(40, 414, W - 80, 82, fill='#f6f9f4', stroke='#bcd4bc',
            stroke_width=1, rx=6)
     s.text(56, 436, '住宅の階段　　： 幅 750以上 ／ 蹴上 230以下 ／ 踏面 150以上',
            size=11.5, anchor='start', fill='#245a2c')
     s.text(56, 458,
-           '店舗の階段　　： 幅 750以上 ／ 蹴上 220以下 ／ 踏面 210以上'
-           '（物品販売 1,500㎡以下）', size=11.5, anchor='start',
+           'その他の階段　： 幅 750以上 ／ 蹴上 220以下 ／ 踏面 210以上'
+           '（令23条の表(4)。店舗の入る建物はこちらで安全）', size=11.5, anchor='start',
            fill='#245a2c')
     s.text(56, 482,
-           '★ 1階を14段にすると 3,100÷14＝221.4 で店舗の220を超える。'
+           '★ 1階を14段にすると 3,100÷14＝221.4 で「その他」の220を超える。'
            'だから1階だけ15段にする。', size=11.5, anchor='start',
            fill='#c0392b', weight='700')
     return s

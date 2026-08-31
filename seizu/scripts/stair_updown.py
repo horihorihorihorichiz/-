@@ -36,7 +36,7 @@ def plan(ox, oy, g, label, mode, small=False):
     s.rect(ox, oy, w, d, fill='#fffdf4', stroke=LAND, stroke_width=1.4)
     s.line(ox, ly, ox + w, ly, stroke=LAND, stroke_width=1.4)
     s.line(mid, ly, mid, oy + d, stroke=LAND, stroke_width=1.2)
-    t = g * 210.0 / 910.0        # 踏面210mmの見た目の幅
+    t = g * 227.5 / 910.0        # 踏面227.5mmの見た目の幅
     for k in range(1, 7):        # 東の段（6段）
         yy = ly + k * t
         s.line(mid + 1.5, yy, ox + w - 2, yy, stroke=LAND, stroke_width=0.8)

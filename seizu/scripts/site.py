@@ -64,13 +64,13 @@ def draw():
            fill='#555')
 
     # 店舗出入口・住宅玄関
-    s.line(X(EW + 1.82), Y(BY), X(EW + 4.55), Y(BY), stroke='#d0342f',
+    s.line(X(EW + 1.82), Y(BY), X(EW + 3.64), Y(BY), stroke='#d0342f',
            stroke_width=6)
-    s.text(X(EW + 3.2), Y(BY) + 18, '店舗出入口', size=11, fill='#d0342f',
+    s.text(X(EW + 2.73), Y(BY) + 18, '店舗出入口', size=11, fill='#d0342f',
            weight='700')
-    s.line(X(EW + 0.27), Y(BY), X(EW + 1.55), Y(BY), stroke='#d0342f',
+    s.line(X(EW + 0.3), Y(BY), X(EW + 1.3), Y(BY), stroke='#d0342f',
            stroke_width=6)
-    s.text(X(EW + 0.9), Y(BY) + 36, '住宅玄関', size=11, fill='#d0342f',
+    s.text(X(EW + 0.8), Y(BY) + 36, '住宅玄関', size=11, fill='#d0342f',
            weight='700')
 
     # 来店スペース／アプローチ

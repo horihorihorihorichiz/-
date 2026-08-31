@@ -42,7 +42,7 @@ def draw(kind='floor'):
         return MT + (NY - gy) * G
 
     s = Svg(W, H)
-    title = ('２階床伏図 兼 １階小屋伏図　縮尺1／100' if kind == 'floor'
+    title = ('３階床伏図（２階の床も同じ組み方）　縮尺1／100' if kind == 'floor'
              else '小屋伏図　縮尺1／100')
     s.text(W / 2.0, 32, title, size=15, weight='700')
 
