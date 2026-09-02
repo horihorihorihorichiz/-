@@ -10,6 +10,7 @@ Chromium の印刷機能を使う（外部ライブラリ不要）。
 """
 import io
 import os
+import pathlib
 import subprocess
 import sys
 
@@ -19,8 +20,23 @@ from build_onepage import inline_svg          # noqa: E402
 BASE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 OUT = os.path.join(BASE, 'pdf')
 TMP = os.path.join(OUT, '_tmp')
-CHROME = os.environ.get(
-    'CHROME', '/opt/pw-browsers/chromium-1194/chrome-linux/chrome')
+def _find_chrome():
+    """Linux/Windows のどちらでも動くように Chrome を探す。"""
+    env = os.environ.get('CHROME')
+    if env:
+        return env
+    for p in ('/opt/pw-browsers/chromium-1194/chrome-linux/chrome',
+              r'C:\Program Files\Google\Chrome\Application\chrome.exe',
+              r'C:\Program Files (x86)\Google\Chrome\Application'
+              r'\chrome.exe',
+              r'C:\Program Files (x86)\Microsoft\Edge\Application'
+              r'\msedge.exe'):
+        if os.path.exists(p):
+            return p
+    return 'chrome'
+
+
+CHROME = _find_chrome()
 
 FONT = ("'Hiragino Sans','Noto Sans JP','Yu Gothic',Meiryo,"
         "'IPAGothic',sans-serif")
@@ -103,7 +119,8 @@ def to_pdf(html_path, pdf_path):
     subprocess.run(
         [CHROME, '--headless', '--disable-gpu', '--no-sandbox',
          '--no-pdf-header-footer', '--virtual-time-budget=20000',
-         '--print-to-pdf=' + pdf_path, 'file://' + html_path],
+         '--print-to-pdf=' + pdf_path,
+         pathlib.Path(html_path).absolute().as_uri()],
         check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     print('wrote %s  (%.1f MB)'
           % (pdf_path, os.path.getsize(pdf_path) / 1048576.0))
