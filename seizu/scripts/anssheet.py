@@ -473,6 +473,9 @@ def draw(d, title, sub=''):
         w, hh = c - a, e - b
         if '便所' in name:
             toilet(a + (w - 1) / 2.0, b + .05)
+            if '店舗' in name:
+                R(a + .15, e - .65, a + .7, e - .15)
+                T(a + .15, e - .65, a + .7, e - .15, '手洗', 6.5)
         elif '洗面' in name and '脱衣' in name:
             basin(a + .1, e - .6, w - .9)
             washer(c - .85, b + .15)
@@ -482,6 +485,8 @@ def draw(d, title, sub=''):
             kitchen(a + .3, b + .3, w - 1.5)
             R(c - .9, e - 1.2, c - .2, e - .2)
             T(c - .9, e - 1.2, c - .2, e - .2, '作業台', 7.5)
+            R(a + .15, b + 1.15, a + .85, b + 1.85)
+            T(a + .15, b + 1.15, a + .85, b + 1.85, 'ｵｰﾌﾞﾝ', 6)
         elif '売場' in name:
             display(c - 2.8, b + .6, c - .3, e - .6, 3)
             display(a + .3, e - 2.4, c - 3.2, e - .4, 2)
