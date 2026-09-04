@@ -1,0 +1,204 @@
+<title>耳から製図</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Old+Mincho:wght@700&family=Zen+Kaku+Gothic+New:wght@400;500;700&family=Roboto+Mono:wght@500&display=swap">
+<style>
+:root{
+  --paper:#f8f7f3; --panel:#fffffe; --ink:#23251f; --sub:#6c7163;
+  --line:#e3e1d7; --aka:#b23a48; --aka-soft:#f6e9ea; --ok:#3e6b47;
+  --disp:'Zen Old Mincho',"Hiragino Mincho ProN","Yu Mincho",serif;
+  --body:'Zen Kaku Gothic New','Hiragino Sans','Noto Sans JP',"Yu Gothic",Meiryo,sans-serif;
+  --mono:'Roboto Mono',ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --paper:#181a17; --panel:#1f221e; --ink:#e9eae4; --sub:#a9aea1;
+    --line:#31352e; --aka:#e08a95; --aka-soft:#372227; --ok:#9ccaa6;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#181a17; --panel:#1f221e; --ink:#e9eae4; --sub:#a9aea1;
+  --line:#31352e; --aka:#e08a95; --aka-soft:#372227; --ok:#9ccaa6;
+}
+*{box-sizing:border-box;margin:0}
+body{background:var(--paper);color:var(--ink);font-family:var(--body);
+  font-size:15px;line-height:1.9;padding:28px 18px 90px}
+.wrap{max-width:720px;margin:0 auto}
+.kicker{font-size:11px;letter-spacing:.32em;color:var(--aka);font-weight:700}
+h1{font-family:var(--disp);font-size:34px;line-height:1.3;margin:6px 0 4px;
+  text-wrap:balance}
+.lead{color:var(--sub);font-size:13.5px;margin-bottom:18px}
+.note{background:var(--panel);border:1px solid var(--line);border-radius:10px;
+  padding:12px 16px;font-size:13px;color:var(--sub);margin-bottom:22px}
+.note b{color:var(--ink)}
+.ctrl{display:flex;flex-wrap:wrap;gap:14px 22px;align-items:center;
+  background:var(--panel);border:1px solid var(--line);border-radius:10px;
+  padding:12px 16px;margin-bottom:26px;font-size:13px}
+.ctrl label{display:flex;align-items:center;gap:8px;color:var(--sub)}
+.ctrl input[type=range]{width:110px;accent-color:var(--aka)}
+.ctrl select{font:inherit;color:var(--ink);background:var(--paper);
+  border:1px solid var(--line);border-radius:6px;padding:3px 6px;max-width:220px}
+.ctrl input[type=checkbox]{accent-color:var(--aka);width:15px;height:15px}
+#rateVal{font-family:var(--mono);color:var(--ink)}
+.track{border:1px solid var(--line);border-radius:10px;background:var(--panel);
+  margin-bottom:12px;overflow:hidden}
+.track.playing{border-color:var(--aka)}
+.thead{display:flex;align-items:center;gap:14px;padding:12px 16px;cursor:pointer}
+.tno{font-family:var(--mono);font-size:12px;color:var(--sub);width:2.2em}
+.ttl{font-weight:700;flex:1;font-size:15px}
+.tdur{font-family:var(--mono);font-size:11.5px;color:var(--sub)}
+button.play{flex:none;width:44px;height:44px;border-radius:50%;border:none;
+  background:var(--aka);color:#fff;font-size:17px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center}
+button.play:focus-visible{outline:3px solid var(--aka-soft)}
+.track.playing button.play{background:var(--ok)}
+.bar{height:3px;background:var(--line)}
+.bar i{display:block;height:100%;width:0;background:var(--aka)}
+.script{display:none;padding:4px 18px 16px;font-size:14px;color:var(--sub);
+  border-top:1px dashed var(--line)}
+.track.open .script{display:block}
+.track.playing .script{display:block;color:var(--ink)}
+.foot{margin-top:30px;font-size:12px;color:var(--sub);text-align:center}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+<div class="wrap">
+<div class="kicker">二級建築士 設計製図 音声講座</div>
+<h1>耳から製図</h1>
+<p class="lead">全10話・約20分。教材と同じ内容を、ラジオ講座のように耳で復習できます。</p>
+<div class="note"><b>使い方：</b>▶を押すと、お使いのスマホ／パソコンに入っている
+日本語の声で読み上げます（少し機械っぽい声ですが、内容は教材と同じです）。
+▶をもう一度押すと一時停止。「連続再生」をオンにすると第1話から最後まで通しで流れます。
+文字も同時に表示されるので、目と耳の両方で覚えられます。</div>
+<div class="ctrl">
+  <label>速さ <input type="range" id="rate" min="0.7" max="1.4" step="0.05" value="1">
+    <span id="rateVal">1.00</span></label>
+  <label>声 <select id="voice"></select></label>
+  <label><input type="checkbox" id="auto" checked> 連続再生</label>
+</div>
+<div id="list"></div>
+<p class="foot">聞き流し用。本番前は、紙の早見盤とあわせてどうぞ。</p>
+</div>
+<script>
+const TRACKS = [
+["この試験は、なにをする試験？",
+"こんにちは。耳から製図、第1話です。二級建築士の設計製図の試験は、9月13日の日曜日。時間は11時から16時までの5時間です。この5時間で作るものは、平面図が3枚、床伏図兼小屋伏図、立面図、部分詳細図。図面が全部で6枚。それに面積表と、文章で答える、計画の要点等です。今年の課題は、商店街に建つ併用住宅、木造3階建て。1階がお店で、2階と3階に家族が住む建物です。採点はランク1からランク4まであって、合格はランク1だけ。でも、こわがらなくて大丈夫。この試験の勝負は、絵の上手さではありません。時間内に、全部描き終わること。これがいちばん大事です。"],
+["5時間の作戦",
+"第2話は、時間割です。まず最初の25分で、問題文を2回読みます。1回目はざっと、2回目は条件に線を引きながら。次の60分がエスキス。間取りを決める時間です。そしてここで、いちばん大事な作戦。エスキスが終わったら、図面より先に、記述を書きます。12時25分から25分間。あとまわしにすると、時間切れで白紙になる危険があるからです。記述が白紙だと、まるごと点がなくなります。そのあとは、1階平面図に40分、2階に30分、3階に25分、伏図に35分、立面図に20分、部分詳細図に25分。最後の15分は見直しです。見直しの時間には、もう描き足しません。まちがい探しの、指差し確認に使います。"],
+["まほうの数字、910",
+"第3話は、この試験のまほうの数字、910です。この教材の図面は、ぜんぶ910ミリのマス目でできています。910ミリは、畳の短いほうの辺の長さ。日本の木造の家は、ほとんどこの長さの倍数でできています。答案用紙には、うすい方眼が印刷されていて、1目盛は4.55ミリ。2目盛でちょうど910ミリになります。だから定規で測らなくても、マスを数えるだけで図面が描けるんです。910の2倍は1,820で2マス。4倍は3,640で4マス。梁の長さも、部屋の大きさも、ぜんぶこの数字の組み合わせ。ひとつだけ例外があって、部分詳細図のらんだけは、方眼が10ミリきざみです。"],
+["1階平面図は、動線が主役",
+"第4話は、1階平面図です。1階はお店と住まいの玄関が同居するので、動線、つまり人の通り道が主役になります。ポイントは3つ。1つめ、お店の出入口と、住宅の玄関を、はっきり分けること。お客さんと家族がぶつからないようにします。2つめ、売場は道路に面して大きく取ること。通りから店の中が見えると、お客さんが入りやすいからです。3つめ、階段は1階から3階まで、同じ場所に置くこと。これを直通階段といって、火事のときにまっすぐ下までおりられます。あとは、商品の搬入用に、建物のうらに勝手口。出入口には、黒い三角の印を忘れずに。"],
+["柱と耐力壁",
+"第5話は、柱と耐力壁です。柱は、通り芯という基準線の交わるところに立てます。全部で16本。四隅の4本は、1階から3階まで1本でつながる通し柱で、丸で囲む印をつけます。そして大事なのは、柱の位置を1階から3階まで、ぜんぶそろえること。これを直下率といいます。太さは120ミリ角で統一。ただし、法律の原則では3階建ての1階の柱は135ミリ以上で、構造計算をすれば120にできる、という決まりです。本番で指定があれば、必ずそれに従ってください。耐力壁は、地震にふんばる壁。白い三角の印をつけて、東西南北にバランスよく配置します。窓を先に決めてはいけません。耐力壁が先、窓はそのあとです。"],
+["伏図は、重さのリレー",
+"第6話は、床伏図兼小屋伏図です。伏図は、屋根と床の骨組みを上から見た図。むずかしそうに見えますが、正体は、重さのリレーです。屋根の重さは、まず垂木が受けます。垂木から母屋へ。母屋から小屋束へ。小屋束から小屋梁へ。小屋梁から柱へ。柱から基礎へ。そして地面へ。このリレーがとぎれないように、木を描いていくのが伏図です。母屋は一点鎖線で描いて、黒い丸が小屋束。床には、ななめの破線で火打梁を8か所。凡例のらんは答案用紙に印刷されているので、断面寸法の数字を書きこむだけです。正角材の寸法は凡例に、平角材は、図の中の梁1本ずつのわきに書きます。"],
+["立面図と、窓のきまり",
+"第7話は、立面図と窓です。立面図は、建物をまっすぐ横から見た図。高さは、地面、ジーエルから足し算で決まります。1階の床は、プラス550。2階の床は、プラス3,650。3階の床は、プラス6,550。軒の高さは9,350。いちばん高いところは10,806です。今年は断面図がないので、高さの数字は立面図に書きます。窓の描き方は、よこの位置は平面図から、糸を垂らすようにまっすぐ写す。たての位置は床から測って、腰窓は床プラス800、掃き出し窓は床から2,000。そして窓の数は割り算で決まります。明かりとりは部屋の広さわる7、換気はわる20。目安は、10平米の部屋は窓1つ、20平米をこえたら2つ、30平米クラスは掃き出し窓プラス1つです。"],
+["部分詳細図は、サンドイッチ",
+"第8話は、部分詳細図です。サンドイッチをまん中で切ると、パンやハムの重なりが見えますよね。部分詳細図は、それを家の壁でやる図です。描く順番は、材料からではなく、よこ線5本から。地面、基礎の上の面、1階の床、天井、2階の床です。1階の床の高さ550は、丸暗記ではなく足し算。基礎の立ち上がり371、パッキン20、土台120、合板24、フローリング15で、ちょうど550。外壁は内側から、15、120、9、18、16で、合計178ミリ。縮尺はこの図だけ20分の1で、方眼も10ミリきざみです。そして点になるコツは、数字と材料の名前を書きこむこと。内側の板は、強化石膏ボード。この、強化、の2文字まで書けると強いです。切断位置の印を1階平面図に打つのも、忘れずに。"],
+["記述は、4つの部品",
+"第9話は、計画の要点等、記述です。これは絵ではなく文章で答えるらんで、じつはいちばん点を取りやすいところ。書き方は、4つの部品を順番につなぐだけです。1つめ、なにをしたか。2つめ、数字を入れる。3つめ、なぜそうしたか。4つめ、どうなるか。たとえば、柱の位置を全部の階でそろえた、四隅は120ミリ角の通し柱、力の流れを上下でそろえるため、地震の力を耐力壁に確実に伝えられる。こんな感じです。聞かれる分野は、構造、動線、防火と避難、高齢者、環境の5つがほとんど。丸暗記はしません。部品だけ覚えて、その場で組み立てます。そして必ず、自分の描いた図面を見ながら書くこと。図と文章が食いちがうと減点です。"],
+["本番前、最後のチェック",
+"最終話は、本番のチェックです。不合格に直結する、ランク4の6項目。指定された構造と階数か。図面が全部完成しているか。図面どうしが食いちがっていないか。面積が条件の範囲内か。要求された部屋がそろっているか。常識はずれの計画になっていないか。最後の15分は、この6つの指差し確認に使います。それから、忘れ物の4点セット。耐力壁の白い三角。通し柱の丸。出入口の黒い三角。部分詳細図の切断位置。この4つは、最後にまとめて一気に打つのがコツです。面積表の検算もお忘れなく。当日は10時35分から説明が始まるので、早めに着席を。ここまで聞いたあなたは、もう型が体に入っています。あとは手を動かすだけ。健闘を祈ります。"]
+];
+
+const list = document.getElementById('list');
+const rateEl = document.getElementById('rate');
+const rateVal = document.getElementById('rateVal');
+const voiceSel = document.getElementById('voice');
+const autoEl = document.getElementById('auto');
+let cur = -1, sent = [], idx = 0, playing = false;
+
+TRACKS.forEach(function(t, i){
+  const mins = Math.max(1, Math.round(t[1].length / 6.5 / 60 * 10) / 10);
+  const div = document.createElement('div');
+  div.className = 'track'; div.id = 'tr' + i;
+  div.innerHTML = '<div class="thead"><button class="play" aria-label="第' + (i+1) +
+    '話を再生">▶</button><span class="tno">' + String(i+1).padStart(2,'0') +
+    '</span><span class="ttl">' + t[0] + '</span><span class="tdur">約' + mins +
+    '分</span></div><div class="bar"><i></i></div><div class="script">' + t[1] + '</div>';
+  div.querySelector('button').addEventListener('click', function(e){
+    e.stopPropagation(); toggle(i);
+  });
+  div.querySelector('.thead').addEventListener('click', function(){
+    div.classList.toggle('open');
+  });
+  list.appendChild(div);
+});
+
+function voices(){
+  return speechSynthesis.getVoices().filter(function(v){
+    return v.lang && v.lang.toLowerCase().indexOf('ja') === 0;
+  });
+}
+function fillVoices(){
+  const vs = voices();
+  voiceSel.innerHTML = '';
+  if (!vs.length){
+    voiceSel.innerHTML = '<option>日本語の声が見つかりません</option>'; return;
+  }
+  vs.forEach(function(v, i){
+    const o = document.createElement('option');
+    o.value = v.name; o.textContent = v.name.replace(/^Microsoft |^Google /, '');
+    voiceSel.appendChild(o);
+  });
+}
+fillVoices();
+if (window.speechSynthesis) speechSynthesis.onvoiceschanged = fillVoices;
+rateEl.addEventListener('input', function(){
+  rateVal.textContent = Number(rateEl.value).toFixed(2);
+});
+
+function ui(){
+  document.querySelectorAll('.track').forEach(function(d, i){
+    d.classList.toggle('playing', i === cur && playing);
+    d.querySelector('button').textContent = (i === cur && playing) ? '⏸' : '▶';
+    if (i !== cur) d.querySelector('.bar i').style.width = 0;
+  });
+}
+function speakNext(){
+  if (cur < 0 || idx >= sent.length){ done(); return; }
+  const u = new SpeechSynthesisUtterance(sent[idx]);
+  u.lang = 'ja-JP'; u.rate = Number(rateEl.value);
+  const v = voices().find(function(x){ return x.name === voiceSel.value; });
+  if (v) u.voice = v;
+  u.onend = function(){
+    if (!playing) return;
+    idx++;
+    document.querySelector('#tr' + cur + ' .bar i').style.width =
+      (idx / sent.length * 100) + '%';
+    speakNext();
+  };
+  u.onerror = function(){ if (playing){ idx++; speakNext(); } };
+  speechSynthesis.speak(u);
+}
+function start(i){
+  speechSynthesis.cancel();
+  cur = i; playing = true;
+  sent = TRACKS[i][1].split('。').filter(function(s){ return s.trim(); })
+         .map(function(s){ return s + '。'; });
+  idx = 0;
+  document.getElementById('tr' + i).classList.add('open');
+  document.getElementById('tr' + i).scrollIntoView({block:'nearest'});
+  ui(); speakNext();
+}
+function done(){
+  playing = false;
+  const fin = cur; ui();
+  if (autoEl.checked && fin >= 0 && fin < TRACKS.length - 1){
+    setTimeout(function(){ start(fin + 1); }, 700);
+  } else { cur = -1; }
+}
+function toggle(i){
+  if (i === cur && playing){
+    playing = false; speechSynthesis.cancel(); ui();
+  } else {
+    start(i);
+  }
+}
+window.addEventListener('pagehide', function(){ speechSynthesis.cancel(); });
+if (!window.speechSynthesis){
+  document.querySelector('.note').innerHTML =
+    'お使いのブラウザは読み上げに対応していません。SafariかChromeで開いてください。';
+}
+</script>
