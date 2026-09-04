@@ -1,0 +1,181 @@
+<title>本番チェック進行表</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Old+Mincho:wght@700&family=Zen+Kaku+Gothic+New:wght@400;500;700&family=Roboto+Mono:wght@500&display=swap">
+<style>
+:root{
+  --paper:#f8f7f3; --panel:#fffffe; --ink:#23251f; --sub:#6c7163;
+  --line:#e3e1d7; --aka:#b23a48; --aka-soft:#f6e9ea; --ok:#3e6b47;
+  --disp:'Zen Old Mincho',"Hiragino Mincho ProN","Yu Mincho",serif;
+  --body:'Zen Kaku Gothic New','Hiragino Sans','Noto Sans JP',"Yu Gothic",Meiryo,sans-serif;
+  --mono:'Roboto Mono',ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --paper:#181a17; --panel:#1f221e; --ink:#e9eae4; --sub:#a9aea1;
+    --line:#31352e; --aka:#e08a95; --aka-soft:#372227; --ok:#9ccaa6;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#181a17; --panel:#1f221e; --ink:#e9eae4; --sub:#a9aea1;
+  --line:#31352e; --aka:#e08a95; --aka-soft:#372227; --ok:#9ccaa6;
+}
+*{box-sizing:border-box;margin:0}
+body{background:var(--paper);color:var(--ink);font-family:var(--body);
+  font-size:14px;line-height:1.75;padding:26px 16px 80px}
+.wrap{max-width:780px;margin:0 auto}
+.kicker{font-size:11px;letter-spacing:.3em;color:var(--aka);font-weight:700}
+h1{font-family:var(--disp);font-size:31px;margin:4px 0 4px;text-wrap:balance}
+.lead{color:var(--sub);font-size:13px;margin-bottom:14px}
+.warn{background:var(--aka-soft);border:1px solid var(--aka);border-radius:10px;
+  padding:10px 14px;font-size:12.5px;margin-bottom:18px}
+.tools{display:flex;gap:10px;align-items:center;margin-bottom:20px;font-size:12.5px}
+.tools button{font:inherit;border:1px solid var(--line);background:var(--panel);
+  color:var(--ink);border-radius:8px;padding:6px 14px;cursor:pointer}
+.tools button:focus-visible{outline:3px solid var(--aka-soft)}
+#count{font-family:var(--mono);color:var(--sub)}
+.ph{border:1px solid var(--line);border-radius:10px;background:var(--panel);
+  margin-bottom:14px;overflow:hidden;break-inside:avoid}
+.ph header{display:flex;align-items:baseline;gap:12px;padding:10px 16px 8px;
+  border-bottom:1px solid var(--line)}
+.ph .t{font-family:var(--mono);font-size:11.5px;color:#fff;background:var(--aka);
+  border-radius:5px;padding:1px 8px;white-space:nowrap}
+.ph h2{font-size:15.5px;font-weight:700;flex:1}
+.ph .m{font-size:11.5px;color:var(--sub)}
+.ph ul{list-style:none;padding:8px 12px 12px}
+.ph li{margin:0}
+.ph label{display:flex;gap:10px;align-items:flex-start;padding:5px 6px;
+  border-radius:7px;cursor:pointer;font-size:13.5px}
+.ph label:hover{background:var(--aka-soft)}
+.ph input{width:16px;height:16px;margin-top:5px;accent-color:var(--ok);flex:none}
+.ph input:checked + span{color:var(--sub);text-decoration:line-through}
+.ph b{font-weight:700}
+.sub2{font-size:11.5px;font-weight:700;color:var(--aka);letter-spacing:.12em;
+  padding:8px 18px 0}
+.foot{margin-top:24px;font-size:12px;color:var(--sub);text-align:center}
+@media print{
+  body{background:#fff;color:#111;font-size:10.5px;line-height:1.5;padding:0}
+  .tools{display:none}
+  .warn{border-color:#999;background:#fff}
+  .wrap{max-width:none;column-count:2;column-gap:8mm}
+  h1{font-size:20px}
+  .ph{border-color:#bbb;margin-bottom:8px}
+  .ph label{padding:1px 4px;font-size:10.5px}
+  .ph label:hover{background:none}
+  .ph input{width:11px;height:11px;margin-top:3px}
+  .kicker,.lead,.foot{color:#555}
+  .ph .t{background:#333}
+}
+</style>
+<div class="wrap">
+<div class="kicker">二級建築士 設計製図 9月13日（日）</div>
+<h1>本番チェック進行表</h1>
+<p class="lead">試験が始まってから終わるまで、節目ごとに確認することの全部。</p>
+<div class="warn"><b>この紙は試験に持ち込めません。</b>使い方は2つ。
+①練習でA2を描くとき、横に置いて同じ順で確認する（チェックを付けながら）。
+②前日までに3回、上から声に出して読む。当日は頭の中でこの順に回します。</div>
+<div class="tools">
+  <button id="reset">チェックを全部消す</button>
+  <span id="count"></span>
+  <span style="color:var(--sub)">チェックはこの端末に保存されます</span>
+</div>
+
+<section class="ph"><header><span class="t">11:00</span>
+<h2>問題文を読む</h2><span class="m">25分・2回読む</span></header><ul>
+<li><label><input type="checkbox"><span>課題名・<b>階数・構造</b>を指でなぞった（木造3階建てか）</span></label></li>
+<li><label><input type="checkbox"><span><b>道路の方位と幅員</b>に○をつけた（型のどのパターンかが決まる）</span></label></li>
+<li><label><input type="checkbox"><span>建蔽率・容積率の<b>限度</b>に○</span></label></li>
+<li><label><input type="checkbox"><span><b>延べ面積の範囲</b>（○㎡以上△㎡以下）に二重丸</span></label></li>
+<li><label><input type="checkbox"><span>要求室の表の<b>帖数・特記事項</b>に線を引いた（「〜できるようにする」は全部条件）</span></label></li>
+<li><label><input type="checkbox"><span><b>蹴上・踏面など数字の指定</b>がないか探した（「蹴上180以下」が来たら型の階段は使えない）</span></label></li>
+<li><label><input type="checkbox"><span><b>計画の要点等の3問を先に読んだ</b>（エスキス中に頭が答えを用意してくれる）</span></label></li>
+<li><label><input type="checkbox"><span>要求図書の一覧で<b>どの階の平面図か</b>・縮尺を確認した</span></label></li>
+</ul></section>
+
+<section class="ph"><header><span class="t">12:25</span>
+<h2>エスキスから図面に進む前</h2><span class="m">ここで直すのが一番安い</span></header><ul>
+<li><label><input type="checkbox"><span>マス数→<b>延べ面積が範囲内</b>（1マス0.8281㎡。80マス×3階=198.72）</span></label></li>
+<li><label><input type="checkbox"><span><b>要求室が全部ある</b>・指定された階に置いた</span></label></li>
+<li><label><input type="checkbox"><span><b>階段が全階同じ位置</b>（直通階段）</span></label></li>
+<li><label><input type="checkbox"><span>店の客と住まいの家族の<b>動線が交わらない</b></span></label></li>
+<li><label><input type="checkbox"><span>どの部屋にも<b>廊下か階段からドアで入れる</b>（行けない部屋＝重大な不適合）</span></label></li>
+<li><label><input type="checkbox"><span><b>20㎡をこえる部屋に窓2つ</b>取れる形になっている</span></label></li>
+</ul></section>
+
+<section class="ph"><header><span class="t">12:50</span>
+<h2>記述を書き終えたら</h2><span class="m">先に書く。白紙は全損</span></header><ul>
+<li><label><input type="checkbox"><span>3問とも<b>数字</b>が入っている（120角・3,640・t=24・有効780…）</span></label></li>
+<li><label><input type="checkbox"><span><b>エスキスと食いちがっていない</b>（階段の位置・部屋の階）</span></label></li>
+<li><label><input type="checkbox"><span>白紙の欄がない</span></label></li>
+</ul></section>
+
+<section class="ph"><header><span class="t">13:30／14:00／14:25</span>
+<h2>平面図を1枚描き終えるごと</h2><span class="m">次の紙に移る前に30秒</span></header><ul>
+<li><label><input type="checkbox"><span><b>室名と床面積</b>を全部の部屋に書いた</span></label></li>
+<li><label><input type="checkbox"><span><b>要求された家具</b>を描いた（陳列棚・レジ・流し・調理台・作業台・<b>オーブン</b>・便器・<b>手洗い器</b>・下足入れ・ベッド・机…問題文の列挙どおり）</span></label></li>
+<li><label><input type="checkbox"><span>扉の<b>開き勝手</b>（開く向きの1/4円）を描いた</span></label></li>
+<li><label><input type="checkbox"><span><b>窓の数</b>：10㎡=1つ／20㎡超=2つ／30㎡=掃き出し＋1つ</span></label></li>
+<li><label><input type="checkbox"><span><b>寸法2段</b>（全体と通り間）と<b>通り符号</b>（A B C D・1 2 3 4）</span></label></li>
+<li><label><input type="checkbox"><span>【1階だけ】敷地境界との距離・道路と建物の<b>▲印</b>・門/塀/駐輪/植栽</span></label></li>
+</ul></section>
+
+<section class="ph"><header><span class="t">15:00</span>
+<h2>伏図を出す前</h2><span class="m">平面図と見比べる</span></header><ul>
+<li><label><input type="checkbox"><span><b>柱の位置が平面図と同じ</b>（16本。ここのズレ＝図面相互の不整合）</span></label></li>
+<li><label><input type="checkbox"><span>通し柱は<b>□を○で囲む</b>・管柱は×／‖／⊠</span></label></li>
+<li><label><input type="checkbox"><span><b>火打梁8か所</b>を破線で・母屋の●（小屋束）</span></label></li>
+<li><label><input type="checkbox"><span><b>凡例欄に断面寸法</b>を記入・<b>平角材は図中の梁のわき</b>に</span></label></li>
+</ul></section>
+
+<section class="ph"><header><span class="t">15:20</span>
+<h2>立面図を出す前</h2><span class="m">高さは今年の主戦場</span></header><ul>
+<li><label><input type="checkbox"><span><b>高さの数字</b>：G.L.・▽最高の高さ（10,806）など要求どおり</span></label></li>
+<li><label><input type="checkbox"><span><b>窓の位置と幅が平面図と同じ</b>（糸を垂らして写したか）</span></label></li>
+<li><label><input type="checkbox"><span>バルコニーの<b>手すり1,100以上</b>を描いた</span></label></li>
+</ul></section>
+
+<section class="ph"><header><span class="t">15:45</span>
+<h2>部分詳細図を出す前</h2><span class="m">数字と名前で点になる</span></header><ul>
+<li><label><input type="checkbox"><span>方眼<b>10mmきざみ</b>（1マス=200mm）で描いた</span></label></li>
+<li><label><input type="checkbox"><span><b>切断位置を1階平面図に打った</b>（─・─・─＋矢印＋A—A）</span></label></li>
+<li><label><input type="checkbox"><span><b>材料名と厚さ</b>を全部書いた（「<b>強化</b>石膏ボード」の強化まで）</span></label></li>
+<li><label><input type="checkbox"><span>高さの積み上げ：371＋20＋120＋24＋15＝<b>550</b></span></label></li>
+</ul></section>
+
+<section class="ph"><header><span class="t">15:45–16:00</span>
+<h2>最後の15分・指差し確認</h2><span class="m">描き足さない。確認だけ</span></header>
+<div class="sub2">ランクⅣ（不合格）の6項目</div><ul>
+<li><label><input type="checkbox"><span>木造<b>3階建て</b>になっている</span></label></li>
+<li><label><input type="checkbox"><span>図面が<b>1枚も欠けていない</b>（⑴〜⑻全部）</span></label></li>
+<li><label><input type="checkbox"><span>図面どうしの<b>食いちがいなし</b>（柱・階段・窓）</span></label></li>
+<li><label><input type="checkbox"><span><b>面積が範囲内</b>・計算式はm単位・第3位以下切り捨て</span></label></li>
+<li><label><input type="checkbox"><span>要求室<b>もれなし</b>・階まちがいなし</span></label></li>
+<li><label><input type="checkbox"><span>階段がない等の<b>非常識なし</b></span></label></li>
+</ul>
+<div class="sub2">忘れ物4点セット（最後にまとめて一気に打つ）</div><ul>
+<li><label><input type="checkbox"><span>耐力壁の<b>△</b>（白ぬき・全部の階）</span></label></li>
+<li><label><input type="checkbox"><span>通し柱の<b>○</b>（四隅4か所）</span></label></li>
+<li><label><input type="checkbox"><span>出入口の<b>▲</b>（黒ぬり・敷地と建物）</span></label></li>
+<li><label><input type="checkbox"><span>部分詳細図の<b>切断位置</b></span></label></li>
+<li><label><input type="checkbox"><span><b>受験番号・氏名</b></span></label></li>
+</ul></section>
+
+<p class="foot">耳から製図・早見盤とセットで。印刷はブラウザの印刷（A4・2段組になります）。</p>
+</div>
+<script>
+const KEY='checkrun-v1';
+const boxes=[...document.querySelectorAll('input[type=checkbox]')];
+let saved=[]; try{saved=JSON.parse(localStorage.getItem(KEY)||'[]')}catch(e){}
+boxes.forEach((b,i)=>{ b.checked=!!saved[i];
+  b.addEventListener('change',()=>{
+    try{localStorage.setItem(KEY,JSON.stringify(boxes.map(x=>x.checked?1:0)))}catch(e){}
+    cnt(); });
+});
+function cnt(){ const n=boxes.filter(b=>b.checked).length;
+  document.getElementById('count').textContent=n+' / '+boxes.length; }
+cnt();
+document.getElementById('reset').addEventListener('click',()=>{
+  boxes.forEach(b=>b.checked=false);
+  try{localStorage.removeItem(KEY)}catch(e){} cnt();
+});
+</script>
