@@ -419,9 +419,214 @@ def koya():
     return s
 
 
+
+
+# ======================================================== 家1けんまるごと
+# 型の通り芯（framing.py と同じ）
+XL = (0, 2, 5, 8)          # A・B・C・D通り
+YL = (0, 2, 6, 10)         # 1・2・3・4通り
+TOOSHI4 = ((0, 0), (8, 0), (0, 10), (8, 10))
+KUDA12 = ((2, 0), (5, 0), (0, 2), (8, 2), (0, 6), (8, 6),
+          (2, 10), (5, 10), (2, 2), (5, 2), (2, 6), (5, 6))
+HIUCHI8 = ((0, 0, 1, 1), (8, 0, -1, 1), (0, 10, 1, -1), (8, 10, -1, -1),
+           (2, 2, 1, 1), (5, 2, -1, 1), (2, 6, 1, -1), (5, 6, -1, -1))
+C_DODAI = '#8a6d3b'
+C_KISO = '#9aa0a6'
+G = 910.0
+BW, BD = 8 * G, 10 * G     # 7,280 × 9,100
+
+
+def _hiuchi_layer(s, z0, z1):
+    for gx, gy, dx, dy in HIUCHI8:
+        ax, ay = (gx + dx) * G, gy * G
+        bx, by = gx * G, (gy + dy) * G
+        nx, ny = (by - ay), -(bx - ax)
+        ln = (nx * nx + ny * ny) ** 0.5
+        nx, ny = nx / ln * 45.0, ny / ln * 45.0
+        prism(s, [(ax + nx, ay + ny), (bx + nx, by + ny),
+                  (bx - nx, by - ny), (ax - nx, ay - ny)], z0, z1, C_HI)
+
+
+def _posts_under(s, tall=1300.0, top=-300.0):
+    """その階の床を下からささえている柱。短く切って見せる。"""
+    for gx, gy in KUDA12:
+        post(s, gx * G, gy * G, top - tall, top, C_TSUKA)
+    for gx, gy in TOOSHI4:
+        post(s, gx * G, gy * G, top - tall, top, C_TOOSHI)
+
+
+def _floor_layer(s, posts=True):
+    """2階・3階の床の骨組み（＝床伏図）を1枚ぶん描く。"""
+    if posts:
+        _posts_under(s)
+    _hiuchi_layer(s, -90, 0)
+    for gy in (1, 3, 4, 5, 7, 8, 9):                     # 床小梁 @910
+        bar_x(s, 0, BW, gy * G, 120, -180, 0, C_KO)
+    for gy in (2, 6):                                    # 大梁（東西）
+        bar_x(s, 0, BW, gy * G, 120, -240, 0, C_OO)
+    for gx in (2, 5):                                    # 大梁（南北）
+        bar_y(s, 0, BD, gx * G, 120, -300, 0, C_OO)
+    for gy in (0, 10):                                   # 胴差（外周）
+        bar_x(s, -60, BW + 60, gy * G, 120, -300, 0, C_DOU)
+    for gx in (0, 8):
+        bar_y(s, -60, BD + 60, gx * G, 120, -300, 0, C_DOU)
+    for gx, gy in TOOSHI4:
+        s.circle(iso(gx * G, gy * G, 0)[0], iso(gx * G, gy * G, 0)[1], 5.5,
+                 fill='none', stroke=C_TOOSHI, stroke_width=1.8)
+
+
+def _dodai_layer(s):
+    """1階の床（土台と基礎）。"""
+    for gy in YL:
+        bar_x(s, -60, BW + 60, gy * G, 120, -420, -120, C_KISO)
+    for gx in XL:
+        bar_y(s, -60, BD + 60, gx * G, 120, -420, -120, C_KISO)
+    for gy in YL:
+        bar_x(s, -60, BW + 60, gy * G, 120, -120, 0, C_DODAI)
+    for gx in XL:
+        bar_y(s, -60, BD + 60, gx * G, 120, -120, 0, C_DODAI)
+
+
+def _koya_layer(s):
+    """屋根の骨組み（＝小屋伏図）＋屋根の面。"""
+    def rf(x):
+        return 0.4 * (3640.0 - abs(x - 3640.0))
+
+    _posts_under(s)
+    _hiuchi_layer(s, -90, 0)
+    for gy in (2, 4, 6, 8):                              # 小屋梁 @1,820
+        bar_x(s, 0, BW, gy * G, 120, -240, 0, C_OO)
+    for gy in (0, 10):                                   # 妻梁
+        bar_x(s, -60, BW + 60, gy * G, 120, -240, 0, C_DOU)
+    for gx in XL:                                        # 軒桁
+        bar_y(s, -60, BD + 60, gx * G, 120, -240, 0, C_DOU)
+    for gx in (1, 2, 3, 4, 5, 6, 7):                     # 小屋束
+        for gy in (2, 4, 6, 8):
+            post(s, gx * G, gy * G, 0, rf(gx * G) - 90, C_TSUKA, a=90.0)
+    for gx in (1, 2, 3, 5, 6, 7):                        # 母屋 @910
+        h = rf(gx * G)
+        bar_y(s, -455, BD + 455, gx * G, 90, h - 90, h, C_KO)
+    bar_y(s, -455, BD + 455, 3640, 120, rf(3640) - 120, rf(3640), C_MUNE)
+    for x0, x1 in ((-600, 3640), (3640, 7880)):          # 屋根の面
+        s.polygon([iso(x0, -455, rf(x0) + 60), iso(x1, -455, rf(x1) + 60),
+                   iso(x1, BD + 455, rf(x1) + 60),
+                   iso(x0, BD + 455, rf(x0) + 60)],
+                  fill=C_ITA, fill_opacity=0.20, stroke='#a08a4a',
+                  stroke_width=1.0, stroke_dasharray='6 4')
+
+
+def _layer_label(s, x, y, no, title, height, rows, draw=None):
+    s.circle(x + 13, y + 13, 13, fill='#fff', stroke='#bbb',
+             stroke_width=1.6)
+    s.text(x + 13, y + 18, str(no), size=13.5, weight='700', fill='#666')
+    s.text(x + 36, y + 19, title, size=17, anchor='start', weight='700')
+    s.text(x + 36, y + 40, height, size=12.5, anchor='start', fill='#888')
+    yy = y + 62
+    if draw:
+        col = '#1e7e34' if draw[0] == '★' else '#999'
+        bg = '#eef7ef' if draw[0] == '★' else '#f2f2f0'
+        w = twidth(draw, 12.5) + 30
+        s.rect(x + 36, yy - 15, w, 23, fill=bg, stroke=col,
+               stroke_width=1.0, rx=6)
+        s.text(x + 46, yy + 1, draw, size=12.5, anchor='start', fill=col,
+               weight='700')
+        yy += 32
+    for r in rows:
+        s.text(x + 36, yy, r, size=12.5, anchor='start', fill='#555')
+        yy += 19
+
+
+def zentai():
+    """家1けんぶんの骨組みを、4つの層にばらして積みなおした図。"""
+    W, H = 1240, 1720
+    s = Svg(W, H)
+    s.text(W / 2.0, 42, '部材ずかん ⓪　家1けんまるごとの骨組み', size=23,
+           weight='700')
+    s.text(W / 2.0, 70,
+           '同じ骨組みが4段つみ重なっているだけ。'
+           'ばらして横から見ると、答案で描く2枚がどこなのかが分かる。',
+           size=12.5, fill='#666')
+
+    K, OX = 0.032, 330.0
+    LY = {'koya': 230.0, 'f3': 570.0, 'f2': 910.0, 'do': 1250.0}
+
+    # 通し柱＝ぜんぶの層をたてにつらぬく1本
+    for gx, gy in TOOSHI4:
+        setview(OX, 0.0, K)
+        x, dy = iso(gx * G, gy * G, 0)
+        s.line(x, LY['koya'] + dy - 60, x, LY['do'] + dy + 20,
+               stroke=C_TOOSHI, stroke_width=1.0, stroke_dasharray='5 4')
+
+    for key, fn in (('do', _dodai_layer), ('f2', _floor_layer),
+                    ('f3', _floor_layer), ('koya', _koya_layer)):
+        setview(OX, LY[key], K)
+        fn(s)
+
+    LX = 600.0
+    _layer_label(s, LX, LY['koya'] - 34, 4, '小屋組（屋根の骨）',
+                 '軒 GL+9,350　／　棟 GL+10,806',
+                 ['軒桁・妻梁／小屋梁／小屋束／母屋／棟木／火打梁',
+                  '棟から東西の2方向へ、4寸勾配で流れ落ちる'],
+                 draw='★ 答案で描く ── ⑷ 小屋伏図')
+    _layer_label(s, LX, LY['f3'] - 34, 3, '3階の床',
+                 '3FL ＝ GL+6,550',
+                 ['胴差／大梁／床小梁／火打梁／柱',
+                  'この床を下からささえているのが「2階の柱」'],
+                 draw='★ 答案で描く ── ⑷ 3階床伏図')
+    _layer_label(s, LX, LY['f2'] - 34, 2, '2階の床',
+                 '2FL ＝ GL+3,650',
+                 ['骨組みは3階の床と まったく同じ',
+                  'だから覚えるのは1つでいい'],
+                 draw='描かない（要求図書は3階床伏図のみ）')
+    _layer_label(s, LX, LY['do'] - 34, 1, '1階の床（土台・基礎）',
+                 '1FL ＝ GL+550',
+                 ['べた基礎の立上りの上に、土台120×120をぐるり',
+                  'アンカーボルト M12 ＠2,730以下で緊結'],
+                 draw='描かない（1階平面図兼配置図で表す）')
+
+    # 「①で拡大したのはここ」
+    setview(OX, LY['f3'], K)
+    s.polygon([iso(0, 0, 40), iso(2 * G, 0, 40), iso(2 * G, 2 * G, 40),
+               iso(0, 2 * G, 40)], fill='#ffe9a8', fill_opacity=0.55,
+              stroke='#c8912a', stroke_width=1.6)
+    ax, ay = iso(G, G, 40)
+    s.line(ax, ay, ax - 130, ay + 34, stroke='#c8912a', stroke_width=1.2,
+           stroke_dasharray='3 2')
+    s.text(ax - 136, ay + 38, '図① で拡大したのは、ここ', size=11.5,
+           anchor='end', fill='#a8761c', weight='700')
+
+    # 全体の寸法（土台の層に）
+    setview(OX, LY['do'], K)
+    p0, p1 = iso(0, BD, 0), iso(BW, BD, 0)
+    s.text((p0[0] + p1[0]) / 2.0, p1[1] + 42,
+           '東西 7,280（8マス）　×　南北 9,100（10マス）', size=12,
+           fill='#777')
+
+    setview(OX, LY['koya'], K)
+    s.text(iso(-1500, 0, 900)[0], iso(-1500, 0, 900)[1],
+           '通し柱＝四すみ4本。', size=11.5, anchor='end', fill=C_TOOSHI,
+           weight='700')
+    s.text(iso(-1500, 0, 900)[0], iso(-1500, 0, 900)[1] + 17,
+           '点線のように、1階から', size=11.5, anchor='end', fill=C_TOOSHI)
+    s.text(iso(-1500, 0, 900)[0], iso(-1500, 0, 900)[1] + 34,
+           '3階まで1本で通る', size=11.5, anchor='end', fill=C_TOOSHI)
+
+    s.rect(60, H - 110, W - 120, 60, fill='#f1f8f2', stroke='#b9d8bd',
+           stroke_width=1.0, rx=8)
+    s.text(W / 2.0, H - 84,
+           '★ おぼえることは2つだけ。「床の骨組み」と「屋根の骨組み」。',
+           size=14, weight='700', fill='#1e7e34')
+    s.text(W / 2.0, H - 62,
+           '2階の床と3階の床は同じもの。1階の床は土台。'
+           'つまり4段あっても、形は2種類しかない。',
+           size=12.5, fill='#3d6b46')
+    return s
+
+
 if __name__ == '__main__':
     out = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..',
                        'figures')
+    zentai().save(os.path.join(out, 'buzai_zentai.svg'))
     yuka().save(os.path.join(out, 'buzai_yuka.svg'))
     koya().save(os.path.join(out, 'buzai_koya.svg'))
-    print('wrote buzai_yuka.svg / buzai_koya.svg')
+    print('wrote buzai_zentai.svg / buzai_yuka.svg / buzai_koya.svg')
