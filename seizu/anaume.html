@@ -73,9 +73,21 @@ input.bl.ng{border-color:var(--ng);color:var(--ng)}
 .show .model{display:block}
 .model b{color:var(--ok)}
 .foot{margin-top:26px;font-size:12px;color:var(--sub);text-align:center}
+.qh .say{margin-left:auto;font:inherit;font-size:12px;border:1px solid var(--line);
+  background:var(--panel);color:var(--sub);border-radius:999px;
+  padding:2px 11px;cursor:pointer;line-height:1.7}
+.qh .say:hover{border-color:var(--ai);color:var(--ai)}
+.q.speaking{border-color:var(--ai);box-shadow:0 0 0 3px var(--ai-soft)}
+.q.speaking .say{background:var(--ai);border-color:var(--ai);color:#fff}
+.bar .rate{display:flex;align-items:center;gap:6px;font-size:12.5px;
+  color:var(--sub)}
+.bar .rate input{width:96px}
+#voicewrap{font-size:12.5px;color:var(--sub)}
+#voice{font:inherit;font-size:12px;max-width:180px;background:var(--panel);
+  color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:3px 6px}
 @media print{
   body{background:#fff;color:#111;font-size:11px;line-height:2.2;padding:0}
-  .bar,.how{display:none}
+  .bar,.how,.say{display:none}
   .wrap{max-width:none}
   h1{font-size:19px}
   .q{border-color:#bbb;margin-bottom:7px;padding:8px 12px;
@@ -96,7 +108,9 @@ input.bl.ng{border-color:var(--ng);color:var(--ng)}
 合っていれば緑、ちがえば赤になります。「ヒント」で手がかり、
 「答えを見る」で正解が出ます。<b>レベル3は自由記述</b>なので、
 模範解答と見くらべて自分で採点してください。
-印刷すると、答えなしの<b>書きこみプリント</b>になります。</div>
+印刷すると、答えなしの<b>書きこみプリント</b>になります。<br>
+<b>🔊 読み上げ</b>を押すと、<b>正解が入った完全な文</b>を読み上げます。
+目で覚えられない人は、耳から入れてください。</div>
 
 <div class="bar">
   <button data-lv="all" aria-pressed="true">ぜんぶ</button>
@@ -110,33 +124,41 @@ input.bl.ng{border-color:var(--ng);color:var(--ng)}
   <button id="clear">消す</button>
   <span id="score"></span>
 </div>
+<div class="bar" id="voicebar">
+  <button id="playall">▶ 表示中をぜんぶ読み上げ</button>
+  <button id="stop">■ 止める</button>
+  <label class="rate">速さ
+    <input type="range" id="rate" min="0.7" max="1.3" step="0.05" value="0.95">
+    <span id="rateVal">0.95</span></label>
+  <span id="voicewrap">声 <select id="voice"></select></span>
+</div>
 <div id="list"></div>
 <p class="foot">まるごと解説9章とセットで。書けるようになったら、
 問題用紙の要点らんに時間を計って書いてみてください。</p>
 </div>
 <script>
-/* {{ 正解1/正解2 || ヒント }} */
+/* {{ 正解1;正解2 || ヒント }} */
 const Q = [
 // ---------------- レベル1：数字 ----------------
 {lv:1,cat:'構造',t:'木造3階建てとするに当たり、構造計画上工夫した点',
- b:'1階から3階まで柱の位置をすべてそろえ、通り芯の交点に各階共通で配置した。四隅には{{120||柱の太さ。正方形の1辺}}mm角の通し柱、その他には同寸の管柱を用い、梁の最大スパンは{{3640/3,640||2間。910の4倍}}mm以下としている。床は構造用合板t={{24||床の下地の板の厚さ}}を梁に直接張った剛床とし、耐力壁は筋かい{{45×90/45x90||すじかいの断面}}のたすき掛け及び構造用合板t={{9||壁にはる板の厚さ}}を用いた。'},
+ b:'1階から3階まで柱の位置をすべてそろえ、通り芯の交点に各階共通で配置した。四隅には{{120||柱の太さ。正方形の1辺}}mm角の通し柱、その他には同寸の管柱を用い、梁の最大スパンは{{3,640||2間。910の4倍}}mm以下としている。床は構造用合板t={{24||床の下地の板の厚さ}}を梁に直接張った剛床とし、耐力壁は筋かい{{45×90||すじかいの断面}}のたすき掛け及び構造用合板t={{9||壁にはる板の厚さ}}を用いた。'},
 {lv:1,cat:'防火',t:'外壁の構成（内から外へ）',
  b:'外壁は屋内側から強化石膏ボードt={{15||いちばん内がわの板}}、柱{{120||柱の太さ}}（グラスウール16K t={{100||柱の間に入れるわた}}充填）、構造用合板t={{9||地震にふんばる板}}、透湿防水シート、通気胴縁t={{18||すき間をつくる細い木}}、窯業系サイディングt={{16||いちばん外がわ}}の構成としている。'},
 {lv:1,cat:'部分詳細図',t:'基礎まわりの寸法',
- b:'基礎はべた基礎とし、立上りの高さは地上{{371||300以上あればよいが、この型の値}}mm、根入れは{{300||地面にうめる深さ}}mm、立上り及び底盤の厚さはいずれも{{150||コンクリートの厚み}}mmとしている。土台は{{120||}}×120とし、基礎と土台はアンカーボルト{{M12||ボルトの太さの記号}}＠{{2730/2,730||1.5間ごと}}mm以下で緊結している。'},
+ b:'基礎はべた基礎とし、立上りの高さは地上{{371||300以上あればよいが、この型の値}}mm、根入れは{{300||地面にうめる深さ}}mm、立上り及び底盤の厚さはいずれも{{150||コンクリートの厚み}}mmとしている。土台は{{120||土台の1辺。柱と同じ太さ}}×120とし、基礎と土台はアンカーボルト{{M12||ボルトの太さの記号}}＠{{2,730||1.5間ごと}}mm以下で緊結している。'},
 {lv:1,cat:'高さ',t:'各部の高さ（地盤面から）',
- b:'1階の床は地盤面から{{550||371+20+120+24+15}}mm、2階の床は{{3650/3,650||550＋階高3,100}}mm、3階の床は{{6550/6,550||3,650＋2,900}}mm、軒の高さは{{9350/9,350||6,550＋2,800}}mm、建築物の最高の高さは{{10806/10,806||軒高＋1,456}}mmとしている。'},
+ b:'1階の床は地盤面から{{550||371+20+120+24+15}}mm、2階の床は{{3,650||550＋階高3,100}}mm、3階の床は{{6,550||3,650＋2,900}}mm、軒の高さは{{9,350||6,550＋2,800}}mm、建築物の最高の高さは{{10,806||軒高＋1,456}}mmとしている。'},
 {lv:1,cat:'高齢者',t:'高齢者の居室を1階に設けたことについて工夫した点',
- b:'住宅玄関から寝室までは幅{{910||マス1つぶん}}mm（有効約{{780||910から壁の厚みを引いた実際に通れる幅}}mm）の廊下1本でつながり、途中に段差を設けていない。廊下及び出入口の有効幅は{{780||}}mm以上とし、将来手すりを取り付けられるよう壁に下地を入れている。'},
+ b:'住宅玄関から寝室までは幅{{910||マス1つぶん}}mm（有効約{{780||910から壁の厚みを引いた、実際に通れる幅}}mm）の廊下1本でつながり、途中に段差を設けていない。出入口の有効幅は{{750||廊下より少しせまくてよい}}mm以上を確保し、将来手すりを取り付けられるよう壁に下地を入れている。'},
 // ---------------- レベル2：ことば ----------------
 {lv:2,cat:'構造',t:'柱をそろえる理由',
- b:'1階から3階まで柱の位置をそろえ、{{直下率||上下階で柱がそろっている割合}}を高めた。床は構造用合板t=24を梁に直接張った{{剛床||床を一枚の板として働かせる作り方}}とし、水平力を{{耐力壁||地震にふんばる壁}}へ確実に伝達させている。耐力壁は桁行方向・梁間方向のいずれにも{{偏りなく/偏らないよう||かたよらせない}}配置した。'},
+ b:'1階から3階まで柱の位置をそろえ、{{直下率||上下階で柱がそろっている割合}}を高めた。床は構造用合板t=24を梁に直接張った{{剛床||床を一枚の板として働かせる作り方}}とし、水平力を{{耐力壁||地震にふんばる壁}}へ確実に伝達させている。耐力壁は桁行方向・梁間方向のいずれにも{{偏りなく;偏らないよう||かたよらせない}}配置した。'},
 {lv:2,cat:'防火',t:'防火及び避難について配慮した点',
- b:'準防火地域に建つ地上3階の木造であるため、{{45分準耐火建築物/45分準耐火||火に何分たえるか}}とした。3階に居室を有するため、階段室を準耐火構造の床及び壁で囲み、階段室に面する開口部を{{防火設備||火をとめる建具}}として{{竪穴区画||たてに空いた部分を区切ること}}としている。'},
+ b:'準防火地域に建つ地上3階の木造であるため、{{45分準耐火建築物;45分準耐火||火に何分たえるか}}とした。3階に居室を有するため、階段室を準耐火構造の床及び壁で囲み、階段室に面する開口部を{{防火設備||火をとめる建具}}として{{竪穴区画||たてに空いた部分を区切ること}}としている。'},
 {lv:2,cat:'動線',t:'店舗部分と住宅部分の動線計画について工夫した点',
  b:'店舗の出入口は{{道路||お客さんが来る側}}側に、住宅の玄関はそれと壁をへだてて別に設けた。これにより住まい手は{{売場||お店の商品を並べる部屋}}を通らずに2階・3階へ行くことができ、営業時間中も両者の{{動線||人の通り道}}が交錯しない。'},
 {lv:2,cat:'環境',t:'採光・換気について配慮した点',
- b:'居間・食事室・台所には掃出し窓と腰窓を設け、床面積の{{1/7||明かりとりの割合}}以上の{{採光||明かりを取り入れること}}に有効な開口部を確保した。換気に有効な開口部は床面積の{{1/20||換気の割合}}以上としている。'},
+ b:'居間・食事室・台所には掃出し窓と腰窓を設け、床面積の{{1/7;7分の1||明かりとりの割合}}以上の{{採光||明かりを取り入れること}}に有効な開口部を確保した。換気に有効な開口部は床面積の{{1/20;20分の1||換気の割合}}以上としている。'},
 {lv:2,cat:'高齢者',t:'高齢者への配慮',
  b:'母の寝室である和室6畳を{{1階||階段を使わない階}}に配置し、{{階段||上り下りが負担になるもの}}を使わずに生活できるようにした。将来{{手すり||つかまる棒}}を取り付けられるよう、壁に{{下地||ビスがきく木}}を入れている。'},
 // ---------------- レベル3：部品まるごと ----------------
@@ -159,14 +181,17 @@ const Q = [
 
 const norm = s => (s || '').replace(/\s|　/g, '')
   .replace(/[０-９Ａ-Ｚａ-ｚ]/g, c => String.fromCharCode(c.charCodeAt(0) - 0xFEE0))
-  .replace(/[,，、]/g, '').replace(/[×xX✕]/g, '*').toLowerCase();
+  .replace(/[,，、]/g, '').replace(/[×xX✕]/g, '*')
+  .replace(/／/g, '/').toLowerCase();
 
 const list = document.getElementById('list');
 Q.forEach(function (q, i) {
   const d = document.createElement('div');
   d.className = 'q'; d.dataset.lv = q.lv;
   let h = '<div class="qh"><span class="tag">' + q.cat + '</span><span class="no">' +
-          String(i + 1).padStart(2, '0') + '</span><span class="qt">' + q.t + '</span></div>';
+          String(i + 1).padStart(2, '0') + '</span><span class="qt">' + q.t +
+          '</span><button class="say" data-i="' + i +
+          '" aria-label="読み上げ">🔊 読み上げ</button></div>';
   if (q.lv === 3) {
     h += '<p style="font-size:13.5px;color:var(--sub);margin-bottom:8px">' + q.lead + '</p>' +
          '<div class="free"><textarea placeholder="ここに書く（3〜5行）"></textarea></div>' +
@@ -176,11 +201,11 @@ Q.forEach(function (q, i) {
     const hints = [];
     const body = q.b.replace(/\{\{(.*?)\}\}/g, function (m, inner) {
       const p = inner.split('||');
-      const ans = p[0].split('/');
+      const ans = p[0].split(';');
       const hint = (p[1] || '').trim();
       if (hint) hints.push(ans[0] + '＝' + hint);
       const w = Math.max(52, ans[0].length * 15 + 18);
-      return '<input class="bl" data-a="' + ans.join('/') + '" style="width:' + w +
+      return '<input class="bl" data-a="' + ans.join(';') + '" style="width:' + w +
              'px" autocomplete="off" aria-label="空らん"><span class="ans">' +
              ans[0] + '</span>';
     });
@@ -200,6 +225,7 @@ document.querySelectorAll('.bar button[data-lv]').forEach(function (b) {
       x.setAttribute('aria-pressed', x === b ? 'true' : 'false');
     });
     const lv = b.dataset.lv;
+    stopAll();
     cards.forEach(function (c) {
       c.hidden = !(lv === 'all' || c.dataset.lv === lv);
     });
@@ -211,7 +237,7 @@ document.getElementById('check').addEventListener('click', function () {
   blanks.forEach(function (b) {
     if (b.closest('.q').hidden) return;
     n++;
-    const good = b.dataset.a.split('/').some(function (a) {
+    const good = b.dataset.a.split(';').some(function (a) {
       return norm(a) === norm(b.value) && norm(b.value) !== '';
     });
     b.classList.toggle('ok', good);
@@ -226,7 +252,127 @@ document.getElementById('hint').addEventListener('click', function () {
 document.getElementById('reveal').addEventListener('click', function () {
   cards.forEach(function (c) { if (!c.hidden) c.classList.toggle('show'); });
 });
+// ============================================================ 読み上げ
+// 穴のところに正解を入れた「完全な文」を作り、耳で覚えられるようにする。
+// 記号のままだと読み上げが不自然なので、日本語に開いてから渡す。
+function fill(b) {
+  return (b || '').replace(/\{\{(.*?)\}\}/g, function (m, inner) {
+    return inner.split('||')[0].split(';')[0];
+  });
+}
+function yomi(s) {
+  return (s || '')
+    .replace(/(\d+)\s*[／/]\s*(\d+)/g, '$2分の$1')   // 1/7 → 7分の1
+    .replace(/(\d),(\d)/g, '$1$2').replace(/(\d),(\d)/g, '$1$2')
+    .replace(/[＠@]/g, '、ピッチ')
+    .replace(/[tT]\s*[=＝]\s*/g, '厚さ')
+    .replace(/[×✕]/g, 'かける')
+    .replace(/＋/g, 'プラス').replace(/(\d)\+/g, '$1プラス')
+    .replace(/㎡/g, '平方メートル')
+    .replace(/mm/g, 'ミリ')
+    .replace(/GL/g, 'ジーエル')
+    .replace(/N50/g, 'エヌ50').replace(/M12/g, 'エムじゅうに')
+    .replace(/16K/g, 'じゅうろくケー')
+    .replace(/[（(]/g, '、').replace(/[）)]/g, '、')
+    .replace(/、+/g, '、');
+}
+function scriptOf(q, i) {
+  const head = '第' + (i + 1) + '問。' + q.cat + '。' + q.t + '。';
+  return head + yomi(q.lv === 3 ? q.model : fill(q.b));
+}
+
+const rateEl = document.getElementById('rate');
+const rateVal = document.getElementById('rateVal');
+const voiceSel = document.getElementById('voice');
+const canSpeak = !!window.speechSynthesis;
+
+function jaVoices() {
+  return canSpeak ? speechSynthesis.getVoices().filter(function (v) {
+    return v.lang && v.lang.toLowerCase().indexOf('ja') === 0;
+  }) : [];
+}
+function fillVoices() {
+  const vs = jaVoices();
+  voiceSel.innerHTML = '';
+  if (!vs.length) {
+    document.getElementById('voicewrap').hidden = true; return;
+  }
+  document.getElementById('voicewrap').hidden = false;
+  vs.forEach(function (v) {
+    const o = document.createElement('option');
+    o.value = v.name;
+    o.textContent = v.name.replace(/^Microsoft |^Google /, '');
+    voiceSel.appendChild(o);
+  });
+}
+if (canSpeak) {
+  fillVoices();
+  speechSynthesis.onvoiceschanged = fillVoices;
+}
+rateEl.addEventListener('input', function () {
+  rateVal.textContent = Number(rateEl.value).toFixed(2);
+});
+
+let queue = [], qi = 0, cur = -1;
+
+function mark(i, on) {
+  if (cards[i]) cards[i].classList.toggle('speaking', on);
+}
+function stopAll() {
+  if (canSpeak) speechSynthesis.cancel();
+  if (cur >= 0) mark(cur, false);
+  queue = []; qi = 0; cur = -1;
+}
+function step() {
+  if (cur >= 0) mark(cur, false);
+  if (qi >= queue.length) { cur = -1; return; }
+  const i = queue[qi++];
+  cur = i;
+  mark(i, true);
+  if (cards[i] && cards[i].scrollIntoView) {
+    cards[i].scrollIntoView({ block: 'center', behavior: 'smooth' });
+  }
+  // 長い文は句点で切って読ませる（途中で止まる端末があるため）
+  const parts = scriptOf(Q[i], i).split('。')
+    .filter(function (s) { return s.trim(); })
+    .map(function (s) { return s + '。'; });
+  let k = 0;
+  (function next() {
+    if (cur !== i) return;
+    if (k >= parts.length) { step(); return; }
+    const u = new SpeechSynthesisUtterance(parts[k++]);
+    u.lang = 'ja-JP';
+    u.rate = Number(rateEl.value);
+    const v = jaVoices().find(function (x) { return x.name === voiceSel.value; });
+    if (v) u.voice = v;
+    u.onend = next;
+    u.onerror = next;
+    speechSynthesis.speak(u);
+  })();
+}
+function play(list) {
+  stopAll();
+  queue = list; qi = 0;
+  step();
+}
+
+document.getElementById('list').addEventListener('click', function (e) {
+  const b = e.target.closest('.say');
+  if (!b) return;
+  const i = Number(b.dataset.i);
+  if (cur === i) { stopAll(); return; }
+  play([i]);
+});
+document.getElementById('playall').addEventListener('click', function () {
+  play(cards.map(function (c, i) { return c.hidden ? -1 : i; })
+       .filter(function (i) { return i >= 0; }));
+});
+document.getElementById('stop').addEventListener('click', stopAll);
+window.addEventListener('pagehide', stopAll);
+if (!canSpeak) document.getElementById('voicebar').hidden = true;
+
 document.getElementById('clear').addEventListener('click', function () {
+  stopAll();
   blanks.forEach(function (b) { b.value = ''; b.classList.remove('ok', 'ng'); });
   document.querySelectorAll('textarea').forEach(function (t) { t.value = ''; });
   cards.forEach(function (c) { c.classList.remove('show'); });

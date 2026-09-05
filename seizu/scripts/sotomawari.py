@@ -180,9 +180,9 @@ def sizes():
            anchor='start', fill='#444')
     s.text(x + 128, y + 120, '有効幅 1.5m 以上。', size=11.5,
            anchor='start', weight='700', fill='#444')
-    s.text(x + 128, y + 146, 'ただし延べ面積200㎡未満', size=11.5,
+    s.text(x + 128, y + 146, 'ただし階数3以下 かつ 延べ', size=11.5,
            anchor='start', fill='#444')
-    s.text(x + 128, y + 166, 'なら 90cm でよい。', size=11.5,
+    s.text(x + 128, y + 166, '面積200㎡未満なら 90cm。', size=11.5,
            anchor='start', fill='#444')
 
     # ---- 7 門
