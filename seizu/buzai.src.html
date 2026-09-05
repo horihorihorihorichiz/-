@@ -1,0 +1,327 @@
+<!DOCTYPE html><html lang="ja"><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>部材ずかん｜二級建築士 設計製図</title>
+<style>
+{{CSS}}
+
+.bz{background:var(--card);border:1px solid var(--line);
+  border-left:7px solid #999;border-radius:var(--radius);
+  padding:14px 16px;margin:12px 0}
+.bz h4{font-size:16.5px;margin:0 0 2px}
+.bz h4 .yomi{font-size:12px;color:var(--dim);font-weight:400;margin-left:6px}
+.bz .size{display:inline-block;background:#f3efe7;border-radius:6px;
+  padding:2px 9px;font-size:13px;font-weight:700;margin-left:6px;
+  vertical-align:2px}
+.bz dl{display:grid;grid-template-columns:5.6em 1fr;gap:2px 10px;
+  font-size:14px;margin-top:8px}
+.bz dt{color:var(--dim);font-size:12.5px;padding-top:3px}
+.bz dd{margin:0}
+.bz .miss{color:var(--warn)}
+.swatch{display:inline-block;width:34px;height:9px;border-radius:2px;
+  vertical-align:2px;margin-right:2px}
+.quiz{background:var(--card);border:1px solid var(--line);
+  border-radius:var(--radius);padding:16px 18px;margin:14px 0}
+.quiz li{margin:9px 0}
+.quiz .a{color:var(--ok);font-weight:700}
+figure svg{display:block;max-width:100%;height:auto;
+  border:1px solid var(--line);border-radius:8px;background:#fff}
+@media print{figure svg{border:none}}
+@media(max-width:520px){.bz dl{grid-template-columns:4.8em 1fr}}
+</style>
+</head><body><div class="wrap">
+<a class="back" href="index.html">← もくじにもどる</a>
+
+<header class="top">
+  <div class="kicker">部材ずかん</div>
+  <h1>床伏図・小屋伏図　どれが何なのか</h1>
+  <p>伏図の線が「どの木の棒」なのかを、立体の絵とならべて1つずつ確かめます。
+  答案に描く型そのものではなく、<b>意味が分かるようになるためのページ</b>です。</p>
+</header>
+
+<h2>0. そもそも伏図って何の絵？</h2>
+<p>家の骨は、細い木の棒をたくさん組み合わせてできています。
+その棒たちを、<strong>床板をはがして真上からのぞきこんだ絵</strong>が伏図です。</p>
+<p>ここで混乱が起きます。<b>上から見ると、棒はぜんぶ「ただの線」になってしまう</b>から。
+太い棒も細い棒も、高い所にある棒も低い所にある棒も、平べったい線に見えます。
+だから伏図は、はじめて見た人には暗号にしか見えないのです。</p>
+<div class="note good"><b>このページのやること：</b>
+立体の絵と伏図を左右にならべて、同じ番号をふります。
+<b>左の棒 ＝ 右の線</b>。これを6回くり返せば、伏図は読めるようになります。</div>
+
+<h2>1. 床のしくみ（床伏図）</h2>
+<figure>
+  {{SVG:buzai_yuka}}
+  <figcaption>建物の南西のすみ、2マス×2マスだけを取り出したところ。番号が同じものが同じ部材。</figcaption>
+</figure>
+
+<h3>床伏図に出てくるのは、たった6種類</h3>
+
+<div class="bz" style="border-left-color:#b03060">
+<h4>① 通し柱<span class="yomi">とおしばしら</span><span class="size">120×120</span></h4>
+<dl>
+<dt>どこに</dt><dd>建物の四すみ、4本だけ</dd>
+<dt>なにを</dt><dd>1階の土台から3階の軒まで、<b>1本の木で通し</b>ている柱。
+  つぎ目がないので、建物の角がしっかりする</dd>
+<dt>伏図では</dt><dd><b>■を○で囲んだ印</b>（この教材の図では◎）</dd>
+<dt class="miss">ミス</dt><dd class="miss">四すみ4か所の○を書きわすれる。毎年いちばん多い減点</dd>
+</dl>
+</div>
+
+<div class="bz" style="border-left-color:#4a4a4a">
+<h4>② 管柱<span class="yomi">くだばしら</span><span class="size">120×120</span></h4>
+<dl>
+<dt>どこに</dt><dd>四すみ以外の柱ぜんぶ（型では16本のうち12本）</dd>
+<dt>なにを</dt><dd><b>その階だけ</b>の柱。上の階の柱とは、梁をはさんで別の木。
+  「管（くだ）＝短い筒」だと思えばいい</dd>
+<dt>伏図では</dt><dd>ぬりつぶした<b>■</b></dd>
+<dt class="miss">ミス</dt><dd class="miss">上下の階で柱の位置がズレる。
+  <b>3階ともまったく同じ位置</b>にそろえる（直下率100％）</dd>
+</dl>
+</div>
+
+<div class="bz" style="border-left-color:#c0392b">
+<h4>③ 胴差<span class="yomi">どうさし</span><span class="size">120×300</span></h4>
+<dl>
+<dt>どこに</dt><dd>建物の<b>外周をぐるり1周</b></dd>
+<dt>なにを</dt><dd>上の階と下の階のさかい目で、外がわの壁をつないでいる梁。
+  人のからだでいう「おなか（胴）」の高さを、ぐるっと帯のように差しわたす</dd>
+<dt>伏図では</dt><dd>いちばん太い線。外周の四角</dd>
+<dt class="miss">ミス</dt><dd class="miss">外周を1周させずに、途中で切ってしまう</dd>
+</dl>
+</div>
+
+<div class="bz" style="border-left-color:#1f6fb2">
+<h4>④ 大梁<span class="yomi">おおばり</span><span class="size">120×300／120×240</span></h4>
+<dl>
+<dt>どこに</dt><dd>南北はB・C通り、東西は2・3通り（＝建物のまん中を横切る線）</dd>
+<dt>なにを</dt><dd><b>柱から柱へ</b>まっすぐわたる、太い梁。
+  床の重さを受けとめて、柱に流す</dd>
+<dt>伏図では</dt><dd>胴差のつぎに太い線。両はしがかならず柱（■）にとどく</dd>
+<dt class="miss">ミス</dt><dd class="miss">柱のない所まで飛ばす。木の梁は
+  <b>3,640mm（2間）がげんかい</b>。それ以上は柱を1本立てる</dd>
+</dl>
+</div>
+
+<div class="bz" style="border-left-color:#2e8b57">
+<h4>⑤ 床小梁<span class="yomi">ゆかこばり</span><span class="size">120×180 ＠910</span></h4>
+<dl>
+<dt>どこに</dt><dd>大梁と大梁のすき間に、東西方向へ<b>910mmおき</b></dd>
+<dt>なにを</dt><dd>床板を直接ささえる細い梁。
+  大梁だけでは910mmもすき間が空いて床がたわむので、その間をうめる</dd>
+<dt>伏図では</dt><dd>いちばん細い線。両はしは柱ではなく<b>梁にとりつく</b></dd>
+<dt class="miss">ミス</dt><dd class="miss">大梁と同じ太さで描く。
+  <b>太さで格のちがいを見せる</b>のが伏図の作法</dd>
+</dl>
+</div>
+
+<div class="bz" style="border-left-color:#e67e22">
+<h4>⑥ 火打梁<span class="yomi">ひうちばり</span><span class="size">90×90</span></h4>
+<dl>
+<dt>どこに</dt><dd>四角い枠のすみ、ななめに（型では8か所）</dd>
+<dt>なにを</dt><dd>四角い枠は、横から押すと<b>ぺしゃんと平行四辺形につぶれます</b>。
+  すみにななめの棒を1本入れると、三角ができてつぶれなくなる。それだけの部材</dd>
+<dt>伏図では</dt><dd>すみの短いななめ線</dd>
+<dt class="miss">ミス</dt><dd class="miss">まるごと書きわすれる。地震のときに床が
+  ゆがまないための部材なので、構造の記述でも使える</dd>
+</dl>
+</div>
+
+<div class="bz" style="border-left-color:#c8ab72">
+<h4>⑦ 構造用合板<span class="yomi">こうぞうようごうはん</span><span class="size">t＝24</span></h4>
+<dl>
+<dt>どこに</dt><dd>梁の上いちめん（＝床そのもの）</dd>
+<dt>なにを</dt><dd>梁の「上ば」はぜんぶ同じ高さにそろえてあるので、
+  厚い板をペタッと直接張れる。板1枚で床全体が固まり、地震の力を耐力壁へ配れる。
+  これを<b>剛床（ごうしょう）</b>、または根太レスといいます</dd>
+<dt>伏図では</dt><dd><b>描かない。</b>線ではなく面なので、
+  凡例や注記に文字で「構造用合板 t=24」と書く</dd>
+<dt class="miss">ミス</dt><dd class="miss">記述で「剛床」という言葉が出てこない。
+  構造の問題ならほぼ確実に使える言葉です</dd>
+</dl>
+</div>
+
+<div class="note"><b>1階の柱だけは別。</b>木造3階建ての1階の柱は、
+令43条2項で原則<b>135mm角以上</b>です（緊結＋構造計算をすれば120角にできる、
+というただし書つき）。問題文に指定がなければ
+<b>1階の柱は135×135</b>と書くのがいちばん安全です。</div>
+
+<h2>2. 屋根のしくみ（小屋伏図）</h2>
+<figure>
+  {{SVG:buzai_koya}}
+  <figcaption>西のはし（軒）から、まん中の棟をこえた所まで。屋根は棟から東西の2方向へ流れ落ちる。</figcaption>
+</figure>
+
+<p><b>「小屋」って小さい家のこと？</b> ちがいます。建築で<b>小屋（こや）＝屋根のうらがわ</b>、
+つまり天井と屋根のあいだの三角の空間のことです。
+そこにある骨だから「小屋組」「小屋梁」「小屋束」と呼びます。</p>
+
+<h3>小屋伏図に出てくるのも、たった6種類</h3>
+
+<div class="bz" style="border-left-color:#c0392b">
+<h4>① 軒桁・妻梁<span class="yomi">のきげた・つまばり</span><span class="size">120×240</span></h4>
+<dl>
+<dt>どこに</dt><dd>いちばん外がわ、ぐるり1周。＋柱のあるB・C通り</dd>
+<dt>なにを</dt><dd>壁のてっぺんに横たわって、屋根の重さを受けとめ柱へ流す。
+  <b>軒（のき）のがわ＝軒桁</b>、<b>三角に見えるがわ（妻）＝妻梁</b>。
+  床でいえば胴差にあたる位置</dd>
+<dt>伏図では</dt><dd>いちばん太い線。外周の四角</dd>
+<dt class="miss">ミス</dt><dd class="miss">B・C通りの桁を書きわすれる。
+  ここが無いと梁が7,280mmも飛んでしまい、構造として成立しません</dd>
+</dl>
+</div>
+
+<div class="bz" style="border-left-color:#1f6fb2">
+<h4>② 小屋梁<span class="yomi">こやばり</span><span class="size">120×240 ＠1,820</span></h4>
+<dl>
+<dt>どこに</dt><dd>東西方向に、<b>1,820mmおき</b></dd>
+<dt>なにを</dt><dd>小屋束（次の③）を下から受けとめる梁。
+  屋根の重さは 垂木 → 母屋 → 小屋束 → <b>小屋梁</b> → 桁 → 柱 と伝わります</dd>
+<dt>伏図では</dt><dd>よこ向きの太い線</dd>
+<dt class="miss">ミス</dt><dd class="miss">間かくを広げすぎる。1,820（2マス）おきが目安</dd>
+</dl>
+</div>
+
+<div class="bz" style="border-left-color:#4a4a4a">
+<h4>③ 小屋束<span class="yomi">こやづか</span><span class="size">90×90</span></h4>
+<dl>
+<dt>どこに</dt><dd>母屋・棟木と小屋梁が交わる点、ぜんぶ</dd>
+<dt>なにを</dt><dd><b>束（つか）＝短い柱</b>。屋根の坂を作るための背くらべです。
+  棟に近いほど長く、軒に近いほど短い。棟木の下の束だけ<b>棟束（むなづか）</b>と呼びます</dd>
+<dt>伏図では</dt><dd>交点にうつ小さな<b>○</b></dd>
+<dt class="miss">ミス</dt><dd class="miss">棟木の下の棟束を書きわすれる。
+  棟木も母屋と同じように束で受けます</dd>
+</dl>
+</div>
+
+<div class="bz" style="border-left-color:#2e8b57">
+<h4>④ 母屋<span class="yomi">もや</span><span class="size">90×90 ＠910</span></h4>
+<dl>
+<dt>どこに</dt><dd>棟木と平行に、910mmおきに何本も</dd>
+<dt>なにを</dt><dd>垂木を下から受ける横木。棟から軒までを<b>階段状に</b>受けていくので、
+  1本ずつ高さがちがいます（4寸勾配なら910進むごとに364ずつ下がる）</dd>
+<dt>伏図では</dt><dd>たて向きの細い線が何本も。<b>棟木と平行</b>なのが見分け方</dd>
+<dt class="miss">ミス</dt><dd class="miss">「おもや」と読む。正しくは<b>もや</b>。
+  それと、棟木の向きとまちがえて直角に描いてしまう</dd>
+</dl>
+</div>
+
+<div class="bz" style="border-left-color:#7d3c98">
+<h4>⑤ 棟木<span class="yomi">むなぎ</span><span class="size">120×120</span></h4>
+<dl>
+<dt>どこに</dt><dd>屋根のてっぺん、建物のまん中に<b>1本だけ</b></dd>
+<dt>なにを</dt><dd>屋根の「山のせすじ」。ここから東西の2方向へ屋根が流れ落ちます。
+  母屋のなかまですが、いちばん高くていちばん太いので特別あつかい</dd>
+<dt>伏図では</dt><dd>まん中を通る、母屋よりすこし太い線</dd>
+<dt class="miss">ミス</dt><dd class="miss">建物のまん中からズレる。
+  型では西のはしから3,640mm（4マス）ちょうど</dd>
+</dl>
+</div>
+
+<div class="bz" style="border-left-color:#e67e22">
+<h4>⑥ 火打梁<span class="yomi">ひうちばり</span><span class="size">90×90</span></h4>
+<dl>
+<dt>どこに</dt><dd>小屋組のすみ、ななめに</dd>
+<dt>なにを</dt><dd>床のときとまったく同じ。四角い枠がゆがまないようにする三角</dd>
+<dt>伏図では</dt><dd>すみの短いななめ線</dd>
+<dt class="miss">ミス</dt><dd class="miss">床伏図には描いたのに、小屋伏図で忘れる</dd>
+</dl>
+</div>
+
+<div class="bz" style="border-left-color:#b0651a">
+<h4>⑦ 垂木<span class="yomi">たるき</span><span class="size">45×105 ＠455</span></h4>
+<dl>
+<dt>どこに</dt><dd>屋根の面の上、棟から軒へ向かって455mmおき</dd>
+<dt>なにを</dt><dd>屋根の板を直接ささえる、ななめの細い木。
+  屋根の面にそって「垂れる」ように並ぶから垂木</dd>
+<dt>伏図では</dt><dd><b>描かない。</b>本数が多すぎて図がつぶれるので、
+  凡例か注記に文字で「垂木 45×105 @455」と書く</dd>
+<dt class="miss">ミス</dt><dd class="miss">全部描いて時間をつぶす。注記1行で足ります</dd>
+</dl>
+</div>
+
+<h2>3. 見分け早見表</h2>
+<p>床伏図と小屋伏図は、線の見た目がにています。
+でも<b>役わりで対応させると、じつは同じ形</b>です。</p>
+<table>
+<tr><th>役わり</th><th>床伏図では</th><th>小屋伏図では</th><th>見た目</th></tr>
+<tr><td>外周をぐるり1周</td><td><b>胴差</b> 120×300</td><td><b>軒桁・妻梁</b> 120×240</td><td>いちばん太い線</td></tr>
+<tr><td>まん中を横切る太い梁</td><td><b>大梁</b> 120×300・240</td><td><b>小屋梁</b> 120×240 @1,820</td><td>2ばんめに太い線</td></tr>
+<tr><td>すき間をうめる細い横木</td><td><b>床小梁</b> 120×180 @910</td><td><b>母屋</b> 90×90 @910</td><td>いちばん細い線</td></tr>
+<tr><td>たてに立つ短い木</td><td><b>柱</b> 120×120</td><td><b>小屋束</b> 90×90</td><td>■ と ○</td></tr>
+<tr><td>すみのゆがみ止め</td><td><b>火打梁</b> 90×90</td><td><b>火打梁</b> 90×90</td><td>ななめの短い線</td></tr>
+<tr><td>面をつくるもの</td><td><b>構造用合板</b> t=24</td><td><b>垂木</b> 45×105 @455</td><td>描かず文字で注記</td></tr>
+<tr><td>そこだけの特別</td><td>—</td><td><b>棟木</b> 120×120（1本）</td><td>まん中の太い線</td></tr>
+</table>
+<div class="note good"><b>いちばん大きなちがいは1つだけ。</b>
+小屋伏図には<b>高さのちがい</b>があります。
+床伏図は「梁の上ばがぜんぶ同じ高さ」でまっ平ら。
+小屋伏図は「棟がいちばん高く、軒へ向かってだんだん低くなる」坂です。
+だから小屋伏図にだけ<b>小屋束（○）</b>が出てきます ── 高さのちがうぶんを、
+短い柱で埋めているのです。</div>
+
+<h2>4. 名前は漢字が教えてくれる</h2>
+<table>
+<tr><th>ことば</th><th>読み</th><th>漢字の意味</th></tr>
+<tr><td>胴差</td><td>どうさし</td><td>建物の「胴（おなか）」の高さを差しわたす</td></tr>
+<tr><td>管柱</td><td>くだばしら</td><td>「管＝短い筒」。その階だけの短い柱</td></tr>
+<tr><td>火打梁</td><td>ひうちばり</td><td>火打ち石を打つときの、ななめの形から</td></tr>
+<tr><td>軒桁</td><td>のきげた</td><td>「軒＝屋根のはし」のところの桁</td></tr>
+<tr><td>妻梁</td><td>つまばり</td><td>「妻＝屋根が三角に見えるがわ」の梁</td></tr>
+<tr><td>小屋</td><td>こや</td><td>天井と屋根のあいだの空間。小さい家ではない</td></tr>
+<tr><td>束</td><td>つか</td><td>短い柱。床下のものは「床束」</td></tr>
+<tr><td>母屋</td><td>もや</td><td>垂木の「母（親）」になって受けとめる横木</td></tr>
+<tr><td>棟木</td><td>むなぎ</td><td>「棟＝屋根のてっぺんのせすじ」の木</td></tr>
+<tr><td>垂木</td><td>たるき</td><td>屋根の坂に「垂れる」ように並ぶ木</td></tr>
+</table>
+
+<h2>5. 描く順番（これも6手）</h2>
+<h3>床伏図</h3>
+<ol>
+<li>外周をぐるり1周、<b>胴差</b>（いちばん太く）</li>
+<li>南北のB・C通りへ<b>大梁</b></li>
+<li>東西の2・3通りへ<b>大梁</b></li>
+<li>すき間に<b>床小梁</b>を910mmおき（東西向き・細く）</li>
+<li>すみ8か所に<b>火打梁</b>をななめに</li>
+<li>柱の■と、四すみの○。最後に<b>凡例欄</b>へ断面寸法</li>
+</ol>
+<h3>小屋伏図</h3>
+<ol>
+<li>外周をぐるり1周、<b>軒桁・妻梁</b>。＋B・C通りの桁</li>
+<li>東西方向に<b>小屋梁</b>を1,820mmおき</li>
+<li>まん中に<b>棟木</b>を1本（すこし太く）</li>
+<li>棟木と平行に<b>母屋</b>を910mmおき</li>
+<li>交点ぜんぶに<b>小屋束</b>の○（棟木の下も忘れずに）</li>
+<li>すみに<b>火打梁</b>。最後に<b>凡例欄</b>と垂木の注記</li>
+</ol>
+<div class="note"><b>どちらも「外 → 太い → 細い → 点 → ななめ → 文字」の順番。</b>
+太い線から描くと、細い線をどこで止めればいいかが自然に決まります。</div>
+
+<h2>6. これだけは、というミス6つ</h2>
+<ol>
+<li><b>四すみの通し柱に○をつけない</b>（毎年いちばん多い）</li>
+<li><b>棟束を書かない</b>（母屋の下にはうつのに、棟木の下だけ忘れる）</li>
+<li><b>母屋を棟木と直角に描く</b>（正しくは<b>平行</b>）</li>
+<li><b>柱のない所へ梁を飛ばす</b>（げんかいは3,640mm）</li>
+<li><b>火打梁を忘れる</b>（とくに小屋伏図のほう）</li>
+<li><b>凡例欄が空っぽ</b>（正角材の断面寸法はここに書く。
+  平角材は図の中の梁1本ずつのわきに）</li>
+</ol>
+
+<h2>7. たしかめクイズ</h2>
+<div class="quiz">
+<ol>
+<li>伏図でいちばん太い線は？<br><span class="a">答え：外周をぐるり1周しているもの。床なら胴差、小屋なら軒桁・妻梁。</span></li>
+<li>交点にうつ小さな○は何？<br><span class="a">答え：小屋束。母屋・棟木と小屋梁が交わる所すべてに立つ。</span></li>
+<li>母屋は棟木と平行？　直角？<br><span class="a">答え：平行。垂木だけが棟木と直角（＝屋根の坂の向き）。</span></li>
+<li>伏図に描かないのに、文字では書くものは？<br><span class="a">答え：構造用合板 t=24（床）と、垂木 45×105 @455（屋根）。線ではなく面だから。</span></li>
+<li>床伏図に小屋束が出てこないのはなぜ？<br><span class="a">答え：床は平ら＝梁の上ばがぜんぶ同じ高さだから、高さを埋める短い柱がいらない。</span></li>
+<li>木の梁を飛ばせるげんかいは？<br><span class="a">答え：3,640mm（2間）。それより広いなら柱を1本立てる。</span></li>
+</ol>
+</div>
+
+<footer>
+二級建築士 設計製図　自習用教材／部材ずかん。
+図は <code>scripts/buzai.py</code> から生成しています。
+</footer>
+</div></body></html>
