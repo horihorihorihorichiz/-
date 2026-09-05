@@ -136,7 +136,13 @@ def page3():
     return s
 
 
+FIG = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'figures')
+
 if __name__ == '__main__':
     for i, fn in enumerate((page1, page2, page3), 1):
-        fn().save(os.path.join(OUT, 'renshu%d.svg' % i))
-    print('wrote sheets/renshu1〜3.svg  （A3横・目盛4.55mm / 10mm 実寸）')
+        s = fn()
+        s.save(os.path.join(OUT, 'renshu%d.svg' % i))
+    # 解説書に載せる見本（2種類の方眼のちがいが分かる3枚目）
+    page3().save(os.path.join(FIG, 'renshu.svg'))
+    print('wrote sheets/renshu1〜3.svg ＋ figures/renshu.svg'
+          '  （A3横・目盛4.55mm / 10mm 実寸）')
