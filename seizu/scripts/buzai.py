@@ -623,10 +623,182 @@ def zentai():
     return s
 
 
+# ================================================== 柱の切れ方・名前の変わり方
+def hashira():
+    """たて割りにして、通し柱と管柱のちがいをはっきり見せる図。
+
+    たてに立つ部材と、よこにぐるり1周する部材の両方を、
+    同じ高さのものさしの上にならべてある。
+    """
+    W, H = 1240, 880
+    s = Svg(W, H)
+    s.text(W / 2.0, 40, '部材ずかん ③　柱の切れ方と、部材の名前の変わり方',
+           size=22, weight='700')
+    s.text(W / 2.0, 66,
+           '建物をたてにスパッと切ったところ。'
+           '左右の図は同じ高さのものさしの上にのっている。',
+           size=12.5, fill='#666')
+
+    K, GL = 0.050, 740.0
+
+    def Y(z):
+        return GL - z * K
+
+    # 型の高さ（mm）。1FL=550＝基礎371＋パッキン20＋土台120＋合板24＋仕上15
+    DODAI = (391.0, 511.0)          # 土台 120
+    DOU2 = (3311.0, 3611.0)         # 2階と3階のさかい目の胴差 300
+    DOU3 = (6211.0, 6511.0)         # 3階の床の胴差 300
+    NOKI = (9110.0, 9350.0)         # 軒桁 240
+
+    panel(s, 20, 86, 680, 684, 'たてに立つもの',
+          '通し柱と管柱のちがいは「切れているか、いないか」だけ')
+    panel(s, 716, 86, 504, 684, 'よこにぐるり1周するもの',
+          'ちがうのは高さだけ ── だから名前が変わる')
+
+    # ---------------- 高さのものさし（左はし）
+    for z, lab in ((0.0, 'GL'), (550.0, '1FL  GL+550'),
+                   (3650.0, '2FL  GL+3,650'), (6550.0, '3FL  GL+6,550'),
+                   (9350.0, '軒高  GL+9,350')):
+        s.line(96, Y(z), 676, Y(z), stroke='#e2ded6', stroke_width=0.8,
+               stroke_dasharray='4 4')
+        s.text(92, Y(z) + 4, lab, size=10.5, anchor='end', fill='#999')
+    s.line(96, Y(0), 96, Y(9350), stroke='#ddd', stroke_width=1.0)
+    s.rect(96, Y(0), 580, 22, fill='#efece6', stroke='none')      # 地面
+    for x in range(100, 676, 16):
+        s.line(x, Y(0) + 22, x + 8, Y(0) + 8, stroke='#cfc9bd',
+               stroke_width=1.0)
+
+    # ---------------- 通し柱（左）と管柱（右）
+    CW = 44.0
+
+    def yoko(cx, z0, z1, col, through):
+        """胴差など、よこにわたす部材。through=Trueなら柱を切って通る。"""
+        if through:
+            s.rect(cx - 105, Y(z1), 210, Y(z0) - Y(z1), fill=mix(col, 0.20),
+                   stroke=mix(col, -0.35), stroke_width=1.2, rx=2)
+        else:
+            for sgn in (-1, 1):
+                x0 = cx + sgn * CW / 2.0
+                s.rect(min(x0, x0 + sgn * 80), Y(z1), 80, Y(z0) - Y(z1),
+                       fill=mix(col, 0.20), stroke=mix(col, -0.35),
+                       stroke_width=1.2)
+
+    def tate(cx, z0, z1, col, tone):
+        s.rect(cx - CW / 2.0, Y(z1), CW, Y(z0) - Y(z1), fill=mix(col, tone),
+               stroke=mix(col, -0.4), stroke_width=1.4, rx=2)
+
+    # 通し柱：よこ材を先に描き、そのうえに柱を1本かぶせる＝切れていない
+    CX1 = 210.0
+    yoko(CX1, DODAI[0], DODAI[1], C_DODAI, False)
+    for z0, z1 in (DOU2, DOU3, NOKI):
+        yoko(CX1, z0, z1, C_DOU, False)
+    tate(CX1, DODAI[1], 9350.0, C_TOOSHI, 0.30)
+    s.text(CX1, Y(4800), '1', size=34, weight='800', fill='#fff')
+    s.text(CX1, Y(4400), '本', size=17, weight='700', fill='#fff')
+
+    # 管柱：柱を先に3本ぶん描き、そのうえによこ材をかぶせる＝切れている
+    CX2 = 450.0
+    for i, (z0, z1) in enumerate(((DODAI[1], DOU2[0]), (DOU2[1], DOU3[0]),
+                                  (DOU3[1], NOKI[0]))):
+        tate(CX2, z0, z1, C_TSUKA, 0.62 if i % 2 else 0.50)
+        s.text(CX2, (Y(z0) + Y(z1)) / 2.0 + 6, '%d階' % (i + 1), size=15,
+               weight='700', fill='#fff')
+    yoko(CX2, DODAI[0], DODAI[1], C_DODAI, True)
+    for z0, z1 in (DOU2, DOU3, NOKI):
+        yoko(CX2, z0, z1, C_DOU, True)
+    # 切れ目を赤い太線で強調する（胴差のふちに重ならない長さで）
+    for z0, z1 in ((DODAI[1], DOU2[0]), (DOU2[1], DOU3[0]),
+                   (DOU3[1], NOKI[0])):
+        for z in (z0, z1):
+            s.line(CX2 - CW / 2.0 - 13, Y(z), CX2 + CW / 2.0 + 13, Y(z),
+                   stroke='#c0392b', stroke_width=3.0)
+    # 通し柱のほうは、つぎ目がないことを1本の矢印で見せる
+    s.line(CX1 - 62, Y(DODAI[1]), CX1 - 62, Y(9350), stroke=C_TOOSHI,
+           stroke_width=1.4)
+    for z, d in ((DODAI[1], 1), (9350.0, -1)):
+        s.polygon([(CX1 - 62, Y(z)), (CX1 - 67, Y(z) - d * 11),
+                   (CX1 - 57, Y(z) - d * 11)], fill=C_TOOSHI)
+    s.text(CX1 - 70, Y(5600), 'つぎ目なし', size=11, anchor='end',
+           fill=C_TOOSHI, weight='700')
+    s.text(CX2 + 114, Y(DOU3[1]) - 6, 'ここで切れて', size=11,
+           anchor='start', fill='#c0392b', weight='700')
+    s.text(CX2 + 114, Y(DOU3[1]) + 9, '上にまた立つ', size=11,
+           anchor='start', fill='#c0392b', weight='700')
+
+    s.text(CX1, 160, '通し柱', size=19, weight='700', fill=C_TOOSHI)
+    s.text(CX1, 183, '土台から軒桁まで 1本の木', size=12, fill='#666')
+    s.text(CX1, 201, '四すみ 4本だけ', size=12, fill='#666')
+    s.text(CX2, 160, '管柱', size=19, weight='700', fill=C_TSUKA)
+    s.text(CX2, 183, '階ごとに 3本に切れている', size=12, fill='#666')
+    s.text(CX2, 201, '四すみ以外ぜんぶ（型では12本）', size=12, fill='#666')
+
+    s.text(30, 796,
+           '★ 太さはどちらも同じ120×120。ちがうのは「1本か、3本か」だけ。',
+           size=12, anchor='start', fill='#555')
+    s.text(30, 816,
+           '★ 通し柱は、つぎ目がないぶん強い。'
+           'だからいちばん力のかかる四すみに置く。',
+           size=12, anchor='start', fill='#555')
+    s.text(30, 836,
+           '★ 平面図では、通し柱の■を○で囲む。これが書きわすれ第1位。',
+           size=12, anchor='start', fill='#555')
+
+    # ---------------- 右：ぐるり1周する部材
+    BX0, BX1 = 790.0, 940.0
+    s.rect(BX0, Y(9350), BX1 - BX0, Y(0) - Y(9350), fill='#faf8f4',
+           stroke='#d8d2c6', stroke_width=1.2)
+    s.polygon([(BX0 - 26, Y(9350)), ((BX0 + BX1) / 2.0, Y(10806)),
+               (BX1 + 26, Y(9350))], fill='#f3efe7', stroke='#d8d2c6',
+              stroke_width=1.2)
+    s.rect(BX0, Y(0), BX1 - BX0, 22, fill='#efece6', stroke='none')
+    for z, lab in ((2100.0, '1階'), (5100.0, '2階'), (7900.0, '3階')):
+        s.text((BX0 + BX1) / 2.0, Y(z), lab, size=14, fill='#b8b2a6',
+               weight='700')
+
+    def yobi(z0, z1, col, name, size_txt, note):
+        s.rect(BX0 - 14, Y(z1), BX1 - BX0 + 28, Y(z0) - Y(z1),
+               fill=mix(col, 0.18), stroke=mix(col, -0.35), stroke_width=1.4)
+        my = (Y(z0) + Y(z1)) / 2.0
+        s.line(BX1 + 20, my, BX1 + 50, my, stroke=col, stroke_width=1.2)
+        s.text(BX1 + 58, my - 3, name, size=15, anchor='start', fill=col,
+               weight='700')
+        s.text(BX1 + 58 + twidth(name, 15) + 10, my - 3, size_txt, size=12,
+               anchor='start', fill='#888')
+        s.text(BX1 + 58, my + 15, note, size=11.5, anchor='start',
+               fill='#666')
+
+    yobi(NOKI[0], NOKI[1], C_DOU, '軒桁', '120×240',
+         '壁のてっぺん。屋根を受ける')
+    yobi(DOU3[0], DOU3[1], C_DOU, '胴差', '120×300', '2階と3階のさかい目')
+    yobi(DOU2[0], DOU2[1], C_DOU, '胴差', '120×300', '1階と2階のさかい目')
+    yobi(DODAI[0], DODAI[1], C_DODAI, '土台', '120×120',
+         '基礎の上。いちばん下')
+    s.rect(BX0 - 24, Y(391), BX1 - BX0 + 48, Y(-300) - Y(391),
+           fill='#e8e6e2', stroke='#b9b4ab', stroke_width=1.2)
+    s.text((BX0 + BX1) / 2.0, Y(0) + 16, 'べた基礎', size=11.5, fill='#7a746a')
+
+    s.text(726, 796,
+           '★ ぜんぶ外周をぐるり1周する仲間。高さで名前が変わるだけ。',
+           size=12, anchor='start', fill='#555')
+    s.text(726, 816,
+           '★ 見分けは「せい」。胴差300 ＞ 軒桁240 ＞ 土台120。',
+           size=12, anchor='start', fill='#555')
+    s.text(726, 836,
+           '★ 桁と梁のちがいは向き。棟と平行が桁、直角が梁。',
+           size=12, anchor='start', fill='#555')
+
+    s.text(W / 2.0, H - 18,
+           'たてに立つもの＝柱・束　／　よこにわたすもの＝土台・胴差・桁・梁。'
+           'まずこの2つに分けると、名前は迷わない。',
+           size=13, weight='700', fill='#333')
+    return s
+
+
 if __name__ == '__main__':
     out = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..',
                        'figures')
     zentai().save(os.path.join(out, 'buzai_zentai.svg'))
+    hashira().save(os.path.join(out, 'buzai_hashira.svg'))
     yuka().save(os.path.join(out, 'buzai_yuka.svg'))
     koya().save(os.path.join(out, 'buzai_koya.svg'))
-    print('wrote buzai_zentai.svg / buzai_yuka.svg / buzai_koya.svg')
+    print('wrote buzai_zentai / _hashira / _yuka / _koya .svg')
