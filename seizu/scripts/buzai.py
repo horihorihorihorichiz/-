@@ -1023,12 +1023,257 @@ def toban():
     return s
 
 
+# ==================================================== 完成形（答案そのもの）
+def _sei(masu):
+    """スパン（マス）から床小梁のせいを決める。ansframe.py と同じ。"""
+    mm = masu * 910
+    return 180 if mm <= 1900 else (240 if mm <= 2800 else 300)
+
+
+def _ansdraw(s, ox, oy, g, kind):
+    """8×10マスの伏図を、答案と同じ描き方（黒・2本線・記号）で描く。
+
+    記号と寸法の入れ方は scripts/ansframe.py（標準解答例と同じ描き方）
+    にそろえてある。
+    """
+    NX, NY = 8, 10
+    XL, YL = (0, 2, 5, 8), (0, 2, 6, 10)
+    HW = 120.0 / 910.0 * g / 2.0
+    CH = min(HW, 3.0)
+    INK = '#111'
+
+    def X(gx):
+        return ox + gx * g
+
+    def Y(gy):
+        return oy + (NY - gy) * g
+
+    half = g / 2.0                                   # 目盛4.55mm＝455mm
+    for i in range(NX * 2 + 1):
+        s.line(X(0) + i * half, Y(NY) - half, X(0) + i * half,
+               Y(0) + half, stroke='#ededed', stroke_width=0.6)
+    for j in range(NY * 2 + 1):
+        s.line(X(0) - half, Y(0) - j * half, X(NX) + half,
+               Y(0) - j * half, stroke='#ededed', stroke_width=0.6)
+
+    dims = []
+
+    def mem(ori, ln, a, b, dim):
+        if ori == 'H':
+            y = Y(ln)
+            for d in (-HW, HW):
+                s.line(X(a) + CH, y + d, X(b) - CH, y + d, stroke=INK,
+                       stroke_width=1.1)
+            for xx, sg in ((X(a), 1), (X(b), -1)):
+                s.line(xx, y - HW + CH, xx, y + HW - CH, stroke=INK,
+                       stroke_width=1.1)
+                s.line(xx, y - HW + CH, xx + sg * CH, y - HW, stroke=INK,
+                       stroke_width=1.1)
+                s.line(xx, y + HW - CH, xx + sg * CH, y + HW, stroke=INK,
+                       stroke_width=1.1)
+            dims.append(('H', (X(a) + X(b)) / 2.0, y - HW - 4, dim))
+        else:
+            x = X(ln)
+            for d in (-HW, HW):
+                s.line(x + d, Y(a) - CH, x + d, Y(b) + CH, stroke=INK,
+                       stroke_width=1.1)
+            for yy, sg in ((Y(a), -1), (Y(b), 1)):
+                s.line(x - HW + CH, yy, x + HW - CH, yy, stroke=INK,
+                       stroke_width=1.1)
+                s.line(x - HW + CH, yy, x - HW, yy + sg * CH, stroke=INK,
+                       stroke_width=1.1)
+                s.line(x + HW - CH, yy, x + HW, yy + sg * CH, stroke=INK,
+                       stroke_width=1.1)
+            dims.append(('V', x + HW + 11, (Y(a) + Y(b)) / 2.0, dim))
+
+    if kind == 'floor':
+        for ln in (0, NY):                                   # 胴差（外周）
+            mem('H', ln, 0, NX, '120×300')
+        for ln in (0, NX):
+            mem('V', ln, 0, NY, '120×300')
+        for ln in XL[1:-1]:                                  # 大梁（南北）
+            for a, b in zip(YL[:-1], YL[1:]):
+                mem('V', ln, a, b, '120×300')
+        for ln in YL[1:-1]:                                  # 大梁（東西）
+            for a, b in zip(XL[:-1], XL[1:]):
+                mem('H', ln, a, b, '120×240')
+        for a, b in zip(YL[:-1], YL[1:]):                    # 床小梁 @910
+            for gy in range(a + 1, b):
+                for c, e in zip(XL[:-1], XL[1:]):
+                    mem('H', gy, c, e, '120×%d' % _sei(e - c))
+    else:
+        for ln in (0, NY):                                   # 妻梁
+            mem('H', ln, 0, NX, '120×240')
+        for ln in XL:                                        # 軒桁
+            mem('V', ln, 0, NY, '120×240')
+        for gy in range(2, NY, 2):                           # 小屋梁 @1,820
+            for c, e in zip(XL[:-1], XL[1:]):
+                mem('H', gy, c, e, '120×240')
+        for gx in (1, 2, 3, 5, 6, 7):                        # 母屋 @910
+            s.line(X(gx), Y(0) + 6, X(gx), Y(NY) - 6, stroke=INK,
+                   stroke_width=0.9, stroke_dasharray='16 3 2 3')
+        for d in (-HW, HW):                                  # 棟木
+            s.line(X(4) + d, Y(0) + 6, X(4) + d, Y(NY) - 6, stroke=INK,
+                   stroke_width=1.2)
+        for gx in range(1, NX):                              # 小屋束・棟束
+            for gy in range(2, NY, 2):
+                s.circle(X(gx), Y(gy), 3.4, fill=INK)
+        s.rect(X(4) + 12, Y(9) - 15, 92, 19, fill='#fff',
+               fill_opacity=0.9, stroke='none')
+        s.text(X(4) + 16, Y(9) - 2, '棟木 120×120', size=9.5,
+               anchor='start')
+        s.rect(X(1) + 4, Y(1) - 11, 168, 19, fill='#fff', fill_opacity=0.9,
+               stroke='none')
+        s.text(X(1) + 8, Y(1) + 2, '母屋 90×90（小屋束 90×90）', size=9.5,
+               anchor='start')
+
+    for x_, y_, sx, sy in ((0, 0, 1, 1), (NX, 0, -1, 1), (0, NY, 1, -1),
+                           (NX, NY, -1, -1), (2, 2, 1, 1), (5, 2, -1, 1),
+                           (2, 6, 1, -1), (5, 6, -1, -1)):    # 火打梁
+        s.line(X(x_ + sx), Y(y_), X(x_), Y(y_ + sy), stroke=INK,
+               stroke_width=1.2, stroke_dasharray='9 5')
+
+    r = 5.5
+    for gx, gy in KUDA12:                                    # 管柱
+        x, y = X(gx), Y(gy)
+        s.rect(x - r, y - r, 2 * r, 2 * r, fill='#fff', stroke=INK,
+               stroke_width=1.0)
+        s.line(x - r, y - r, x + r, y + r, stroke=INK, stroke_width=1.2)
+        s.line(x - r, y + r, x + r, y - r, stroke=INK, stroke_width=1.2)
+    for gx, gy in TOOSHI4:                                   # 通し柱
+        x, y = X(gx), Y(gy)
+        s.rect(x - r, y - r, 2 * r, 2 * r, fill='#fff', stroke=INK,
+               stroke_width=1.0)
+        s.circle(x, y, r + 4, fill='none', stroke=INK, stroke_width=1.2)
+
+    for k, a, b, txt in dims:                    # 断面寸法は部材のあとに
+        if k == 'H':
+            s.text(a, b, txt, size=9.5, fill=INK)
+        else:
+            s.text_rot(a, b, txt, -90, size=9.5, fill=INK)
+
+    for gx, nm in zip(XL, 'ABCD'):               # 通り符号
+        s.circle(X(gx), Y(NY) - 30, 10, fill='#fff', stroke=INK,
+                 stroke_width=1.0)
+        s.text(X(gx), Y(NY) - 26, nm, size=11, weight='700')
+    for gy, nm in zip(YL, '1234'):
+        s.circle(X(0) - 32, Y(gy), 10, fill='#fff', stroke=INK,
+                 stroke_width=1.0)
+        s.text(X(0) - 32, Y(gy) + 4, nm, size=11, weight='700')
+
+    for a, b in zip(XL[:-1], XL[1:]):            # 寸法
+        s.dim_h(X(a), X(b), Y(0) + 40, format((b - a) * 910, ','), size=9.5)
+    s.dim_h(X(0), X(NX), Y(0) + 70, format(NX * 910, ','), size=11)
+    for a, b in zip(YL[:-1], YL[1:]):
+        s.dim_v(Y(a), Y(b), X(NX) + 46, format((b - a) * 910, ','), size=9.5,
+                anchor='start', dx=6)
+    s.dim_v(Y(0), Y(NY), X(NX) + 84, format(NY * 910, ','), size=11,
+            anchor='start', dx=6)
+
+
+def kansei(kind):
+    """完成形。答案の伏図まるごと1枚を、読める大きさで。"""
+    W, H = 1240, 1060
+    s = Svg(W, H)
+    ttl = ('部材ずかん ⑤　完成形 その1　3階床伏図' if kind == 'floor'
+           else '部材ずかん ⑤　完成形 その2　小屋伏図')
+    s.text(W / 2.0, 40, ttl, size=22, weight='700')
+    s.text(W / 2.0, 66,
+           '答案用紙にこれが描けていれば満点。黒だけ・2本線・記号・'
+           '断面寸法・通り符号・主要な寸法。',
+           size=12.5, fill='#666')
+
+    panel(s, 20, 88, 820, 946,
+          '３階床伏図　縮尺1／100' if kind == 'floor' else '小屋伏図　縮尺1／100',
+          '（2階の床も同じ組み方）' if kind == 'floor'
+          else '（棟は南北方向・4寸勾配）')
+    _ansdraw(s, 128.0, 200.0, 72.0, kind)
+
+    # ----------------------------------------- 右：入っているもの一覧
+    LX, LY = 866.0, 100.0
+    s.rect(854, 88, 366, 946, fill='#fcfcfb', stroke='#e0ded8',
+           stroke_width=1.0, rx=10)
+    s.text(LX, LY + 26, 'この1枚に入っているもの', size=15, anchor='start',
+           weight='700')
+
+    if kind == 'floor':
+        ITEMS = (('胴差', '120×300', '外周をぐるり1周'),
+                 ('大梁（南北）', '120×300', 'B・C通り'),
+                 ('大梁（東西）', '120×240', '2・3通り'),
+                 ('床小梁', '120×180', 'A〜B間（1,820）'),
+                 ('床小梁', '120×240', 'B〜C・C〜D間（2,730）'),
+                 ('火打梁', '90×90', '破線・8か所'),
+                 ('管柱', '120×120', '■にバツ・12本'),
+                 ('通し柱', '120×120', '■を○で囲む・四すみ4本'))
+        ORDER = ('外周の胴差をぐるり1周', 'B・C通りに大梁（南北）',
+                 '2・3通りに大梁（東西）', 'すき間に床小梁を910おき',
+                 'すみ8か所に火打梁（破線）', '柱の記号 → 通り符号 → 寸法')
+        NOTE = ('★ 床小梁のせいは、スパンで変わる。',
+                '　　1,820なら180、2,730なら240。')
+    else:
+        ITEMS = (('軒桁', '120×240', 'A・B・C・D通り（南北）'),
+                 ('妻梁', '120×240', '1通りと4通り（東西）'),
+                 ('小屋梁', '120×240', '東西・1,820おき'),
+                 ('棟木', '120×120', 'まん中に1本・2本線'),
+                 ('母屋', '90×90', '一点鎖線・910おき'),
+                 ('小屋束', '90×90', '交点の黒丸（寸法は書かない）'),
+                 ('火打梁', '90×90', '破線・8か所'),
+                 ('柱', '120×120', '記号は床伏図と同じ'))
+        ORDER = ('外周の軒桁・妻梁', 'A〜D通りに軒桁（南北）',
+                 '東西に小屋梁を1,820おき', 'まん中に棟木、910おきに母屋',
+                 '交点ぜんぶに小屋束の黒丸', 'すみに火打梁 → 柱 → 寸法')
+        NOTE = ('★ 棟木の下の「棟束」を忘れやすい。',
+                '　　母屋と同じように黒丸をうつ。')
+
+    y = LY + 52
+    for nm, dim, note in ITEMS:
+        s.line(LX, y + 14, LX + 336, y + 14, stroke='#eee', stroke_width=0.8)
+        s.text(LX, y, nm, size=12.5, anchor='start', weight='700')
+        s.text(LX + 108, y, dim, size=12, anchor='start', fill='#c0392b',
+               weight='700')
+        s.text(LX + 194, y, note, size=10.5, anchor='start', fill='#777')
+        y += 30
+
+    y += 22
+    s.text(LX, y, '描く順番（6手）', size=14, anchor='start', weight='700')
+    y += 26
+    for i, o in enumerate(ORDER, 1):
+        s.circle(LX + 9, y - 4, 9, fill='#f3efe7', stroke='none')
+        s.text(LX + 9, y, str(i), size=11, weight='700', fill='#7a6a4a')
+        s.text(LX + 26, y, o, size=12, anchor='start', fill='#333')
+        y += 26
+
+    y += 16
+    s.rect(LX - 8, y - 16, 350, 54, fill='#fdf3e7', stroke='#e0c060',
+           stroke_width=1.0, rx=6)
+    s.text(LX, y + 2, NOTE[0], size=11.5, anchor='start', fill='#7a5a10')
+    s.text(LX, y + 20, NOTE[1], size=11.5, anchor='start', fill='#7a5a10')
+
+    y += 66
+    s.rect(LX - 8, y - 16, 350, 74, fill='#f1f8f2', stroke='#b9d8bd',
+           stroke_width=1.0, rx=6)
+    s.text(LX, y + 2, '★ 断面寸法の書きどころ', size=12, anchor='start',
+           weight='700', fill='#1e7e34')
+    s.text(LX, y + 22, '平角材（120×300など）→ 図の中、梁のわき',
+           size=11.5, anchor='start', fill='#3d6b46')
+    s.text(LX, y + 40, '正角材（120×120・90×90）→ 凡例欄',
+           size=11.5, anchor='start', fill='#3d6b46')
+
+    s.text(W / 2.0, H - 14,
+           '目安35分（2枚あわせて）。まず外周、つぎに太い梁、'
+           '最後に細い梁と記号と寸法。',
+           size=12.5, fill='#555')
+    return s
+
+
 if __name__ == '__main__':
     out = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..',
                        'figures')
     zentai().save(os.path.join(out, 'buzai_zentai.svg'))
     hashira().save(os.path.join(out, 'buzai_hashira.svg'))
     toban().save(os.path.join(out, 'buzai_toban.svg'))
+    kansei('floor').save(os.path.join(out, 'buzai_kansei_yuka.svg'))
+    kansei('roof').save(os.path.join(out, 'buzai_kansei_koya.svg'))
     yuka().save(os.path.join(out, 'buzai_yuka.svg'))
     koya().save(os.path.join(out, 'buzai_koya.svg'))
-    print('wrote buzai_zentai / _hashira / _toban / _yuka / _koya .svg')
+    print('wrote buzai_zentai / _hashira / _toban / _kansei_* / _yuka / _koya .svg')
