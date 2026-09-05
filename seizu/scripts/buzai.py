@@ -1266,6 +1266,108 @@ def kansei(kind):
     return s
 
 
+# ================================================ 提出するもの（答案用紙1枚）
+def teishutsu():
+    """提出するのはA2横1枚。その枠割りを、実物にもとづいて示す。
+
+    枠の位置は、公表されている令和4年・令和7年の答案用紙（いずれも
+    A2横 1,684×1,191pt の1枚もの）を実測して起こした模式図。
+    令和8年の答案用紙は未公表なので、右は見込み。
+    """
+    W, H = 1240, 900
+    s = Svg(W, H)
+    s.text(W / 2.0, 40, '部材ずかん ⑥　提出するもの ── 答案用紙 1枚', size=22,
+           weight='700')
+    s.text(W / 2.0, 66,
+           '提出するのは A2横の紙 1枚だけ。図面も面積表も記述も、'
+           'ぜんぶこの1枚の中に書く。',
+           size=12.5, fill='#666')
+
+    SW, SH = 1684.0, 1191.0          # 実物の大きさ（ポイント）
+
+    def sheet(px, py, k, frames, title, sub, sc):
+        s.text(px, py - 34, title, size=15, anchor='start', weight='700')
+        s.text(px, py - 14, sub, size=11.5, anchor='start', fill='#888')
+        s.rect(px, py, SW * k, SH * k, fill='#fff', stroke='#111',
+               stroke_width=1.4)
+        s.rect(px + 4 * k, py + 4 * k, 44 * k, (SH - 8) * k, fill='#f6f4ef',
+               stroke='#bbb', stroke_width=0.8)
+        s.text_rot(px + 26 * k, py + 300 * k, '答案用紙', -90, size=10,
+                   fill='#999')
+        for x0, y0, x1, y1, nm, note, col in frames:
+            s.rect(px + x0 * k, py + y0 * k, (x1 - x0) * k, (y1 - y0) * k,
+                   fill=col, stroke='#111', stroke_width=1.0)
+            cx = px + (x0 + x1) / 2.0 * k
+            s.text(cx, py + y0 * k + 20, nm, size=sc, weight='700')
+            if note:
+                s.text(cx, py + y0 * k + 20 + sc + 4, note, size=sc - 1.5,
+                       fill='#777')
+
+    BLUE, GREEN, TAN, GRAY = '#eef4fa', '#eef7ef', '#fdf6e9', '#f4f2ee'
+
+    # ---------------------------------------- 左：実物（令和7年・2階建て）
+    R7 = ((44, 14, 615, 556, '1階平面図 兼 配置図', '1／100', BLUE),
+          (44, 562, 615, 858, '立面図', '1／100', BLUE),
+          (44, 863, 430, 1080, '面積表', '', TAN),
+          (44, 1085, 430, 1180, '受験番号・氏名', '', GRAY),
+          (435, 863, 615, 1180, '計画の要点等', '①②③', GREEN),
+          (621, 14, 1131, 517, '2階平面図', '1／100', BLUE),
+          (621, 523, 1131, 1008, '2階床伏図 兼 1階小屋伏図', '1／100',
+           '#fdecec'),
+          (621, 1014, 1131, 1180, '凡例欄', '記号と断面寸法', TAN),
+          (1138, 14, 1662, 1180, '矩計図', '1／20', BLUE))
+    sheet(30.0, 150.0, 0.335, R7, '実物：令和7年（木造2階建て）',
+          '公表されている答案用紙を実測。A2横1枚。', 9.0)
+
+    # ---------------------------------------- 右：令和8年の見込み
+    R8 = ((44, 14, 560, 400, '1階平面図 兼 配置図', '1／100', BLUE),
+          (44, 406, 560, 760, '2階平面図', '1／100', BLUE),
+          (44, 766, 560, 1120, '3階平面図', '1／100', BLUE),
+          (566, 14, 1090, 470, '床伏図 兼 小屋伏図', '1／100', '#fdecec'),
+          (566, 476, 1090, 830, '立面図', '1／100', BLUE),
+          (566, 836, 1090, 1010, '凡例欄', '', TAN),
+          (566, 1016, 1090, 1180, '面積表', '', TAN),
+          (1096, 14, 1450, 1180, '部分詳細図（断面）', '1／20', BLUE),
+          (1456, 14, 1662, 1180, '計画の要点等', '①②③', GREEN))
+    sheet(660.0, 150.0, 0.335, R8, '令和8年（木造3階建て）の見込み',
+          '答案用紙は未公表。平面図が3枚に増え、矩計図が部分詳細図に変わる。',
+          9.0)
+    s.text(660 + SW * 0.335 / 2.0, 150 + SH * 0.335 + 26,
+           '※ 並べ方は当日わかる。大事なのは「何を書くか」で、'
+           '枠の位置ではない。', size=11.5, fill='#999')
+
+    # ---------------------------------------- 分かっていること
+    y = 640.0
+    s.rect(30, y, W - 60, 150, fill='#fcfcfb', stroke='#e0ded8',
+           stroke_width=1.0, rx=10)
+    s.text(50, y + 26, '2年ぶんの実物から、確実に分かっていること',
+           size=14, anchor='start', weight='700')
+    ROWS = (('紙', 'A2横1枚。折らずにそのまま提出する'),
+            ('目盛', 'ふつうの枠は 4.55mm、1／20の枠だけ 10mm'),
+            ('凡例欄', '記号も名前も印刷ずみ。断面寸法の数字を書きこむだけ'),
+            ('計画の要点等', '別紙ではなく、答案用紙の中の罫線に書く'),
+            ('面積表', '敷地面積は印刷ずみ。建築面積から下を自分で埋める'),
+            ('受験番号・氏名', '左下。ここが空だと、ほかが完璧でも意味がない'))
+    for i, (a, b) in enumerate(ROWS):
+        yy = y + 52 + (i % 3) * 30
+        xx = 50 + (i // 3) * 590
+        s.text(xx, yy, a, size=12.5, anchor='start', weight='700',
+               fill='#c0392b')
+        s.text(xx + 116, yy, b, size=12, anchor='start', fill='#444')
+
+    # ---------------------------------------- 伏図の枠のこと
+    s.rect(30, 806, W - 60, 66, fill='#fdeeee', stroke='#e0a0a0',
+           stroke_width=1.0, rx=8)
+    s.text(50, 830, '★ 伏図の枠は「1つ」だった', size=13.5, anchor='start',
+           weight='700', fill='#c0392b')
+    s.text(50, 852,
+           '令和4年も令和7年も「2階床伏図 兼 1階小屋伏図」で枠は1つ。'
+           '床組と小屋組を1枚に重ねて描く（母屋は一点鎖線なので区別できる）。'
+           '3階建ての枠割りは未公表。',
+           size=11.5, anchor='start', fill='#8a3a3a')
+    return s
+
+
 if __name__ == '__main__':
     out = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..',
                        'figures')
@@ -1274,6 +1376,7 @@ if __name__ == '__main__':
     toban().save(os.path.join(out, 'buzai_toban.svg'))
     kansei('floor').save(os.path.join(out, 'buzai_kansei_yuka.svg'))
     kansei('roof').save(os.path.join(out, 'buzai_kansei_koya.svg'))
+    teishutsu().save(os.path.join(out, 'buzai_teishutsu.svg'))
     yuka().save(os.path.join(out, 'buzai_yuka.svg'))
     koya().save(os.path.join(out, 'buzai_koya.svg'))
     print('wrote buzai_zentai / _hashira / _toban / _kansei_* / _yuka / _koya .svg')
