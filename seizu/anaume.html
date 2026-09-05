@@ -1,0 +1,235 @@
+<title>記述 穴うめドリル</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Old+Mincho:wght@700&family=Zen+Kaku+Gothic+New:wght@400;500;700&family=Roboto+Mono:wght@500&display=swap">
+<style>
+:root{
+  --paper:#f7f7f4; --panel:#fffffe; --ink:#22251f; --sub:#6b7065;
+  --line:#e2e1d8; --ai:#2f5d7c; --ai-soft:#e8eff4;
+  --ok:#3e6b47; --ok-soft:#eaf1eb; --ng:#b23a48; --ng-soft:#f8ecee;
+  --disp:'Zen Old Mincho',"Hiragino Mincho ProN","Yu Mincho",serif;
+  --body:'Zen Kaku Gothic New','Hiragino Sans','Noto Sans JP',"Yu Gothic",Meiryo,sans-serif;
+  --mono:'Roboto Mono',ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --paper:#171916; --panel:#1e211d; --ink:#e8eae3;
+    --sub:#a7ac9f; --line:#30342d; --ai:#8dc0dd; --ai-soft:#1d2a33;
+    --ok:#9ccaa6; --ok-soft:#1f2a22; --ng:#e0929c; --ng-soft:#332225;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#171916; --panel:#1e211d; --ink:#e8eae3; --sub:#a7ac9f;
+  --line:#30342d; --ai:#8dc0dd; --ai-soft:#1d2a33;
+  --ok:#9ccaa6; --ok-soft:#1f2a22; --ng:#e0929c; --ng-soft:#332225;
+}
+*{box-sizing:border-box;margin:0}
+body{background:var(--paper);color:var(--ink);font-family:var(--body);
+  font-size:14.5px;line-height:2.05;padding:26px 16px 90px}
+.wrap{max-width:760px;margin:0 auto}
+.kicker{font-size:11px;letter-spacing:.3em;color:var(--ai);font-weight:700}
+h1{font-family:var(--disp);font-size:32px;margin:5px 0 4px;text-wrap:balance}
+.lead{color:var(--sub);font-size:13px;line-height:1.85;margin-bottom:16px}
+.how{background:var(--panel);border:1px solid var(--line);border-radius:10px;
+  padding:12px 16px;font-size:12.5px;line-height:1.85;color:var(--sub);
+  margin-bottom:18px}
+.how b{color:var(--ink)}
+.bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:22px}
+.bar button{font:inherit;font-size:13px;border:1px solid var(--line);
+  background:var(--panel);color:var(--ink);border-radius:999px;
+  padding:6px 16px;cursor:pointer}
+.bar button[aria-pressed=true]{background:var(--ai);color:#fff;
+  border-color:var(--ai);font-weight:700}
+.bar button:focus-visible{outline:3px solid var(--ai-soft)}
+.spacer{flex:1}
+#score{font-family:var(--mono);font-size:13px;color:var(--sub)}
+.q{background:var(--panel);border:1px solid var(--line);border-radius:11px;
+  padding:14px 18px 16px;margin-bottom:14px;break-inside:avoid}
+.qh{display:flex;gap:10px;align-items:baseline;margin-bottom:6px}
+.tag{font-size:10.5px;font-weight:700;color:#fff;background:var(--ai);
+  border-radius:5px;padding:1px 9px;white-space:nowrap}
+.no{font-family:var(--mono);font-size:12px;color:var(--sub)}
+.qt{font-size:13px;color:var(--sub);flex:1}
+.body{font-size:15px;line-height:2.5}
+input.bl{font:inherit;font-family:var(--mono);font-size:14px;
+  border:none;border-bottom:2px solid var(--ai);background:transparent;
+  color:var(--ink);text-align:center;padding:0 3px;margin:0 2px;
+  min-width:52px}
+input.bl:focus{outline:none;background:var(--ai-soft)}
+input.bl.ok{border-color:var(--ok);color:var(--ok);font-weight:700}
+input.bl.ng{border-color:var(--ng);color:var(--ng)}
+.ans{display:none;font-family:var(--mono);font-size:12.5px;color:var(--ok);
+  font-weight:700;margin-left:3px}
+.show .ans{display:inline}
+.hint{display:none;font-size:12px;color:var(--sub);margin-top:6px;
+  padding-top:6px;border-top:1px dashed var(--line)}
+.hints .hint{display:block}
+.free textarea{width:100%;font:inherit;font-size:14px;line-height:1.9;
+  border:1px solid var(--line);border-radius:8px;background:var(--paper);
+  color:var(--ink);padding:8px 10px;min-height:74px;resize:vertical}
+.free textarea:focus{outline:2px solid var(--ai-soft);border-color:var(--ai)}
+.model{display:none;margin-top:8px;background:var(--ok-soft);
+  border:1px solid var(--ok);border-radius:8px;padding:9px 13px;font-size:13.5px}
+.show .model{display:block}
+.model b{color:var(--ok)}
+.foot{margin-top:26px;font-size:12px;color:var(--sub);text-align:center}
+@media print{
+  body{background:#fff;color:#111;font-size:11px;line-height:2.2;padding:0}
+  .bar,.how{display:none}
+  .wrap{max-width:none}
+  h1{font-size:19px}
+  .q{border-color:#bbb;margin-bottom:7px;padding:8px 12px;
+     break-inside:avoid;background:#fff}
+  .body{font-size:11px;line-height:2.4}
+  input.bl{border-bottom:1px solid #333;min-width:70px;color:#fff}
+  .ans,.model{display:none!important}
+  .hint{display:block;font-size:9.5px}
+  .free textarea{min-height:56px;border-color:#bbb}
+}
+</style>
+<div class="wrap">
+<div class="kicker">計画の要点等　トレーニング</div>
+<h1>記述 穴うめドリル</h1>
+<p class="lead">本番で書く文章を、部品にばらして覚えなおすドリルです。
+数字 → ことば → 部品まるごと の3段階。全15問。</p>
+<div class="how"><b>使い方：</b>空らんに打ちこんで<b>「答え合わせ」</b>を押すと、
+合っていれば緑、ちがえば赤になります。「ヒント」で手がかり、
+「答えを見る」で正解が出ます。<b>レベル3は自由記述</b>なので、
+模範解答と見くらべて自分で採点してください。
+印刷すると、答えなしの<b>書きこみプリント</b>になります。</div>
+
+<div class="bar">
+  <button data-lv="all" aria-pressed="true">ぜんぶ</button>
+  <button data-lv="1" aria-pressed="false">レベル1 数字</button>
+  <button data-lv="2" aria-pressed="false">レベル2 ことば</button>
+  <button data-lv="3" aria-pressed="false">レベル3 部品</button>
+  <span class="spacer"></span>
+  <button id="check">答え合わせ</button>
+  <button id="hint">ヒント</button>
+  <button id="reveal">答えを見る</button>
+  <button id="clear">消す</button>
+  <span id="score"></span>
+</div>
+<div id="list"></div>
+<p class="foot">まるごと解説9章とセットで。書けるようになったら、
+問題用紙の要点らんに時間を計って書いてみてください。</p>
+</div>
+<script>
+/* {{ 正解1/正解2 || ヒント }} */
+const Q = [
+// ---------------- レベル1：数字 ----------------
+{lv:1,cat:'構造',t:'木造3階建てとするに当たり、構造計画上工夫した点',
+ b:'1階から3階まで柱の位置をすべてそろえ、通り芯の交点に各階共通で配置した。四隅には{{120||柱の太さ。正方形の1辺}}mm角の通し柱、その他には同寸の管柱を用い、梁の最大スパンは{{3640/3,640||2間。910の4倍}}mm以下としている。床は構造用合板t={{24||床の下地の板の厚さ}}を梁に直接張った剛床とし、耐力壁は筋かい{{45×90/45x90||すじかいの断面}}のたすき掛け及び構造用合板t={{9||壁にはる板の厚さ}}を用いた。'},
+{lv:1,cat:'防火',t:'外壁の構成（内から外へ）',
+ b:'外壁は屋内側から強化石膏ボードt={{15||いちばん内がわの板}}、柱{{120||柱の太さ}}（グラスウール16K t={{100||柱の間に入れるわた}}充填）、構造用合板t={{9||地震にふんばる板}}、透湿防水シート、通気胴縁t={{18||すき間をつくる細い木}}、窯業系サイディングt={{16||いちばん外がわ}}の構成としている。'},
+{lv:1,cat:'部分詳細図',t:'基礎まわりの寸法',
+ b:'基礎はべた基礎とし、立上りの高さは地上{{371||300以上あればよいが、この型の値}}mm、根入れは{{300||地面にうめる深さ}}mm、立上り及び底盤の厚さはいずれも{{150||コンクリートの厚み}}mmとしている。土台は{{120||}}×120とし、基礎と土台はアンカーボルト{{M12||ボルトの太さの記号}}＠{{2730/2,730||1.5間ごと}}mm以下で緊結している。'},
+{lv:1,cat:'高さ',t:'各部の高さ（地盤面から）',
+ b:'1階の床は地盤面から{{550||371+20+120+24+15}}mm、2階の床は{{3650/3,650||550＋階高3,100}}mm、3階の床は{{6550/6,550||3,650＋2,900}}mm、軒の高さは{{9350/9,350||6,550＋2,800}}mm、建築物の最高の高さは{{10806/10,806||軒高＋1,456}}mmとしている。'},
+{lv:1,cat:'高齢者',t:'高齢者の居室を1階に設けたことについて工夫した点',
+ b:'住宅玄関から寝室までは幅{{910||マス1つぶん}}mm（有効約{{780||910から壁の厚みを引いた実際に通れる幅}}mm）の廊下1本でつながり、途中に段差を設けていない。廊下及び出入口の有効幅は{{780||}}mm以上とし、将来手すりを取り付けられるよう壁に下地を入れている。'},
+// ---------------- レベル2：ことば ----------------
+{lv:2,cat:'構造',t:'柱をそろえる理由',
+ b:'1階から3階まで柱の位置をそろえ、{{直下率||上下階で柱がそろっている割合}}を高めた。床は構造用合板t=24を梁に直接張った{{剛床||床を一枚の板として働かせる作り方}}とし、水平力を{{耐力壁||地震にふんばる壁}}へ確実に伝達させている。耐力壁は桁行方向・梁間方向のいずれにも{{偏りなく/偏らないよう||かたよらせない}}配置した。'},
+{lv:2,cat:'防火',t:'防火及び避難について配慮した点',
+ b:'準防火地域に建つ地上3階の木造であるため、{{45分準耐火建築物/45分準耐火||火に何分たえるか}}とした。3階に居室を有するため、階段室を準耐火構造の床及び壁で囲み、階段室に面する開口部を{{防火設備||火をとめる建具}}として{{竪穴区画||たてに空いた部分を区切ること}}としている。'},
+{lv:2,cat:'動線',t:'店舗部分と住宅部分の動線計画について工夫した点',
+ b:'店舗の出入口は{{道路||お客さんが来る側}}側に、住宅の玄関はそれと壁をへだてて別に設けた。これにより住まい手は{{売場||お店の商品を並べる部屋}}を通らずに2階・3階へ行くことができ、営業時間中も両者の{{動線||人の通り道}}が交錯しない。'},
+{lv:2,cat:'環境',t:'採光・換気について配慮した点',
+ b:'居間・食事室・台所には掃出し窓と腰窓を設け、床面積の{{1/7||明かりとりの割合}}以上の{{採光||明かりを取り入れること}}に有効な開口部を確保した。換気に有効な開口部は床面積の{{1/20||換気の割合}}以上としている。'},
+{lv:2,cat:'高齢者',t:'高齢者への配慮',
+ b:'母の寝室である和室6畳を{{1階||階段を使わない階}}に配置し、{{階段||上り下りが負担になるもの}}を使わずに生活できるようにした。将来{{手すり||つかまる棒}}を取り付けられるよう、壁に{{下地||ビスがきく木}}を入れている。'},
+// ---------------- レベル3：部品まるごと ----------------
+{lv:3,cat:'構造',t:'③なぜ ＋ ④どうなる を書く',
+ lead:'「1階から3階まで柱の位置をすべてそろえ、四隅は120mm角の通し柱、梁の最大スパンは3,640mm以下としている。」——この続きに、③なぜ と ④どうなる を書いてください。',
+ model:'木造3階建ては上階からの鉛直力及び水平力が大きくなるため、力の流れを上下階でそろえる必要があるからである。これにより直下率が高くなり、地震力及び風圧力を剛床を介して耐力壁へ確実に伝達させることができる。'},
+{lv:3,cat:'動線',t:'④どうなる を書く',
+ lead:'「店舗の出入口は道路側に、住宅の玄関はそれと壁をへだてて別に設けた。」——この続きに ④どうなる を、「これにより」で始めて書いてください。',
+ model:'これにより住まい手は売場を通らずに2階・3階へ行くことができ、店舗用便所も厨房を通らずに利用できるため、営業時間中も両者の動線が交錯しない。'},
+{lv:3,cat:'防火',t:'③なぜ を書く',
+ lead:'「階段室を準耐火構造の床及び壁で囲み、開口部を防火設備として竪穴区画とした。」——なぜそうしたのか、③を書いてください。',
+ model:'3階に居室を有するため、火災時に上階からの煙が階段を通って下階へ流れ下りるのを防ぐ必要があるからである。'},
+{lv:3,cat:'高齢者',t:'①〜④をぜんぶ書く',
+ lead:'「高齢者の居室を1階に設けたことについて工夫した点」を、4つの部品をつないで3〜5行で書いてください。',
+ model:'母の寝室である和室6畳を1階に配置し、階段を使わずに生活できるようにした。住宅玄関から寝室までは幅910mm（有効約780mm）の廊下1本でつながり、途中に段差を設けていない。加齢により階段の上り下りや小さな段差が負担になるためである。これにより日常の移動が楽になるだけでなく、火災時にも階段を使わずに屋外へ避難できる。'},
+{lv:3,cat:'環境',t:'①〜④をぜんぶ書く',
+ lead:'「住宅部分の採光及び通風について配慮した点」を、4つの部品をつないで3〜5行で書いてください。',
+ model:'住宅部分の主要な居室を2階・3階の南面に集め、いずれも南面に開口部を設けた。居間・食事室・台所には掃出し窓と腰窓を設けて床面積の1/7以上の採光を確保し、外壁は通気胴縁t=18による通気層を設けている。冬の日射を取り入れ、壁の中にこもる湿気を上へ逃がす必要があるためである。これにより日中は照明に頼らずに過ごせ、壁体内の結露も生じにくい。'}
+];
+
+const norm = s => (s || '').replace(/\s|　/g, '')
+  .replace(/[０-９Ａ-Ｚａ-ｚ]/g, c => String.fromCharCode(c.charCodeAt(0) - 0xFEE0))
+  .replace(/[,，、]/g, '').replace(/[×xX✕]/g, '*').toLowerCase();
+
+const list = document.getElementById('list');
+Q.forEach(function (q, i) {
+  const d = document.createElement('div');
+  d.className = 'q'; d.dataset.lv = q.lv;
+  let h = '<div class="qh"><span class="tag">' + q.cat + '</span><span class="no">' +
+          String(i + 1).padStart(2, '0') + '</span><span class="qt">' + q.t + '</span></div>';
+  if (q.lv === 3) {
+    h += '<p style="font-size:13.5px;color:var(--sub);margin-bottom:8px">' + q.lead + '</p>' +
+         '<div class="free"><textarea placeholder="ここに書く（3〜5行）"></textarea></div>' +
+         '<div class="model"><b>模範解答</b><br>' + q.model + '</div>' +
+         '<div class="hint">4つの部品：①なにをした → ②数字 → ③なぜ → ④どうなる（「これにより」）</div>';
+  } else {
+    const hints = [];
+    const body = q.b.replace(/\{\{(.*?)\}\}/g, function (m, inner) {
+      const p = inner.split('||');
+      const ans = p[0].split('/');
+      const hint = (p[1] || '').trim();
+      if (hint) hints.push(ans[0] + '＝' + hint);
+      const w = Math.max(52, ans[0].length * 15 + 18);
+      return '<input class="bl" data-a="' + ans.join('/') + '" style="width:' + w +
+             'px" autocomplete="off" aria-label="空らん"><span class="ans">' +
+             ans[0] + '</span>';
+    });
+    h += '<div class="body">' + body + '</div>';
+    if (hints.length) h += '<div class="hint">ヒント：' + hints.join('　／　') + '</div>';
+  }
+  d.innerHTML = h;
+  list.appendChild(d);
+});
+
+const cards = [...document.querySelectorAll('.q')];
+const blanks = [...document.querySelectorAll('input.bl')];
+
+document.querySelectorAll('.bar button[data-lv]').forEach(function (b) {
+  b.addEventListener('click', function () {
+    document.querySelectorAll('.bar button[data-lv]').forEach(function (x) {
+      x.setAttribute('aria-pressed', x === b ? 'true' : 'false');
+    });
+    const lv = b.dataset.lv;
+    cards.forEach(function (c) {
+      c.hidden = !(lv === 'all' || c.dataset.lv === lv);
+    });
+  });
+});
+
+document.getElementById('check').addEventListener('click', function () {
+  let ok = 0, n = 0;
+  blanks.forEach(function (b) {
+    if (b.closest('.q').hidden) return;
+    n++;
+    const good = b.dataset.a.split('/').some(function (a) {
+      return norm(a) === norm(b.value) && norm(b.value) !== '';
+    });
+    b.classList.toggle('ok', good);
+    b.classList.toggle('ng', !good);
+    if (good) ok++;
+  });
+  document.getElementById('score').textContent = n ? ok + ' / ' + n + ' 問' : '';
+});
+document.getElementById('hint').addEventListener('click', function () {
+  document.querySelector('.wrap').classList.toggle('hints');
+});
+document.getElementById('reveal').addEventListener('click', function () {
+  cards.forEach(function (c) { if (!c.hidden) c.classList.toggle('show'); });
+});
+document.getElementById('clear').addEventListener('click', function () {
+  blanks.forEach(function (b) { b.value = ''; b.classList.remove('ok', 'ng'); });
+  document.querySelectorAll('textarea').forEach(function (t) { t.value = ''; });
+  cards.forEach(function (c) { c.classList.remove('show'); });
+  document.getElementById('score').textContent = '';
+});
+</script>
