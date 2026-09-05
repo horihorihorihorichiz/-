@@ -18,6 +18,8 @@ OUT = os.path.join(HERE, '..', 'sheets')
 os.makedirs(OUT, exist_ok=True)
 
 W, H = 1684.0, 1191.0           # A2横（ポイント）
+GP4 = 4.55 / 0.3528             # 目盛4.55mm を実寸のポイントに
+GP10 = 10.0 / 0.3528            # 部分詳細図らんの目盛10mm
 
 # 縮尺をそろえる。1ポイント = 0.3528mm
 #   1/100 の図 … 内部の1マス56px が 910/100 mm になる倍率
@@ -93,81 +95,8 @@ def place(body, pre, x, y, sc):
             % (x, y, sc, body))
 
 
-def sheet(sp):
-    key, sub, nx, ny, site, keisan, a1, a2, a3 = sp
-    s = Svg(W, H)
-    s.rect(0, 0, W, H, fill='none', stroke=INK, stroke_width=1.4)
-
-    # ---- 左の縦書きタイトル帯 ----
-    s.line(46, 0, 46, H, stroke=INK, stroke_width=1.0)
-    s.text_rot(26, 190, '二級建築士試験', -90, size=17, weight='700')
-    s.text_rot(26, 420, '「設計製図の試験」', -90, size=15)
-    s.text_rot(26, 730, '予想問題　%s' % key, -90, size=16, weight='700')
-    s.text_rot(26, 940, '解　答　例', -90, size=15)
-
-    # ---- 平面図3枚 ----
-    # 3枚とも同じ縮尺で並べる（1階だけ小さくならないように）
-    top, hrow, gap = 14.0, 664.0, 16.0
-    ps = [panel(key, i) for i in range(3)]
-    sc = SC100                      # 3枚とも本物どおりの1／100
-    tot = sum(bw for _, bw, _ in ps) * sc + gap * 2
-    x = 54.0 + max(0.0, (W - 76 - tot) / 2.0)
-    for i, (body, bw, bh) in enumerate(ps):
-        s.add(place(body, '%s%d' % (key.lower(), i), x,
-                    top + (hrow - bh * sc) / 2.0, sc))
-        x += bw * sc
-        if i < 2:
-            s.line(x + gap / 2.0, top, x + gap / 2.0, top + hrow,
-                   stroke=INK, stroke_width=0.8)
-            x += gap
-    s.line(46, 694, W - 10, 694, stroke=INK, stroke_width=1.0)
-
-    # ---- 下半分は方眼紙（答案用紙の目盛4.55mm） ----
-    gp = 12.9
-    yy = 700.0
-    while yy < H - 6:
-        s.line(48, yy, W - 10, yy, stroke='#e0e0e0', stroke_width=0.5)
-        yy += gp
-    xx = 48.0
-    while xx < W - 8:
-        s.line(xx, 700, xx, H - 8, stroke='#e0e0e0', stroke_width=0.5)
-        xx += gp
-
-    # ---- 面積表 ----
-    ty, tx, tw = 748.0, 66.0, 600.0
-    rh = 34.0
-    s.text(tx, ty - 10, '面　積　表', size=15, anchor='start', weight='700')
-    rows = [('敷地面積', '', site),
-            ('建築面積', keisan, '%.2f' % a1),
-            ('床面積　1階　ア', keisan, '%.2f' % a1),
-            ('　　　　2階　イ', keisan, '%.2f' % a2),
-            ('　　　　3階　ウ', keisan, '%.2f' % a3),
-            ('延べ面積　ア＋イ＋ウ', '', '%.2f' % (a1 + a2 + a3))]
-    s.rect(tx, ty, tw, rh * len(rows), fill='#fff', stroke=INK,
-           stroke_width=1.2)
-    for i, (nm, ks, va) in enumerate(rows):
-        y = ty + i * rh
-        if i:
-            s.line(tx, y, tx + tw, y, stroke=INK, stroke_width=0.8)
-        s.text(tx + 10, y + 23, nm, size=13.5, anchor='start',
-               weight='700' if i in (0, 5) else '400')
-        if ks:
-            s.text(tx + 250, y + 15, '（計算式）', size=10, anchor='start',
-                   fill='#555')
-            s.text(tx + 250, y + 29, ks, size=12.5, anchor='start')
-        s.text(tx + tw - 38, y + 23, va, size=14, anchor='end',
-               weight='700')
-        s.text(tx + tw - 12, y + 23, '㎡', size=11, anchor='end')
-    s.line(tx + 240, ty, tx + 240, ty + rh * len(rows), stroke=INK,
-           stroke_width=0.8)
-    s.line(tx + tw - 130, ty, tx + tw - 130, ty + rh * len(rows), stroke=INK,
-           stroke_width=0.8)
-    s.text(tx, ty + rh * len(rows) + 20,
-           '小数点以下第3位以下は切り捨て。計算式はm単位で書く。', size=11,
-           anchor='start', fill='#555')
-
-    # ---- 凡例欄（伏図の表示記号） ----
-    lx, ly, lw = 750.0, 748.0, 880.0
+def legend(s, lx=750.0, ly=748.0, lw=880.0, dims=True):
+    """伏図の凡例欄。dims=False なら寸法らんを空にする（練習用紙）。"""
     s.text(lx, ly - 10, '凡　例（床伏図兼小屋伏図の表示記号）', size=15,
            anchor='start', weight='700')
     cols = [('通し柱', '120×120', 'tooshi'),
@@ -232,13 +161,91 @@ def sheet(sp):
                        stroke_width=1.2)
             elif kind == 'mune':
                 s.circle(mx, my, 4, fill=INK)
-        s.text(cx + cw / 2.0, ly + 105, dim, size=11 if len(dim) < 8 else 9.5,
-               weight='700')
+        if dims:
+            s.text(cx + cw / 2.0, ly + 105, dim,
+                   size=11 if len(dim) < 8 else 9.5, weight='700')
     s.text(lx - 6, ly + 62, '記号', size=10.5, anchor='end', fill='#555')
     s.text(lx - 6, ly + 105, '寸法', size=10.5, anchor='end', fill='#555')
     s.text(lx, ly + 138, '※ 平角材（120×240 など）の断面寸法は、この欄ではなく '
            '床伏図の中の梁1本ずつのわきに記入する。', size=11,
            anchor='start', fill=INK)
+
+
+def sheet(sp):
+    key, sub, nx, ny, site, keisan, a1, a2, a3 = sp
+    s = Svg(W, H)
+    s.rect(0, 0, W, H, fill='none', stroke=INK, stroke_width=1.4)
+
+    # ---- 左の縦書きタイトル帯 ----
+    s.line(46, 0, 46, H, stroke=INK, stroke_width=1.0)
+    s.text_rot(26, 190, '二級建築士試験', -90, size=17, weight='700')
+    s.text_rot(26, 420, '「設計製図の試験」', -90, size=15)
+    s.text_rot(26, 730, '予想問題　%s' % key, -90, size=16, weight='700')
+    s.text_rot(26, 940, '解　答　例', -90, size=15)
+
+    # ---- 平面図3枚 ----
+    # 3枚とも同じ縮尺で並べる（1階だけ小さくならないように）
+    top, hrow, gap = 14.0, 664.0, 16.0
+    ps = [panel(key, i) for i in range(3)]
+    sc = SC100                      # 3枚とも本物どおりの1／100
+    tot = sum(bw for _, bw, _ in ps) * sc + gap * 2
+    x = 54.0 + max(0.0, (W - 76 - tot) / 2.0)
+    for i, (body, bw, bh) in enumerate(ps):
+        s.add(place(body, '%s%d' % (key.lower(), i), x,
+                    top + (hrow - bh * sc) / 2.0, sc))
+        x += bw * sc
+        if i < 2:
+            s.line(x + gap / 2.0, top, x + gap / 2.0, top + hrow,
+                   stroke=INK, stroke_width=0.8)
+            x += gap
+    s.line(46, 694, W - 10, 694, stroke=INK, stroke_width=1.0)
+
+    # ---- 下半分は方眼紙（答案用紙の目盛4.55mm） ----
+    gp = GP4
+    yy = 700.0
+    while yy < H - 6:
+        s.line(48, yy, W - 10, yy, stroke='#e0e0e0', stroke_width=0.5)
+        yy += gp
+    xx = 48.0
+    while xx < W - 8:
+        s.line(xx, 700, xx, H - 8, stroke='#e0e0e0', stroke_width=0.5)
+        xx += gp
+
+    # ---- 面積表 ----
+    ty, tx, tw = 748.0, 66.0, 600.0
+    rh = 34.0
+    s.text(tx, ty - 10, '面　積　表', size=15, anchor='start', weight='700')
+    rows = [('敷地面積', '', site),
+            ('建築面積', keisan, '%.2f' % a1),
+            ('床面積　1階　ア', keisan, '%.2f' % a1),
+            ('　　　　2階　イ', keisan, '%.2f' % a2),
+            ('　　　　3階　ウ', keisan, '%.2f' % a3),
+            ('延べ面積　ア＋イ＋ウ', '', '%.2f' % (a1 + a2 + a3))]
+    s.rect(tx, ty, tw, rh * len(rows), fill='#fff', stroke=INK,
+           stroke_width=1.2)
+    for i, (nm, ks, va) in enumerate(rows):
+        y = ty + i * rh
+        if i:
+            s.line(tx, y, tx + tw, y, stroke=INK, stroke_width=0.8)
+        s.text(tx + 10, y + 23, nm, size=13.5, anchor='start',
+               weight='700' if i in (0, 5) else '400')
+        if ks:
+            s.text(tx + 250, y + 15, '（計算式）', size=10, anchor='start',
+                   fill='#555')
+            s.text(tx + 250, y + 29, ks, size=12.5, anchor='start')
+        s.text(tx + tw - 38, y + 23, va, size=14, anchor='end',
+               weight='700')
+        s.text(tx + tw - 12, y + 23, '㎡', size=11, anchor='end')
+    s.line(tx + 240, ty, tx + 240, ty + rh * len(rows), stroke=INK,
+           stroke_width=0.8)
+    s.line(tx + tw - 130, ty, tx + tw - 130, ty + rh * len(rows), stroke=INK,
+           stroke_width=0.8)
+    s.text(tx, ty + rh * len(rows) + 20,
+           '小数点以下第3位以下は切り捨て。計算式はm単位で書く。', size=11,
+           anchor='start', fill='#555')
+
+    # ---- 凡例欄（伏図の表示記号） ----
+    legend(s)
 
     # ---- 標準解答例のタイトル ----
     bx, by = 750.0, 912.0
