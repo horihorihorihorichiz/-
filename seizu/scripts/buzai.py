@@ -794,11 +794,241 @@ def hashira():
     return s
 
 
+# ============================================ 本番の答案ではこう描く
+def toban():
+    """教材の色つきの図と、答案の黒鉛筆の図をならべて対応させる。
+
+    記号の描き方は ansframe.py（標準解答例と同じ描き方）にそろえてある。
+    """
+    W, H = 1240, 1070
+    s = Svg(W, H)
+    s.text(W / 2.0, 42, '部材ずかん ④　本番の答案では、こう描く', size=22,
+           weight='700')
+    s.text(W / 2.0, 68,
+           'この教材の図は色を使っているが、本番は黒鉛筆だけ。'
+           '色のかわりに「線の種類」と「記号」で見分ける。',
+           size=12.5, fill='#666')
+
+    panel(s, 20, 92, 588, 474, 'この教材の図（色つき）',
+          '色で部材を見分けている。おぼえるための図')
+    panel(s, 624, 92, 596, 474, '本番の答案（黒鉛筆だけ）',
+          'ぜんぶ2本線。柱は記号。寸法は1本ずつ書きこむ')
+
+    g = 132.0
+
+    # ---------------------------------------------------- 左：色つき
+    lx, ly = 196.0, 200.0
+
+    def LX(gx):
+        return lx + gx * g
+
+    def LY(gy):
+        return ly + (2 - gy) * g
+
+    for i in range(3):
+        s.line(LX(0), LY(i), LX(2), LY(i), stroke='#eee', stroke_width=0.8)
+        s.line(LX(i), LY(0), LX(i), LY(2), stroke='#eee', stroke_width=0.8)
+    s.line(LX(0), LY(0), LX(2), LY(0), stroke=C_DOU, stroke_width=6.0)
+    s.line(LX(0), LY(0), LX(0), LY(2), stroke=C_DOU, stroke_width=6.0)
+    s.line(LX(2), LY(0), LX(2), LY(2), stroke=C_OO, stroke_width=5.2)
+    s.line(LX(0), LY(2), LX(2), LY(2), stroke=C_OO, stroke_width=4.4)
+    s.line(LX(0), LY(1), LX(2), LY(1), stroke=C_KO, stroke_width=2.4)
+    s.line(LX(1), LY(0), LX(0), LY(1), stroke=C_HI, stroke_width=2.8)
+    for gx, gy in ((2, 0), (0, 2), (2, 2)):
+        s.rect(LX(gx) - 5, LY(gy) - 5, 10, 10, fill='#111')
+    s.circle(LX(0), LY(0), 9.5, fill='#fff', stroke=C_TOOSHI,
+             stroke_width=2.6)
+    s.circle(LX(0), LY(0), 4.5, fill=C_TOOSHI)
+    s.text(LX(1), LY(0) + 34, '色で見分けている', size=12, fill='#999')
+
+    # ---------------------------------------------------- 右：答案
+    ax, ay = 812.0, 200.0
+    HW = 120.0 / 910.0 * g / 2.0        # 部材120mmの半分
+    CH = min(HW, 3.4)                   # はしの面取り
+
+    def AX(gx):
+        return ax + gx * g
+
+    def AY(gy):
+        return ay + (2 - gy) * g
+
+    # 答案用紙の目盛（4.55mm＝455mm。1マス910は目盛2つぶん）
+    for i in range(5):
+        s.line(AX(0) - 20, AY(0) - i * g / 2.0, AX(2) + 20,
+               AY(0) - i * g / 2.0, stroke='#dedede', stroke_width=0.7)
+        s.line(AX(0) + i * g / 2.0, AY(0) + 20, AX(0) + i * g / 2.0,
+               AY(2) - 20, stroke='#dedede', stroke_width=0.7)
+    s.text(AX(2) + 26, AY(2) - 6, '答案用紙の目盛', size=9.5, anchor='start',
+           fill='#bbb')
+    s.text(AX(2) + 26, AY(2) + 8, '4.55mm＝455mm', size=9.5, anchor='start',
+           fill='#bbb')
+    s.text(AX(2) + 26, AY(2) + 22, '（1マス910＝目盛2つ）', size=9.5,
+           anchor='start', fill='#bbb')
+
+    dims = []
+
+    def mem(ori, ln, a, b, dim, side=1):
+        """答案の描き方：2本線＋はしを斜めに落とす＋わきに断面寸法。"""
+        if ori == 'H':
+            y = AY(ln)
+            for d in (-HW, HW):
+                s.line(AX(a) + CH, y + d, AX(b) - CH, y + d, stroke='#111',
+                       stroke_width=1.2)
+            for xx, sg in ((AX(a), 1), (AX(b), -1)):
+                s.line(xx, y - HW + CH, xx, y + HW - CH, stroke='#111',
+                       stroke_width=1.2)
+                s.line(xx, y - HW + CH, xx + sg * CH, y - HW, stroke='#111',
+                       stroke_width=1.2)
+                s.line(xx, y + HW - CH, xx + sg * CH, y + HW, stroke='#111',
+                       stroke_width=1.2)
+            dims.append(('H', (AX(a) + AX(b)) / 2.0,
+                         y - HW - 6 if side > 0 else y + HW + 14, dim))
+        else:
+            x = AX(ln)
+            for d in (-HW, HW):
+                s.line(x + d, AY(a) - CH, x + d, AY(b) + CH, stroke='#111',
+                       stroke_width=1.2)
+            for yy, sg in ((AY(a), -1), (AY(b), 1)):
+                s.line(x - HW + CH, yy, x + HW - CH, yy, stroke='#111',
+                       stroke_width=1.2)
+                s.line(x - HW + CH, yy, x - HW, yy + sg * CH, stroke='#111',
+                       stroke_width=1.2)
+                s.line(x + HW - CH, yy, x + HW, yy + sg * CH, stroke='#111',
+                       stroke_width=1.2)
+            dims.append(('V', x + (HW + 13) * side,
+                         (AY(a) + AY(b)) / 2.0, dim))
+
+    mem('H', 0, 0, 2, '120×300', side=-1)          # 胴差（東西）
+    mem('V', 0, 0, 2, '120×300', side=-1)          # 胴差（南北）
+    mem('V', 2, 0, 2, '120×300')                   # 大梁（南北）
+    mem('H', 2, 0, 2, '120×240')                   # 大梁（東西）
+    mem('H', 1, 0, 2, '120×180')                   # 床小梁
+    s.line(AX(1), AY(0), AX(0), AY(1), stroke='#111', stroke_width=1.3,
+           stroke_dasharray='9 5')                 # 火打梁は破線
+    s.text(AX(0.62), AY(0.62) + 4, '火打梁', size=9, fill='#111')
+
+    r = 6.0
+    for gx, gy in ((2, 0), (0, 2), (2, 2)):        # 管柱＝四角の中にバツ
+        x, y = AX(gx), AY(gy)
+        s.rect(x - r, y - r, 2 * r, 2 * r, fill='#fff', stroke='#111',
+               stroke_width=1.1)
+        s.line(x - r, y - r, x + r, y + r, stroke='#111', stroke_width=1.3)
+        s.line(x - r, y + r, x + r, y - r, stroke='#111', stroke_width=1.3)
+    x, y = AX(0), AY(0)                            # 通し柱＝四角を○で囲む
+    s.rect(x - r, y - r, 2 * r, 2 * r, fill='#fff', stroke='#111',
+           stroke_width=1.1)
+    s.circle(x, y, r + 4.5, fill='none', stroke='#111', stroke_width=1.3)
+
+    for k, a, b, txt in dims:
+        if k == 'H':
+            s.text(a, b, txt, size=9.5, fill='#111')
+        else:
+            s.text_rot(a, b, txt, -90, size=9.5, fill='#111')
+    s.dim_h(AX(0), AX(1), AY(0) + 46, '910', size=9.5)
+    s.dim_h(AX(1), AX(2), AY(0) + 46, '910', size=9.5)
+    s.dim_v(AY(0), AY(1), AX(0) - 52, '910', size=9.5)
+    s.dim_v(AY(1), AY(2), AX(0) - 52, '910', size=9.5)
+    s.text(AX(1), AY(0) + 74, '線の種類と記号で見分ける', size=12,
+           fill='#999')
+
+    s.text(636, 548,
+           '★ 2本線のすきまは、実際の1／100では 1.2mm。'
+           'ほとんどくっついて見えるくらいでよい。',
+           size=11.5, anchor='start', fill='#555')
+    s.text(32, 548,
+           '★ 本番で色は使わない。色えんぴつも不要。',
+           size=11.5, anchor='start', fill='#555')
+
+    # ---------------------------------------------------- 対応表
+    TY = 604.0
+    s.text(30, TY - 8, '色 → 記号の対応表', size=15, anchor='start',
+           weight='700')
+    COL = (40.0, 210.0, 400.0, 560.0, 940.0)
+    HEAD = ('この教材の色', '答案の記号', '部材', '答案での描き方',
+            '断面寸法はどこに書くか')
+    s.rect(30, TY + 6, W - 60, 30, fill='#f3efe7', stroke='#ddd',
+           stroke_width=0.8)
+    for cx, h in zip(COL, HEAD):
+        s.text(cx + 6, TY + 26, h, size=11.5, anchor='start', weight='700',
+               fill='#555')
+
+    def sw_line(x, y, col, wdt, dash=None):
+        s.line(x + 6, y, x + 96, y, stroke=col, stroke_width=wdt,
+               stroke_dasharray=dash)
+
+    def sy_double(x, y, dash=None):
+        for d in (-3.6, 3.6):
+            s.line(x + 6, y + d, x + 96, y + d, stroke='#111',
+                   stroke_width=1.2, stroke_dasharray=dash)
+
+    def sy_chain(x, y):
+        s.line(x + 6, y, x + 96, y, stroke='#111', stroke_width=1.1,
+               stroke_dasharray='14 3 2 3')
+        s.circle(x + 51, y, 4, fill='#111')
+
+    ROWS = (
+        (lambda x, y: (s.circle(x + 51, y, 8, fill='#fff', stroke=C_TOOSHI,
+                                stroke_width=2.4),
+                       s.circle(x + 51, y, 4, fill=C_TOOSHI)),
+         lambda x, y: (s.rect(x + 45, y - 6, 12, 12, fill='#fff',
+                              stroke='#111', stroke_width=1.1),
+                       s.circle(x + 51, y, 10.5, fill='none', stroke='#111',
+                                stroke_width=1.3)),
+         '通し柱', '四角を○で囲む（四すみ4か所）', '凡例欄に 120×120'),
+        (lambda x, y: s.rect(x + 45, y - 5, 10, 10, fill='#111'),
+         lambda x, y: (s.rect(x + 44, y - 7, 14, 14, fill='#fff',
+                              stroke='#111', stroke_width=1.1),
+                       s.line(x + 44, y - 7, x + 58, y + 7, stroke='#111',
+                              stroke_width=1.3),
+                       s.line(x + 44, y + 7, x + 58, y - 7, stroke='#111',
+                              stroke_width=1.3)),
+         '管柱', '四角の中にバツ（上下階が重なる管柱）', '凡例欄に 120×120'),
+        (lambda x, y: sw_line(x, y, C_DOU, 6.0), sy_double,
+         '胴差', '2本線。はしは斜めに落とす', '図の中、梁のわきに 120×300'),
+        (lambda x, y: sw_line(x, y, C_OO, 5.0), sy_double,
+         '大梁・桁・小屋梁', '2本線（胴差と同じ描き方）',
+         '図の中、梁のわきに 120×300／240'),
+        (lambda x, y: sw_line(x, y, C_KO, 2.4), sy_double,
+         '床小梁', '2本線。線を細めに', '図の中、梁のわきに 120×180'),
+        (lambda x, y: sw_line(x, y, C_HI, 2.8),
+         lambda x, y: s.line(x + 6, y, x + 96, y, stroke='#111',
+                             stroke_width=1.3, stroke_dasharray='9 5'),
+         '火打梁', '破線1本（2本線にしない）', '凡例欄に 90×90'),
+        (lambda x, y: sw_line(x, y, C_KO, 2.0), sy_chain,
+         '母屋・小屋束', '一点鎖線＋交点に黒丸（＝小屋束）',
+         '凡例欄に 90×90（小屋束は書かない）'),
+        (lambda x, y: sw_line(x, y, C_MUNE, 4.6), sy_double,
+         '棟木', '2本線（母屋より太め）', '凡例欄に 120×120'),
+    )
+    for i, (a, b, name, how, where) in enumerate(ROWS):
+        y = TY + 36 + i * 40
+        if i % 2:
+            s.rect(30, y, W - 60, 40, fill='#fbfaf8', stroke='none')
+        s.line(30, y + 40, W - 30, y + 40, stroke='#eee', stroke_width=0.8)
+        a(COL[0], y + 20)
+        b(COL[1], y + 20)
+        s.text(COL[1] - 24, y + 25, '→', size=15, fill='#bbb')
+        s.text(COL[2] + 6, y + 25, name, size=12.5, anchor='start',
+               weight='700')
+        s.text(COL[3] + 6, y + 25, how, size=12, anchor='start', fill='#333')
+        s.text(COL[4] + 6, y + 25, where, size=12, anchor='start',
+               fill='#333')
+    s.rect(30, TY + 6, W - 60, 36 + len(ROWS) * 40 - 6, fill='none',
+           stroke='#ddd', stroke_width=1.0)
+
+    s.text(W / 2.0, H - 22,
+           '★ 平角材（120×300 など）の寸法は凡例欄ではなく、'
+           '図の中の梁1本ずつのわきに書く。ここを取りちがえる人が多い。',
+           size=13, weight='700', fill='#c0392b')
+    return s
+
+
 if __name__ == '__main__':
     out = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..',
                        'figures')
     zentai().save(os.path.join(out, 'buzai_zentai.svg'))
     hashira().save(os.path.join(out, 'buzai_hashira.svg'))
+    toban().save(os.path.join(out, 'buzai_toban.svg'))
     yuka().save(os.path.join(out, 'buzai_yuka.svg'))
     koya().save(os.path.join(out, 'buzai_koya.svg'))
-    print('wrote buzai_zentai / _hashira / _yuka / _koya .svg')
+    print('wrote buzai_zentai / _hashira / _toban / _yuka / _koya .svg')
