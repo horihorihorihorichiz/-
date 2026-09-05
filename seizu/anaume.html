@@ -82,12 +82,27 @@ input.bl.ng{border-color:var(--ng);color:var(--ng)}
 .bar .rate{display:flex;align-items:center;gap:6px;font-size:12.5px;
   color:var(--sub)}
 .bar .rate input{width:96px}
+#vhint{font-size:12px;color:var(--ai)}
+.voicehelp{background:var(--panel);border:1px solid var(--line);
+  border-radius:10px;padding:10px 16px;margin:-10px 0 22px;font-size:12.5px;
+  line-height:1.9;color:var(--sub)}
+.voicehelp summary{cursor:pointer;color:var(--ai);font-weight:700;
+  font-size:13px;line-height:2}
+.voicehelp p{margin:8px 0}
+.voicehelp b{color:var(--ink)}
+.voicehelp table{border-collapse:collapse;width:100%;margin:10px 0;
+  font-size:12.5px}
+.voicehelp th,.voicehelp td{border:1px solid var(--line);padding:6px 9px;
+  text-align:left;vertical-align:top}
+.voicehelp th{background:var(--ai-soft);color:var(--ink);white-space:nowrap}
+.voicehelp .cav{border-top:1px dashed var(--line);padding-top:8px;
+  font-size:12px}
 #voicewrap{font-size:12.5px;color:var(--sub)}
 #voice{font:inherit;font-size:12px;max-width:180px;background:var(--panel);
   color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:3px 6px}
 @media print{
   body{background:#fff;color:#111;font-size:11px;line-height:2.2;padding:0}
-  .bar,.how,.say{display:none}
+  .bar,.how,.say,.voicehelp{display:none}
   .wrap{max-width:none}
   h1{font-size:19px}
   .q{border-color:#bbb;margin-bottom:7px;padding:8px 12px;
@@ -130,8 +145,40 @@ input.bl.ng{border-color:var(--ng);color:var(--ng)}
   <label class="rate">速さ
     <input type="range" id="rate" min="0.7" max="1.3" step="0.05" value="0.95">
     <span id="rateVal">0.95</span></label>
+  <button id="demo">試し読み</button>
   <span id="voicewrap">声 <select id="voice"></select></span>
+  <span id="vhint"></span>
 </div>
+<details class="voicehelp">
+  <summary>声をもっと自然にする（声優みたいな声にしたい人へ）</summary>
+  <p>読み上げに使えるのは、<b>その端末に入っている声だけ</b>です。
+  ページ側では選ぶことしかできないので、<b>良い声を端末に入れる</b>のがいちばん効きます。
+  上の一覧は自然な順にならべてあり、<b>★★★ が入っていればそれを自動で選びます</b>。</p>
+  <table>
+    <tr><th>端末</th><th>やること</th></tr>
+    <tr><td><b>Windows</b></td>
+      <td>このページを <b>Microsoft Edge</b> で開く。
+      「Nanami」「Keita」など <b>Natural</b> とつく声が出てきます。
+      いちばん自然で、しかも無料。<b>迷ったらこれ</b></td></tr>
+    <tr><td><b>iPhone・iPad</b></td>
+      <td>設定 → アクセシビリティ → 読み上げコンテンツ → 声 → 日本語 →
+      <b>Kyoko や Otoya の「高品質」版をダウンロード</b>。
+      入れたあとSafariを開きなおすと切りかわります</td></tr>
+    <tr><td><b>Mac</b></td>
+      <td>システム設定 → アクセシビリティ → 読み上げコンテンツ → システムの声 →
+      日本語の<b>「拡張」「プレミアム」をダウンロード</b></td></tr>
+    <tr><td><b>Android</b></td>
+      <td>設定 → ユーザー補助 → 音声出力（テキスト読み上げ）→
+      Google音声サービス → <b>日本語の音声データをダウンロード</b></td></tr>
+  </table>
+  <p><b>「試し読み」</b>を押すと、いま選んでいる声で1文だけ読み上げます。
+  声を切りかえながら押して、いちばん聞きやすいものを選んでください。
+  選んだ声と速さは、次に開いたときも覚えています。</p>
+  <p class="cav">※ ブラウザの読み上げ機能を使っているので、
+  プロの声優さんの録音のようにはなりません。
+  そこまで求める場合は、有料の音声合成サービスで音声ファイルを作って
+  差しこむ形になります（できます。必要なら言ってください）。</p>
+</details>
 <div id="list"></div>
 <p class="foot">まるごと解説9章とセットで。書けるようになったら、
 問題用紙の要点らんに時間を計って書いてみてください。</p>
@@ -286,31 +333,68 @@ const rateVal = document.getElementById('rateVal');
 const voiceSel = document.getElementById('voice');
 const canSpeak = !!window.speechSynthesis;
 
+// 声の良さを名前から見分ける。端末に入っている声しか使えないので、
+// 入っている中でいちばん自然なものを自動で選ぶ。
+//   ★★★ … ニューラル音声（Natural / Neural / Siri / Premium）
+//   ★★  … 拡張版・Google の声
+//   ★   … 昔からの合成音声
+function vScore(v) {
+  const n = (v.name + ' ' + (v.voiceURI || '')).toLowerCase();
+  if (/natural|neural|siri|premium|プレミアム/.test(n)) return 3;
+  if (/enhanced|拡張|google|online/.test(n)) return 2;
+  return 1;
+}
 function jaVoices() {
   return canSpeak ? speechSynthesis.getVoices().filter(function (v) {
     return v.lang && v.lang.toLowerCase().indexOf('ja') === 0;
+  }).sort(function (a, b) {
+    return vScore(b) - vScore(a) || a.name.localeCompare(b.name);
   }) : [];
+}
+function remember(k, val) {
+  try { localStorage.setItem(k, val); } catch (e) { /* 使えなくても平気 */ }
+}
+function recall(k) {
+  try { return localStorage.getItem(k); } catch (e) { return null; }
 }
 function fillVoices() {
   const vs = jaVoices();
+  const keep = voiceSel.value || recall('anaume.voice');
   voiceSel.innerHTML = '';
-  if (!vs.length) {
-    document.getElementById('voicewrap').hidden = true; return;
-  }
-  document.getElementById('voicewrap').hidden = false;
+  const wrap = document.getElementById('voicewrap');
+  if (!vs.length) { wrap.hidden = true; return; }
+  wrap.hidden = false;
   vs.forEach(function (v) {
+    const s = vScore(v);
     const o = document.createElement('option');
     o.value = v.name;
-    o.textContent = v.name.replace(/^Microsoft |^Google /, '');
+    o.textContent = (s === 3 ? '★★★ ' : s === 2 ? '★★ ' : '★ ') +
+      v.name.replace(/^Microsoft |^Google /, '')
+            .replace(/ - Japanese \(Japan\)/i, '');
     voiceSel.appendChild(o);
   });
+  // 前に選んだ声があればそれ、なければいちばん上（＝いちばん自然な声）
+  voiceSel.value = (keep && vs.some(function (v) { return v.name === keep; }))
+    ? keep : vs[0].name;
+  const best = vScore(vs[0]);
+  document.getElementById('vhint').textContent =
+    best === 3 ? '自然な声が見つかりました' :
+    best === 2 ? 'そこそこの声です。もっと良くできます →' :
+                 '合成っぽい声しかありません。下の手順で良くなります →';
 }
+voiceSel.addEventListener('change', function () {
+  remember('anaume.voice', voiceSel.value);
+});
 if (canSpeak) {
   fillVoices();
   speechSynthesis.onvoiceschanged = fillVoices;
 }
+const savedRate = recall('anaume.rate');
+if (savedRate) { rateEl.value = savedRate; }
+rateVal.textContent = Number(rateEl.value).toFixed(2);
 rateEl.addEventListener('input', function () {
   rateVal.textContent = Number(rateEl.value).toFixed(2);
+  remember('anaume.rate', rateEl.value);
 });
 
 let queue = [], qi = 0, cur = -1;
@@ -366,6 +450,17 @@ document.getElementById('list').addEventListener('click', function (e) {
 document.getElementById('playall').addEventListener('click', function () {
   play(cards.map(function (c, i) { return c.hidden ? -1 : i; })
        .filter(function (i) { return i >= 0; }));
+});
+document.getElementById('demo').addEventListener('click', function () {
+  stopAll();
+  const u = new SpeechSynthesisUtterance(
+    '四隅には120ミリ角の通し柱、その他には同寸の管柱を用い、' +
+    '梁の最大スパンは3640ミリ以下としています。');
+  u.lang = 'ja-JP';
+  u.rate = Number(rateEl.value);
+  const v = jaVoices().find(function (x) { return x.name === voiceSel.value; });
+  if (v) u.voice = v;
+  speechSynthesis.speak(u);
 });
 document.getElementById('stop').addEventListener('click', stopAll);
 window.addEventListener('pagehide', stopAll);

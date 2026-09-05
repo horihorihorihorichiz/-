@@ -40,6 +40,16 @@ h1{font-family:var(--disp);font-size:34px;line-height:1.3;margin:6px 0 4px;
   border:1px solid var(--line);border-radius:6px;padding:3px 6px;max-width:220px}
 .ctrl input[type=checkbox]{accent-color:var(--aka);width:15px;height:15px}
 #rateVal{font-family:var(--mono);color:var(--ink)}
+#vhint{font-size:12px;color:var(--ai,#8dc0dd)}
+.voicehelp{border:1px solid rgba(128,128,128,.34);border-radius:10px;
+  padding:10px 16px;margin:12px 0 20px;font-size:12.5px;line-height:1.9}
+.voicehelp summary{cursor:pointer;font-weight:700;font-size:13px;line-height:2}
+.voicehelp table{border-collapse:collapse;width:100%;margin:10px 0;
+  font-size:12.5px}
+.voicehelp th,.voicehelp td{border:1px solid rgba(128,128,128,.3);
+  padding:6px 9px;text-align:left;vertical-align:top}
+.voicehelp th{white-space:nowrap}
+.voicehelp .cav{border-top:1px dashed rgba(128,128,128,.34);padding-top:8px}
 .track{border:1px solid var(--line);border-radius:10px;background:var(--panel);
   margin-bottom:12px;overflow:hidden}
 .track.playing{border-color:var(--aka)}
@@ -66,15 +76,40 @@ button.play:focus-visible{outline:3px solid var(--aka-soft)}
 <h1>耳から製図</h1>
 <p class="lead">全10話・約20分。教材と同じ内容を、ラジオ講座のように耳で復習できます。</p>
 <div class="note"><b>使い方：</b>▶を押すと、お使いのスマホ／パソコンに入っている
-日本語の声で読み上げます（少し機械っぽい声ですが、内容は教材と同じです）。
+日本語の声で読み上げます。<b>いちばん自然な声を自動で選びます</b>
+（下の「声をもっと自然にする」で、さらに良い声を入れられます）。
 ▶をもう一度押すと一時停止。「連続再生」をオンにすると第1話から最後まで通しで流れます。
 文字も同時に表示されるので、目と耳の両方で覚えられます。</div>
 <div class="ctrl">
   <label>速さ <input type="range" id="rate" min="0.7" max="1.4" step="0.05" value="1">
     <span id="rateVal">1.00</span></label>
   <label>声 <select id="voice"></select></label>
+  <span id="vhint"></span>
   <label><input type="checkbox" id="auto" checked> 連続再生</label>
 </div>
+<details class="voicehelp">
+  <summary>声をもっと自然にする（声優みたいな声にしたい人へ）</summary>
+  <p>読み上げに使えるのは<b>その端末に入っている声だけ</b>です。
+  一覧は自然な順にならべてあり、<b>★★★ があれば自動で選びます</b>。
+  もっと良くしたいときは、端末に良い声を入れてください。</p>
+  <table>
+    <tr><th>端末</th><th>やること</th></tr>
+    <tr><td><b>Windows</b></td><td>このページを <b>Microsoft Edge</b> で開く。
+      「Nanami」「Keita」など <b>Natural</b> とつく声が出ます。
+      いちばん自然で無料。<b>迷ったらこれ</b></td></tr>
+    <tr><td><b>iPhone・iPad</b></td><td>設定 → アクセシビリティ →
+      読み上げコンテンツ → 声 → 日本語 →
+      <b>Kyoko / Otoya の「高品質」をダウンロード</b></td></tr>
+    <tr><td><b>Mac</b></td><td>システム設定 → アクセシビリティ →
+      読み上げコンテンツ → システムの声 →
+      日本語の<b>「拡張」「プレミアム」をダウンロード</b></td></tr>
+    <tr><td><b>Android</b></td><td>設定 → ユーザー補助 → 音声出力 →
+      Google音声サービス → <b>日本語の音声データをダウンロード</b></td></tr>
+  </table>
+  <p class="cav">※ ブラウザの読み上げ機能なので、
+  プロの声優さんの録音のようにはなりません。
+  そこまで求める場合は、有料の音声合成で音声ファイルを作って差しこむ形になります。</p>
+</details>
 <div id="list"></div>
 <p class="foot">聞き流し用。本番前は、紙の早見盤とあわせてどうぞ。</p>
 </div>
@@ -126,27 +161,63 @@ TRACKS.forEach(function(t, i){
   list.appendChild(div);
 });
 
+// 声の良さを名前から見分けて、自然な順にならべる。
+//   ★★★ ニューラル音声（Natural / Neural / Siri / Premium）
+//   ★★  拡張版・Google の声　／　★ 昔からの合成音声
+function vScore(v){
+  const n = (v.name + ' ' + (v.voiceURI || '')).toLowerCase();
+  if (/natural|neural|siri|premium|プレミアム/.test(n)) return 3;
+  if (/enhanced|拡張|google|online/.test(n)) return 2;
+  return 1;
+}
 function voices(){
   return speechSynthesis.getVoices().filter(function(v){
     return v.lang && v.lang.toLowerCase().indexOf('ja') === 0;
+  }).sort(function(a, b){
+    return vScore(b) - vScore(a) || a.name.localeCompare(b.name);
   });
 }
+function remember(k, v){ try{ localStorage.setItem(k, v); }catch(e){} }
+function recall(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } }
 function fillVoices(){
   const vs = voices();
+  const keep = voiceSel.value || recall('onsei.voice');
   voiceSel.innerHTML = '';
+  const hint = document.getElementById('vhint');
   if (!vs.length){
-    voiceSel.innerHTML = '<option>日本語の声が見つかりません</option>'; return;
+    voiceSel.innerHTML = '<option>日本語の声が見つかりません</option>';
+    if (hint) hint.textContent = '';
+    return;
   }
-  vs.forEach(function(v, i){
+  vs.forEach(function(v){
+    const s = vScore(v);
     const o = document.createElement('option');
-    o.value = v.name; o.textContent = v.name.replace(/^Microsoft |^Google /, '');
+    o.value = v.name;
+    o.textContent = (s === 3 ? '★★★ ' : s === 2 ? '★★ ' : '★ ') +
+      v.name.replace(/^Microsoft |^Google /, '')
+            .replace(/ - Japanese \(Japan\)/i, '');
     voiceSel.appendChild(o);
   });
+  voiceSel.value = (keep && vs.some(function(v){ return v.name === keep; }))
+    ? keep : vs[0].name;
+  if (hint){
+    const best = vScore(vs[0]);
+    hint.textContent = best === 3 ? '自然な声が見つかりました'
+      : best === 2 ? 'そこそこの声です。もっと良くできます →'
+      : '合成っぽい声しかありません。下の手順で良くなります →';
+  }
 }
+voiceSel.addEventListener('change', function(){
+  remember('onsei.voice', voiceSel.value);
+});
 fillVoices();
 if (window.speechSynthesis) speechSynthesis.onvoiceschanged = fillVoices;
+const savedRate = recall('onsei.rate');
+if (savedRate){ rateEl.value = savedRate; }
+rateVal.textContent = Number(rateEl.value).toFixed(2);
 rateEl.addEventListener('input', function(){
   rateVal.textContent = Number(rateEl.value).toFixed(2);
+  remember('onsei.rate', rateEl.value);
 });
 
 function ui(){
