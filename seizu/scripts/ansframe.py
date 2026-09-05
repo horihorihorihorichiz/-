@@ -139,6 +139,8 @@ def draw(kind='floor'):
                    py(NY) + 4, stroke=INK, stroke_width=1.2)
         s.text(px(NX / 2.0) + 26, py(NY / 2.0), '棟木 120×120', size=9,
                anchor='start')
+        for gy in range(2, NY, 2):          # 棟束（棟木を受ける）
+            s.circle(px(NX / 2.0), py(gy), 3.6, fill=INK)
         for gx in (1, 2, 3, 5, 6, 7):
             s.line(px(gx), py(0) - 4, px(gx), py(NY) + 4, stroke=INK,
                    stroke_width=0.9, stroke_dasharray='14 3 2 3')

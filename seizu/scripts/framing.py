@@ -183,6 +183,18 @@ def roof_framing():
     s.text(px(4), py(-ke) + 22, '屋根の外形（軒の出600・けらば455）',
            size=10.5, fill='#888')
 
+    # 妻梁（東西の外周）と軒桁（柱のある南北の通り＝A・B・C・D）
+    for gy in (0, 10):
+        s.line(px(0), py(gy), px(8), py(gy), stroke=C_DOUBUCHI,
+               stroke_width=5.4)
+    for gx, _ in XLINES:
+        s.line(px(gx), py(0), px(gx), py(10), stroke=C_DOUBUCHI,
+               stroke_width=5.4)
+    # 小屋梁（東西方向・1,820おき。小屋束を受ける）
+    for gy in range(2, 10, 2):
+        s.line(px(0), py(gy), px(8), py(gy), stroke=C_OOBARI,
+               stroke_width=4.2)
+
     # 母屋（南北方向 @910）
     for gx in (1, 2, 3, 5, 6, 7):
         s.line(px(gx), py(-ke), px(gx), py(10 + ke), stroke=C_KOBARI,
@@ -190,20 +202,12 @@ def roof_framing():
     # 棟木
     s.line(px(4), py(-ke), px(4), py(10 + ke), stroke=C_MUNE,
            stroke_width=4.6)
-    # 小屋梁（東西方向・柱通り）
-    for gy in (0, 2, 6, 10):
-        s.line(px(0), py(gy), px(8), py(gy), stroke=C_OOBARI,
-               stroke_width=4.2)
-    # 軒桁（A・D通り）
-    for gx in (0, 8):
-        s.line(px(gx), py(0), px(gx), py(10), stroke=C_DOUBUCHI,
-               stroke_width=5.4)
 
     hiuchi(s, 1.0)
 
-    # 小屋束
+    # 小屋束（母屋・棟木と小屋梁の交点。棟木の下は棟束）
     for gx in (1, 2, 3, 4, 5, 6, 7):
-        for gy in (0, 2, 6, 10):
+        for gy in range(2, 10, 2):
             s.circle(px(gx), py(gy), 5, fill='#fff', stroke='#7d3c98',
                      stroke_width=1.8)
     columns(s, tooshi=False)
@@ -227,7 +231,7 @@ def roof_framing():
                weight='700')
     s.text_rot(px(0) - 12, py(4), '軒桁 120×240', -90, size=11,
                fill=C_DOUBUCHI, weight='700')
-    s.text(px(6.4), py(6) - 8, '小屋梁 120×240', size=11, fill=C_OOBARI,
+    s.text(px(6.4), py(4) - 8, '小屋梁 120×240 @1,820', size=11, fill=C_OOBARI,
            weight='700')
     s.text(px(6.2), py(8.5) + 16, '母屋 90×90 @910', size=11, fill=C_KOBARI,
            weight='700')
@@ -235,9 +239,12 @@ def roof_framing():
     legend(s, [
         ('line', C_MUNE, 4.6, '棟木 120×120（建物の中央・南北方向に1本）'),
         ('line', C_KOBARI, 2.0, '母屋 90×90 ＠910（棟木と平行に6本）'),
-        ('dot', '#7d3c98', 0, '小屋束 90×90（母屋と小屋梁の交点に立てる）'),
-        ('line', C_OOBARI, 4.2, '小屋梁 120×240（東西方向・柱のある通りに）'),
-        ('line', C_DOUBUCHI, 5.4, '軒桁 120×240（A通り・D通り）'),
+        ('dot', '#7d3c98', 0, '小屋束 90×90（母屋・棟木と小屋梁の交点。'
+         '棟木の下は棟束）'),
+        ('line', C_OOBARI, 4.2, '小屋梁 120×240（東西方向・1,820おき。'
+         '小屋束を受ける）'),
+        ('line', C_DOUBUCHI, 5.4, '軒桁・妻梁 120×240（外周と、柱のある'
+         'A・B・C・D通り）'),
         ('dash', '#b0651a', 1.6, '垂木 45×105 ＠455（棟から軒へ東西に流す）'),
     ])
     s.text(W / 2.0, H - 14,
