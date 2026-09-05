@@ -87,6 +87,27 @@ def callout(s, px_mm, py_mm, ly, text, color='#333'):
     s.text(LX, ly, text, size=11, anchor='start', fill='#222')
 
 
+
+def grid(s):
+    """答案用紙の方眼。部分詳細図のらんは1目盛10mm＝1／20で実物200mm。"""
+    GX0, GX1 = 100.0, 384.0
+    col = '#d6d6d6'
+    bands = ((TOP_LO, TOP_HI), (BOT_LO, BOT_HI))
+    mm = -800                                   # たて線（実物200mmごと）
+    while X(mm) <= GX1 + 0.01:
+        x = X(mm)
+        if x >= GX0 - 0.01:
+            for lo, hi in bands:
+                s.line(x, Y(hi), x, Y(lo), stroke=col, stroke_width=0.5)
+        mm += 200
+    for lo, hi in bands:                        # よこ線
+        m = int(lo // 200) * 200
+        while m <= hi + 0.01:
+            if m >= lo - 0.01:
+                s.line(GX0, Y(m), GX1, Y(m), stroke=col, stroke_width=0.5)
+            m += 200
+
+
 def draw():
     s = Svg(W, H)
     s.add(PATTERNS)
@@ -96,7 +117,11 @@ def draw():
            size=11.5, fill='#666')
     s.text(W / 2.0, 76, '★ 本番の解答用紙に描いて提出するのは、この1枚', size=12,
            fill='#b03060', weight='700')
+    grid(s)                       # 図の下に方眼を敷く（描画より先に）
 
+    s.text(100, H - 22, '方眼は答案用紙の目盛　1目盛 10mm ＝ 実物200mm'
+           '（この図だけ1／20なので、ふつうの4.55mmとちがう）',
+           size=10, anchor='start', fill='#999')
     xin, xout = XMIN, XMAX
 
     # 室内・屋外
