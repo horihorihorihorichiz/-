@@ -236,7 +236,130 @@ def draw(step):
     return s
 
 
+def panel(s, x, y, w, h, title, sub=''):
+    """区切りのわく。"""
+    s.rect(x, y, w, h, fill='#fcfcfb', stroke='#e0ded8', stroke_width=1.0,
+           rx=10)
+    s.text(x + 16, y + 26, title, size=14.5, anchor='start', weight='700')
+    if sub:
+        s.text(x + 16, y + 45, sub, size=11, anchor='start', fill='#777')
+
+# ============================================ 実物はどれくらい細いのか
+def real():
+    """1／20で紙の上に何mmになるかを、実際の比率で見せる。
+
+    説明用の図は層を太らせてあるので、本当の細さが分からない。
+    ここだけは比率をいじらずに描く。
+    """
+    W, H = 1240, 700
+    s = Svg(W, H)
+    s.text(W / 2.0, 40, '実物はどれくらい細いのか（1／20 の紙の上）',
+           size=22, weight='700')
+    s.text(W / 2.0, 66,
+           '説明の図は層を太らせてある。'
+           'ここだけは、ふくらませずに本当の比率で描いた。',
+           size=12.5, fill='#666')
+
+    # ---------------------------------------- 左：全体の比率
+    panel(s, 20, 90, 372, 560, '① 図ぜんぶの大きさ',
+          '高さ約20cm、壁の幅たった9mm')
+    K1 = 2.1                                   # 紙1mm → px
+    bx, by = 210.0, 150.0                      # 壁の内面の位置・上端
+    hh = 197.5 * K1                            # 高さ198mm
+    s.rect(bx - 46 * K1, by, 46 * K1, hh, fill='#f4f2ec', stroke='#c9c9c0',
+           stroke_width=0.8)                   # 室内（床など）
+    s.rect(bx, by, 8.9 * K1, hh, fill='#c0392b', stroke='none')   # 外壁
+    s.rect(bx - 12 * K1, by + hh - 24 * K1, 36 * K1, 24 * K1,
+           fill='#e0e0da', stroke='#b6b6ae', stroke_width=0.8)    # 基礎
+    for cm, lab in ((0, '0'), (5, '5cm'), (10, '10cm'), (15, '15cm'),
+                    (20, '20cm')):
+        yy = by + cm * 10 * K1
+        s.line(bx - 118, yy, bx - 108, yy, stroke='#999', stroke_width=1.0)
+        s.text(bx - 124, yy + 4, lab, size=10, anchor='end', fill='#888')
+    s.line(bx - 113, by, bx - 113, by + hh, stroke='#999', stroke_width=1.0)
+    s.line(bx + 4.45 * K1, by - 16, bx + 4.45 * K1, by - 4, stroke=ACC,
+           stroke_width=1.2)
+    s.text(bx + 4.45 * K1 + 6, by - 18, '← 壁はこの赤いところだけ',
+           size=10.5, anchor='start', fill=ACC, weight='700')
+    s.text(bx + 4.45 * K1 + 6, by - 4, '　 幅 8.9mm', size=10.5,
+           anchor='start', fill=ACC, weight='700')
+    s.text(36, 626, '★ 紙の上では、ほとんど「細い棒」です。',
+           size=11.5, anchor='start', fill='#555')
+
+    # ---------------------------------------- 中：9mmの中身
+    panel(s, 406, 90, 404, 560, '② その 8.9mm の中身',
+          '20倍にふくらませたところ')
+    K2 = 34.0                                  # 紙1mm → px
+    lx, ly, lh = 452.0, 156.0, 200.0
+    LAYERS = (('強化石膏ボード', 15, BOARD),
+              ('柱＋グラスウール', 120, INS),
+              ('構造用合板', 9, PLY),
+              ('通気胴縁', 18, '#f7f7f7'),
+              ('サイディング', 16, SIDE))
+    x = lx
+    for nm, mm, col in LAYERS:
+        w = mm / 20.0 * K2
+        s.rect(x, ly, w, lh, fill=col, stroke=INK, stroke_width=0.9)
+        x += w
+    s.dim_h(lx, x, ly - 14, '8.9mm', size=11)
+    x = lx
+    for i, (nm, mm, col) in enumerate(LAYERS):
+        w = mm / 20.0 * K2
+        pm = mm / 20.0
+        thin = pm < 1.0
+        yy = ly + lh + 30 + i * 34
+        s.line(x + w / 2.0, ly + lh, x + w / 2.0, yy - 10,
+               stroke=ACC if thin else '#aaa', stroke_width=0.9)
+        s.text(430, yy, nm, size=11, anchor='start',
+               fill=ACC if thin else '#333', weight='700' if thin else '400')
+        s.text(700, yy, '実物%dmm' % mm, size=10.5, anchor='end',
+               fill='#888')
+        s.text(790, yy, '→ %.2fmm' % pm, size=11, anchor='end',
+               fill=ACC if thin else '#333', weight='700')
+        x += w
+    s.text(424, 626,
+           '★ 赤い4つは 1mm未満。鉛筆の線（約0.5mm）とほぼ同じ太さです。',
+           size=11.5, anchor='start', fill=ACC, weight='700')
+
+    # ---------------------------------------- 右：だからこう描く
+    panel(s, 824, 90, 396, 560, '③ だから、こう描く',
+          '線を詰めこまない。名前は外に出す')
+    wx, wy, wh = 856.0, 160.0, 300.0
+    ww = 56.0
+    s.rect(wx, wy, ww, wh, fill='#fff', stroke=INK, stroke_width=1.6)
+    s.line(wx + 14, wy, wx + 14, wy + wh, stroke=INK, stroke_width=1.2)
+    s.line(wx + 42, wy, wx + 42, wy + wh, stroke=INK, stroke_width=1.2)
+    s.rect(wx + 14, wy + 40, 28, wh - 80, fill=INS, stroke=INK,
+           stroke_width=1.0)
+    s.text(wx + 28, wy + wh / 2.0 + 4, '柱', size=11, weight='700')
+    s.line(wx + ww, wy + 60, wx + ww + 34, wy + 14, stroke='#888',
+           stroke_width=1.0)
+    for i, r in enumerate(('① 強化石膏ボード t=15',
+                           '② 柱120＋GW16K t=100',
+                           '③ 構造用合板 t=9',
+                           '④ 透湿防水シート',
+                           '⑤ 通気胴縁 t=18',
+                           '⑥ 窯業系サイディング t=16')):
+        s.text(wx + ww + 38, wy + 10 + i * 27, r, size=11, anchor='start',
+               fill='#333')
+    s.rect(848, 546, 348, 82, fill='#fdeeee', stroke='#e0a0a0',
+           stroke_width=1.0, rx=8)
+    s.text(864, 570, '線は3〜4本でいい', size=12.5, anchor='start',
+           weight='700', fill=ACC)
+    s.text(864, 592, '9mmの中に6本の線は入りません。', size=11.5,
+           anchor='start', fill='#8a3a3a')
+    s.text(864, 612, '外面・柱の2本・内面。名前は引き出し線で外へ。',
+           size=11.5, anchor='start', fill='#8a3a3a')
+
+    s.text(W / 2.0, H - 16,
+           '★ 部分詳細図の点は「線の細かさ」ではなく「文字の数」で決まる。'
+           'ここが分かると、一気に楽になります。',
+           size=13, weight='700', fill='#333')
+    return s
+
+
 if __name__ == '__main__':
     for i in range(1, 10):
         draw(i).save(os.path.join(OUT, 'dh%d.svg' % i))
-    print('wrote dh1〜dh9.svg')
+    real().save(os.path.join(OUT, 'dh_real.svg'))
+    print('wrote dh1〜dh9.svg ＋ dh_real.svg')
