@@ -872,6 +872,133 @@ def kiso():
     return s
 
 
+# ==================================================== 高さのしくみ
+def takasa():
+    """高さを1本のものさしにまとめる。どこから測るかで色を分ける。"""
+    W2, H2 = 1240, 880
+    s = Svg(W2, H2)
+    s.text(W2 / 2.0, 40, '高さのしくみ ぜんぶ', size=22, weight='700')
+    s.text(W2 / 2.0, 66,
+           '高さが分からなくなるのは「どこから測っているか」が'
+           'まざるから。GLから測るものと、階と階の間を測るものは別ものです。',
+           size=12.5, fill='#666')
+
+    # ------------------------------------------------ ① 全体のものさし
+    panel(s, 20, 92, 740, 712, '① 建物ぜんぶの高さ',
+          '左＝GL（地面）からの高さ　／　右＝階と階の間の高さ')
+    K3 = 0.052
+    TOP = 10806.0
+
+    def TY(mm):
+        return 148.0 + (TOP - mm) * K3
+
+    bx1, bx2 = 300.0, 470.0
+    # 建物のかたち
+    s.rect(bx1, TY(9350), bx2 - bx1, TY(0) - TY(9350), fill='#f8f7f3',
+           stroke='#c9c9c0', stroke_width=1.2)
+    s.polygon([(bx1 - 22, TY(9350)), ((bx1 + bx2) / 2.0, TY(10806)),
+               (bx2 + 22, TY(9350))], fill='#f3efe7', stroke='#c9c9c0',
+              stroke_width=1.2)
+    s.rect(bx1 + 30, TY(0), bx2 - bx1 - 60, TY(-300) - TY(0), fill=CONC,
+           stroke='#b6b6ae', stroke_width=1.0)
+    s.rect(bx1 - 40, TY(0), bx2 - bx1 + 80, 14, fill='#efece6',
+           stroke='none')
+    for z, lab in ((7900, '3階'), (5100, '2階'), (2100, '1階')):
+        s.text((bx1 + bx2) / 2.0, TY(z), lab, size=13, fill='#b8b2a6',
+               weight='700')
+
+    LV = ((10806.0, '最高の高さ  GL+10,806', '9,350 ＋ 1,456'),
+          (9350.0, '軒の高さ  GL+9,350', '6,550 ＋ 2,800'),
+          (6550.0, '3FL  GL+6,550', '3,650 ＋ 2,900'),
+          (3650.0, '2FL  GL+3,650', '550 ＋ 3,100'),
+          (550.0, '1FL  GL+550', '371＋20＋120＋24＋15'),
+          (0.0, 'GL（地面）', ''),
+          (-300.0, '基礎の底  GL−300', ''))
+    for z, lab, calc in LV:
+        y = TY(z)
+        s.line(bx1 - 46, y, bx2 + 46, y, stroke=ACC if z in (0.0,) else INK,
+               stroke_width=1.6 if z == 0.0 else 1.0)
+        s.text(bx1 - 54, y + 4, lab, size=11.5, anchor='end', weight='700')
+        if calc:
+            # 下のほうは線どうしが近いので、計算式を上に出す
+            s.text(bx1 - 54, y + (-11 if z <= 550.0 else 18), calc,
+                   size=9.5, anchor='end', fill='#999')
+    # 右＝階の間
+    for a, b, lab in ((10806.0, 9350.0, '1,456（4寸勾配）'),
+                      (9350.0, 6550.0, '2,800'),
+                      (6550.0, 3650.0, '2,900'),
+                      (3650.0, 550.0, '3,100'),
+                      (550.0, 0.0, '550'),
+                      (0.0, -300.0, '300')):
+        s.dim_v(TY(a), TY(b), bx2 + 96, lab, size=10.5, anchor='start',
+                dx=6, color='#2f7fd0')
+    s.text(bx2 + 96, TY(10806) - 22, '階と階の間', size=11,
+           anchor='middle', fill='#2f7fd0', weight='700')
+    s.text(bx1 - 54, TY(10806) - 22, 'GLからの高さ', size=11, anchor='end',
+           fill=INK, weight='700')
+    s.text(40, 756,
+           '★ 左の数字は「地面から何mm」。右の数字は「そのすぐ下の線から何mm」。',
+           size=11.5, anchor='start', fill='#555')
+    s.text(40, 776,
+           '★ 左どうしは引き算でつながる。3,650 − 550 ＝ 3,100（右の数字）。',
+           size=11.5, anchor='start', fill='#555')
+
+    # ------------------------------------------------ ② 550の中身
+    panel(s, 776, 92, 444, 712, '② いちばん分かりにくい「550」の中身',
+          '5つを積み上げると、ちょうど550になる')
+    K4 = 0.78
+    ux = 900.0
+
+    def UY(mm):
+        return 600.0 - mm * K4
+
+    STACK = ((0.0, 371.0, CONC, '基礎の立上り（地上部分）', '371'),
+             (371.0, 391.0, '#e2e2e2', '基礎パッキン', '20'),
+             (391.0, 511.0, WOOD, '土台 120×120', '120'),
+             (511.0, 535.0, PLY, '構造用合板', '24'),
+             (535.0, 550.0, '#e8d7b8', 'フローリング（仕上げ）', '15'))
+    for z0, z1, col, nm, mm in STACK:
+        s.rect(ux, UY(z1), 96, (z1 - z0) * K4, fill=col, stroke=INK,
+               stroke_width=1.2)
+        my = (UY(z0) + UY(z1)) / 2.0
+        s.line(ux + 96, my, ux + 118, my, stroke='#888', stroke_width=0.7)
+        s.text(ux + 124, my + 4, nm, size=11, anchor='start')
+        s.text(ux + 124, my + 18, mm + ' mm', size=11, anchor='start',
+               fill=ACC, weight='700')
+    s.line(ux - 40, UY(0), ux + 110, UY(0), stroke=ACC, stroke_width=1.6)
+    s.text(ux - 46, UY(0) + 4, 'GL', size=11.5, anchor='end', weight='700',
+           fill=ACC)
+    s.line(ux - 40, UY(550), ux + 110, UY(550), stroke=INK,
+           stroke_width=1.6)
+    s.text(ux - 46, UY(550) + 4, '1FL', size=11.5, anchor='end',
+           weight='700')
+    s.dim_v(UY(550), UY(0), ux - 24, '550', size=11.5, anchor='end', dx=-6)
+    s.rect(796, 640, 404, 96, fill='#f1f8f2', stroke='#b9d8bd',
+           stroke_width=1.0, rx=8)
+    s.text(816, 666, '371 ＋ 20 ＋ 120 ＋ 24 ＋ 15 ＝ 550', size=15,
+           anchor='start', weight='700', fill='#1e7e34')
+    s.text(816, 690, '基礎  パッキン  土台  合板  仕上げ', size=10.5,
+           anchor='start', fill='#3d6b46')
+    s.text(816, 714,
+           '371は「300以上」を満たす数。ここを決めると550が決まる。',
+           size=11, anchor='start', fill='#3d6b46')
+    s.text(796, 756,
+           '★ ここさえ分かれば、あとは足し算するだけです。',
+           size=11.5, anchor='start', fill='#555')
+
+    # ------------------------------------------------ まとめ
+    s.rect(20, 818, W2 - 40, 46, fill='#fdeeee', stroke='#e0a0a0',
+           stroke_width=1.0, rx=8)
+    s.text(W2 / 2.0, 840,
+           '★ 軒の高さ 9,350 ≦ 9,500　／　最高の高さ 10,806 ≦ 11,000　'
+           '── 問題文の制限は、この2つだけ満たせばよい。',
+           size=13, weight='700', fill=ACC)
+    s.text(W2 / 2.0, 858,
+           'どちらも「GLから」測る高さです。',
+           size=11.5, fill='#8a3a3a')
+    return s
+
+
 if __name__ == '__main__':
     for i in range(1, 10):
         draw(i).save(os.path.join(OUT, 'dh%d.svg' % i))
@@ -880,4 +1007,5 @@ if __name__ == '__main__':
     hashira().save(os.path.join(OUT, 'dh_hashira.svg'))
     gw().save(os.path.join(OUT, 'dh_gw.svg'))
     kiso().save(os.path.join(OUT, 'dh_kiso.svg'))
+    takasa().save(os.path.join(OUT, 'dh_takasa.svg'))
     print('wrote dh1〜dh9.svg ＋ dh_real.svg')
