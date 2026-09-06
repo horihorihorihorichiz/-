@@ -588,10 +588,125 @@ def hashira():
     return s
 
 
+# ======================================== 柱とグラスウールの関係
+def gw():
+    """「柱120＋グラスウール16K t=100」の意味を、横に切って見せる。
+
+    柱とグラスウールは重なっているのではなく、同じ120mmの層の中で
+    横に並んでいる。柱は910mmおき、そのあいだを断熱材でうめる。
+    """
+    W2, H2 = 1240, 600
+    s = Svg(W2, H2)
+    s.text(W2 / 2.0, 40, '「柱120＋グラスウール」ってどういうこと？',
+           size=22, weight='700')
+    s.text(W2 / 2.0, 66,
+           '重なっているのではありません。'
+           '同じ120mmの層の中で、柱と断熱材が<横に並んで>います。'
+           .replace('<', '「').replace('>', '」'),
+           size=12.5, fill='#666')
+
+    # ---------------------------------------- ① 上から水平に切る
+    panel(s, 20, 92, 700, 396, '① 壁を上から水平に切ると',
+          '柱は910mmおき。そのあいだにグラスウールを詰める（充填断熱）')
+    KX, KD = 0.235, 0.86          # 横は0.235、厚みは見やすく0.86に太らせる
+    ox2, oy2 = 106.0, 190.0
+
+    def PX(mm):
+        return ox2 + mm * KX
+
+    def PY(mm):
+        return oy2 + mm * KD
+
+    LAY = ((0, 15, BOARD, '強化石膏ボード t=15'),
+           (15, 135, None, None),                       # 柱／GWの層
+           (135, 144, PLY, '構造用合板 t=9'),
+           (144, 162, '#f7f7f7', '通気胴縁 t=18'),
+           (162, 178, SIDE, '窯業系サイディング t=16'))
+    span = 1940.0
+    for z0, z1, col, lab in LAY:
+        if col is None:
+            continue
+        s.rect(PX(0), PY(z0), span * KX, (z1 - z0) * KD, fill=col,
+               stroke=INK, stroke_width=1.0)
+    # 柱とグラスウール（横に並ぶ）
+    for i in range(3):
+        cx0 = 60.0 + i * 910.0
+        s.rect(PX(cx0), PY(15), 120 * KX, 120 * KD, fill=WOOD, stroke=INK,
+               stroke_width=1.4)
+        s.text(PX(cx0 + 60), PY(75) + 4, '柱', size=11, weight='700')
+        if i < 2:
+            s.rect(PX(cx0 + 120), PY(25), (910 - 120) * KX, 100 * KD,
+                   fill=INS, stroke='#c9a227', stroke_width=1.2)
+            s.text(PX(cx0 + 515), PY(75) + 4, 'グラスウール16K t=100',
+                   size=10.5, fill='#8a6a1a', weight='700')
+    for i in range(2):
+        a, b = 60.0 + i * 910.0, 60.0 + (i + 1) * 910.0
+        s.dim_h(PX(a), PX(b), PY(-24), '910', size=10.5)
+    s.text(PX(0), PY(200), '← 壁にそって、この並びがずっと続く →',
+           size=11, anchor='start', fill='#777')
+    s.text(PX(0), PY(232), '※ 厚み（たての方向）は見やすいように太らせてある',
+           size=10, anchor='start', fill='#aaa')
+    for z0, z1, col, lab in LAY:
+        if lab is None:
+            continue
+        s.line(PX(span) + 4, PY((z0 + z1) / 2.0), PX(span) + 26,
+               PY((z0 + z1) / 2.0), stroke='#888', stroke_width=0.8)
+        s.text(PX(span) + 32, PY((z0 + z1) / 2.0) + 4, lab, size=10.5,
+               anchor='start', fill='#444')
+    s.line(PX(span) + 4, PY(75), PX(span) + 26, PY(75), stroke='#888',
+           stroke_width=0.8)
+    s.text(PX(span) + 32, PY(79), '柱と断熱材が交互', size=10.5,
+           anchor='start', fill=ACC, weight='700')
+    s.text(PX(0) - 10, PY(8) + 4, '室内側', size=10, anchor='end',
+           fill='#888')
+    s.text(PX(0) - 10, PY(170) + 4, '屋外側', size=10, anchor='end',
+           fill='#888')
+
+    # ---------------------------------------- ② たてに切る
+    panel(s, 736, 92, 484, 396, '② 部分詳細図はたてに切る',
+          '切った場所によって、見えるものが変わる')
+    for k, (bx2, ttl, col, sub) in enumerate((
+            (800.0, 'A 柱の所で切ると', WOOD, '木が見える'),
+            (1010.0, 'B 柱の間で切ると', INS, 'グラスウールが見える'))):
+        s.text(bx2 + 60, 168, ttl, size=12, weight='700')
+        s.rect(bx2, 186, 14, 220, fill=BOARD, stroke=INK, stroke_width=1.0)
+        s.rect(bx2 + 14, 186, 82, 220, fill=col, stroke=INK,
+               stroke_width=1.4)
+        s.rect(bx2 + 96, 186, 10, 220, fill=PLY, stroke=INK,
+               stroke_width=1.0)
+        s.rect(bx2 + 106, 186, 14, 220, fill=SIDE, stroke=INK,
+               stroke_width=1.0)
+        s.text(bx2 + 55, 300, '柱' if k == 0 else '断熱', size=12,
+               weight='700')
+        s.text(bx2 + 60, 428, sub, size=11, fill='#666')
+    s.rect(760, 448, 436, 28, fill='#fdeeee', stroke='#e0a0a0',
+           stroke_width=1.0, rx=6)
+    s.text(978, 467, 'でも答案には、どちらで切っても両方書く',
+           size=11.5, weight='700', fill=ACC)
+
+    # ---------------------------------------- まとめ
+    s.rect(20, 504, W2 - 40, 78, fill='#f1f8f2', stroke='#b9d8bd',
+           stroke_width=1.0, rx=8)
+    s.text(W2 / 2.0, 530,
+           '★ 「柱120＋グラスウール16K t=100」＝ '
+           '「柱の あいだ に断熱材を詰めてある」という意味',
+           size=13.5, weight='700', fill='#1e7e34')
+    s.text(W2 / 2.0, 552,
+           '柱は910mmおき。その間の790mmぶんがグラスウール。'
+           'どちらも同じ120mmの層の中にある。',
+           size=12, fill='#3d6b46')
+    s.text(W2 / 2.0, 572,
+           'これを「充填断熱（じゅうてんだんねつ）」といいます。'
+           '記述で「充填」と書けるのはこのためです。',
+           size=12, fill='#3d6b46')
+    return s
+
+
 if __name__ == '__main__':
     for i in range(1, 10):
         draw(i).save(os.path.join(OUT, 'dh%d.svg' % i))
     real().save(os.path.join(OUT, 'dh_real.svg'))
     kansei().save(os.path.join(OUT, 'dh_kansei.svg'))
     hashira().save(os.path.join(OUT, 'dh_hashira.svg'))
+    gw().save(os.path.join(OUT, 'dh_gw.svg'))
     print('wrote dh1〜dh9.svg ＋ dh_real.svg')
