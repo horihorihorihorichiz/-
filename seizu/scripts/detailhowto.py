@@ -358,8 +358,240 @@ def real():
     return s
 
 
+# ================================================ 提出する形（答案の完成形）
+def kansei():
+    """答案に出すときの姿。黒だけ、方眼の上、文字びっしり。"""
+    global SC, OX, OY
+    SC0, OX0, OY0 = SC, OX, OY
+    SC, OX, OY = 0.168, 128.0, 74.0
+    W2, H2 = 800, int(OY + (YT - YB) * SC + 84)
+    s = Svg(W2, H2)
+    s.rect(0, 0, W2, H2, fill='#fff', stroke='none')
+    s.rect(0, 0, W2, 50, fill='#fbfaf7', stroke='none')
+    s.text(20, 24, '提出する形　部分詳細図（断面）　縮尺1／20', size=15,
+           anchor='start', weight='700')
+    s.text(20, 42, '黒鉛筆だけ。目盛10mm。線は太く数本、文字はびっしり。',
+           size=11, anchor='start', fill='#666')
+    grid(s)
+
+    # ---- 図（ぜんぶ黒）
+    rect(s, -240, 240, Z_BOT, Z_SLAB, CONC)
+    rect(s, -75, 75, Z_SLAB, Z_KISO, CONC)
+    rect(s, -60, 60, Z_KISO, Z_PACK, '#e2e2e2')
+    rect(s, -60, 60, Z_PACK, Z_DODAI, WOOD)
+    s.line(X(-20), Y(Z_DODAI + 30), X(-20), Y(Z_KISO - 250), stroke=INK,
+           stroke_width=1.6)
+    rect(s, XL + 40, 60, Z_DODAI, Z_PLY1, PLY)
+    rect(s, XL + 40, 60, Z_PLY1, Z_1FL, '#e8d7b8')
+    rect(s, -75, -60, Z_DODAI, Z_2FL, BOARD)
+    rect(s, -60, 60, Z_DODAI, Z_BEAM_B, INS)
+    rect(s, 60, 69, Z_DODAI, Z_2FL, PLY)
+    rect(s, 69, 87, Z_DODAI, Z_2FL, '#f7f7f7')
+    rect(s, 87, 103, Z_DODAI, Z_2FL, SIDE)
+    rect(s, -60, 60, Z_BEAM_B, Z_BEAM_T, WOOD)
+    rect(s, XL + 40, 60, Z_BEAM_T, Z_PLY2, PLY)
+    rect(s, XL + 40, 60, Z_PLY2, Z_2FL, '#e8d7b8')
+    s.line(X(XL + 40), Y(Z_CEIL), X(-75), Y(Z_CEIL), stroke=INK,
+           stroke_width=1.2)
+    s.rect(X(-75), Y(WIN_T), 178 * SC, (WIN_T - WIN_B) * SC, fill='#fff',
+           stroke='none')
+    rect(s, -75, 103, WIN_B, WIN_B + 60, WOOD)
+    rect(s, -75, 103, WIN_T - 60, WIN_T, WOOD)
+    rect(s, 0, 20, WIN_B + 60, WIN_T - 60, GLASS)
+
+    # ---- 引き出し線＋文字（ここが点になる）
+    LX2 = 470.0
+    LABELS = (
+        (103, Z_2FL - 120, '窯業系サイディング t=16（外壁仕上げ）'),
+        (78, Z_2FL - 340, '通気胴縁 18×45 ＠455（通気層）'),
+        (64, Z_2FL - 560, '透湿防水シート／構造用合板 t=9'),
+        (0, Z_BEAM_T - 150, '胴差 120×300'),
+        (0, Z_PLY2, '構造用合板 t=24（根太レス）＋ フローリング t=15'),
+        (-70, Z_CEIL, '天井 石膏ボード t=9.5（天井仕上げ）'),
+        (0, 2300, '柱 120×120'),
+        (0, 2050, 'グラスウール16K t=100（断熱）'),
+        (-68, 1800, '強化石膏ボード t=15（内壁仕上げ）'),
+        (60, WIN_T - 30, 'まぐさ／アルミサッシ＋複層ガラス'),
+        (60, WIN_B + 30, '窓台'),
+        (0, Z_1FL, 'フローリング t=15（床仕上げ）＋ 構造用合板 t=24'),
+        (0, Z_DODAI - 60, '土台 120×120'),
+        (0, Z_PACK - 10, '基礎パッキン t=20'),
+        (-20, Z_KISO - 220, 'アンカーボルト M12 ＠2,730以下（埋込み250以上）'),
+        (0, 120, 'べた基礎 立上り t=150（地上371）'),
+        (0, Z_SLAB - 80, 'べた基礎 底盤 t=150（根入れ300）'),
+        (-180, Z_BOT + 40, '防湿フィルム t=0.15 ＋ 割栗石'),
+    )
+    # 引き出し線は、文字が重ならないように行を送ってから折り曲げる
+    src = [(X(x0), Y(z)) for x0, z, _ in LABELS]
+    order = sorted(range(len(LABELS)), key=lambda i: src[i][1])
+    prev, rows = -1e9, {}
+    for i in order:
+        rows[i] = max(src[i][1], prev + 17.0)
+        prev = rows[i]
+    for i, (x0, z, txt) in enumerate(LABELS):
+        sx, sy = src[i]
+        ty = rows[i]
+        s.line(sx, sy, LX2 - 46, sy, stroke='#666', stroke_width=0.7)
+        s.line(LX2 - 46, sy, LX2 - 12, ty, stroke='#666', stroke_width=0.7)
+        s.circle(sx, sy, 1.8, fill=INK)
+        s.text(LX2, ty + 3.5, txt, size=10, anchor='start', fill=INK)
+
+    # ---- 寸法（左）
+    for a, b, dx, lab in ((Z_2FL, Z_1FL, -540, '階高 3,100'),
+                          (Z_CEIL, Z_1FL, -400, '天井高 2,700'),
+                          (Z_1FL, 0.0, -540, '床高 550'),
+                          (0.0, Z_BOT, -540, '根入れ 300')):
+        s.dim_v(Y(a), Y(b), X(dx), lab, size=10, anchor='end', dx=-6)
+    for z, lab in ((0.0, 'GL'), (Z_1FL, '1FL  GL+550'),
+                   (Z_2FL, '2FL  GL+3,650')):
+        s.text(X(XL) - 6, Y(z) + 3.5, lab, size=10, anchor='end', fill=INK)
+
+    s.text(20, H2 - 34,
+           '★ 要求されているのは 部材の名称・断面寸法／仕上材料名（外壁・床・'
+           '内壁・天井）／断熱と防湿／アンカーボルト／床高・天井高・階高。',
+           size=10.5, anchor='start', fill='#555')
+    s.text(20, H2 - 16,
+           '★ 線は太く数本でよい。上の文字が1行でも欠けると、'
+           'そのぶん点にならない。', size=10.5, anchor='start', fill=ACC,
+           weight='700')
+    SC, OX, OY = SC0, OX0, OY0
+    return s
+
+
+# ==================================================== 柱はどこまで描くのか
+def hashira():
+    """同じ柱が、図面によってどう見えるか。3枚ならべる。"""
+    W2, H2 = 1240, 640
+    s = Svg(W2, H2)
+    s.text(W2 / 2.0, 40, '柱はどこまで描くのか', size=22, weight='700')
+    s.text(W2 / 2.0, 66,
+           '同じ1本の柱でも、図面によって描き方がまったくちがう。'
+           '3つとも「必要」です。',
+           size=12.5, fill='#666')
+
+    g = 96.0                       # 1マス910mm
+    for i, (px0, ttl, sub) in enumerate((
+            (20, '① 平面図（1／100）', '壁の中に ■。四隅は ○ で囲む'),
+            (426, '② 伏図（1／100）', '■にバツ。四隅は ■を○で囲む'),
+            (832, '③ 部分詳細図（1／20）', '切った断面。120×120と書く'))):
+        panel(s, px0, 90, 388, 420, ttl, sub)
+
+    # ---------------------------------------- ① 平面図
+    ax, ay = 130.0, 200.0
+    for k in range(3):
+        s.line(ax, ay + k * g, ax + 2 * g, ay + k * g, stroke='#eee',
+               stroke_width=0.8)
+        s.line(ax + k * g, ay, ax + k * g, ay + 2 * g, stroke='#eee',
+               stroke_width=0.8)
+    for a, b, c, d in ((0, 0, 2, 0), (0, 0, 0, 2)):          # 外壁（2本線）
+        for o in (-3.0, 3.0):
+            if a == c:
+                s.line(ax + a * g + o, ay + b * g, ax + c * g + o,
+                       ay + d * g, stroke=INK, stroke_width=1.4)
+            else:
+                s.line(ax + a * g, ay + b * g + o, ax + c * g,
+                       ay + d * g + o, stroke=INK, stroke_width=1.4)
+    for gx, gy in ((0, 0), (1, 0), (2, 0), (0, 1), (0, 2)):  # 柱の■
+        s.rect(ax + gx * g - 5, ay + gy * g - 5, 10, 10, fill=INK)
+    s.circle(ax, ay, 11, fill='none', stroke=INK, stroke_width=1.6)
+    s.polygon([(ax + 0.5 * g, ay - 14), (ax + 0.5 * g - 7, ay - 2),
+               (ax + 0.5 * g + 7, ay - 2)], fill='none', stroke=INK,
+              stroke_width=1.3)
+    s.text(ax + 0.5 * g + 16, ay - 6, '△ 耐力壁', size=10.5, anchor='start')
+    s.text(ax - 18, ay - 20, '○ 通し柱', size=10.5, anchor='start',
+           fill=ACC, weight='700')
+    s.text(ax + 1.15 * g, ay + 0.5 * g, '■ 管柱', size=10.5, anchor='start')
+    for i, r in enumerate((
+            '・柱は<壁の中>に小さな■で描く',
+            '・四すみ4本だけ○で囲む（通し柱）',
+            '・耐力壁には△',
+            '・3階ぶん、同じ位置に描く')):
+        s.text(40, 448 + i * 22, r.replace('<', '「').replace('>', '」'),
+               size=11.5, anchor='start', fill='#444')
+
+    # ---------------------------------------- ② 伏図
+    bx = 536.0
+    for k in range(3):
+        s.line(bx, ay + k * g, bx + 2 * g, ay + k * g, stroke='#eee',
+               stroke_width=0.8)
+        s.line(bx + k * g, ay, bx + k * g, ay + 2 * g, stroke='#eee',
+               stroke_width=0.8)
+    hw = 5.0
+    for a, b, c, d in ((0, 0, 2, 0), (0, 0, 0, 2), (0, 2, 2, 2),
+                       (2, 0, 2, 2)):
+        for o in (-hw, hw):
+            if a == c:
+                s.line(bx + a * g + o, ay + b * g, bx + c * g + o,
+                       ay + d * g, stroke=INK, stroke_width=1.1)
+            else:
+                s.line(bx + a * g, ay + b * g + o, bx + c * g,
+                       ay + d * g + o, stroke=INK, stroke_width=1.1)
+    r = 7.0
+    for gx, gy in ((1, 0), (2, 0), (0, 1), (0, 2), (2, 2), (1, 2), (2, 1)):
+        x, y = bx + gx * g, ay + gy * g
+        s.rect(x - r, y - r, 2 * r, 2 * r, fill='#fff', stroke=INK,
+               stroke_width=1.1)
+        s.line(x - r, y - r, x + r, y + r, stroke=INK, stroke_width=1.3)
+        s.line(x - r, y + r, x + r, y - r, stroke=INK, stroke_width=1.3)
+    s.rect(bx - r, ay - r, 2 * r, 2 * r, fill='#fff', stroke=INK,
+           stroke_width=1.1)
+    s.circle(bx, ay, r + 5, fill='none', stroke=INK, stroke_width=1.4)
+    s.text(bx - 16, ay - 22, '通し柱', size=10.5, anchor='start', fill=ACC,
+           weight='700')
+    s.text(bx + 1.15 * g, ay + 0.5 * g, '管柱', size=10.5, anchor='start')
+    for i, r_ in enumerate((
+            '・柱は「点」。記号だけ',
+            '・■にバツ＝上下階が重なる管柱',
+            '・■を○で囲む＝通し柱',
+            '・断面寸法120×120は凡例欄へ')):
+        s.text(446, 448 + i * 22, r_, size=11.5, anchor='start',
+               fill='#444')
+
+    # ---------------------------------------- ③ 部分詳細図
+    cx, cy = 880.0, 190.0
+    ch = 208.0
+    s.rect(cx, cy, 20, ch, fill=BOARD, stroke=INK, stroke_width=1.2)
+    s.rect(cx + 20, cy, 96, ch, fill=INS, stroke=INK, stroke_width=1.4)
+    s.rect(cx + 116, cy, 14, ch, fill=PLY, stroke=INK, stroke_width=1.2)
+    s.text(cx + 68, cy + ch / 2.0 + 5, '柱', size=15, weight='700')
+    s.dim_h(cx + 20, cx + 116, cy - 12, '120', size=10.5)
+    s.text(cx + 156, cy + 56, '柱 120×120', size=11.5, anchor='start',
+           weight='700')
+    s.line(cx + 130, cy + 62, cx + 152, cy + 52, stroke='#666',
+           stroke_width=0.8)
+    s.text(cx + 156, cy + 112, 'グラスウール16K', size=11,
+           anchor='start')
+    s.text(cx + 156, cy + 130, 't=100（断熱）', size=11, anchor='start')
+    s.text(cx + 156, cy + 176, '石膏ボード t=15', size=11,
+           anchor='start', fill='#777')
+    for i, r_ in enumerate((
+            '・切った断面がそのまま出る',
+            '・名前と断面寸法を書く',
+            '・断熱材は柱の間に入る',
+            '・見えるのは「切った1本」だけ')):
+        s.text(852, 448 + i * 22, r_, size=11.5, anchor='start',
+               fill='#444')
+
+    # ---------------------------------------- まとめ
+    s.rect(20, 540, W2 - 40, 78, fill='#f1f8f2', stroke='#b9d8bd',
+           stroke_width=1.0, rx=8)
+    s.text(W2 / 2.0, 566,
+           '★ 「柱をどこまで描くか」の答え ── 3つの図で、それぞれ1回ずつ。',
+           size=13.5, weight='700', fill='#1e7e34')
+    s.text(W2 / 2.0, 588,
+           '平面図＝壁の中に■（＋四すみに○）　／　'
+           '伏図＝記号（■にバツ・○囲み）　／　部分詳細図＝断面と寸法。',
+           size=12, fill='#3d6b46')
+    s.text(W2 / 2.0, 608,
+           'どれか1つでも抜けると、そのぶん要求図書の不足になります。',
+           size=12, fill='#3d6b46')
+    return s
+
+
 if __name__ == '__main__':
     for i in range(1, 10):
         draw(i).save(os.path.join(OUT, 'dh%d.svg' % i))
     real().save(os.path.join(OUT, 'dh_real.svg'))
+    kansei().save(os.path.join(OUT, 'dh_kansei.svg'))
+    hashira().save(os.path.join(OUT, 'dh_hashira.svg'))
     print('wrote dh1〜dh9.svg ＋ dh_real.svg')
