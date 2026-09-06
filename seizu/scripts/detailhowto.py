@@ -875,7 +875,7 @@ def kiso():
 # ==================================================== 高さのしくみ
 def takasa():
     """高さを1本のものさしにまとめる。どこから測るかで色を分ける。"""
-    W2, H2 = 1240, 880
+    W2, H2 = 1240, 990
     s = Svg(W2, H2)
     s.text(W2 / 2.0, 40, '高さのしくみ ぜんぶ', size=22, weight='700')
     s.text(W2 / 2.0, 66,
@@ -943,57 +943,75 @@ def takasa():
            '★ 左どうしは引き算でつながる。3,650 − 550 ＝ 3,100（右の数字）。',
            size=11.5, anchor='start', fill='#555')
 
-    # ------------------------------------------------ ② 550の中身
-    panel(s, 776, 92, 444, 712, '② いちばん分かりにくい「550」の中身',
-          '5つを積み上げると、ちょうど550になる')
-    K4 = 0.78
-    ux = 900.0
+    # ------------------------------------------------ ② 地面をまたいで下まで
+    panel(s, 776, 92, 444, 712, '② 1階の床から、掘った穴の底まで',
+          '地面（GL）をまたいで、下まで1本につないだところ')
+    K4 = 0.60
+    ux = 936.0
 
     def UY(mm):
-        return 600.0 - mm * K4
+        return 170.0 + (550.0 - mm) * K4
 
-    STACK = ((0.0, 371.0, CONC, '基礎の立上り（地上部分）', '371'),
+    STONE = '#d9d2c4'
+    STACK = ((-360.0, -300.0, STONE, '割栗石・砕石', '60'),
+             (-300.0, -150.0, CONC, 'べた基礎 底盤', '150'),
+             (-150.0, 371.0, CONC, 'べた基礎 立上り（1本）', '521'),
              (371.0, 391.0, '#e2e2e2', '基礎パッキン', '20'),
              (391.0, 511.0, WOOD, '土台 120×120', '120'),
              (511.0, 535.0, PLY, '構造用合板', '24'),
              (535.0, 550.0, '#e8d7b8', 'フローリング（仕上げ）', '15'))
+    s.rect(ux - 60, UY(0), 176, UY(-360) - UY(0), fill='#f3efe6',
+           stroke='none')                                   # 土
     for z0, z1, col, nm, mm in STACK:
-        s.rect(ux, UY(z1), 96, (z1 - z0) * K4, fill=col, stroke=INK,
-               stroke_width=1.2)
+        w = 116 if z0 < -150 else (96 if z0 < 371 else 80)
+        s.rect(ux - w / 2.0 + 8, UY(z1), w, (z1 - z0) * K4, fill=col,
+               stroke=INK, stroke_width=1.2)
         my = (UY(z0) + UY(z1)) / 2.0
-        s.line(ux + 96, my, ux + 118, my, stroke='#888', stroke_width=0.7)
-        s.text(ux + 124, my + 4, nm, size=11, anchor='start')
-        s.text(ux + 124, my + 18, mm + ' mm', size=11, anchor='start',
+        s.line(ux + 70, my, ux + 92, my, stroke='#888', stroke_width=0.7)
+        s.text(ux + 98, my + 4, nm, size=10.5, anchor='start')
+        s.text(ux + 98, my + 18, mm + ' mm', size=10.5, anchor='start',
                fill=ACC, weight='700')
-    s.line(ux - 40, UY(0), ux + 110, UY(0), stroke=ACC, stroke_width=1.6)
-    s.text(ux - 46, UY(0) + 4, 'GL', size=11.5, anchor='end', weight='700',
+    s.line(ux - 84, UY(0), ux + 76, UY(0), stroke=ACC, stroke_width=1.8)
+    s.text(ux - 90, UY(0) + 4, 'GL', size=11.5, anchor='end', weight='700',
            fill=ACC)
-    s.line(ux - 40, UY(550), ux + 110, UY(550), stroke=INK,
-           stroke_width=1.6)
-    s.text(ux - 46, UY(550) + 4, '1FL', size=11.5, anchor='end',
+    s.line(ux - 84, UY(550), ux + 76, UY(550), stroke=INK, stroke_width=1.6)
+    s.text(ux - 90, UY(550) + 4, '1FL', size=11.5, anchor='end',
            weight='700')
-    s.dim_v(UY(550), UY(0), ux - 24, '550', size=11.5, anchor='end', dx=-6)
-    s.rect(796, 640, 404, 96, fill='#f1f8f2', stroke='#b9d8bd',
-           stroke_width=1.0, rx=8)
-    s.text(816, 666, '371 ＋ 20 ＋ 120 ＋ 24 ＋ 15 ＝ 550', size=15,
-           anchor='start', weight='700', fill='#1e7e34')
-    s.text(816, 690, '基礎  パッキン  土台  合板  仕上げ', size=10.5,
-           anchor='start', fill='#3d6b46')
-    s.text(816, 714,
-           '371は「300以上」を満たす数。ここを決めると550が決まる。',
-           size=11, anchor='start', fill='#3d6b46')
-    s.text(796, 756,
-           '★ ここさえ分かれば、あとは足し算するだけです。',
+    # 寸法（内がわ／外がわの2列）
+    for a_, b_, dx, lab in ((371.0, 0.0, -28, '371'),
+                            (0.0, -150.0, -28, '150'),
+                            (-150.0, -300.0, -28, '150'),
+                            (-300.0, -360.0, -28, '60')):
+        s.dim_v(UY(a_), UY(b_), ux + dx, lab, size=10, anchor='end', dx=-5)
+    for a_, b_, lab in ((550.0, 0.0, '550'), (0.0, -300.0, '根入れ 300')):
+        s.dim_v(UY(a_), UY(b_), ux - 88, lab, size=10.5, anchor='end',
+                dx=-5, color='#2f7fd0')
+    s.text(ux + 16, UY(240), '地面より上', size=9.5, fill='#999')
+    s.text(ux + 16, UY(-70), '地面より下', size=9.5, fill='#999')
+    s.text(796, 754,
+           '★ 立上りは地面で切れていない。下は−150、上は+371 の1本（521）。',
+           size=11.5, anchor='start', fill='#555')
+    s.text(796, 774,
+           '★ 根入れ300 ＝ もぐった立上り150 ＋ 底盤150。ぴったり合う。',
            size=11.5, anchor='start', fill='#555')
 
     # ------------------------------------------------ まとめ
-    s.rect(20, 818, W2 - 40, 46, fill='#fdeeee', stroke='#e0a0a0',
+    s.rect(20, 818, W2 - 40, 74, fill='#f1f8f2', stroke='#b9d8bd',
            stroke_width=1.0, rx=8)
-    s.text(W2 / 2.0, 840,
+    s.text(W2 / 2.0, 844,
+           '371 ＋ 20 ＋ 120 ＋ 24 ＋ 15 ＝ 550　（地面から1階の床まで）',
+           size=15, weight='700', fill='#1e7e34')
+    s.text(W2 / 2.0, 868,
+           '基礎の立上り（地上）／基礎パッキン／土台／構造用合板／'
+           'フローリング　── 下から積むだけ。',
+           size=12, fill='#3d6b46')
+    s.rect(20, 904, W2 - 40, 66, fill='#fdeeee', stroke='#e0a0a0',
+           stroke_width=1.0, rx=8)
+    s.text(W2 / 2.0, 930,
            '★ 軒の高さ 9,350 ≦ 9,500　／　最高の高さ 10,806 ≦ 11,000　'
            '── 問題文の制限は、この2つだけ満たせばよい。',
            size=13, weight='700', fill=ACC)
-    s.text(W2 / 2.0, 858,
+    s.text(W2 / 2.0, 952,
            'どちらも「GLから」測る高さです。',
            size=11.5, fill='#8a3a3a')
     return s
