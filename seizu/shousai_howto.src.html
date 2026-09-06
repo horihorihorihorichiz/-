@@ -1,0 +1,132 @@
+<!DOCTYPE html><html lang="ja"><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>部分詳細図の描き方（1／20 方眼の上で）｜二級建築士 設計製図</title>
+<style>
+{{CSS}}
+figure svg{display:block;max-width:100%;height:auto;
+  border:1px solid var(--line);border-radius:8px;background:#fff}
+@media print{figure svg{border:none}}
+.steps{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin:18px 0}
+.steps figure{margin:0}
+.steps figcaption{font-size:12.5px;margin-top:6px;text-align:left}
+.quiz{background:var(--card);border:1px solid var(--line);
+  border-radius:var(--radius);padding:16px 18px;margin:14px 0}
+.quiz li{margin:9px 0}
+@media(max-width:640px){.steps{grid-template-columns:1fr}}
+</style>
+</head><body><div class="wrap">
+<a class="back" href="index.html">← もくじにもどる</a>
+
+<header class="top">
+  <div class="kicker">部分詳細図の描き方</div>
+  <h1>1／20 の方眼の上で、9手で建てる</h1>
+  <p>答案用紙の部分詳細図らんは<b>1目盛10mm</b>。縮尺1／20なので
+  <b>1目盛＝実物200mm</b>です。この関係さえ体に入れば、
+  部分詳細図は<b>目盛を数えるだけ</b>で描けます。</p>
+</header>
+
+<h2>0. まず、この2つだけ覚える</h2>
+<div class="note good">
+<b>1目盛 ＝ 実物 200mm</b>　／　<b>半目盛 ＝ 実物 100mm</b><br>
+平面図（1／100）は「1目盛＝455mm、2目盛＝910mm＝1マス」でした。
+部分詳細図は<b>ぜんぶ別の数字</b>です。ここを混ぜると全部ずれます。</div>
+<table>
+<tr><th>実物の寸法</th><th>目盛でいうと</th></tr>
+<tr><td>100mm</td><td><b>半目盛</b></td></tr>
+<tr><td>200mm</td><td><b>1目盛</b></td></tr>
+<tr><td>300mm（根入れ）</td><td>1目盛半</td></tr>
+<tr><td>550mm（床高）</td><td>2目盛と3/4</td></tr>
+<tr><td>2,700mm（天井高）</td><td><b>13目盛半</b></td></tr>
+<tr><td>3,100mm（階高）</td><td><b>15目盛半</b></td></tr>
+<tr><td>3,650mm（2FL）</td><td>18目盛と1/4</td></tr>
+</table>
+<div class="note"><b>細かい寸法は、数えません。</b>
+土台120は0.6目盛、合板t=24は0.12目盛。<b>目盛では測れない大きさ</b>です。
+1／20では24mmは紙の上でたった1.2mm ── 線の太さとほぼ同じ。
+<b>だから小さいものは「見えるように描いて、数字を書く」</b>。
+これが部分詳細図のいちばん大事なコツです。</div>
+
+<h2>1. 何を、どこまで描くのか</h2>
+<table>
+<tr><th>問題用紙の指定</th><th>意味</th></tr>
+<tr><td>切断位置は、<b>外壁を含む部分</b>とし、<b>開口部を含む</b></td>
+  <td>外壁をスパッと切る。窓を1つ入れる</td></tr>
+<tr><td>作図の範囲は、<b>基礎から2階の床まで</b></td>
+  <td>下は基礎の底、上は2階の床。それより上はいらない</td></tr>
+<tr><td>主要部の寸法等（床高、天井高、階高、基礎の寸法等）</td>
+  <td>550／2,700／3,100／300 など</td></tr>
+<tr><td>主要部材の名称・断面寸法</td>
+  <td>基礎、土台、柱、胴差、床梁 …</td></tr>
+<tr><td>アンカーボルト等の名称・寸法</td><td>M12 ＠2,730以下</td></tr>
+<tr><td>断熱・防湿措置</td><td>グラスウール16K t=100、透湿防水シート</td></tr>
+<tr><td>内外の主要な部位の仕上材料名</td>
+  <td>外壁・床・内壁・天井の4つ</td></tr>
+</table>
+<div class="note warn"><b>下の3つは、図ではなく文字です。</b>
+アンカーボルト・断熱・仕上材料名。
+絵がうまく描けても、この文字がなければそのぶん点になりません。
+<b>時間がなくなったら、線より文字を優先</b>してください。</div>
+
+<h2>2. 9手で建てる</h2>
+<p>下の9枚は、実際の1／20・10mm方眼の上に描いてあります。
+<b>赤いところが、その手で新しく描く部分</b>です。</p>
+
+<div class="steps">
+<figure>{{SVG:dh1}}<figcaption><b>1.</b> GLと柱心を、方眼の線にぴったり合わせる。ここがずれると全部ずれます。</figcaption></figure>
+<figure>{{SVG:dh2}}<figcaption><b>2.</b> 高さの基準線を引く。目盛を数えるだけ。この3本が決まれば、もう半分終わりです。</figcaption></figure>
+<figure>{{SVG:dh3}}<figcaption><b>3.</b> 基礎。底盤t150と立上りt150。根入れは下へ1目盛半。</figcaption></figure>
+<figure>{{SVG:dh4}}<figcaption><b>4.</b> 基礎パッキンt20をはさんで土台120×120。アンカーボルトを基礎に差しこむ。</figcaption></figure>
+<figure>{{SVG:dh5}}<figcaption><b>5.</b> 1階の床。合板t24＋仕上t15を土台の上に。これで1FL＝GL+550。</figcaption></figure>
+<figure>{{SVG:dh6}}<figcaption><b>6.</b> 外壁を内から外へ6層。15/120/9/18/16＝178。約0.9目盛ぶんの厚み。</figcaption></figure>
+<figure>{{SVG:dh7}}<figcaption><b>7.</b> 胴差120×300を先に置く。そこに合板t24＋仕上t15をのせれば2FL。天井もここで。</figcaption></figure>
+<figure>{{SVG:dh8}}<figcaption><b>8.</b> 開口部。「開口部を含む」ことが要求されているので、必ず窓を1つ入れます。</figcaption></figure>
+<figure>{{SVG:dh9}}<figcaption><b>9.</b> 寸法と文字。ここが点になるところ。図より文字のほうが大事です。</figcaption></figure>
+</div>
+
+<h2>3. 順番にはわけがある</h2>
+<ol>
+<li><b>基準線が先。</b>GL・1FL・2FLの3本を先に引いてしまえば、
+  あとは「その間を埋める」だけの作業になります。
+  いきなり基礎から描くと、上にいくほどズレていきます</li>
+<li><b>下から積む。</b>基礎 → 土台 → 床 → 壁 → 2階の床。
+  実際に家を建てる順番と同じです。だから迷いません</li>
+<li><b>胴差を先に置く。</b>7手目で、2階の床は<b>胴差から</b>描きます。
+  胴差120×300の上端が決まれば、合板t24と仕上t15をのせるだけで
+  2FLがぴったり合います</li>
+<li><b>文字は最後にまとめて。</b>描きながら書くと、
+  線が寄ってきたときに文字の置き場がなくなります</li>
+</ol>
+
+<h2>4. よくある失敗5つ</h2>
+<div class="quiz">
+<ol>
+<li><b>1目盛を455mmだと思って描く</b> ── 平面図の目盛と混同。
+  部分詳細図は<b>1目盛200mm</b>です</li>
+<li><b>小さい寸法を目盛で測ろうとする</b> ── 合板t24は0.12目盛。
+  測れません。<b>見えるように描いて、数字を書く</b></li>
+<li><b>開口部を入れ忘れる</b> ── 「開口部を含むものとする」と
+  はっきり指定されています</li>
+<li><b>仕上材料名を書かない</b> ── 外壁・床・内壁・天井の<b>4つ</b>。
+  「窯業系サイディング」「フローリング」「強化石膏ボード」
+  「石膏ボード」と書くだけです</li>
+<li><b>基礎から2階の床までの範囲を外れる</b> ──
+  屋根や3階は描かなくていい。<b>描くと時間の無駄</b>です</li>
+</ol>
+</div>
+
+<h2>5. 練習のしかた</h2>
+<div class="note good"><b>1回目：</b>この9枚を見ながら、そのとおりに描く。<br>
+<b>2回目：</b>2手目（高さの基準線）まで見ずに描けるか試す。<br>
+<b>3回目：</b>全部見ずに描く。25分で描き切れれば本番で通用します。<br><br>
+練習用紙は <code>sheets/renshu3</code>（A3横3枚目）に、
+<b>10mm方眼の部分詳細図らん</b>が実寸で入っています。
+印刷は必ず<b>「実際のサイズ／100%」</b>で。
+「用紙に合わせる」にすると目盛の大きさが狂って、練習になりません。</div>
+
+<footer>
+二級建築士 設計製図　自習用教材／部分詳細図の描き方。
+図は <code>scripts/detailhowto.py</code> から生成しています。
+高さの数値は完成図（<code>scripts/detail.py</code>）と同じです。
+</footer>
+</div></body></html>
