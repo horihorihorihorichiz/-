@@ -702,6 +702,176 @@ def gw():
     return s
 
 
+# ==================================================== べた基礎のしくみ
+def kiso():
+    """べた基礎とは何か。布基礎とのちがい・各部の名前・鉄筋の3枚。
+
+    寸法の根拠は平成12年建設省告示第1347号 第1（令38条3項の委任）。
+    """
+    W2, H2 = 1240, 780
+    s = Svg(W2, H2)
+    s.text(W2 / 2.0, 40, 'べた基礎のしくみ', size=22, weight='700')
+    s.text(W2 / 2.0, 66,
+           '「べた」は<べったり>。'
+           '建物の下いちめんを、1枚のコンクリートの板でうける基礎です。'
+           .replace('<', '「').replace('>', '」'),
+           size=12.5, fill='#666')
+
+    # ------------------------------------------------ ① 布基礎とのちがい
+    panel(s, 20, 92, 386, 396, '① 布基礎とのちがい',
+          '底の板が「全面」か「帯だけ」か')
+    for k, (bx2, ttl, whole) in enumerate(((46.0, 'べた基礎', True),
+                                           (240.0, '布基礎', False))):
+        s.text(bx2 + 72, 168, ttl, size=13, weight='700',
+               fill=ACC if whole else '#555')
+        s.text(bx2 + 72, 186, '上から見た図', size=10, fill='#999')
+        s.rect(bx2, 196, 144, 108, fill=CONC if whole else '#fff',
+               stroke='#bbb', stroke_width=1.0)
+        for gx in (0, 48, 96, 144):                 # 立上り（たて）
+            s.rect(bx2 + gx - 4, 196, 8, 108, fill='#b9b9b0', stroke='none')
+        for gy in (0, 54, 108):                     # 立上り（よこ）
+            s.rect(bx2, 196 + gy - 4, 144, 8, fill='#b9b9b0', stroke='none')
+        s.text(bx2 + 72, 322, '横から切った図', size=10, fill='#999')
+        if whole:
+            s.rect(bx2, 356, 144, 14, fill=CONC, stroke=INK,
+                   stroke_width=1.2)               # 底盤が全面
+        else:
+            for gx in (0, 48, 96):
+                s.rect(bx2 + gx + 8, 356, 32, 14, fill=CONC, stroke=INK,
+                       stroke_width=1.2)           # フーチングだけ
+        for gx in (0, 48, 96, 144):
+            s.rect(bx2 + gx - 5, 332, 10, 24, fill=CONC, stroke=INK,
+                   stroke_width=1.0)
+        s.text(bx2 + 72, 392, '底の板が全面' if whole else '底の板は帯だけ',
+               size=10.5, fill=ACC if whole else '#666',
+               weight='700' if whole else '400')
+    s.text(38, 424, '★ べた基礎は建物の重さを地面いちめんに分けるので、',
+           size=11, anchor='start', fill='#555')
+    s.text(38, 442, '　 弱い地盤でも使えます。床下が土に触れないので',
+           size=11, anchor='start', fill='#555')
+    s.text(38, 460, '　 湿気にも強い。いまの木造住宅の主流です。',
+           size=11, anchor='start', fill='#555')
+
+    # ------------------------------------------------ ② 各部の名前と寸法
+    panel(s, 422, 92, 386, 396, '② 各部の名前と寸法（型の数字）',
+          'GLを0として、上下に測る')
+    K2 = 0.30
+    gx0, gy0 = 600.0, 300.0                          # GLの位置
+
+    def KX(mm):
+        return gx0 + mm * K2
+
+    def KY(mm):
+        return gy0 - mm * K2
+
+    s.rect(KX(-260), KY(0), 520 * K2, 26, fill='#efece6', stroke='none')
+    s.line(KX(-260), KY(0), KX(260), KY(0), stroke='#888', stroke_width=1.4)
+    s.text(KX(-260) - 6, KY(0) + 4, 'GL', size=10.5, anchor='end',
+           fill='#888')
+    s.rect(KX(-240), KY(-150), 480 * K2, 150 * K2, fill=CONC, stroke=INK,
+           stroke_width=1.4)                          # 底盤
+    s.rect(KX(-75), KY(371), 150 * K2, 521 * K2, fill=CONC, stroke=INK,
+           stroke_width=1.4)                          # 立上り
+    s.rect(KX(-60), KY(391), 120 * K2, 20 * K2, fill='#e2e2e2', stroke=INK,
+           stroke_width=1.0)                          # パッキン
+    s.rect(KX(-60), KY(511), 120 * K2, 120 * K2, fill=WOOD, stroke=INK,
+           stroke_width=1.2)                          # 土台
+    s.text(KX(0), KY(440) + 4, '土台', size=9.5)
+    for x0, z, txt in ((0, 560, '土台 120×120'),
+                       (0, 400, '基礎パッキン t=20'),
+                       (75, 220, '立上り 厚150'),
+                       (240, -75, '底盤 厚150')):
+        s.line(KX(x0), KY(z), KX(300), KY(z), stroke='#888',
+               stroke_width=0.7)
+        s.text(KX(306), KY(z) + 3.5, txt, size=10, anchor='start')
+    s.dim_v(KY(371), KY(0), KX(-300), '371', size=10, anchor='end', dx=-6)
+    s.dim_v(KY(0), KY(-300), KX(-300), '300', size=10, anchor='end', dx=-6)
+    s.text(KX(-300) - 6, KY(200) - 14, '地上', size=9.5, anchor='end',
+           fill='#888')
+    s.text(KX(-300) - 6, KY(-150) - 14, '根入れ', size=9.5, anchor='end',
+           fill='#888')
+    s.text(440, 424, '★ 「立上り」＝地面から立ち上がっているたての部分。',
+           size=11, anchor='start', fill='#555')
+    s.text(440, 442, '　 「底盤（ていばん）」＝下に広がっている板。',
+           size=11, anchor='start', fill='#555')
+    s.text(440, 460, '　 「根入れ」＝地面より下にうめる深さ。',
+           size=11, anchor='start', fill='#555')
+
+    # ------------------------------------------------ ③ 鉄筋
+    panel(s, 824, 92, 396, 396, '③ 中に入っている鉄筋',
+          '「一体の鉄筋コンクリート造」と告示が求めている')
+    rx0, ry0 = 1000.0, 300.0
+
+    def RX(mm):
+        return rx0 + mm * K2
+
+    def RY(mm):
+        return ry0 - mm * K2
+
+    s.rect(RX(-240), RY(-150), 480 * K2, 150 * K2, fill='#f2f2f2',
+           stroke='#aaa', stroke_width=1.0)
+    s.rect(RX(-75), RY(371), 150 * K2, 521 * K2, fill='#f2f2f2',
+           stroke='#aaa', stroke_width=1.0)
+    for z in (350, -180):                                   # 主筋（上下1本ずつ）
+        s.circle(RX(0), RY(z), 4.2, fill=ACC)
+    s.text(RX(90), RY(350) + 4, '主筋 D13', size=10, anchor='start',
+           fill=ACC, weight='700')
+    s.text(RX(90), RY(350) + 18, '（径12mm以上）', size=9, anchor='start',
+           fill='#888')
+    for z in range(-100, 360, 90):                          # 立上り補強筋
+        s.line(RX(-60), RY(z), RX(60), RY(z), stroke='#c9762f',
+               stroke_width=1.6)
+    s.text(RX(90), RY(120) + 4, '立上り補強筋', size=10, anchor='start',
+           fill='#c9762f', weight='700')
+    s.text(RX(90), RY(120) + 18, 'D10 ＠300以下', size=9, anchor='start',
+           fill='#888')
+    for x in range(-220, 240, 40):                          # 底盤の縦横筋
+        s.line(RX(x), RY(-170), RX(x), RY(-280), stroke='#2f7fd0',
+               stroke_width=1.4)
+    for z in (-185, -265):
+        s.line(RX(-230), RY(z), RX(230), RY(z), stroke='#2f7fd0',
+               stroke_width=1.4)
+    s.text(RX(-240), RY(-350) + 4, '底盤の補強筋 D10 ＠300以下（たて・よこ）',
+           size=10, anchor='start', fill='#2f7fd0', weight='700')
+    s.text(842, 424, '★ 鉄筋は図に描かなくてよい（部分詳細図の要求外）。',
+           size=11, anchor='start', fill='#555')
+    s.text(842, 442, '　 でも「一体の鉄筋コンクリート造」という言葉は',
+           size=11, anchor='start', fill='#555')
+    s.text(842, 460, '　 記述で使えます。', size=11, anchor='start',
+           fill='#555')
+
+    # ------------------------------------------------ 法規の表
+    s.rect(20, 504, W2 - 40, 200, fill='#fcfcfb', stroke='#e0ded8',
+           stroke_width=1.0, rx=10)
+    s.text(44, 534, '告示1347号が決めている最低の数字（べた基礎）',
+           size=14.5, anchor='start', weight='700')
+    COLS = (44.0, 470.0, 700.0, 900.0)
+    for cx, h in zip(COLS, ('決まっていること', '法規の最低', '型の値',
+                            '余裕')):
+        s.text(cx, 562, h, size=11.5, anchor='start', weight='700',
+               fill='#777')
+    ROWS = (('立上り部分の高さ（地上）', '300mm以上', '371', '＋71'),
+            ('立上り部分の厚さ', '120mm以上', '150', '＋30'),
+            ('底盤の厚さ', '120mm以上', '150', '＋30'),
+            ('根入れの深さ', '120mm以上＋凍結深度', '300', '大きく余裕'))
+    for i, r in enumerate(ROWS):
+        y = 588 + i * 26
+        s.line(44, y + 6, W2 - 44, y + 6, stroke='#eee', stroke_width=0.8)
+        for cx, v, col in zip(COLS, r, ('#333', '#333', ACC, '#1e7e34')):
+            s.text(cx, y, v, size=11.5, anchor='start', fill=col,
+                   weight='700' if col != '#333' else '400')
+    s.text(44, 696,
+           '★ 布基礎はここが変わる ── 根入れ 240mm以上、底盤の厚さ 150mm以上。'
+           '「240」はべた基礎の数字ではありません。',
+           size=11.5, anchor='start', fill=ACC, weight='700')
+
+    s.text(W2 / 2.0, H2 - 22,
+           '★ 地盤が20〜30kN/㎡ なら べた基礎か杭。30kN/㎡以上で'
+           'やっと布基礎も選べる ── べた基礎のほうが「使える範囲が広い」。',
+           size=13, weight='700', fill='#333')
+    return s
+
+
 if __name__ == '__main__':
     for i in range(1, 10):
         draw(i).save(os.path.join(OUT, 'dh%d.svg' % i))
@@ -709,4 +879,5 @@ if __name__ == '__main__':
     kansei().save(os.path.join(OUT, 'dh_kansei.svg'))
     hashira().save(os.path.join(OUT, 'dh_hashira.svg'))
     gw().save(os.path.join(OUT, 'dh_gw.svg'))
+    kiso().save(os.path.join(OUT, 'dh_kiso.svg'))
     print('wrote dh1〜dh9.svg ＋ dh_real.svg')
