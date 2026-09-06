@@ -1,0 +1,362 @@
+<!DOCTYPE html><html lang="ja"><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>今年の試験・旬ネタ｜二級建築士 設計製図</title>
+<style>
+:root{
+  --bg:#fbfaf7; --card:#fff; --line:#e5e0d6; --ink:#232019; --dim:#6b6459;
+  --accent:#b03060; --accent2:#1f6fb2; --ok:#1e7e34; --warn:#c0392b;
+  --amber:#fff8e1; --amberline:#e0c060;
+  --radius:12px;
+  --font:'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP',
+        'Yu Gothic',Meiryo,system-ui,sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font);background:var(--bg);color:var(--ink);
+  line-height:1.85;-webkit-text-size-adjust:100%}
+.wrap{max-width:900px;margin:0 auto;padding:24px 18px 80px}
+header.top{border-bottom:3px solid var(--accent);padding-bottom:14px;
+  margin-bottom:26px}
+header.top .kicker{font-size:12px;letter-spacing:.14em;color:var(--accent);
+  font-weight:700}
+header.top h1{font-size:26px;line-height:1.4;margin-top:4px}
+header.top p{color:var(--dim);font-size:14px;margin-top:6px}
+h2{font-size:20px;margin:38px 0 12px;padding-left:12px;
+  border-left:5px solid var(--accent)}
+h3{font-size:16px;margin:24px 0 8px;color:var(--accent2)}
+p{margin:10px 0}
+ul,ol{margin:10px 0 10px 1.4em}
+li{margin:5px 0}
+a{color:var(--accent2)}
+strong{background:linear-gradient(transparent 62%,#ffe9a8 62%)}
+.card{background:var(--card);border:1px solid var(--line);
+  border-radius:var(--radius);padding:18px;margin:16px 0}
+.note{background:var(--amber);border:1px solid var(--amberline);
+  border-radius:var(--radius);padding:14px 16px;margin:16px 0;font-size:14.5px}
+.note b{color:#6b5200}
+.warn{background:#fdeeee;border:1px solid #e0a0a0}
+.warn b{color:var(--warn)}
+.good{background:#f1f8f2;border:1px solid #b9d8bd}
+.good b{color:var(--ok)}
+figure{margin:22px 0;text-align:center}
+figure img{max-width:100%;height:auto;border:1px solid var(--line);
+  border-radius:8px;background:#fff}
+figcaption{font-size:13px;color:var(--dim);margin-top:8px}
+table{border-collapse:collapse;width:100%;font-size:14px;margin:14px 0;
+  display:block;overflow-x:auto;white-space:nowrap}
+th,td{border:1px solid var(--line);padding:7px 10px;text-align:left}
+th{background:#f3efe7;font-weight:700}
+td.num,th.num{text-align:right}
+tr.total td{background:#f7f3ea;font-weight:700}
+.nav{display:flex;flex-wrap:wrap;gap:10px;margin:22px 0}
+.nav a{display:block;flex:1 1 200px;background:var(--card);
+  border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px;
+  text-decoration:none;color:var(--ink)}
+.nav a:hover{border-color:var(--accent)}
+.nav a b{display:block;font-size:15px;margin-bottom:2px}
+.nav a span{font-size:12.5px;color:var(--dim)}
+.back{display:inline-block;font-size:13px;margin-bottom:14px}
+.kv{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0}
+.kv div{background:#f3efe7;border-radius:8px;padding:8px 12px;font-size:13.5px}
+.kv b{color:var(--accent)}
+footer{margin-top:60px;padding-top:18px;border-top:1px solid var(--line);
+  font-size:12.5px;color:var(--dim)}
+@media print{
+  body{background:#fff}
+  .nav,.back,footer{display:none}
+  figure img{border:none}
+  h2{break-after:avoid}
+}
+
+@media(max-width:520px){
+  .wrap{padding:18px 14px 70px}
+  header.top h1{font-size:21px}
+  h2{font-size:18px}
+}
+
+figure svg{display:block;max-width:100%;height:auto;
+  border:1px solid var(--line);border-radius:8px;background:#fff}
+@media print{figure svg{border:none}}
+.q{border-left:4px solid #b9b3a6;background:#f7f5f0;padding:10px 14px;
+  margin:12px 0;font-size:13.5px;color:#333}
+.q .src{display:block;font-size:11.5px;color:#777;margin-top:6px}
+.check{list-style:none;padding:0;margin:8px 0}
+.check li{margin:0}
+.check label{display:flex;gap:10px;align-items:flex-start;padding:6px 8px;
+  border-radius:7px;cursor:pointer;font-size:14px}
+.check label:hover{background:#f1ece2}
+.check input{width:17px;height:17px;margin-top:4px;flex:none;accent-color:#3e6b47}
+.check input:checked + span{color:#888;text-decoration:line-through}
+.tag{display:inline-block;font-size:11px;font-weight:700;color:#fff;
+  background:#c0392b;border-radius:4px;padding:1px 7px;margin-right:6px;vertical-align:middle}
+.tag.g{background:#3e6b47}.tag.b{background:#2f7fd0}.tag.k{background:#8a8f88}
+td.fix{width:34%}
+table{display:table;table-layout:fixed;white-space:normal}
+th,td{overflow-wrap:anywhere;vertical-align:top}
+</style>
+</head><body><div class="wrap">
+<a class="back" href="index.html">← もくじにもどる</a>
+
+<header class="top">
+  <div class="kicker">令和8年9月13日の試験に向けて</div>
+  <h1>今年の試験・旬ネタと、まだ手当てしていなかったこと</h1>
+  <p>「今年だから起きること」を、公式の文書と資格学校の分析から拾い集めました。
+  あわせて、この教材に残っていた<b>まちがい・あいまいなところ</b>を直した記録も、
+  最後にまとめてあります。</p>
+</header>
+
+<div class="note"><b>どうやって調べたか。</b>
+YouTubeの動画そのものは見られないので、
+建築技術教育普及センター（試験をやっている団体）の<b>受験要領・合否判定基準・去年の問題用紙</b>と、
+資格学校（総合資格・日建学院・TAC・製図ラボ）や独学系の解説文を読んで整理しました。
+公式の文書から取った数字には、出典を書いてあります。</div>
+
+<h2>0. 今年の「新しいこと」は3つ</h2>
+<table>
+<tr><th style="width:26%">なにが新しい</th><th>どういうことか</th><th style="width:22%">教材の状態</th></tr>
+<tr><td><b>① 法令集が使える</b></td>
+    <td>令和8年から、製図試験の最中に法令集を開いてよくなった。
+    去年までは持ち込めなかった</td>
+    <td>早見盤に説明あり。<b>当日の使い方</b>をこのページに追加</td></tr>
+<tr><td><b>② 木造3階建てが初めて</b></td>
+    <td>資格学校によると、木造の本試験で3階建ては<b>過去30年で初めて</b>。
+    作図の量が増え、3階建てだけの法律が出てくる</td>
+    <td>型・図面・記述で対応ずみ。<b>高さの制限</b>の逃がし方をこのページに追加</td></tr>
+<tr><td><b>③ 去年、4人に1人が「重大な不適合」</b></td>
+    <td>去年のランクⅣは<b>25.1%</b>。その前の3年は6〜11%だった。
+    条件を守れない答案が急に増えた</td>
+    <td>チェック進行表に「避難経路」と「法令集」の項目を追加</td></tr>
+</table>
+
+<h2>1. 法令集：当日、こう使う</h2>
+<p>いちばん大事なことを先に言います。
+<b>法令集は「読む本」ではなく「確かめる本」</b>です。
+引くのは、迷ったときの1〜3か所だけ。ぜんぶ読んでいたら時間がなくなります。</p>
+
+<h3>公式の文書には、こう書いてある</h3>
+<div class="q">「令和８年から、『設計製図の試験』において、試験中に法令集が使用できるようになります。」
+<span class="src">建築技術教育普及センター「令和8年 二級建築士試験 受験要領」</span></div>
+<div class="q">「設計製図の試験の法令集チェックは、試験開始後に行います。」
+<span class="src">同・受験要領（試験当日のスケジュールの注）</span></div>
+<div class="q">「法令集は、２冊まで使用できます。ただし、使用する法令集に付随する追録、追補、訂正表等がある場合…（追加できる）」
+「ホームページ等から法文を印刷したものや法令集をコピーしたものの使用は認めません。」
+<span class="src">同・資料4「使用が認められる法令集について」</span></div>
+
+<h3>ということは、こういうこと</h3>
+<table>
+<tr><th style="width:30%">ルール</th><th>小学生向けの言いかえ</th></tr>
+<tr><td>チェックは<b>試験開始後</b></td>
+    <td>11:00に「はじめ」と言われたあとに、係の人が回ってきて法令集を見る。
+    <b>そのあいだも時計は止まらない</b>。だから最初の25分（問題文を読む時間）は、
+    法令集がなくても進められるようにしておく。係の人が来たら、さっと渡してさっと受け取る</td></tr>
+<tr><td>書けるのは4種類だけ</td>
+    <td>見出し・条文番号・ページ／改正の日付／アンダーライン／○△×。
+    <b>数字や式や自作の表はダメ</b>。早見表を貼るのもダメ。
+    ダメなものがあると、判定が出るまで<b>法令集なしで受ける</b>ことになる</td></tr>
+<tr><td>2冊まで</td>
+    <td>法令編と告示編に分かれている本は、それぞれ1冊と数える。
+    去年の本でもよい。コピーや印刷した紙はダメ</td></tr>
+<tr><td>法令は令和8年1月1日現在</td>
+    <td>令和7年4月に建築基準法が大きく変わった。<b>令和8年版の法令集</b>を使えば安心。
+    古い本を使うなら、変わったところ（下の3節）だけは頭に入れておく</td></tr>
+</table>
+
+<h3>本番で開くのは、この3か所だけにしぼる</h3>
+<table>
+<tr><th style="width:26%">いつ</th><th style="width:30%">どこを開く</th><th>なにを確かめる</th></tr>
+<tr><td>問題文を読んだあと</td><td>令128条（敷地内の通路）<br>令126条の6（非常用進入口）</td>
+    <td>通路の幅は1.5m取れるか。3階に<b>直径1mの円が入る窓</b>があるか</td></tr>
+<tr><td>エスキスが決まったとき</td><td>令112条11項（竪穴区画）<br>令121条（2つめの階段）</td>
+    <td>階段まわりを区画するか。3階の部屋の広さなら階段は1本でよいか</td></tr>
+<tr><td>記述を書くとき</td><td>令43条（柱の太さ）<br>令46条（壁量）</td>
+    <td>3階建ての1階の柱は<b>13.5cm以上</b>。耐力壁をバランスよく</td></tr>
+</table>
+<div class="note good"><b>付箋は「A 必ず貼る」の12枚だけ</b>でじゅうぶんです（早見盤の「法令集の補強」の図）。
+付箋が多いほど、探す時間が長くなります。</div>
+
+<h2>2. 木造3階建てだから出てくる「去年までなかった」もの</h2>
+<table>
+<tr><th style="width:26%">項目</th><th>なにが起きるか</th><th style="width:22%">教材のどこ</th></tr>
+<tr><td>作図の量</td><td>平面図が<b>3枚</b>（1・2・3階）、伏図・立面図・部分詳細図。
+    去年より1枚多いのに、時間は同じ5時間</td><td>早見盤「5時間の流れ」</td></tr>
+<tr><td>直通階段</td><td>各階同じ位置に階段を置く。3階の居室から1階の外まで、
+    まっすぐおりられること</td><td>型のすべて</td></tr>
+<tr><td>竪穴区画</td><td>階段まわりを準耐火の壁と防火設備で囲む。
+    「階数3以下・200㎡以内の一戸建て住宅」は免除だが、<b>併用住宅はグレー</b>。
+    描いておけば損はない</td><td>早見盤・穴うめドリル</td></tr>
+<tr><td>代替進入口</td><td>3階の道路側に、直径1mの円が入る窓（または幅75cm×高さ1.2m）を
+    10m以内ごとに。ふつうの腰窓でOK</td><td>早見盤</td></tr>
+<tr><td>1階の柱 13.5cm</td><td>令43条2項。型は<b>120角＋構造計算で確認</b>という書き方にしてある。
+    問題文に「柱は135角」と書かれたら、そのとおりに</td><td>記述カード</td></tr>
+<tr><td>準耐火建築物</td><td>準防火地域の木造3階建ては準耐火建築物以上。
+    外壁・軒裏・開口部の防火設備（◯防）をセットで</td><td>早見盤・部分詳細図</td></tr>
+<tr><td>構造計算</td><td>木造3階建ては法20条で<b>構造計算（許容応力度計算）</b>が必要。
+    記述で「構造計算を行い、壁量・偏心・接合金物を確認する」と書けるように</td><td>記述カード</td></tr>
+</table>
+
+<h3>令和7年4月の法改正で、ここが変わった</h3>
+<p>去年の4月に建築基準法が大きく変わりました。製図の答案に直接ひびくのは、次の2つです。</p>
+<ul>
+<li><b>「軒の高さ9m超」の壁がなくなった。</b>
+昔は木造で高さ13m超か軒高9m超になると、構造計算適合性判定（お役所の二重チェック）が要る建物になりました。
+令和7年4月からは<b>「階数4以上、または高さ16m超」</b>に変わっています。
+だから型の軒高9,350は、<b>法律上はふつうの木造3階建てのまま</b>です。
+ただし<b>問題文に「軒の高さ○m以下」と書いてあれば、そちらが絶対</b>。次の節を読んでください</li>
+<li><b>構造計算が要る面積が 500㎡超 → 300㎡超</b>になり、
+木造2階建てでも確認の審査が省略されなくなった（いわゆる4号特例の縮小）。
+3階建てはもともと審査の対象なので、答案の書き方は変わりません。
+記述で「構造計算で安全を確かめる」と言い切ってよい根拠になります</li>
+</ul>
+
+<h2>3. 高さの制限：「軒の高さ9m以下」が来たら</h2>
+<p>去年（木造2階建て）の問題文は、こうでした。</p>
+<div class="q">「建築物の最高の高さは10m以下、かつ、軒の高さは7m以下とする。」
+<span class="src">令和7年 二級建築士 設計製図の試験 問題用紙 ⑵イ</span></div>
+<p>2階建てで「10mと7m」なら、3階建てでは<b>「11mと9.5m」か「10mと9m」</b>あたりが考えられます。
+この教材の型は軒高<b>9,350</b>・最高<b>10,806</b>なので、<b>9.5m・11mなら通り、9m・10mなら通りません</b>。
+そのときの逃がし方を、1つ決めておきます。</p>
+<figure>
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1240 760" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif" style="max-width:1240px;margin:0 auto" role="img"><rect width="1240" height="760" fill="#ffffff"/><text x="620" y="36" font-size="24" text-anchor="middle" fill="#111" font-weight="700" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">「軒の高さ9m以下」が来たら、階高を少しずつ下げる</text><text x="620" y="62" font-size="12.5" text-anchor="middle" fill="#666" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">左：この教材の型　／　右：逃がし方の一例。数字はぜんぶ GL（地面）からの高さ</text><text x="300" y="96" font-size="16" text-anchor="middle" fill="#7a5a3a" font-weight="700" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">型（いつもの数字）</text><rect x="110" y="640" width="380" height="14" fill="#e8e1d6" stroke="none"/><text x="104" y="645" font-size="11" text-anchor="end" fill="#555" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">GL 0</text><rect x="150" y="191.2" width="300" height="422.4" fill="#fbfaf8" stroke="#111" stroke-width="1.4"/><rect x="150" y="613.6" width="300" height="26.4" fill="#ddd" stroke="#111" stroke-width="1.0"/><polygon points="120,191.2 300,121.31 480,191.2" fill="#f4e9d8" stroke="#111" stroke-width="1.4"/><line x1="150" y1="613.6" x2="450" y2="613.6" stroke="#111" stroke-width="0.9" stroke-dasharray="5,3"/><text x="490" y="617.6" font-size="12" text-anchor="start" fill="#333" font-weight="700" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">1FL  +550</text><line x1="150" y1="464.8" x2="450" y2="464.8" stroke="#111" stroke-width="0.9" stroke-dasharray="5,3"/><text x="490" y="468.8" font-size="12" text-anchor="start" fill="#333" font-weight="700" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">2FL  +3,650</text><text x="300" y="544.2" font-size="13" text-anchor="middle" fill="#555" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">階高 3,100</text><line x1="150" y1="325.6" x2="450" y2="325.6" stroke="#111" stroke-width="0.9" stroke-dasharray="5,3"/><text x="490" y="329.6" font-size="12" text-anchor="start" fill="#333" font-weight="700" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">3FL  +6,550</text><text x="300" y="400.2" font-size="13" text-anchor="middle" fill="#555" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">階高 2,900</text><line x1="150" y1="191.2" x2="450" y2="191.2" stroke="#111" stroke-width="0.9" stroke-dasharray="5,3"/><text x="490" y="195.2" font-size="12" text-anchor="start" fill="#7a5a3a" font-weight="700" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">軒  +9,350</text><text x="300" y="263.4" font-size="13" text-anchor="middle" fill="#555" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">階高 2,800</text><text x="300" y="631.8" font-size="11.5" text-anchor="middle" fill="#333" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">1FL +550</text><text x="490" y="125.31" font-size="12" text-anchor="start" fill="#7a5a3a" font-weight="700" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">最高  +10,806</text><text x="300" y="153.31" font-size="11" text-anchor="middle" fill="#555" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">4寸勾配（3,640×0.4＝1,456）</text><rect x="140" y="690" width="320" height="36" fill="#fff" stroke="#7a5a3a" stroke-width="1.4" rx="6"/><text x="300" y="714" font-size="15" text-anchor="middle" fill="#7a5a3a" font-weight="700" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">軒 9,350 ／ 最高 10,806</text><text x="850" y="96" font-size="16" text-anchor="middle" fill="#3e6b47" font-weight="700" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">軒9m以下・最高10m以下 のとき</text><rect x="660" y="640" width="380" height="14" fill="#e8e1d6" stroke="none"/><text x="654" y="645" font-size="11" text-anchor="end" fill="#555" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">GL 0</text><rect x="700" y="217.6" width="300" height="398.4" fill="#fbfaf8" stroke="#111" stroke-width="1.4"/><rect x="700" y="616" width="300" height="24" fill="#ddd" stroke="#111" stroke-width="1.0"/><polygon points="670,217.6 850,165.18 1030,217.6" fill="#f4e9d8" stroke="#111" stroke-width="1.4"/><line x1="700" y1="616" x2="1000" y2="616" stroke="#111" stroke-width="0.9" stroke-dasharray="5,3"/><text x="1040" y="620" font-size="12" text-anchor="start" fill="#333" font-weight="700" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">1FL  +500</text><line x1="700" y1="476.8" x2="1000" y2="476.8" stroke="#111" stroke-width="0.9" stroke-dasharray="5,3"/><text x="1040" y="480.8" font-size="12" text-anchor="start" fill="#333" font-weight="700" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">2FL  +3,400</text><text x="850" y="551.4" font-size="13" text-anchor="middle" fill="#555" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">階高 2,900</text><line x1="700" y1="347.2" x2="1000" y2="347.2" stroke="#111" stroke-width="0.9" stroke-dasharray="5,3"/><text x="1040" y="351.2" font-size="12" text-anchor="start" fill="#333" font-weight="700" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">3FL  +6,100</text><text x="850" y="417" font-size="13" text-anchor="middle" fill="#555" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">階高 2,700</text><line x1="700" y1="217.6" x2="1000" y2="217.6" stroke="#111" stroke-width="0.9" stroke-dasharray="5,3"/><text x="1040" y="221.6" font-size="12" text-anchor="start" fill="#3e6b47" font-weight="700" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">軒  +8,800</text><text x="850" y="287.4" font-size="13" text-anchor="middle" fill="#555" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">階高 2,700</text><text x="850" y="633" font-size="11.5" text-anchor="middle" fill="#333" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">1FL +500</text><text x="1040" y="169.18" font-size="12" text-anchor="start" fill="#3e6b47" font-weight="700" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">最高  +9,892</text><text x="850" y="197.18" font-size="11" text-anchor="middle" fill="#555" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">3寸勾配（3,640×0.3＝1,092）</text><rect x="690" y="690" width="320" height="36" fill="#fff" stroke="#3e6b47" stroke-width="1.4" rx="6"/><text x="850" y="714" font-size="15" text-anchor="middle" fill="#3e6b47" font-weight="700" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">軒 8,800 ／ 最高 9,892</text><text x="590" y="300" font-size="44" text-anchor="middle" fill="#c0392b" font-weight="700" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">→</text><text x="590" y="340" font-size="11.5" text-anchor="middle" fill="#c0392b" font-weight="700" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">1FL を 550 → 500</text><text x="590" y="358" font-size="11.5" text-anchor="middle" fill="#c0392b" font-weight="700" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">1階 3,100 → 2,900</text><text x="590" y="376" font-size="11.5" text-anchor="middle" fill="#c0392b" font-weight="700" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">2階 2,900 → 2,700</text><text x="590" y="394" font-size="11.5" text-anchor="middle" fill="#c0392b" font-weight="700" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">3階 2,800 → 2,700</text><text x="590" y="412" font-size="11.5" text-anchor="middle" fill="#c0392b" font-weight="700" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">屋根 4寸 → 3寸</text><text x="620" y="744" font-size="12.5" text-anchor="middle" fill="#444" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">天井高は 1階2,500・2階2,300・3階2,300 になる（法律の最低は2,100）。1FLを450まで下げると基礎の立上りが地上271になり、告示の300以上を割るので500で止める。</text></svg>
+  <figcaption>階高を100〜200ずつ下げ、1FLを500に、屋根を3寸にする。これで軒8,800・最高9,892。</figcaption>
+</figure>
+<table>
+<tr><th>変えるところ</th><th>型</th><th>9m・10m版</th><th>ひとこと</th></tr>
+<tr><td>1FL（地面からの高さ）</td><td>550</td><td><b>500</b></td><td>部分詳細図の積み上げは 321＋20＋120＋24＋15。450まで下げると基礎の立上りが地上271になり、告示の<b>300以上</b>を割るので500で止める</td></tr>
+<tr><td>1階の階高</td><td>3,100</td><td><b>2,900</b></td><td>天井高2,500。店舗でもふつう</td></tr>
+<tr><td>2階の階高</td><td>2,900</td><td><b>2,700</b></td><td>天井高2,300</td></tr>
+<tr><td>3階の階高</td><td>2,800</td><td><b>2,700</b></td><td>天井高2,300（法律の最低は2,100）</td></tr>
+<tr><td>屋根の勾配</td><td>4寸</td><td><b>3寸</b></td><td>3,640×0.3＝1,092</td></tr>
+<tr><td><b>軒の高さ</b></td><td>9,350</td><td><b>8,800</b></td><td>500＋2,900＋2,700＋2,700</td></tr>
+<tr><td><b>最高の高さ</b></td><td>10,806</td><td><b>9,892</b></td><td>8,800＋1,092</td></tr>
+</table>
+<div class="note warn"><b>階段は変えなくてよい。</b>階高2,900でも、型の階段（蹴上207×15段＝3,105）は
+蹴上を194（2,900÷15）にすればそのまま入ります。2階・3階は180（2,700÷15）。段数は同じ15段。
+問題文に「蹴上180以下」が来たときだけ、早見盤の回り階段の話になります。</div>
+
+<h2>4. 去年、4人に1人が「重大な不適合」だった</h2>
+<figure>
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1240 680" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif" style="max-width:1240px;margin:0 auto" role="img"><rect width="1240" height="680" fill="#ffffff"/><text x="620" y="36" font-size="24" text-anchor="middle" fill="#111" font-weight="700" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">「重大な不適合」で落ちた人の割合（ランクⅣ）</text><text x="620" y="62" font-size="12.5" text-anchor="middle" fill="#666" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">出典：建築技術教育普及センター「設計製図の試験」の合否判定基準等について（令和4〜7年）</text><line x1="50" y1="440" x2="1040" y2="440" stroke="#999" stroke-width="1"/><rect x="80" y="330.8" width="140" height="109.2" fill="#c9a07a" stroke="none" rx="4"/><text x="150" y="320.8" font-size="22" text-anchor="middle" fill="#7a5a3a" font-weight="700" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">9.1%</text><text x="150" y="464" font-size="15" text-anchor="middle" fill="#111" font-weight="700" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">令和4年</text><text x="150" y="484" font-size="12" text-anchor="middle" fill="#555" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">保育所（木造2階）</text><text x="150" y="504" font-size="12" text-anchor="middle" fill="#3e6b47" font-weight="700" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">合格 52.5%</text><text x="150" y="530" font-size="11" text-anchor="middle" fill="#333" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">・未完成</text><text x="150" y="547" font-size="11" text-anchor="middle" fill="#333" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">・面積・保育室の床面積不足</text><text x="150" y="564" font-size="11" text-anchor="middle" fill="#333" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">・東側立面図でない</text><text x="150" y="581" font-size="11" text-anchor="middle" fill="#333" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">・架構計画</text><rect x="320" y="362" width="140" height="78" fill="#c9a07a" stroke="none" rx="4"/><text x="390" y="352" font-size="22" text-anchor="middle" fill="#7a5a3a" font-weight="700" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">6.5%</text><text x="390" y="464" font-size="15" text-anchor="middle" fill="#111" font-weight="700" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">令和5年</text><text x="390" y="484" font-size="12" text-anchor="middle" fill="#555" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">専用住宅（木造2階）</text><text x="390" y="504" font-size="12" text-anchor="middle" fill="#3e6b47" font-weight="700" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">合格 49.9%</text><text x="390" y="530" font-size="11" text-anchor="middle" fill="#333" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">・未完成</text><text x="390" y="547" font-size="11" text-anchor="middle" fill="#333" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">・多目的室と台所の配置</text><text x="390" y="564" font-size="11" text-anchor="middle" fill="#333" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">・階段・吹抜けの計画</text><text x="390" y="581" font-size="11" text-anchor="middle" fill="#333" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">・矩計図の切断位置</text><rect x="560" y="306.8" width="140" height="133.2" fill="#c9a07a" stroke="none" rx="4"/><text x="630" y="296.8" font-size="22" text-anchor="middle" fill="#7a5a3a" font-weight="700" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">11.1%</text><text x="630" y="464" font-size="15" text-anchor="middle" fill="#111" font-weight="700" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">令和6年</text><text x="630" y="484" font-size="12" text-anchor="middle" fill="#555" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">ゲストハウス（RC2階）</text><text x="630" y="504" font-size="12" text-anchor="middle" fill="#3e6b47" font-weight="700" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">合格 47.0%</text><text x="630" y="530" font-size="11" text-anchor="middle" fill="#333" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">・未完成</text><text x="630" y="547" font-size="11" text-anchor="middle" fill="#333" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">・主要室の欠落</text><text x="630" y="564" font-size="11" text-anchor="middle" fill="#333" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">・席数・屋外広場</text><text x="630" y="581" font-size="11" text-anchor="middle" fill="#333" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">・防火設備の表示</text><rect x="800" y="138.8" width="140" height="301.2" fill="#c0392b" stroke="none" rx="4"/><text x="870" y="128.8" font-size="22" text-anchor="middle" fill="#c0392b" font-weight="700" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">25.1%</text><text x="870" y="464" font-size="15" text-anchor="middle" fill="#111" font-weight="700" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">令和7年</text><text x="870" y="484" font-size="12" text-anchor="middle" fill="#555" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">シェアハウス（木造2階）</text><text x="870" y="504" font-size="12" text-anchor="middle" fill="#3e6b47" font-weight="700" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">合格 46.4%</text><text x="870" y="530" font-size="11" text-anchor="middle" fill="#333" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">・未完成</text><text x="870" y="547" font-size="11" text-anchor="middle" fill="#333" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">・面積違反</text><text x="870" y="564" font-size="11" text-anchor="middle" fill="#333" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">・主要室の欠落</text><text x="870" y="581" font-size="11" text-anchor="middle" fill="#333" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">・吹抜けの大きさ・避難経路</text><text x="1048" y="444" font-size="11" text-anchor="start" fill="#999" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">0%</text><rect x="990" y="100" width="210" height="300" fill="#fdeeee" stroke="#e0a0a0" stroke-width="1" rx="8"/><text x="1095" y="132" font-size="13" text-anchor="middle" fill="#c0392b" font-weight="700" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">去年は</text><text x="1095" y="149" font-size="20" text-anchor="middle" fill="#c0392b" font-weight="700" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">4人に1人が</text><text x="1095" y="166" font-size="20" text-anchor="middle" fill="#c0392b" font-weight="700" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">ランクⅣ</text><text x="1095" y="183" font-size="8" text-anchor="middle" fill="#111" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif"></text><text x="1095" y="200" font-size="11.5" text-anchor="middle" fill="#333" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">ランクⅣ＝</text><text x="1095" y="217" font-size="11.5" text-anchor="middle" fill="#333" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">「うまいへた」の前に、</text><text x="1095" y="234" font-size="11.5" text-anchor="middle" fill="#333" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">条件を守れていない人。</text><text x="1095" y="251" font-size="6" text-anchor="middle" fill="#111" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif"></text><text x="1095" y="268" font-size="11.5" text-anchor="middle" fill="#333" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">図面が1枚でも未完成、</text><text x="1095" y="285" font-size="11.5" text-anchor="middle" fill="#333" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">面積が範囲の外、</text><text x="1095" y="302" font-size="11.5" text-anchor="middle" fill="#333" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">部屋が1つ足りない。</text><text x="1095" y="319" font-size="11.5" text-anchor="middle" fill="#333" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">これだけで、</text><text x="1095" y="336" font-size="11.5" text-anchor="middle" fill="#333" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">図面の出来は見てもらえ</text><text x="1095" y="353" font-size="11.5" text-anchor="middle" fill="#333" font-weight="400" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">ません。</text><text x="620" y="658" font-size="13" text-anchor="middle" fill="#444" font-weight="700" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic',sans-serif">棒の下は、その年に「多かった」と公表された落ち方。毎年いちばん上に「未完成」がある。</text></svg>
+  <figcaption>ランクⅣ＝設計条件・要求図書に対する重大な不適合。図面の出来を見てもらう前に落ちる。</figcaption>
+</figure>
+<p>公式が「多かった」と書いた去年の落ち方は、
+<b>未完成／面積違反／主要室の欠落／設計条件違反（吹抜けの大きさ、LDK・交流スペースの計画、避難経路）</b>です。
+このうち今年も同じ形で来るのは、次の4つです。</p>
+<table>
+<tr><th style="width:26%">去年の落ち方</th><th>今年の形</th><th style="width:26%">ふせぎ方</th></tr>
+<tr><td><b>未完成</b></td><td>図面が1枚多いので、いちばん起きやすい。
+    3階平面図か部分詳細図が白紙のまま16:00</td>
+    <td>早見盤の時間割を守る。<b>15:45には手を止めて確認</b></td></tr>
+<tr><td><b>面積違反</b></td><td>「○㎡以上△㎡以下」を外す。3階建ては×3なので、1マスのズレが2.5㎡</td>
+    <td>マス数で計算（80マス×3＝198.72）。エスキスの段階で検算</td></tr>
+<tr><td><b>主要室の欠落</b></td><td>店舗の「売場・レジ・バックヤード」、住宅の「LDK・寝室・子ども室」を
+    指定の階に置き忘れる</td><td>要求室の表に✓を入れながらエスキス</td></tr>
+<tr><td><b>避難経路</b></td><td>去年は「バルコニーから道路まで有効1.5mの空地と避難経路」が条件だった。
+    今年は3階建てなので、<b>敷地内通路1.5m</b>と<b>3階の窓（代替進入口）</b>が同じ役目</td>
+    <td>1階平面図で出入口▲から道路まで1.5mの通路を先に描く</td></tr>
+</table>
+
+<h3>今年の「重大な不適合」は、たぶんこの6つ</h3>
+<p>毎年ほぼ同じ形で公表されるので、去年のものを今年の課題に置きかえました。</p>
+<ol>
+<li><b>木造3階建てでないもの</b>（2階建てで描いたら、それだけでアウト）</li>
+<li>要求図書のうち<b>図面が1面以上未完成</b></li>
+<li><b>図面相互の重大な不整合</b>（上下階の柱・階段・窓のズレ）</li>
+<li><b>面積等の不適合</b>（去年からこの書き方。延べ面積だけでなく、指定された室の面積も）</li>
+<li><b>要求室の欠落</b>または<b>設置階のちがい</b></li>
+<li><b>著しく非常識な計画</b>（階段がない、店に入口がない など）</li>
+</ol>
+
+<h2>5. 去年の問題文にあった「今年も来そうな条件」</h2>
+<table>
+<tr><th style="width:34%">去年の条件（原文の要約）</th><th>今年にひびくこと</th></tr>
+<tr><td>屋外施設：屋外テラス、敷地内の通路（有効1.5m）、駐輪10台、ゴミ置き場2,000×1,000</td>
+    <td>外まわりずかんの大きさで対応ずみ。駐輪は「10台」のように<b>台数が大きい</b>ことがある</td></tr>
+<tr><td>「火打梁の代わりに構造用面材による床組とする場合には、構造用面材の種類・厚さ・釘の種類・打ち付け間隔を明記する」</td>
+    <td>教材は<b>火打梁で描く</b>（書くことが少なくて安全）。面材にするなら「構造用合板 t=24、N75@150」まで書く</td></tr>
+<tr><td>計画の要点：上下階の床衝撃音・騒音対策／耐力壁の仕様・倍率・配置の工夫</td>
+    <td>今年は「店と住まいの音」「3階建ての耐力壁のバランス」に置きかわる可能性が高い。穴うめドリルにあり</td></tr>
+<tr><td>「耐力壁は、必要な量をバランスよく配置する」</td>
+    <td>四分割法の言葉（外周の1/4ずつに壁を）を記述で使えるように</td></tr>
+<tr><td>立面図は「南側」／最高の高さを記入</td>
+    <td>今年は<b>道路側（商店街側）の立面図</b>が来る可能性が高い。どちらでも描けるように</td></tr>
+</table>
+
+<h2>6. 今回直した、教材のまちがい・あいまいなところ</h2>
+<table>
+<tr><th class="fix">どこ</th><th>まえ</th><th>あと</th></tr>
+<tr><td>早見盤の法令集の図・外まわりずかんの表</td>
+    <td>敷地内通路「200㎡未満は90cm」</td>
+    <td>「<b>階数3以下かつ</b>200㎡未満は90cm」（令128条の原文どおり、条件は2つ）</td></tr>
+<tr><td>丸ごと解説 1章の図</td>
+    <td>「答案用紙には、この7つが載る」</td>
+    <td>「この教材の練習用紙（1枚目）にある7つの枠」。本番は<b>A2横1枚</b>に全部が載る</td></tr>
+<tr><td>練習用紙3枚目の注</td>
+    <td>「計画の要点等は、別の用紙に…」</td>
+    <td>本番では<b>答案用紙の中</b>の罫線に書く。練習用紙にないので別の紙で練習、と明記</td></tr>
+<tr><td>凡例の図（部材ずかん・丸ごと解説・早見盤）</td>
+    <td>「棟木」</td>
+    <td>本物の答案用紙どおり「<b>棟木・小屋束</b>」。寸法欄に書くのは棟木の分だけ</td></tr>
+<tr><td>部分詳細図の描き方 9章</td>
+    <td>「軒の高さ9.5m以下」が決まりのように読めた</td>
+    <td>それは<b>教材の予想問題の値</b>。本番の数字は問題用紙で決まる、と注記。9m版の逃がし方はこのページ</td></tr>
+<tr><td>穴うめドリル</td>
+    <td>「1/7」が「1」と表示されて正解にならない</td>
+    <td>区切り文字を変えて修正ずみ（前回）</td></tr>
+</table>
+
+<h3>教材が「決めつけている」ところ（本番で必ず問題文を見る）</h3>
+<table>
+<tr><th class="fix">決めつけ</th><th>本当は</th></tr>
+<tr><td>伏図は「3階床伏図」と「小屋伏図」の2枠</td>
+    <td>本物の答案用紙は<b>1枠</b>（「2階床伏図 兼 1階小屋伏図」のような書き方）だった年が多い。
+    どの階の伏図かは<b>当日の問題文</b>で決まる</td></tr>
+<tr><td>高さは「11m以下・軒9.5m以下」</td><td>予想。9m・10mなら3節の逃がし方</td></tr>
+<tr><td>近隣商業地域＋準防火地域</td><td>予想。「防火・準防火の指定なし」なら準耐火の話が消える</td></tr>
+<tr><td>竪穴区画を描く</td><td>免除される読み方もあるが、描いて減点はまず考えられない</td></tr>
+<tr><td>部分詳細図の横幅は柱心から1,000（片側5目盛）</td>
+    <td>去年の問題文の指定。今年も同じ書き方の見込みだが、当日の数字が優先</td></tr>
+</table>
+
+<h2>7. まだやっていなかったこと（やることリスト）</h2>
+<p>チェックはこの端末に保存されます。</p>
+<ul class="check" data-store="kotoshi">
+<li><label><input type="checkbox"><span><span class="tag">法令集</span>令和8年版の法令集を1冊用意した（2冊まで）。付箋は「A 必ず貼る」の12枚だけ</span></label></li>
+<li><label><input type="checkbox"><span><span class="tag">法令集</span>書き込みが4種類（見出し・日付・線・○△×）だけか、1ページずつ確認した。早見表・数字は消した</span></label></li>
+<li><label><input type="checkbox"><span><span class="tag">法令集</span>令128条・令126条の6・令112条11項・令121条・令43条・令46条を、<b>30秒以内</b>に開ける</span></label></li>
+<li><label><input type="checkbox"><span><span class="tag">法令集</span>「法令集チェックは開始後」なので、最初の25分は法令集なしで問題文を読み切る練習をした</span></label></li>
+<li><label><input type="checkbox"><span><span class="tag g">高さ</span>「軒9m以下・最高10m以下」版の高さ（500／2,900／2,700／2,700／3寸）を1回、立面図で描いた</span></label></li>
+<li><label><input type="checkbox"><span><span class="tag g">高さ</span>そのときの部分詳細図の積み上げ（321＋20＋120＋24＋15＝500）を1回描いた</span></label></li>
+<li><label><input type="checkbox"><span><span class="tag b">避難</span>1階平面図で、出入口▲から道路まで<b>有効1.5m</b>の通路を先に描く手順を、型に組みこんだ</span></label></li>
+<li><label><input type="checkbox"><span><span class="tag b">避難</span>3階の道路側の窓が「直径1mの円が入る」大きさ（幅1,000以上×高さ1,000以上）になっている</span></label></li>
+<li><label><input type="checkbox"><span><span class="tag b">避難</span>階段が3階から1階の出入口までまっすぐ（直通階段）で、各階同じ位置</span></label></li>
+<li><label><input type="checkbox"><span><span class="tag k">面積</span>「面積等の不適合」＝延べ面積だけでなく、<b>指定された室の面積</b>も範囲内か確かめる手順を加えた</span></label></li>
+<li><label><input type="checkbox"><span><span class="tag k">立面</span>南側と道路側、<b>どちらの立面図でも</b>描けるように、両方1回ずつ描いた</span></label></li>
+<li><label><input type="checkbox"><span><span class="tag k">記述</span>「店と住まいの音」「3階建ての耐力壁のバランス（四分割）」「構造計算で確かめる」の3つを、自分の言葉で書けた</span></label></li>
+<li><label><input type="checkbox"><span><span class="tag k">通し</span>A2 1枚に全部を描く通し練習を、本番までにあと<b>2回</b></span></label></li>
+</ul>
+
+<h2>8. 出典</h2>
+<ul>
+<li>建築技術教育普及センター「令和8年 二級建築士試験 受験要領」（法令集の使用・資料4）</li>
+<li>同「設計製図の試験」の合否判定基準等について（令和4年・5年・6年・7年）</li>
+<li>同 令和7年 二級建築士「設計製図の試験」問題用紙・標準解答例・答案用紙</li>
+<li>総合資格学院／日建学院／TAC／製図ラボ／全日本建築士会／独学合格チャンネル（note）の令和8年課題分析</li>
+<li>令和7年4月施行の建築基準法改正（構造計算の合理化、4号特例の縮小）の解説記事（環境・省エネルギー計算センター ほか）</li>
+</ul>
+
+<footer>この教材は予想です。正解は当日の問題文だけ。法令の数値は必ず法令集で確認を。</footer>
+</div>
+<script>
+document.querySelectorAll('.check[data-store]').forEach(list=>{
+  const key='seizu-'+list.dataset.store;
+  let saved=[];
+  try{saved=JSON.parse(localStorage.getItem(key)||'[]');}catch(e){}
+  const boxes=[...list.querySelectorAll('input')];
+  boxes.forEach((b,i)=>{
+    b.checked=!!saved[i];
+    b.onchange=()=>{try{localStorage.setItem(key,
+      JSON.stringify(boxes.map(x=>x.checked)));}catch(e){}};
+  });
+});
+</script>
+</body></html>
