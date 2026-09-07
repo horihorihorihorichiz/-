@@ -142,9 +142,8 @@ def draw(kind='floor'):
                stroke=INK, stroke_width=1.2, stroke_dasharray='8 4')
 
     # 柱（1階＝×、2階＝たて2本線、重なる＝四角にバツ、通し柱＝○で囲む）
-    KUDA = [(2, 0), (5, 0), (0, 2), (8, 2), (0, 6), (8, 6),
-            (2, 10), (5, 10), (2, 2), (5, 2), (2, 6), (5, 6)]
-    TOOSHI = [(0, 0), (8, 0), (0, 10), (8, 10)]
+    import plans as _plans
+    TOOSHI, KUDA = _plans.columns()
     r = 5.0
     for gx, gy in KUDA:
         x, y = px(gx), py(gy)

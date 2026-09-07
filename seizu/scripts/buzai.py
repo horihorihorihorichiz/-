@@ -1122,13 +1122,15 @@ def _ansdraw(s, ox, oy, g, kind):
                stroke_width=1.2, stroke_dasharray='9 5')
 
     r = 5.5
-    for gx, gy in KUDA12:                                    # 管柱
+    import plans as _plans
+    _TOOSHI, _KUDA = _plans.columns()
+    for gx, gy in _KUDA:                                     # 管柱
         x, y = X(gx), Y(gy)
         s.rect(x - r, y - r, 2 * r, 2 * r, fill='#fff', stroke=INK,
                stroke_width=1.0)
         s.line(x - r, y - r, x + r, y + r, stroke=INK, stroke_width=1.2)
         s.line(x - r, y + r, x + r, y - r, stroke=INK, stroke_width=1.2)
-    for gx, gy in TOOSHI4:                                   # 通し柱
+    for gx, gy in _TOOSHI:                                   # 通し柱
         x, y = X(gx), Y(gy)
         s.rect(x - r, y - r, 2 * r, 2 * r, fill='#fff', stroke=INK,
                stroke_width=1.0)

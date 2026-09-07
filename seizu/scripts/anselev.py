@@ -23,9 +23,7 @@ NOKIDE = 600                 # 軒の出
 
 def south_openings(n):
     """その階の南面の開口を（位置, 幅, 種別）で返す。"""
-    d = plans.FLOORS[n]
-    nx, ny = plans.NX, plans.NY
-    ops = fit_openings(d, nx, ny, plans.XLINES, plans.YLINES)
+    ops = plans.fit_all(plans.FLOORS)[n]
     return [(p, l, k) for f, p, l, k, _ in ops if f == 'S']
 
 

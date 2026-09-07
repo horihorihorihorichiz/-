@@ -48,10 +48,10 @@ FLOORS = {
         openings=[
             ('S', 2.5, 3.0, 'entry', '店舗出入口'),
             ('S', 0.3, 1.4, 'entry', '住宅玄関'),
-            ('S', 6.0, 1.5, 'win', ''),
+            ('S', 6.0, 2.0, 'win', ''),
             ('E', 0.5, 1.5, 'win', ''),
-            ('E', 3.0, 2.0, 'win', ''),
-            ('E', 6.5, 2.5, 'win', ''),
+            ('E', 2.0, 2.0, 'win', ''),
+            ('E', 6.0, 2.0, 'win', ''),
             ('N', 2.5, 2.0, 'entry', '勝手口'),
             ('N', 5.5, 2.0, 'win', ''),
             ('W', 8.4, 1.2, 'win', ''),
@@ -81,11 +81,11 @@ FLOORS = {
         ],
         openings=[
             ('S', 2.5, 3.0, 'balc', 'バルコニー'),
-            ('S', 6.2, 1.5, 'win', ''),
+            ('S', 6.0, 2.0, 'win', ''),
             ('S', 0.4, 1.2, 'win', ''),
             ('E', 0.5, 1.5, 'win', ''),
-            ('E', 3.0, 2.0, 'win', ''),
-            ('E', 6.5, 2.5, 'win', ''),
+            ('E', 2.0, 2.0, 'win', ''),
+            ('E', 6.0, 2.0, 'win', ''),
             ('N', 2.6, 2.0, 'win', ''),
             ('N', 5.6, 1.8, 'win', ''),
             ('W', 0.4, 1.2, 'win', ''),
@@ -119,12 +119,12 @@ FLOORS = {
             ('S', 2.6, 1.8, 'win', ''),
             ('S', 5.6, 1.8, 'win', ''),
             ('S', 0.4, 1.2, 'win', ''),
-            ('E', 1.0, 2.5, 'win', ''),
-            ('E', 7.0, 2.0, 'win', ''),
+            ('E', 2.0, 2.0, 'win', ''),
+            ('E', 6.0, 2.0, 'win', ''),
             ('N', 2.6, 2.2, 'win', ''),
             ('N', 5.6, 2.2, 'win', ''),
             ('W', 1.0, 2.5, 'win', ''),
-            ('W', 7.0, 2.0, 'win', ''),
+            ('W', 9.0, 1.0, 'win', ''),
         ],
         doors=[
             ('H', 2, 0.4, 1.2),   # 便所 → 階段ホール
@@ -268,6 +268,138 @@ def fit_openings(d, nx, ny, xlines, ylines):
         for i, g in zip(idxs[f], got):
             ops[i] = None if g is None else (f, g[0], g[1], g[2], ops[i][4])
     return [o for o in ops if o is not None]
+
+
+def fit_all(floors, nx=None, ny=None, xlines=None, ylines=None):
+    """全階の開口をまとめてそろえる。
+
+    同じ面の同じ通り間にある窓は、上下階で<b>同じ位置・同じ幅</b>にする。
+    こうすると立面図で窓がたてにそろい、窓の両わきの柱も上下でそろう。
+    幅は「その通り間にある窓のうち、どの階の部屋にも収まる一番広いもの」を選ぶ。
+    """
+    nx = NX if nx is None else nx
+    ny = NY if ny is None else ny
+    xlines = XLINES if xlines is None else xlines
+    ylines = YLINES if ylines is None else ylines
+    xs = [g for g, _ in xlines]
+    ys = [g for g, _ in ylines]
+    fits = {n: fit_openings(d, nx, ny, xlines, ylines)
+            for n, d in floors.items()}
+    cand = {}
+    for n, ops in fits.items():
+        for f, p, l, k, lab in ops:
+            cross = xs if f in ('S', 'N') else ys
+            cand.setdefault((f, _seg_of(cross, p + l / 2.0)), {})[n] = (p, l)
+
+    def in_one_room(d, f, p, l):
+        for _, _, a, b, c, e, _ in d['rooms']:
+            if f == 'S' and b == 0 and a - 1e-6 <= p and p + l <= c + 1e-6:
+                return True
+            if f == 'N' and e == ny and a - 1e-6 <= p and p + l <= c + 1e-6:
+                return True
+            if f == 'W' and a == 0 and b - 1e-6 <= p and p + l <= e + 1e-6:
+                return True
+            if f == 'E' and c == nx and b - 1e-6 <= p and p + l <= e + 1e-6:
+                return True
+        return False
+
+    chosen = {}
+    for key, per in cand.items():
+        f, (ba, bb) = key
+        opts = sorted({g for g in per.values()}, key=lambda g: (-g[1], g[0]))
+        # どの階の部屋にもきちんと収まる案を、半マスきざみで探し足す
+        want = sum(g[1] for g in per.values()) / float(len(per))
+        mid0 = sum(g[0] + g[1] / 2.0 for g in per.values()) / float(len(per))
+        extra = []
+        w = MAXLEN
+        while w >= 1.0 - 1e-9:
+            if (bb - ba) - w >= MIN_WALL - 1e-9:
+                q = ba
+                while q + w <= bb + 1e-9:
+                    extra.append((round(q, 3), round(w, 3)))
+                    q += STEP
+            w -= STEP
+        extra.sort(key=lambda g: (-g[1], abs(g[0] + g[1] / 2.0 - mid0)))
+        for g in opts + extra:
+            if all(in_one_room(floors[n], f, g[0], g[1]) for n in per):
+                chosen[key] = g
+                break
+    out = {}
+    for n, ops in fits.items():
+        new = []
+        for f, p, l, k, lab in ops:
+            cross = xs if f in ('S', 'N') else ys
+            g = chosen.get((f, _seg_of(cross, p + l / 2.0)))
+            if g:
+                p, l = g
+            new.append((f, round(p, 3), round(l, 3), k, lab))
+        out[n] = new
+    return out
+
+
+def _wall_segments(floors):
+    """全階の壁を、向きと通りごとに集めてつなぐ（上下でそろえた柱を出すため）。"""
+    segs = {}
+    for d in floors.values():
+        for _, _, a, b, c, e, _ in d['rooms']:
+            segs.setdefault(('V', a), []).append((b, e))
+            segs.setdefault(('V', c), []).append((b, e))
+            segs.setdefault(('H', b), []).append((a, c))
+            segs.setdefault(('H', e), []).append((a, c))
+    return {k: _union(v) for k, v in segs.items()}
+
+
+def columns(nx=None, ny=None, xlines=None, ylines=None, floors=None):
+    """柱を立てる位置を決める。
+
+    ルールは3つだけ。
+      1. 壁と壁がぶつかるところ（部屋のかど・通り芯の交点）
+      2. 窓と出入口の両わき
+      3. それでも柱と柱が2マス（1,820）をこえたら、2マスごとに足す
+    全階の壁と開口をあわせて決めるので、柱は3階とも同じ位置になる。
+    """
+    nx = NX if nx is None else nx
+    ny = NY if ny is None else ny
+    xlines = XLINES if xlines is None else xlines
+    ylines = YLINES if ylines is None else ylines
+    floors = FLOORS if floors is None else floors
+    walls = _wall_segments(floors)
+    edges = {}
+    for _n, ops in fit_all(floors, nx, ny, xlines, ylines).items():
+        for f, p, l, k, _lab in ops:
+            key = (('H', 0 if f == 'S' else ny) if f in ('S', 'N')
+                   else ('V', 0 if f == 'W' else nx))
+            edges.setdefault(key, set()).update([round(p, 3), round(p + l, 3)])
+    xs = [g for g, _ in xlines]
+    ys = [g for g, _ in ylines]
+    pts = set()
+    for (ori, ln), segs in walls.items():
+        def on_wall(m):
+            return any(a - 1e-9 <= m <= b + 1e-9 for a, b in segs)
+        marks = set()
+        for a, b in segs:                       # 壁のはし
+            marks.update([a, b])
+        marks.update(m for m in edges.get((ori, ln), ()) if on_wall(m))
+        marks.update(g for g in (ys if ori == 'V' else xs) if on_wall(g))
+        for (o2, l2), s2 in walls.items():      # 直交する壁がぶつかるところ
+            if o2 != ori and on_wall(l2) and \
+                    any(a - 1e-9 <= ln <= b + 1e-9 for a, b in s2):
+                marks.add(l2)
+        v = sorted(marks)
+        for a, b in zip(v[:-1], v[1:]):         # 2マスをこえたら足す
+            if not any(q0 - 1e-9 <= a and b <= q1 + 1e-9 for q0, q1 in segs):
+                continue
+            m = a + 2.0
+            while m < b - 1e-9:
+                marks.add(round(m, 3))
+                m += 2.0
+        for m in marks:
+            if on_wall(m):
+                pts.add((ln, m) if ori == 'V' else (m, ln))
+    corner = {(0, 0), (nx, 0), (0, ny), (nx, ny)}
+    tooshi = sorted(p for p in pts if p in corner)
+    kuda = sorted(p for p in pts if p not in corner)
+    return tooshi, kuda
 
 
 def _bearing_marks(d, nx, ny, xlines, ylines):
