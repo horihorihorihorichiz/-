@@ -358,6 +358,58 @@ def draw(d, title, sub=''):
                     inward = 1 if (ln_ < (nx if ori == 'V' else ny) / 2.0) \
                         else -1
                     hinged(ori, ln_, a, b, inward)
+                # 階段室（竪穴区画）の壁にある建具は防火設備
+                fa, fb, fc, fd = d.get('stair_box', (0, 2, 2, 6))
+                on_stair = ((ori == 'V' and ln_ in (fa, fc)
+                             and a >= fb - 1e-6 and b <= fd + 1e-6) or
+                            (ori == 'H' and ln_ in (fb, fd)
+                             and a >= fa - 1e-6 and b <= fc + 1e-6))
+                if on_stair:
+                    if ori == 'V':
+                        s.text(px(ln_) + (10 if ln_ >= fc else -10),
+                               py(b) - 4, '防火設備', size=6.5, fill='#111',
+                               anchor='start' if ln_ >= fc else 'end')
+                    elif ln_ <= fb:
+                        s.text(px(b) + 3, py(ln_) + 12, '防火設備',
+                               size=6.5, fill='#111', anchor='start')
+                    else:
+                        s.text(px(a) - 3, py(ln_) - 6, '防火設備',
+                               size=6.5, fill='#111', anchor='end')
+    # ---- バルコニー（壁の外に1マス張り出す。手すりは外側の2本線） ----
+    for key, lst in op.items():
+        ori, ln_ = key
+        for a, b, kind, face in lst:
+            if kind != 'balc':
+                continue
+            dep = 1.0
+            if ori == 'H':
+                out = -1 if face == 'S' else 1
+                x0b, x1b = px(a), px(b)
+                y_in = py(ln_)
+                y_out = py(ln_ + out * dep)
+                s.rect(min(x0b, x1b), min(y_in, y_out), abs(x1b - x0b),
+                       abs(y_out - y_in), fill='none', stroke=INK,
+                       stroke_width=1.0)
+                s.line(x0b, y_out + (3 if out < 0 else -3) * -1,
+                       x1b, y_out + (3 if out < 0 else -3) * -1,
+                       stroke=INK, stroke_width=0.8)
+                s.text((x0b + x1b) / 2.0, (y_in + y_out) / 2.0 + 3,
+                       'バルコニー', size=7.5, fill='#111')
+                s.text((x0b + x1b) / 2.0, (y_in + y_out) / 2.0 + 13,
+                       '手すり H=1,100', size=6, fill='#333')
+            else:
+                out = 1 if face == 'E' else -1
+                y0b, y1b = py(a), py(b)
+                x_in = px(ln_)
+                x_out = px(ln_ + out * dep)
+                s.rect(min(x_in, x_out), min(y0b, y1b), abs(x_out - x_in),
+                       abs(y1b - y0b), fill='none', stroke=INK,
+                       stroke_width=1.0)
+                s.line(x_out - out * 3, y0b, x_out - out * 3, y1b,
+                       stroke=INK, stroke_width=0.8)
+                s.text_rot((x_in + x_out) / 2.0, (y0b + y1b) / 2.0,
+                           'バルコニー', -90, size=7.5, fill='#111')
+
     # ---- 家具・設備 ----
     cur = [None]                       # いま家具を描いている部屋
     ROOMS = [(r[2], r[3], r[4], r[5]) for r in d['rooms']]
@@ -643,10 +695,12 @@ def draw(d, title, sub=''):
     # ---- 寸法（通りごとのスパン＋全体） ----
     xs = [g for g, _ in xlines]
     ys = [g for g, _ in ylines]
+    bal = G + 6 if any(k == 'balc' and f == 'S'
+                       for lst in op.values() for _, _, k, f in lst) else 0
     for a, b in zip(xs[:-1], xs[1:]):
-        s.dim_h(px(a), px(b), y1 + 34, format(int((b - a) * 910), ','),
-                size=9)
-    s.dim_h(x0, x1, y1 + 62, format(nx * 910, ','))
+        s.dim_h(px(a), px(b), y1 + 34 + bal,
+                format(int((b - a) * 910), ','), size=9)
+    s.dim_h(x0, x1, y1 + 62 + bal, format(nx * 910, ','))
     for a, b in zip(ys[:-1], ys[1:]):
         s.dim_v(py(a), py(b), x1 + 30, format(int((b - a) * 910), ','),
                 size=9, anchor='start', dx=6)
