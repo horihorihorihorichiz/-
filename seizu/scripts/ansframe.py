@@ -60,41 +60,24 @@ def draw(kind='floor'):
     hw = MW / 2.0 * G
     texts = []
 
-    def member(ori, ln, a, b, dim, chamfer=True, label=True):
-        """部材を2本線で描き、断面寸法を書きこむ。"""
-        c = min(hw, 4.0) if chamfer else 0
+    def member(ori, ln, a, b, dim, chamfer=False, label=True):
+        """部材を2本線で描き、断面寸法を書きこむ。
+
+        端は、ぶつかる相手の材の面で止める（交点に短い線が残ると
+        管柱の記号 ×・‖ と紛らわしいので、端の線・面取り線は描かない）。
+        """
         if ori == 'H':
             y = py(ln)
             for dd in (-hw, hw):
-                s.line(px(a) + c, y + dd, px(b) - c, y + dd, stroke=INK,
+                s.line(px(a) + hw, y + dd, px(b) - hw, y + dd, stroke=INK,
                        stroke_width=1.1)
-            s.line(px(a), y - hw + c, px(a), y + hw - c, stroke=INK,
-                   stroke_width=1.1)
-            s.line(px(b), y - hw + c, px(b), y + hw - c, stroke=INK,
-                   stroke_width=1.1)
-            if c:
-                for xx, sg in ((px(a), 1), (px(b), -1)):
-                    s.line(xx, y - hw + c, xx + sg * c, y - hw, stroke=INK,
-                           stroke_width=1.1)
-                    s.line(xx, y + hw - c, xx + sg * c, y + hw, stroke=INK,
-                           stroke_width=1.1)
             if label:
                 texts.append(('H', (px(a) + px(b)) / 2.0, y - hw - 5, dim))
         else:
             x = px(ln)
             for dd in (-hw, hw):
-                s.line(x + dd, py(a) - c, x + dd, py(b) + c, stroke=INK,
+                s.line(x + dd, py(a) - hw, x + dd, py(b) + hw, stroke=INK,
                        stroke_width=1.1)
-            s.line(x - hw + c, py(a), x + hw - c, py(a), stroke=INK,
-                   stroke_width=1.1)
-            s.line(x - hw + c, py(b), x + hw - c, py(b), stroke=INK,
-                   stroke_width=1.1)
-            if c:
-                for yy, sg in ((py(a), -1), (py(b), 1)):
-                    s.line(x - hw + c, yy, x - hw, yy + sg * c, stroke=INK,
-                           stroke_width=1.1)
-                    s.line(x + hw - c, yy, x + hw, yy + sg * c, stroke=INK,
-                           stroke_width=1.1)
             if label:
                 texts.append(('V', x + hw + 12, (py(a) + py(b)) / 2.0,
                               dim))
