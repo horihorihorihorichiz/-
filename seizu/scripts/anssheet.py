@@ -299,6 +299,11 @@ def draw(d, title, sub=''):
                    stroke_width=1.0)
 
     def window(ori, ln_, a, b):
+        """引違い窓。壁の2本＋まん中に細い線1本、両はしに短いたて線。
+
+        幅が2マスを超えるときは4枚建てになるので、ガラスの合わせ目の
+        たて線を1/4ずつの位置に足す。
+        """
         wall_line(ori, ln_, a, b, thin=True)
         if ori == 'V':
             s.line(px(ln_), py(a), px(ln_), py(b), stroke=INK,
@@ -308,6 +313,9 @@ def draw(d, title, sub=''):
                    stroke_width=0.7)
         jamb(ori, ln_, a)
         jamb(ori, ln_, b)
+        if b - a > 2.05:                       # 4枚建て
+            for k in (1, 2, 3):
+                jamb(ori, ln_, a + (b - a) * k / 4.0)
 
     def slide(ori, ln_, a, b):
         """引戸。壁の中に2枚の戸を少しずらして描く。"""

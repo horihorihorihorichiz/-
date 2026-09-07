@@ -141,9 +141,11 @@ FLOORS = {
 }
 
 
-MIN_WALL = 0.9          # 耐力壁として意味のある最小の長さ（マス＝910mm）
-GAP = 0.1               # 開口と通り芯のあいだに必ず残すすき間
-MINLEN = {'entry': 0.9, 'balc': 1.2, 'win': 0.6}   # 開口の最小の幅
+MIN_WALL = 1.0          # 耐力壁として残す最小の長さ（1マス＝910mm）
+GAP = 0.0               # 開口は柱の面からはじまる（通り芯まで寄せてよい）
+MINLEN = {'entry': 1.0, 'balc': 1.0, 'win': 1.0}   # 開口の最小の幅（1マス）
+MAXLEN = 2.0            # 開口の最大の幅（2マス＝1,820。引違い2枚の幅）
+STEP = 0.5              # 開口の幅は半マス（455）きざみにそろえる
 
 
 def _union(segs):
@@ -208,7 +210,7 @@ def _fit_face(ops, cross):
             for i in idx:
                 out[i] = None
             continue
-        want = [ops[i][1] for i in idx]
+        want = [min(ops[i][1], MAXLEN) for i in idx]   # 2マスを超えさせない
         if sum(want) > room:                       # 入りきらない分を縮める
             k = room / sum(want)
             want = [max(MINLEN.get(ops[i][2], 0.6), w * k)
@@ -221,6 +223,22 @@ def _fit_face(ops, cross):
                 room = (b - a) - MIN_WALL - GAP * (len(idx) + 1)
             if sum(want) > room:
                 want = [room]
+        # 半マスきざみ（455の倍数）にそろえる。いちばん近い刻みへまるめる
+        want = [min(MAXLEN, max(MINLEN.get(ops[i][2], STEP),
+                                round(w / STEP) * STEP))
+                for i, w in zip(idx, want)]
+        while sum(want) > room + 1e-9:
+            j = want.index(max(want))
+            if want[j] - STEP >= MINLEN.get(ops[idx[j]][2], STEP) - 1e-9:
+                want[j] -= STEP                    # 1段せまくする
+            elif len(want) > 1:
+                out[idx[j]] = None                 # それでも入らなければ捨てる
+                idx = idx[:j] + idx[j + 1:]
+                want = want[:j] + want[j + 1:]
+                room = (b - a) - MIN_WALL - GAP * (len(idx) + 1)
+            else:
+                want = [room]
+                break
         # 壁を残す側を決める：もとの位置が通り間の前半なら「奥（b側）」に壁
         mid0 = sum(ops[i][0] + ops[i][1] / 2.0 for i in idx) / max(1, len(idx))
         near_a = mid0 < (a + b) / 2.0
