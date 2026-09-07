@@ -143,18 +143,34 @@ def draw(kind='floor'):
 
     # 柱（1階＝×、2階＝たて2本線、重なる＝四角にバツ、通し柱＝○で囲む）
     import plans as _plans
-    TOOSHI, KUDA = _plans.columns()
+    lower, upper = (2, 3) if kind == 'floor' else (3, None)
+    TOOSHI, BOTH, LOW, UP = _plans.columns_pair(lower, upper)
     r = 5.0
-    for gx, gy in KUDA:
-        x, y = px(gx), py(gy)
+
+    def sq(x, y):
         s.rect(x - r, y - r, 2 * r, 2 * r, fill='#fff', stroke=INK,
                stroke_width=1.0)
+
+    def cross(x, y):
         s.line(x - r, y - r, x + r, y + r, stroke=INK, stroke_width=1.2)
         s.line(x - r, y + r, x + r, y - r, stroke=INK, stroke_width=1.2)
-    for gx, gy in TOOSHI:
+
+    for gx, gy in BOTH:                     # 上下の階が重なる管柱 → 四角にバツ
         x, y = px(gx), py(gy)
-        s.rect(x - r, y - r, 2 * r, 2 * r, fill='#fff', stroke=INK,
-               stroke_width=1.0)
+        sq(x, y)
+        cross(x, y)
+    for gx, gy in LOW:                      # 下の階だけの管柱 → バツ
+        x, y = px(gx), py(gy)
+        s.rect(x - r, y - r, 2 * r, 2 * r, fill='#fff', stroke='none')
+        cross(x, y)
+    for gx, gy in UP:                       # 上の階だけの管柱 → たて2本線
+        x, y = px(gx), py(gy)
+        s.rect(x - r, y - r, 2 * r, 2 * r, fill='#fff', stroke='none')
+        for d_ in (-2.2, 2.2):
+            s.line(x + d_, y - r, x + d_, y + r, stroke=INK, stroke_width=1.4)
+    for gx, gy in TOOSHI:                   # 通し柱 → 四角を丸で囲む
+        x, y = px(gx), py(gy)
+        sq(x, y)
         s.circle(x, y, r + 4, fill='none', stroke=INK, stroke_width=1.2)
 
     # 断面寸法の文字（部材のあとに描いて隠れないようにする）

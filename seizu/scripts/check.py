@@ -75,25 +75,42 @@ def check_openings():
 
 # ---------------------------------------------------------------- 2 柱
 def check_columns():
-    tooshi, kuda = plans.columns()
-    ck(len(tooshi) == 4, '通し柱が4本でない（%d本）' % len(tooshi))
-    ck(set(tooshi) == {(0, 0), (plans.NX, 0), (0, plans.NY),
-                       (plans.NX, plans.NY)}, '通し柱が四隅にない')
-    pts = set(tooshi) | set(kuda)
-    W = plans._wall_segments(plans.FLOORS)
-    for (ori, ln), segs in W.items():
-        on = sorted({(y if ori == 'V' else x) for (x, y) in pts
-                     if (x == ln if ori == 'V' else y == ln)})
-        for a, b in zip(on[:-1], on[1:]):
-            if any(q0 - 1e-9 <= a and b <= q1 + 1e-9 for q0, q1 in segs):
-                ck(round((b - a) * 910) <= 1820,
-                   '柱の間隔が %dmm（%s 通り %s）' %
-                   (round((b - a) * 910), ori, ln))
-    for x, y in pts:
-        ck(abs(x * 2 - round(x * 2)) < 1e-6 and abs(y * 2 - round(y * 2)) < 1e-6,
-           '柱が半マスの位置にない座標 (%s,%s)' % (x, y))
-    # 室内の建具：幅は455の倍数で1,820以下、その開口の中に柱を立てない
+    """柱は階ごと。通り芯の交点は全階共通、あとはその階の壁に合わせる。"""
+    xs = [g for g, _ in plans.XLINES]
+    ys = [g for g, _ in plans.YLINES]
+    counts = []
+    sets = {}
     for n, d in plans.FLOORS.items():
+        tooshi, kuda = plans.columns_of(n)
+        pts = set(tooshi) | set(kuda)
+        sets[n] = pts
+        counts.append(len(pts))
+        ck(len(tooshi) == 4, '%d階 通し柱が4本でない（%d本）' % (n, len(tooshi)))
+        ck(set(tooshi) == {(0, 0), (plans.NX, 0), (0, plans.NY),
+                           (plans.NX, plans.NY)}, '%d階 通し柱が四隅にない' % n)
+        for x in xs:
+            for y in ys:
+                ck((x, y) in pts, '%d階 通り芯の交点(%s,%s)に柱がない' % (n, x, y))
+        for x, y in pts:
+            ck(abs(x * 2 - round(x * 2)) < 1e-6 and
+               abs(y * 2 - round(y * 2)) < 1e-6,
+               '%d階 柱が半マスの位置にない (%s,%s)' % (n, x, y))
+        W = plans._wall_segments({0: d})
+        for (ori, ln), segs in W.items():
+            on = sorted({(y if ori == 'V' else x) for (x, y) in pts
+                         if (x == ln if ori == 'V' else y == ln)})
+            for a, b in zip(on[:-1], on[1:]):
+                if any(q0 - 1e-9 <= a and b <= q1 + 1e-9 for q0, q1 in segs):
+                    ck(round((b - a) * 910) <= 1820,
+                       '%d階 壁の中の柱の間隔が %dmm（%s通り %s）' %
+                       (n, round((b - a) * 910), ori, ln))
+        # 壁のない所に立つ柱は、通り芯の交点だけ
+        for (x, y) in pts:
+            okv = any(a - 1e-9 <= y <= b + 1e-9 for a, b in W.get(('V', x), []))
+            okh = any(a - 1e-9 <= x <= b + 1e-9 for a, b in W.get(('H', y), []))
+            ck(okv or okh or (x in xs and y in ys),
+               '%d階 壁のない所に柱がある (%s,%s)' % (n, x, y))
+        # 室内の建具：幅と、開口の中に柱がないこと
         fd = plans.fit_doors(d, plans.FLOORS)
         ck(len(fd) == len(d.get('doors', [])),
            '%d階 置けなくなった建具がある' % n)
@@ -105,9 +122,13 @@ def check_columns():
                   if (x == wall if ori == 'V' else y == wall)]
             for m in on:
                 ck(not (pos + 1e-6 < m < pos + ln - 1e-6),
-                   '%d階 建具（%s通り%s の %.1f〜%.1f）の中に柱がある' %
+                   '%d階 建具（%s通り%s %.1f〜%.1f）の中に柱がある' %
                    (n, ori, wall, pos, pos + ln))
-    return len(pts), len(tooshi), len(kuda)
+    common = sets[1] & sets[2] & sets[3]
+    ck(len(common) >= 28, '3階とも同じ位置の柱が少ない（%d本）' % len(common))
+    ck(len(sets[2] & sets[1]) / float(len(sets[2])) >= 0.8,
+       '2階の柱の直下率が8割を切っている')
+    return counts, len(common)
 
 
 # ---------------------------------------------------------------- 3 採光
@@ -199,15 +220,17 @@ def check_text(ncol):
 
 def main():
     check_openings()
-    n, t, k = check_columns()
+    counts, common = check_columns()
     check_light()
     one, total = check_area()
     fl1, noki, top = check_height()
     check_stair()
     check_beam()
-    check_text(n)
-    print('柱 %d本（通し柱%d＋管柱%d）／1階%.2f㎡・延べ%.2f㎡／'
-          '1FL+%d・軒%d・最高%d' % (n, t, k, one, total, fl1, noki, top))
+    check_text(0)
+    print('柱 1階%d・2階%d・3階%d本（うち3階とも同じ位置 %d本）／'
+          '1階%.2f㎡・延べ%.2f㎡／1FL+%d・軒%d・最高%d'
+          % (counts[0], counts[1], counts[2], common, one, total,
+             fl1, noki, top))
     print('検算した項目 %d件' % (OKN[0] + len(NG)))
     if NG:
         print('NG %d件' % len(NG))

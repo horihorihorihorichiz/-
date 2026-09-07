@@ -21,7 +21,7 @@ COLORS = {
     'hall':   ('#f1e6fa', '#8b62b5'),
 }
 import plans as _plans
-TOOSHI, KUDA = _plans.columns()
+TOOSHI, KUDA = _plans.columns_of(1)
 
 F1 = [('売場', 2, 0, 8, 6, 'shop'), ('厨房', 2, 6, 5, 10, 'shop'),
       ('スタッフ', 5, 6, 8, 10, 'shop'), ('玄関', 0, 0, 2, 2, 'hall'),

@@ -12,7 +12,7 @@ H = MT + NY * G + MB
 XLINES = [(0, 'A'), (2, 'B'), (5, 'C'), (8, 'D')]
 YLINES = [(0, '1'), (2, '2'), (6, '3'), (10, '4')]
 import plans as _plans
-TOOSHI, KUDA = _plans.columns()
+TOOSHI, KUDA = _plans.columns_of(3)
 # 火打梁を入れる隅（交点と、そこから伸ばす2方向）
 HIUCHI = [(0, 0, 1, 1), (8, 0, -1, 1), (0, 10, 1, -1), (8, 10, -1, -1),
           (2, 2, 1, 1), (5, 2, -1, 1), (2, 6, 1, -1), (5, 6, -1, -1)]

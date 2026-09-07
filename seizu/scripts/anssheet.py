@@ -53,7 +53,7 @@ def draw(d, title, sub=''):
     if 'tooshi' in d and 'kuda' in d:
         tooshi, kuda = d['tooshi'], d['kuda']
     else:
-        tooshi, kuda = plans.columns(nx, ny, xlines, ylines)
+        tooshi, kuda = plans.columns_of(d.get('floor_no', 1))
     side = d.get('road_side', 'S')
     if not d.get('fitted'):
         d = dict(d, openings=fit_openings(d, nx, ny, xlines, ylines))
@@ -756,7 +756,6 @@ def draw(d, title, sub=''):
 if __name__ == '__main__':
     import answers
     import sitemap
-    COLS = {}
     FITS = {}
     for k in 'ABCDEF':
         f0 = answers.PLANS[k][0]
@@ -764,11 +763,8 @@ if __name__ == '__main__':
             {i + 1: dd for i, dd in enumerate(answers.PLANS[k])},
             f0.get('nx', plans.NX), f0.get('ny', plans.NY),
             f0.get('xlines', plans.XLINES), f0.get('ylines', plans.YLINES))
-        COLS[k] = plans.columns(
-            f0.get('nx', plans.NX), f0.get('ny', plans.NY),
-            f0.get('xlines', plans.XLINES), f0.get('ylines', plans.YLINES),
-            {i + 1: dd for i, dd in enumerate(answers.PLANS[k])})
     for k in 'ABCDEF':
+        f0 = answers.PLANS[k][0]
         for i, ti in enumerate(('１階平面図 兼 配置図　縮尺1／100',
                                 '２階平面図　縮尺1／100',
                                 '３階平面図　縮尺1／100')):
@@ -778,7 +774,11 @@ if __name__ == '__main__':
             dd['doors'] = plans.fit_doors(
                 dd, {j + 1: e for j, e in enumerate(answers.PLANS[k])})
             dd['fitted_doors'] = True
-            dd['tooshi'], dd['kuda'] = COLS[k]
+            dd['tooshi'], dd['kuda'] = plans.columns_of(
+                i + 1, {j + 1: e for j, e in enumerate(answers.PLANS[k])},
+                f0.get('nx', plans.NX), f0.get('ny', plans.NY),
+                f0.get('xlines', plans.XLINES),
+                f0.get('ylines', plans.YLINES))
             dd['floor_label'] = 'GL＋550' if i == 0 else ''
             if i == 0:
                 dd['cut'] = dd.get('nx', plans.NX) - 1.0

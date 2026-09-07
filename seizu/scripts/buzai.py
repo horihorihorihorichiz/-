@@ -1123,18 +1123,27 @@ def _ansdraw(s, ox, oy, g, kind):
 
     r = 5.5
     import plans as _plans
-    _TOOSHI, _KUDA = _plans.columns()
-    for gx, gy in _KUDA:                                     # 管柱
+    _lo, _up = (2, 3) if kind == 'floor' else (3, None)
+    _T, _B, _L, _U = _plans.columns_pair(_lo, _up)
+    for gx, gy in _B:                                        # 上下とも
         x, y = X(gx), Y(gy)
-        s.rect(x - r, y - r, 2 * r, 2 * r, fill='#fff', stroke=INK,
-               stroke_width=1.0)
-        s.line(x - r, y - r, x + r, y + r, stroke=INK, stroke_width=1.2)
-        s.line(x - r, y + r, x + r, y - r, stroke=INK, stroke_width=1.2)
-    for gx, gy in _TOOSHI:                                   # 通し柱
+        s.rect(x - 5, y - 5, 10, 10, fill='#fff', stroke=INK, stroke_width=1.0)
+        s.line(x - 5, y - 5, x + 5, y + 5, stroke=INK, stroke_width=1.2)
+        s.line(x - 5, y + 5, x + 5, y - 5, stroke=INK, stroke_width=1.2)
+    for gx, gy in _L:                                        # 下の階だけ
         x, y = X(gx), Y(gy)
-        s.rect(x - r, y - r, 2 * r, 2 * r, fill='#fff', stroke=INK,
-               stroke_width=1.0)
-        s.circle(x, y, r + 4, fill='none', stroke=INK, stroke_width=1.2)
+        s.rect(x - 5, y - 5, 10, 10, fill='#fff', stroke='none')
+        s.line(x - 5, y - 5, x + 5, y + 5, stroke=INK, stroke_width=1.2)
+        s.line(x - 5, y + 5, x + 5, y - 5, stroke=INK, stroke_width=1.2)
+    for gx, gy in _U:                                        # 上の階だけ
+        x, y = X(gx), Y(gy)
+        s.rect(x - 5, y - 5, 10, 10, fill='#fff', stroke='none')
+        for d_ in (-2.2, 2.2):
+            s.line(x + d_, y - 5, x + d_, y + 5, stroke=INK, stroke_width=1.4)
+    for gx, gy in _T:                                        # 通し柱
+        x, y = X(gx), Y(gy)
+        s.rect(x - 5, y - 5, 10, 10, fill='#fff', stroke=INK, stroke_width=1.0)
+        s.circle(x, y, 9, fill='none', stroke=INK, stroke_width=1.2)
 
     for k, a, b, txt in dims:                    # 断面寸法は部材のあとに
         if k == 'H':

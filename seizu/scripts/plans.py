@@ -430,6 +430,81 @@ def _wall_segments(floors):
     return {k: _union(v) for k, v in segs.items()}
 
 
+def columns_of(n, floors=None, nx=None, ny=None, xlines=None, ylines=None):
+    """その階に立つ柱を返す。 (通し柱, 管柱)
+
+    ・通り芯の交点は、その階に壁がなくても必ず立てる（梁を受けるため。
+      3階とも同じ位置なので、ここが直下率のもとになる）
+    ・そのほかの管柱は、<b>その階の壁</b>の中だけ。窓・建具の両わきと、
+      柱と柱が2マス（1,820）をこえるところ。
+    """
+    floors = FLOORS if floors is None else floors
+    nx = NX if nx is None else nx
+    ny = NY if ny is None else ny
+    xlines = XLINES if xlines is None else xlines
+    ylines = YLINES if ylines is None else ylines
+    d = floors[n]
+    walls = _wall_segments({0: d})
+    edges = {}
+    for f, p, l, k, _lab in fit_all(floors, nx, ny, xlines, ylines)[n]:
+        key = (('H', 0 if f == 'S' else ny) if f in ('S', 'N')
+               else ('V', 0 if f == 'W' else nx))
+        edges.setdefault(key, set()).update([round(p, 3), round(p + l, 3)])
+    dsp, ded = {}, {}
+    for ori, wall, pos, ln in fit_doors(d, floors):
+        dsp.setdefault((ori, wall), []).append((pos, pos + ln))
+        ded.setdefault((ori, wall), set()).update([pos, pos + ln])
+    dsp = {k: _union(v) for k, v in dsp.items()}
+    xs = [g for g, _ in xlines]
+    ys = [g for g, _ in ylines]
+    pts = {(x, y) for x in xs for y in ys}          # 通り芯の交点は必ず
+    for (ori, ln), segs in walls.items():
+        def on_wall(m):
+            return any(a - 1e-9 <= m <= b + 1e-9 for a, b in segs)
+        holes = dsp.get((ori, ln), [])
+
+        def in_hole(m):
+            return any(q0 + 1e-6 < m < q1 - 1e-6 for q0, q1 in holes)
+        marks = set()
+        for a, b in segs:
+            marks.update([a, b])
+        marks.update(m for m in edges.get((ori, ln), ()) if on_wall(m))
+        marks.update(m for m in ded.get((ori, ln), ()) if on_wall(m))
+        marks.update(g for g in (ys if ori == 'V' else xs) if on_wall(g))
+        for (o2, l2), s2 in walls.items():
+            if o2 != ori and on_wall(l2) and \
+                    any(a - 1e-9 <= ln <= b + 1e-9 for a, b in s2):
+                marks.add(l2)
+        marks = {m for m in marks if not in_hole(m)}
+        v = sorted(marks)
+        for a, b in zip(v[:-1], v[1:]):
+            if not any(q0 - 1e-9 <= a and b <= q1 + 1e-9 for q0, q1 in segs):
+                continue
+            m = a + 2.0
+            while m < b - 1e-9:
+                if not in_hole(m):
+                    marks.add(round(m, 3))
+                    m += 2.0
+                else:
+                    m += STEP
+        for m in marks:
+            if on_wall(m):
+                pts.add((ln, m) if ori == 'V' else (m, ln))
+    corner = {(0, 0), (nx, 0), (0, ny), (nx, ny)}
+    return (sorted(p for p in pts if p in corner),
+            sorted(p for p in pts if p not in corner))
+
+
+def columns_pair(lower, upper, floors=None, **kw):
+    """伏図に描く柱を4つに仕分ける。 (通し柱, 上下とも, 下だけ, 上だけ)"""
+    tl, kl = columns_of(lower, floors, **kw)
+    if upper is None:
+        return tl, [], kl, []
+    tu, ku = columns_of(upper, floors, **kw)
+    lo, up = set(kl), set(ku)
+    return tl, sorted(lo & up), sorted(lo - up), sorted(up - lo)
+
+
 def columns(nx=None, ny=None, xlines=None, ylines=None, floors=None):
     """柱を立てる位置を決める。
 
