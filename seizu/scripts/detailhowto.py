@@ -160,6 +160,7 @@ def draw(step):
     if step >= 6:
         rect(s, -75, -60, Z_DODAI, Z_2FL, BOARD, a(6), aw(6))     # 石膏15
         rect(s, -60, 60, Z_DODAI, Z_BEAM_B, INS, a(6), aw(6))     # 柱＋GW
+        rect(s, -64, -60, Z_DODAI, Z_BEAM_B, '#cfe0ef', a(6), aw(6))  # 防湿
         rect(s, 60, 69, Z_PACK, Z_2FL, PLY, a(6), aw(6))          # 合板9
         rect(s, 69, 87, Z_PACK, Z_2FL, '#f7f7f7', a(6), aw(6))    # 胴縁18
         rect(s, 87, 103, Z_PACK, Z_2FL, SIDE, a(6), aw(6))        # サイディング
@@ -170,6 +171,7 @@ def draw(step):
             for i, (lab, z) in enumerate((
                     ('① 強化石膏ボード t=15', 1700),
                     ('② 柱120＋グラスウール16K t=100', 1560),
+                    ('②-2 防湿気密フィルム t=0.2（室内がわ）', 1490),
                     ('③ 構造用合板 t=9', 1420),
                     ('④ 透湿防水シート', 1280),
                     ('⑤ 通気胴縁 t=18（通気層）', 1140),
@@ -180,6 +182,9 @@ def draw(step):
     # 7 …… 2階の床と1階の天井
     if step >= 7:
         rect(s, -60, 60, Z_BEAM_B, Z_BEAM_T, WOOD, a(7), aw(7))   # 胴差
+        s.line(X(-46), Y(Z_BEAM_T + 70), X(-46), Y(Z_BEAM_B - 70),
+               stroke=a(7), stroke_width=aw(7) + 0.3)            # 羽子板ボルト
+        s.circle(X(-46), Y(Z_BEAM_B - 70), 2.2, fill=a(7), stroke='none')
         rect(s, XL + 40, 60, Z_BEAM_T, Z_PLY2, PLY, a(7), aw(7))
         rect(s, XL + 40, 60, Z_PLY2, Z_2FL, '#e8d7b8', a(7), aw(7))
         s.line(X(XL + 40), Y(Z_CEIL), X(-75), Y(Z_CEIL), stroke=a(7),
@@ -187,6 +192,7 @@ def draw(step):
         if step == 7:
             note(s, -560, Z_BEAM_T + 90, '胴差 120×300')
             note(s, -560, Z_BEAM_T + 40, '＋ 合板t24 ＋ 仕上t15 → 2FL')
+            note(s, -560, Z_BEAM_B - 130, '羽子板ボルト φ13（柱と梁をつなぐ金物）')
             note(s, -560, Z_CEIL - 70, '天井 GL+3,250（天井高2,700＝13目盛半）')
 
     # 8 …… 開口部
@@ -391,11 +397,15 @@ def kansei():
     rect(s, XL + 40, 60, Z_PLY1, Z_1FL, '#e8d7b8')
     rect(s, -75, -60, Z_DODAI, Z_2FL, BOARD)
     rect(s, -60, 60, Z_DODAI, Z_BEAM_B, INS)
+    rect(s, -64, -60, Z_DODAI, Z_BEAM_B, '#cfe0ef')
     rect(s, 60, 69, Z_PACK, Z_2FL, PLY)
     rect(s, 69, 87, Z_PACK, Z_2FL, '#f7f7f7')
     rect(s, 87, 103, Z_PACK, Z_2FL, SIDE)
     rect(s, 60, 118, Z_KISO, Z_PACK, '#d3d7da')
     rect(s, -60, 60, Z_BEAM_B, Z_BEAM_T, WOOD)
+    s.line(X(-46), Y(Z_BEAM_T + 70), X(-46), Y(Z_BEAM_B - 70), stroke=INK,
+           stroke_width=1.1)
+    s.circle(X(-46), Y(Z_BEAM_B - 70), 2.2, fill=INK, stroke='none')
     rect(s, XL + 40, 60, Z_BEAM_T, Z_PLY2, PLY)
     rect(s, XL + 40, 60, Z_PLY2, Z_2FL, '#e8d7b8')
     s.line(X(XL + 40), Y(Z_CEIL), X(-75), Y(Z_CEIL), stroke=INK,
@@ -413,16 +423,18 @@ def kansei():
         (78, Z_2FL - 340, '通気胴縁 18×45 ＠455（通気層）'),
         (64, Z_2FL - 560, '透湿防水シート／構造用合板 t=9'),
         (0, Z_BEAM_T - 150, '胴差 120×300'),
+        (-46, Z_BEAM_B - 70, '羽子板ボルト φ13（柱と横架材の接合金物）'),
         (0, Z_PLY2, '構造用合板 t=24（根太レス）＋ フローリング t=15'),
         (-70, Z_CEIL, '天井 石膏ボード t=9.5（天井仕上げ）'),
         (0, 2300, '柱 120×120'),
         (0, 2050, 'グラスウール16K t=100（断熱）'),
+        (-62, 1930, '防湿気密フィルム t=0.2（断熱材の室内がわ）'),
         (-68, 1800, '強化石膏ボード t=15（内壁仕上げ）'),
         (60, WIN_T - 30, 'まぐさ／アルミサッシ＋複層ガラス'),
         (60, WIN_B + 30, '窓台'),
         (0, Z_1FL, 'フローリング t=15（床仕上げ）＋ 構造用合板 t=24'),
         (-200, Z_INS1 + 20, '床断熱 押出法ポリスチレンフォーム t=50'),
-        (0, Z_DODAI - 60, '土台 120×120'),
+        (0, Z_DODAI - 60, '土台 120×120（防腐・防蟻処理）'),
         (100, Z_KISO + 10, '水切り（外壁の下端・雨を外へ落とす）'),
         (0, Z_PACK - 10, '基礎パッキン t=20'),
         (-20, Z_KISO - 220, 'アンカーボルト M12 ＠2,730以下（埋込み250以上）'),
