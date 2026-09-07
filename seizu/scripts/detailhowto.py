@@ -32,6 +32,7 @@ GLASS = '#dfeaf0'
 
 # 高さ（mm）。detail.py と同じ
 Z_BOT, Z_SLAB, Z_KISO = -300.0, -150.0, 371.0
+Z_INS1 = 461.0        # 1階の床断熱の下端（土台上端511から50下）
 Z_PACK, Z_DODAI = 391.0, 511.0
 Z_PLY1, Z_1FL = 535.0, 550.0
 Z_CEIL = 3250.0
@@ -125,7 +126,7 @@ def draw(step):
 
     # 3 …… 基礎
     if step >= 3:
-        rect(s, -240, 240, Z_BOT, Z_SLAB, CONC, a(3), aw(3))     # 底盤
+        rect(s, XL + 40, 240, Z_BOT, Z_SLAB, CONC, a(3), aw(3))  # 底盤
         rect(s, -75, 75, Z_SLAB, Z_KISO, CONC, a(3), aw(3))      # 立上り
         if step == 3:
             note(s, 260, Z_BOT + 40, 'べた基礎 底盤 t150')
@@ -147,20 +148,24 @@ def draw(step):
 
     # 5 …… 1階の床
     if step >= 5:
+        rect(s, XL + 40, -60, Z_INS1, Z_DODAI, INS, a(5), aw(5))  # 床断熱
         rect(s, XL + 40, 60, Z_DODAI, Z_PLY1, PLY, a(5), aw(5))   # 合板t24
         rect(s, XL + 40, 60, Z_PLY1, Z_1FL, '#e8d7b8', a(5), aw(5))
         if step == 5:
             note(s, -560, Z_1FL + 70, '構造用合板 t=24 ＋ 仕上 t=15')
             note(s, -560, Z_1FL + 20, '→ ここで 1FL＝GL+550 になる')
+            note(s, -560, Z_INS1 - 40, '床断熱 t=50（1階の床だけに入れる）')
 
     # 6 …… 外壁の6層
     if step >= 6:
         rect(s, -75, -60, Z_DODAI, Z_2FL, BOARD, a(6), aw(6))     # 石膏15
         rect(s, -60, 60, Z_DODAI, Z_BEAM_B, INS, a(6), aw(6))     # 柱＋GW
-        rect(s, 60, 69, Z_DODAI, Z_2FL, PLY, a(6), aw(6))         # 合板9
-        rect(s, 69, 87, Z_DODAI, Z_2FL, '#f7f7f7', a(6), aw(6))   # 胴縁18
-        rect(s, 87, 103, Z_DODAI, Z_2FL, SIDE, a(6), aw(6))       # サイディング
+        rect(s, 60, 69, Z_PACK, Z_2FL, PLY, a(6), aw(6))          # 合板9
+        rect(s, 69, 87, Z_PACK, Z_2FL, '#f7f7f7', a(6), aw(6))    # 胴縁18
+        rect(s, 87, 103, Z_PACK, Z_2FL, SIDE, a(6), aw(6))        # サイディング
+        rect(s, 60, 118, Z_KISO, Z_PACK, '#d3d7da', a(6), aw(6))  # 水切り
         if step == 6:
+            note(s, 130, Z_KISO - 30, '水切り（外壁の下端）', size=9.5)
             note(s, 118, 1900, '外へ →')
             for i, (lab, z) in enumerate((
                     ('① 強化石膏ボード t=15', 1700),
@@ -375,19 +380,21 @@ def kansei():
     grid(s)
 
     # ---- 図（ぜんぶ黒）
-    rect(s, -240, 240, Z_BOT, Z_SLAB, CONC)
+    rect(s, XL + 40, 240, Z_BOT, Z_SLAB, CONC)
     rect(s, -75, 75, Z_SLAB, Z_KISO, CONC)
     rect(s, -60, 60, Z_KISO, Z_PACK, '#e2e2e2')
     rect(s, -60, 60, Z_PACK, Z_DODAI, WOOD)
     s.line(X(-20), Y(Z_DODAI + 30), X(-20), Y(Z_KISO - 250), stroke=INK,
            stroke_width=1.6)
+    rect(s, XL + 40, -60, Z_INS1, Z_DODAI, INS)
     rect(s, XL + 40, 60, Z_DODAI, Z_PLY1, PLY)
     rect(s, XL + 40, 60, Z_PLY1, Z_1FL, '#e8d7b8')
     rect(s, -75, -60, Z_DODAI, Z_2FL, BOARD)
     rect(s, -60, 60, Z_DODAI, Z_BEAM_B, INS)
-    rect(s, 60, 69, Z_DODAI, Z_2FL, PLY)
-    rect(s, 69, 87, Z_DODAI, Z_2FL, '#f7f7f7')
-    rect(s, 87, 103, Z_DODAI, Z_2FL, SIDE)
+    rect(s, 60, 69, Z_PACK, Z_2FL, PLY)
+    rect(s, 69, 87, Z_PACK, Z_2FL, '#f7f7f7')
+    rect(s, 87, 103, Z_PACK, Z_2FL, SIDE)
+    rect(s, 60, 118, Z_KISO, Z_PACK, '#d3d7da')
     rect(s, -60, 60, Z_BEAM_B, Z_BEAM_T, WOOD)
     rect(s, XL + 40, 60, Z_BEAM_T, Z_PLY2, PLY)
     rect(s, XL + 40, 60, Z_PLY2, Z_2FL, '#e8d7b8')
@@ -414,7 +421,9 @@ def kansei():
         (60, WIN_T - 30, 'まぐさ／アルミサッシ＋複層ガラス'),
         (60, WIN_B + 30, '窓台'),
         (0, Z_1FL, 'フローリング t=15（床仕上げ）＋ 構造用合板 t=24'),
+        (-200, Z_INS1 + 20, '床断熱 押出法ポリスチレンフォーム t=50'),
         (0, Z_DODAI - 60, '土台 120×120'),
+        (100, Z_KISO + 10, '水切り（外壁の下端・雨を外へ落とす）'),
         (0, Z_PACK - 10, '基礎パッキン t=20'),
         (-20, Z_KISO - 220, 'アンカーボルト M12 ＠2,730以下（埋込み250以上）'),
         (0, 120, 'べた基礎 立上り t=150（地上371）'),
