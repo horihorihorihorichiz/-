@@ -92,6 +92,21 @@ def check_columns():
     for x, y in pts:
         ck(abs(x * 2 - round(x * 2)) < 1e-6 and abs(y * 2 - round(y * 2)) < 1e-6,
            '柱が半マスの位置にない座標 (%s,%s)' % (x, y))
+    # 室内の建具：幅は455の倍数で1,820以下、その開口の中に柱を立てない
+    for n, d in plans.FLOORS.items():
+        fd = plans.fit_doors(d, plans.FLOORS)
+        ck(len(fd) == len(d.get('doors', [])),
+           '%d階 置けなくなった建具がある' % n)
+        for ori, wall, pos, ln in fd:
+            mm = round(ln * 910)
+            ck(mm % 455 == 0 and 910 <= mm <= 1820,
+               '%d階 建具の幅 %dmm がおかしい' % (n, mm))
+            on = [(y if ori == 'V' else x) for (x, y) in pts
+                  if (x == wall if ori == 'V' else y == wall)]
+            for m in on:
+                ck(not (pos + 1e-6 < m < pos + ln - 1e-6),
+                   '%d階 建具（%s通り%s の %.1f〜%.1f）の中に柱がある' %
+                   (n, ori, wall, pos, pos + ln))
     return len(pts), len(tooshi), len(kuda)
 
 

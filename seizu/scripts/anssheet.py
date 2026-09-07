@@ -40,7 +40,7 @@ def _openings(d, nx, ny):
         key = ('H', 0 if face == 'S' else ny) if face in ('S', 'N') \
             else ('V', 0 if face == 'W' else nx)
         op.setdefault(key, []).append((pos, pos + ln, kind, face))
-    for ori, wall, pos, ln in d.get('doors', []):
+    for ori, wall, pos, ln in plans.fit_doors(d):
         op.setdefault((ori, wall), []).append((pos, pos + ln, 'door', None))
     return op
 
@@ -775,6 +775,9 @@ if __name__ == '__main__':
             dd = dict(answers.PLANS[k][i])
             dd['openings'] = FITS[k][i + 1]
             dd['fitted'] = True
+            dd['doors'] = plans.fit_doors(
+                dd, {j + 1: e for j, e in enumerate(answers.PLANS[k])})
+            dd['fitted_doors'] = True
             dd['tooshi'], dd['kuda'] = COLS[k]
             dd['floor_label'] = 'GL＋550' if i == 0 else ''
             if i == 0:

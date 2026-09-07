@@ -337,6 +337,87 @@ def fit_all(floors, nx=None, ny=None, xlines=None, ylines=None):
     return out
 
 
+DOOR_MIN, DOOR_MAX = 1.0, 2.0      # 室内の建具の幅（910〜1,820）
+
+
+def fit_doors(d, floors=None):
+    """室内の建具を、半マス（455）きざみの位置と幅にそろえる。
+
+    こうすると建具の両わきが柱の位置と合う。壁からはみ出す場合は
+    壁の中へ寄せ、ほかの建具と重なる場合は寄せ切れないものを捨てる。
+    """
+    if d.get('fitted_doors'):
+        return list(d.get('doors', []))
+    floors = {1: d} if floors is None else floors
+    walls = _wall_segments({0: d})
+    allw = _wall_segments(floors)
+    out = []
+    used = {}
+    for ori, wall, pos, ln in d.get('doors', []):
+        segs = walls.get((ori, wall), [])
+        w = min(DOOR_MAX, max(DOOR_MIN, round(ln / STEP) * STEP))
+        p = round(pos / STEP) * STEP
+        # 直交する壁がぶつかるところで、壁を区切る（建具はその間に入る）
+        cuts = set()
+        for (o2, l2), s2 in allw.items():
+            if o2 == ori:
+                continue
+            if any(a - 1e-9 <= l2 <= b + 1e-9 for a, b in segs) and \
+                    any(a - 1e-9 <= wall <= b + 1e-9 for a, b in s2):
+                cuts.add(l2)
+        run = None
+        mid = pos + ln / 2.0
+        for a, b in segs:
+            if not (a - 1e-6 <= mid <= b + 1e-6):
+                continue
+            lo, hi = a, b
+            for cx in sorted(cuts):
+                if a - 1e-9 <= cx <= b + 1e-9:
+                    if cx <= mid + 1e-9:
+                        lo = max(lo, cx)
+                    else:
+                        hi = min(hi, cx)
+            run = (lo, hi)
+            break
+        if run is None:
+            out.append((ori, wall, pos, ln))
+            continue
+        a, b = run
+        if b - a < w:
+            w = max(DOOR_MIN, int((b - a) / STEP) * STEP)
+        p = min(max(p, a), b - w)
+        p = round(p / STEP) * STEP
+        p = min(max(p, a), b - w)
+        ok = True
+        for q0, q1 in used.get((ori, wall), []):
+            if p < q1 - 1e-6 and q0 < p + w - 1e-6:
+                ok = False
+        if not ok:
+            continue
+        used.setdefault((ori, wall), []).append((p, p + w))
+        out.append((ori, wall, round(p, 3), round(w, 3)))
+    return out
+
+
+def door_spans(floors):
+    """全階の室内建具の開口（この中に柱は立てられない）を集める。"""
+    sp = {}
+    for d in floors.values():
+        for ori, wall, pos, ln in fit_doors(d, floors):
+            sp.setdefault((ori, wall), []).append((pos, pos + ln))
+    return {k: _union(v) for k, v in sp.items()}
+
+
+def door_edges(floors, nx=None, ny=None, xlines=None, ylines=None):
+    """全階の室内建具の両はしを、向きと通りごとに集める。"""
+    ed = {}
+    for d in floors.values():
+        for ori, wall, pos, ln in fit_doors(d, floors):
+            ed.setdefault((ori, wall), set()).update(
+                [round(pos, 3), round(pos + ln, 3)])
+    return ed
+
+
 def _wall_segments(floors):
     """全階の壁を、向きと通りごとに集めてつなぐ（上下でそろえた柱を出すため）。"""
     segs = {}
@@ -370,6 +451,8 @@ def columns(nx=None, ny=None, xlines=None, ylines=None, floors=None):
             key = (('H', 0 if f == 'S' else ny) if f in ('S', 'N')
                    else ('V', 0 if f == 'W' else nx))
             edges.setdefault(key, set()).update([round(p, 3), round(p + l, 3)])
+    dedge = door_edges(floors, nx, ny, xlines, ylines)
+    dspan = door_spans(floors)
     xs = [g for g, _ in xlines]
     ys = [g for g, _ in ylines]
     pts = set()
@@ -380,19 +463,28 @@ def columns(nx=None, ny=None, xlines=None, ylines=None, floors=None):
         for a, b in segs:                       # 壁のはし
             marks.update([a, b])
         marks.update(m for m in edges.get((ori, ln), ()) if on_wall(m))
+        marks.update(m for m in dedge.get((ori, ln), ()) if on_wall(m))
         marks.update(g for g in (ys if ori == 'V' else xs) if on_wall(g))
         for (o2, l2), s2 in walls.items():      # 直交する壁がぶつかるところ
             if o2 != ori and on_wall(l2) and \
                     any(a - 1e-9 <= ln <= b + 1e-9 for a, b in s2):
                 marks.add(l2)
+        holes = dspan.get((ori, ln), [])
+
+        def in_hole(m):                         # 建具の開口の中か
+            return any(q0 + 1e-6 < m < q1 - 1e-6 for q0, q1 in holes)
+        marks = {m for m in marks if not in_hole(m)}
         v = sorted(marks)
         for a, b in zip(v[:-1], v[1:]):         # 2マスをこえたら足す
             if not any(q0 - 1e-9 <= a and b <= q1 + 1e-9 for q0, q1 in segs):
                 continue
             m = a + 2.0
             while m < b - 1e-9:
-                marks.add(round(m, 3))
-                m += 2.0
+                if not in_hole(m):
+                    marks.add(round(m, 3))
+                    m += 2.0
+                else:
+                    m += STEP                   # 建具をまたぐまでずらす
         for m in marks:
             if on_wall(m):
                 pts.add((ln, m) if ori == 'V' else (m, ln))
@@ -423,7 +515,7 @@ def _bearing_marks(d, nx, ny, xlines, ylines):
         else:
             op['V'].setdefault(0 if face == 'W' else nx, []).append(
                 (pos, pos + ln))
-    for ori, wall, pos, ln in d.get('doors', []):
+    for ori, wall, pos, ln in fit_doors(d):
         op[ori].setdefault(wall, []).append((pos, pos + ln))
 
     marks = []
@@ -548,7 +640,7 @@ def draw_floor(n, d=None):
                    stroke_width=2.0)
 
     # ---- 室内建具 ----
-    for ori, wall, pos, ln in d['doors']:
+    for ori, wall, pos, ln in fit_doors(d, FLOORS):
         r = min(ln * G * 0.72, G * 0.82)
         slide = ln >= 1.5
         if ori == 'V':
