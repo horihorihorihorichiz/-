@@ -1059,30 +1059,18 @@ def _ansdraw(s, ox, oy, g, kind):
     dims = []
 
     def mem(ori, ln, a, b, dim):
+        # 端は相手の材の面で止める。端の線・面取り線は交点で×や‖に見えて
+        # 管柱の記号と紛らわしいので描かない
         if ori == 'H':
             y = Y(ln)
             for d in (-HW, HW):
-                s.line(X(a) + CH, y + d, X(b) - CH, y + d, stroke=INK,
-                       stroke_width=1.1)
-            for xx, sg in ((X(a), 1), (X(b), -1)):
-                s.line(xx, y - HW + CH, xx, y + HW - CH, stroke=INK,
-                       stroke_width=1.1)
-                s.line(xx, y - HW + CH, xx + sg * CH, y - HW, stroke=INK,
-                       stroke_width=1.1)
-                s.line(xx, y + HW - CH, xx + sg * CH, y + HW, stroke=INK,
+                s.line(X(a) + HW, y + d, X(b) - HW, y + d, stroke=INK,
                        stroke_width=1.1)
             dims.append(('H', (X(a) + X(b)) / 2.0, y - HW - 4, dim))
         else:
             x = X(ln)
             for d in (-HW, HW):
-                s.line(x + d, Y(a) - CH, x + d, Y(b) + CH, stroke=INK,
-                       stroke_width=1.1)
-            for yy, sg in ((Y(a), -1), (Y(b), 1)):
-                s.line(x - HW + CH, yy, x + HW - CH, yy, stroke=INK,
-                       stroke_width=1.1)
-                s.line(x - HW + CH, yy, x - HW, yy + sg * CH, stroke=INK,
-                       stroke_width=1.1)
-                s.line(x + HW - CH, yy, x + HW, yy + sg * CH, stroke=INK,
+                s.line(x + d, Y(a) - HW, x + d, Y(b) + HW, stroke=INK,
                        stroke_width=1.1)
             dims.append(('V', x + HW + 11, (Y(a) + Y(b)) / 2.0, dim))
 
