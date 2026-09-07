@@ -1038,6 +1038,187 @@ def takasa():
     return s
 
 
+# ==================================================== 軒先まわり（令和元年型）
+Z_3FL = 6550.0
+Z_CEIL3 = 9050.0            # 3階の天井仕上面（3FL＋2,500）
+Z_NOKI = 9350.0             # 軒桁の上端＝軒高
+Z_GETA_B = Z_NOKI - 240.0   # 軒桁の下端 9,110
+SLOPE = 0.4                 # 4寸勾配
+NOKI_DE = 600.0             # 軒の出（柱心から垂木の先まで）
+COS = 1.0 / (1.0 + SLOPE ** 2) ** 0.5
+TV = 105.0 / COS            # 垂木のたて方向の厚み 113
+TN = 12.0 / COS             # 野地板のたて方向の厚み 13
+
+
+def zb(x):
+    """垂木の下端の高さ。柱心で軒桁の上端に乗り、外へ行くほど下がる。"""
+    return Z_NOKI - SLOPE * x
+
+
+def nokisaki():
+    """部分詳細図が「軒先まわり」で出たときの提出する形。
+
+    範囲は令和元年（木造2階建て）の問題文のとおり
+      軒桁上端から上へ600以上／天井仕上面から下へ500以上／柱心から1,000以上。
+    高さは型（3階建て）の値。軒高9,350、3階天井 3FL＋2,500＝GL＋9,050。
+    """
+    global SC, OX, OY, XL, XR, YB, YT
+    saved = (SC, OX, OY, XL, XR, YB, YT)
+    SC, OX, OY = 0.26, 112.0, 74.0
+    XL, XR, YB, YT = -1050.0, 760.0, 8400.0, 10000.0
+    W2, H2 = 980, int(OY + (YT - YB) * SC + 210)
+    s = Svg(W2, H2)
+    s.rect(0, 0, W2, H2, fill='#fff', stroke='none')
+    s.rect(0, 0, W2, 50, fill='#fbfaf7', stroke='none')
+    s.text(20, 24, '提出する形　部分詳細図（断面）が「軒先まわり」だったとき　縮尺1／20',
+           size=15, anchor='start', weight='700')
+    s.text(20, 42, '令和元年の問題文の範囲で描いた。高さは型の値（軒高9,350・3階天井 GL+9,050）。',
+           size=11, anchor='start', fill='#666')
+    # 方眼（目盛の番号は、この図の下端から数える）
+    z = YB
+    while z <= YT + 1:
+        n = int(round((z - YB) / GRID))
+        five = (n % 5 == 0)
+        s.line(X(XL), Y(z), X(XR), Y(z),
+               stroke='#b9c6ba' if five else '#dde3dc',
+               stroke_width=0.9 if five else 0.65)
+        z += GRID
+    x = XL - (XL % GRID)
+    while x <= XR:
+        n = int(round(x / GRID))
+        s.line(X(x), Y(YT), X(x), Y(YB),
+               stroke='#b9c6ba' if n % 5 == 0 else '#dde3dc',
+               stroke_width=0.9 if n % 5 == 0 else 0.65)
+        x += GRID
+
+    # ---- 天井（3階）と天井断熱
+    rect(s, XL + 30, -75, Z_CEIL3 - 9.5, Z_CEIL3, BOARD)
+    rect(s, XL + 30, -60, Z_CEIL3, Z_CEIL3 + 4, '#cfe0ef', stroke='none')
+    rect(s, XL + 30, -60, Z_CEIL3 + 4, Z_CEIL3 + 204, INS)
+    # ---- 壁（内→外）。3階の壁がそのまま上がってくる
+    rect(s, -75, -60, YB, Z_CEIL3, BOARD)
+    rect(s, -60, 60, YB, Z_GETA_B, INS)
+    rect(s, -64, -60, YB, Z_GETA_B, '#cfe0ef')
+    rect(s, 60, 69, YB, Z_GETA_B - 20, PLY)
+    rect(s, 69, 87, YB, Z_GETA_B - 20, '#f7f7f7')
+    rect(s, 87, 103, YB, Z_GETA_B - 20, SIDE)
+    # ---- 小屋梁（奥に見える）・小屋束・母屋
+    rect(s, XL + 30, -60, Z_GETA_B, Z_NOKI, 'none', stroke=INK, sw=0.8)
+    rect(s, -945, -855, Z_NOKI, zb(-910) - 90, 'none', stroke=INK, sw=0.8)
+    rect(s, -955, -865, zb(-910) - 90, zb(-910), WOOD)
+    # ---- 軒桁（切って見える）＋羽子板ボルト
+    rect(s, -60, 60, Z_GETA_B, Z_NOKI, WOOD)
+    s.line(X(-46), Y(Z_NOKI + 70), X(-46), Y(Z_GETA_B - 80), stroke=INK,
+           stroke_width=1.1)
+    s.circle(X(-46), Y(Z_GETA_B - 80), 2.2, fill=INK, stroke='none')
+    # ---- 屋根（垂木・野地板・ルーフィング・仕上げ）。4寸で左上がり
+    x0, x1 = XL + 30, NOKI_DE
+    s.polygon([(X(x0), Y(zb(x0))), (X(x1), Y(zb(x1))),
+               (X(x1), Y(zb(x1) + TV)), (X(x0), Y(zb(x0) + TV))],
+              fill=WOOD, stroke=INK, stroke_width=1.0)
+    s.polygon([(X(x0), Y(zb(x0) + TV)), (X(x1), Y(zb(x1) + TV)),
+               (X(x1), Y(zb(x1) + TV + TN)), (X(x0), Y(zb(x0) + TV + TN))],
+              fill=PLY, stroke=INK, stroke_width=1.0)
+    s.line(X(x0), Y(zb(x0) + TV + TN + 6), X(x1 + 30), Y(zb(x1 + 30) + TV + TN + 6),
+           stroke=INK, stroke_width=2.2)
+    # ---- 鼻隠し・軒樋・軒天井
+    rect(s, x1, x1 + 30, Z_GETA_B - 20, zb(x1) + TV + TN, WOOD)
+    s.path('M %s %s A 24 24 0 0 0 %s %s' % (
+        f_(X(x1 + 34)), f_(Y(zb(x1) + TV)), f_(X(x1 + 34)), f_(Y(Z_GETA_B - 20))),
+        fill='none', stroke=INK, stroke_width=1.0)
+    rect(s, 103, x1, Z_GETA_B - 32, Z_GETA_B - 20, BOARD)
+    rect(s, 250, 400, Z_GETA_B - 32, Z_GETA_B - 20, '#fff', stroke=INK, sw=0.7,
+         stroke_dasharray='2 2')
+    # ---- 柱心・範囲の目安（赤）
+    s.line(X(0), Y(YB), X(0), Y(YT), stroke=ACC, stroke_width=0.6,
+           stroke_dasharray='6 3')
+    for zz, lab in ((Z_NOKI + 600, '軒桁上端＋600 ── ここまで描く'),
+                    (Z_CEIL3 - 500, '天井仕上面−500 ── ここまで描く')):
+        s.line(X(XL), Y(zz), X(XR), Y(zz), stroke=ACC, stroke_width=0.8,
+               stroke_dasharray='5 3')
+        s.text(X(XR) - 4, Y(zz) - 4, lab, size=9.5, anchor='end', fill=ACC,
+               weight='700')
+    s.line(X(-1000), Y(YB), X(-1000), Y(YT), stroke=ACC, stroke_width=0.8,
+           stroke_dasharray='5 3')
+    s.text(X(-1000) + 4, Y(YT) + 12, '柱心から1,000', size=9.5, anchor='start',
+           fill=ACC, weight='700')
+    # ---- 勾配の三角
+    tx, tz = -450.0, 9800.0
+    s.polygon([(X(tx), Y(tz)), (X(tx + 250), Y(tz)), (X(tx), Y(tz + 100))],
+              fill='none', stroke=INK, stroke_width=0.9)
+    s.text(X(tx + 125), Y(tz) + 11, '10', size=9.5)
+    s.text(X(tx) - 4, Y(tz + 50) + 3.5, '4', size=9.5, anchor='end')
+    s.text(X(tx + 125), Y(tz + 100) - 6, '4寸勾配', size=9.5, weight='700')
+    # ---- 寸法
+    s.dim_h(X(0), X(NOKI_DE), Y(Z_NOKI + 220), '軒の出 600', size=10)
+    s.dim_v(Y(Z_NOKI + 600), Y(Z_NOKI), X(XL) - 46, '600以上', size=9.5,
+            anchor='end', dx=-5, color=ACC)
+    s.dim_v(Y(Z_CEIL3), Y(Z_CEIL3 - 500), X(XL) - 46, '500以上', size=9.5,
+            anchor='end', dx=-5, color=ACC)
+    for zz, lab in ((Z_NOKI, '軒高 GL+9,350'), (Z_CEIL3, '3階天井 GL+9,050')):
+        s.text(X(XL) - 6, Y(zz) + 3.5, lab, size=10, anchor='end', fill=INK)
+    s.text(X(XL) - 6, Y(Z_CEIL3) + 16, '（3FL+2,500＝天井高）', size=8.5,
+           anchor='end', fill='#666')
+
+    # ---- 引き出し線＋文字
+    LX2 = 660.0
+    LABELS = (
+        (-300, zb(-300) + TV + TN + 6, '屋根仕上げ ガルバリウム鋼板 t=0.4 たて葺き'),
+        (-150, zb(-150) + TV + TN + 1, 'アスファルトルーフィング 940'),
+        (0, zb(0) + TV + TN / 2, '野地板 構造用合板 t=12'),
+        (150, zb(150) + TV / 2, '垂木 45×105 ＠455'),
+        (615, Z_GETA_B + 60, '鼻隠し 30×150'),
+        (x1 + 58, Z_GETA_B + 40, '軒樋'),
+        (500, Z_GETA_B - 26, '軒天井 ケイ酸カルシウム板 t=12（軒裏・不燃）'),
+        (325, Z_GETA_B - 26, '軒天換気口（小屋裏の換気・天井断熱の場合）'),
+        (30, zb(30) - 10, 'ひねり金物（垂木と軒桁）'),
+        (0, Z_NOKI - 120, '軒桁 120×240'),
+        (-46, Z_GETA_B - 80, '羽子板ボルト φ13（軒桁と柱）'),
+        (-500, Z_NOKI - 120, '小屋梁 120×240（奥に見える）'),
+        (-910, zb(-910) - 45, '母屋 90×90 ＠910'),
+        (-900, Z_NOKI + 120, '小屋束 90×90'),
+        (-300, Z_CEIL3 + 110, '天井断熱 グラスウール16K t=200（天井の上）'),
+        (-400, Z_CEIL3 + 2, '防湿気密フィルム t=0.2（断熱材の室内がわ）'),
+        (-700, Z_CEIL3 - 5, '3階天井 石膏ボード t=9.5（天井仕上げ）'),
+        (103, 8800, '窯業系サイディング t=16（外壁仕上げ・乾式）'),
+        (78, 8700, '通気胴縁 18×45 ＠455（通気層は軒天へ抜く）'),
+        (64, 8600, '透湿防水シート／構造用合板 t=9'),
+        (0, 8900, '柱 120×120（3階の管柱）'),
+        (0, 8760, 'グラスウール16K t=100（断熱）'),
+        (-62, 8660, '防湿気密フィルム t=0.2'),
+        (-68, 8560, '強化石膏ボード t=15（内壁仕上げ）'),
+    )
+    src = [(X(a), Y(b)) for a, b, _ in LABELS]
+    order = sorted(range(len(LABELS)), key=lambda i: src[i][1])
+    prev, rows = -1e9, {}
+    for i in order:
+        rows[i] = max(src[i][1], prev + 16.5)
+        prev = rows[i]
+    for i, (a, b, txt) in enumerate(LABELS):
+        sx, sy = src[i]
+        ty = rows[i]
+        s.line(sx, sy, LX2 - 46, sy, stroke='#666', stroke_width=0.7)
+        s.line(LX2 - 46, sy, LX2 - 12, ty, stroke='#666', stroke_width=0.7)
+        s.circle(sx, sy, 1.8, fill=INK)
+        s.text(LX2, ty + 3.5, txt, size=10, anchor='start', fill=INK)
+
+    s.text(20, H2 - 52,
+           '★ 令和元年の要求：屋根の勾配／主要部の寸法／軒桁・小屋梁・母屋・垂木の名称と断面寸法／'
+           '羽子板ボルト等の金物／', size=10.5, anchor='start', fill='#555')
+    s.text(20, H2 - 34,
+           '　 屋根（天井）と外壁の断熱・防湿／屋根・外壁・内壁・天井の仕上材料名／外壁は乾式工法。',
+           size=10.5, anchor='start', fill='#555')
+    s.text(20, H2 - 16,
+           '★ 基礎・土台・1階の床は出てこない。かわりに屋根の層（垂木→野地板→ルーフィング→仕上げ）を'
+           '4つ順に書く。', size=10.5, anchor='start', fill=ACC, weight='700')
+    SC, OX, OY, XL, XR, YB, YT = saved
+    return s
+
+
+def f_(v):
+    return ('%.2f' % v).rstrip('0').rstrip('.')
+
+
 if __name__ == '__main__':
     for i in range(1, 10):
         draw(i).save(os.path.join(OUT, 'dh%d.svg' % i))
@@ -1047,4 +1228,5 @@ if __name__ == '__main__':
     gw().save(os.path.join(OUT, 'dh_gw.svg'))
     kiso().save(os.path.join(OUT, 'dh_kiso.svg'))
     takasa().save(os.path.join(OUT, 'dh_takasa.svg'))
+    nokisaki().save(os.path.join(OUT, 'dh_nokisaki.svg'))
     print('wrote dh1〜dh9.svg ＋ dh_real.svg')
