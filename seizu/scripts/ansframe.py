@@ -64,7 +64,7 @@ def draw(kind='floor'):
         """部材を2本線で描き、断面寸法を書きこむ。
 
         端は、ぶつかる相手の材の面で止める（交点に短い線が残ると
-        管柱の記号 ×・‖ と紛らわしいので、端の線・面取り線は描かない）。
+        管柱の記号 ×・□ と紛らわしいので、端の線・面取り線は描かない）。
         """
         if ori == 'H':
             y = py(ln)
@@ -141,37 +141,37 @@ def draw(kind='floor'):
         s.line(px(x_ + sx * d_), py(y_), px(x_), py(y_ + sy * d_),
                stroke=INK, stroke_width=1.2, stroke_dasharray='8 4')
 
-    # 柱（1階＝×、2階＝たて2本線、重なる＝四角にバツ、通し柱＝○で囲む）
+    # 柱（下の階＝×、上の階＝小さい四角、重なる＝四角にバツ、通し柱＝○で囲む）
     import plans as _plans
     lower, upper = (2, 3) if kind == 'floor' else (3, None)
     TOOSHI, BOTH, LOW, UP = _plans.columns_pair(lower, upper)
-    r = 5.0
+    # 公式の凡例どおり：四角は梁の幅（120）と同じ大きさ、×は少しはみ出す
+    r = hw + 0.3
+    rx = hw * 1.7
 
-    def sq(x, y):
+    def sq(x, y, sw=1.3):
         s.rect(x - r, y - r, 2 * r, 2 * r, fill='#fff', stroke=INK,
-               stroke_width=1.0)
+               stroke_width=sw)
 
     def cross(x, y):
-        s.line(x - r, y - r, x + r, y + r, stroke=INK, stroke_width=1.2)
-        s.line(x - r, y + r, x + r, y - r, stroke=INK, stroke_width=1.2)
+        s.line(x - rx, y - rx, x + rx, y + rx, stroke=INK, stroke_width=1.3)
+        s.line(x - rx, y + rx, x + rx, y - rx, stroke=INK, stroke_width=1.3)
 
     for gx, gy in BOTH:                     # 上下の階が重なる管柱 → 四角にバツ
         x, y = px(gx), py(gy)
-        sq(x, y)
+        sq(x, y, 1.6)
         cross(x, y)
     for gx, gy in LOW:                      # 下の階だけの管柱 → バツ
         x, y = px(gx), py(gy)
         s.rect(x - r, y - r, 2 * r, 2 * r, fill='#fff', stroke='none')
         cross(x, y)
-    for gx, gy in UP:                       # 上の階だけの管柱 → たて2本線
+    for gx, gy in UP:                       # 上の階だけの管柱 → 梁の幅の小さい四角
         x, y = px(gx), py(gy)
-        s.rect(x - r, y - r, 2 * r, 2 * r, fill='#fff', stroke='none')
-        for d_ in (-2.2, 2.2):
-            s.line(x + d_, y - r, x + d_, y + r, stroke=INK, stroke_width=1.4)
+        sq(x, y, 1.6)
     for gx, gy in TOOSHI:                   # 通し柱 → 四角を丸で囲む
         x, y = px(gx), py(gy)
-        sq(x, y)
-        s.circle(x, y, r + 4, fill='none', stroke=INK, stroke_width=1.2)
+        sq(x, y, 1.6)
+        s.circle(x, y, r * 2.4, fill='none', stroke=INK, stroke_width=1.2)
 
     # 断面寸法の文字（部材のあとに描いて隠れないようにする）
     for kind_, a, b, t in texts:

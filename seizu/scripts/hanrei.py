@@ -54,8 +54,8 @@ mid = (X0 + X1) / 2.0
 
 def d_tooshi(y):
     beam(y)
-    s.rect(mid - 6, y - 6, 12, 12, fill='#fff', stroke=INK, stroke_width=1.4)
-    s.circle(mid, y, 12, fill='none', stroke=INK, stroke_width=1.4)
+    s.rect(mid - 4, y - 4, 8, 8, fill='#fff', stroke=INK, stroke_width=1.6)
+    s.circle(mid, y, 10, fill='none', stroke=INK, stroke_width=1.4)
 
 
 def d_kuda1(y):
@@ -66,13 +66,12 @@ def d_kuda1(y):
 
 def d_kuda2(y):
     beam(y)
-    s.line(mid - 3, y - 7, mid - 3, y + 7, stroke=INK, stroke_width=1.6)
-    s.line(mid + 3, y - 7, mid + 3, y + 7, stroke=INK, stroke_width=1.6)
+    s.rect(mid - 4, y - 4, 8, 8, fill='#fff', stroke=INK, stroke_width=1.6)
 
 
 def d_kasanari(y):
     beam(y)
-    s.rect(mid - 7, y - 7, 14, 14, fill='#fff', stroke=INK, stroke_width=1.3)
+    s.rect(mid - 4, y - 4, 8, 8, fill='#fff', stroke=INK, stroke_width=1.6)
     s.line(mid - 7, y - 7, mid + 7, y + 7, stroke=INK, stroke_width=1.4)
     s.line(mid - 7, y + 7, mid + 7, y - 7, stroke=INK, stroke_width=1.4)
 
@@ -109,7 +108,7 @@ def d_moya(y):
 
 row(0, '通し柱', '120×120', d_tooshi, '四角を丸で囲む')
 row(1, '1階の管柱', '120×120', d_kuda1, 'バツ印')
-row(2, '2階の管柱', '120×120', d_kuda2, 'たて2本線')
+row(2, '2階の管柱', '120×120', d_kuda2, '梁の幅の小さい四角（□）')
 row(3, '1階と2階が重なる管柱', '（記入なし）', d_kasanari,
     '四角の中にバツ')
 row(4, '胴差・床梁・桁・小屋梁', '120×120', d_seikaku,
@@ -127,7 +126,7 @@ s.rect(30, yy, W - 60, 108, fill='#fdf3e7', stroke='#c9762f', stroke_width=1.2,
 s.lines_text(48, yy + 22, [
     ('覚え方はこれだけ', 12.5, '700', '#c9762f'),
     ('柱も梁の幅も 120。火打梁・母屋・小屋束が 90。', 13, '700', INK),
-    ('管柱は「1階＝×」「2階＝たて2本線」「重なる＝四角の中にバツ」。',
+    ('管柱は「1階＝×」「2階＝小さい四角」「重なる＝四角の中にバツ」。',
      12, '400', '#333'),
     ('平角材（120×240 など）の寸法は、この欄には書かない。', 12.5, '700',
      RED),

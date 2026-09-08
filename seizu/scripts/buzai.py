@@ -1059,7 +1059,7 @@ def _ansdraw(s, ox, oy, g, kind):
     dims = []
 
     def mem(ori, ln, a, b, dim):
-        # 端は相手の材の面で止める。端の線・面取り線は交点で×や‖に見えて
+        # 端は相手の材の面で止める。端の線・面取り線は交点で×や□に見えて
         # 管柱の記号と紛らわしいので描かない
         if ori == 'H':
             y = Y(ln)
@@ -1121,29 +1121,27 @@ def _ansdraw(s, ox, oy, g, kind):
         s.line(X(x_ + sx), Y(y_), X(x_), Y(y_ + sy), stroke=INK,
                stroke_width=1.2, stroke_dasharray='9 5')
 
-    r = 5.5
     import plans as _plans
     _lo, _up = (2, 3) if kind == 'floor' else (3, None)
     _T, _B, _L, _U = _plans.columns_pair(_lo, _up)
+    r, rx = HW + 0.3, HW * 1.7          # 公式の凡例どおり：四角＝梁の幅、×は少しはみ出す
     for gx, gy in _B:                                        # 上下とも
         x, y = X(gx), Y(gy)
-        s.rect(x - 5, y - 5, 10, 10, fill='#fff', stroke=INK, stroke_width=1.0)
-        s.line(x - 5, y - 5, x + 5, y + 5, stroke=INK, stroke_width=1.2)
-        s.line(x - 5, y + 5, x + 5, y - 5, stroke=INK, stroke_width=1.2)
+        s.rect(x - r, y - r, 2 * r, 2 * r, fill='#fff', stroke=INK, stroke_width=1.6)
+        s.line(x - rx, y - rx, x + rx, y + rx, stroke=INK, stroke_width=1.3)
+        s.line(x - rx, y + rx, x + rx, y - rx, stroke=INK, stroke_width=1.3)
     for gx, gy in _L:                                        # 下の階だけ
         x, y = X(gx), Y(gy)
-        s.rect(x - 5, y - 5, 10, 10, fill='#fff', stroke='none')
-        s.line(x - 5, y - 5, x + 5, y + 5, stroke=INK, stroke_width=1.2)
-        s.line(x - 5, y + 5, x + 5, y - 5, stroke=INK, stroke_width=1.2)
-    for gx, gy in _U:                                        # 上の階だけ
+        s.rect(x - r, y - r, 2 * r, 2 * r, fill='#fff', stroke='none')
+        s.line(x - rx, y - rx, x + rx, y + rx, stroke=INK, stroke_width=1.3)
+        s.line(x - rx, y + rx, x + rx, y - rx, stroke=INK, stroke_width=1.3)
+    for gx, gy in _U:                                        # 上の階だけ → 小さい四角
         x, y = X(gx), Y(gy)
-        s.rect(x - 5, y - 5, 10, 10, fill='#fff', stroke='none')
-        for d_ in (-2.2, 2.2):
-            s.line(x + d_, y - 5, x + d_, y + 5, stroke=INK, stroke_width=1.4)
+        s.rect(x - r, y - r, 2 * r, 2 * r, fill='#fff', stroke=INK, stroke_width=1.6)
     for gx, gy in _T:                                        # 通し柱
         x, y = X(gx), Y(gy)
-        s.rect(x - 5, y - 5, 10, 10, fill='#fff', stroke=INK, stroke_width=1.0)
-        s.circle(x, y, 9, fill='none', stroke=INK, stroke_width=1.2)
+        s.rect(x - r, y - r, 2 * r, 2 * r, fill='#fff', stroke=INK, stroke_width=1.6)
+        s.circle(x, y, r * 2.4, fill='none', stroke=INK, stroke_width=1.2)
 
     for k, a, b, txt in dims:                    # 断面寸法は部材のあとに
         if k == 'H':
