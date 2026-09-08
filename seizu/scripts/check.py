@@ -199,6 +199,44 @@ def check_beam():
            'buzai：スパン%d の梁せいが%dでない' % (span, want))
 
 
+# ---------------------------------------------------------------- 7b 伏図の梁
+def check_framing():
+    """壁の上下に梁があるか、梁の両端が受けられているか、スパンが3,640以下か。"""
+    nx, ny = plans.NX, plans.NY
+    for lo, up, name in ((2, 3, '3階床伏図'), (3, None, '小屋伏図')):
+        mem = plans.framing(lo, up)
+        cov = {}
+        for ori, ln, a, b, size, kd in mem:
+            cov.setdefault((ori, ln), []).append((a, b))
+            ck(b - a <= 4.0 + 1e-9, '%s：スパン%.0fの梁がある（3,640超）' %
+               (name, (b - a) * 910))
+            ck(re.match(r'120×(180|240|300)$', size) is not None,
+               '%s：断面寸法 %s が型にない' % (name, size))
+        cov = {k: plans._union(v) for k, v in cov.items()}
+
+        def covered(ori, ln, a, b):
+            return any(p - 1e-9 <= a and b <= q + 1e-9
+                       for p, q in cov.get((ori, float(ln)), []))
+        fl = {k: plans.FLOORS[k] for k in (lo, up) if k is not None}
+        for (ori, ln), segs in plans._wall_segments(fl).items():
+            for a, b in segs:
+                ck(covered(ori, ln, a, b),
+                   '%s：%s通り %s の壁の上下に梁がない' % (name, ori, ln))
+        for ori, ln, a, b, size, kd in mem:            # 両端は梁か外周で受ける
+            other = 'V' if ori == 'H' else 'H'
+            lim = nx if ori == 'H' else ny
+            for e in (a, b):
+                ok = e in (0.0, float(lim)) or any(
+                    p - 1e-9 <= ln <= q + 1e-9
+                    for p, q in cov.get((other, float(e)), []))
+                ck(ok, '%s：%s通り %s の梁の端 %s に受けがない' %
+                   (name, ori, ln, e))
+        rows = range(2, ny, 2) if up is None else range(1, ny)
+        for y in rows:                                  # 梁のピッチ
+            ck(covered('H', y, 0.0, float(nx)),
+               '%s：%s通りに梁が通っていない' % (name, y))
+
+
 # ---------------------------------------------------------------- 8 本文
 def check_text(ncol):
     pages = html('kaisetsu.src.html', 'onepage.src.html', 'buzai.src.html',
@@ -226,6 +264,7 @@ def main():
     fl1, noki, top = check_height()
     check_stair()
     check_beam()
+    check_framing()
     check_text(0)
     print('柱 1階%d・2階%d・3階%d本（うち3階とも同じ位置 %d本）／'
           '1階%.2f㎡・延べ%.2f㎡／1FL+%d・軒%d・最高%d'

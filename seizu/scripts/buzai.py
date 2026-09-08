@@ -581,7 +581,7 @@ def zentai():
     _layer_label(s, LX, LY['do'] - 34, 1, '1階の床（土台・基礎）',
                  '1FL ＝ GL+550',
                  ['べた基礎の立上りの上に、土台120×120をぐるり',
-                  'アンカーボルト M12 ＠2,730以下で緊結'],
+                  'アンカーボルト M12 ＠2,000以下で緊結'],
                  draw='描かない（1階平面図兼配置図で表す）')
 
     # 「①で拡大したのはここ」
@@ -1074,29 +1074,11 @@ def _ansdraw(s, ox, oy, g, kind):
                        stroke_width=1.1)
             dims.append(('V', x + HW + 11, (Y(a) + Y(b)) / 2.0, dim))
 
-    if kind == 'floor':
-        for ln in (0, NY):                                   # 胴差（外周）
-            mem('H', ln, 0, NX, '120×300')
-        for ln in (0, NX):
-            mem('V', ln, 0, NY, '120×300')
-        for ln in XL[1:-1]:                                  # 大梁（南北）
-            for a, b in zip(YL[:-1], YL[1:]):
-                mem('V', ln, a, b, '120×300')
-        for ln in YL[1:-1]:                                  # 大梁（東西）
-            for a, b in zip(XL[:-1], XL[1:]):
-                mem('H', ln, a, b, '120×240')
-        for a, b in zip(YL[:-1], YL[1:]):                    # 床小梁 @910
-            for gy in range(a + 1, b):
-                for c, e in zip(XL[:-1], XL[1:]):
-                    mem('H', gy, c, e, '120×%d' % _sei(e - c))
-    else:
-        for ln in (0, NY):                                   # 妻梁
-            mem('H', ln, 0, NX, '120×240')
-        for ln in XL:                                        # 軒桁
-            mem('V', ln, 0, NY, '120×240')
-        for gy in range(2, NY, 2):                           # 小屋梁 @1,820
-            for c, e in zip(XL[:-1], XL[1:]):
-                mem('H', gy, c, e, '120×240')
+    import plans as _plans
+    _lo2, _up2 = (2, 3) if kind == 'floor' else (3, None)
+    for _o, _l, _a, _b, _sz, _kd in _plans.framing(_lo2, _up2):  # 壁の上下＋通り芯＋@910
+        mem(_o, _l, _a, _b, _sz)
+    if kind != 'floor':
         for gx in (1, 2, 3, 5, 6, 7):                        # 母屋 @910
             s.line(X(gx), Y(0) + 6, X(gx), Y(NY) - 6, stroke=INK,
                    stroke_width=0.9, stroke_dasharray='16 3 2 3')
@@ -1182,7 +1164,7 @@ def kansei(kind):
 
     panel(s, 20, 88, 820, 946,
           '３階床伏図　縮尺1／100' if kind == 'floor' else '小屋伏図　縮尺1／100',
-          '（2階の床も同じ組み方）' if kind == 'floor'
+          '' if kind == 'floor'
           else '（棟は南北方向・4寸勾配）')
     _ansdraw(s, 128.0, 200.0, 72.0, kind)
 

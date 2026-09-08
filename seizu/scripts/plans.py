@@ -569,6 +569,98 @@ def columns(nx=None, ny=None, xlines=None, ylines=None, floors=None):
     return tooshi, kuda
 
 
+# ---------------------------------------------------------------- 伏図の横架材
+def sei(masu):
+    """スパン（マス）から梁のせいを決める（1,820→180、2,730→240、3,640→300）。"""
+    mm = masu * 910
+    if mm <= 1900:
+        return 180
+    if mm <= 2800:
+        return 240
+    return 300
+
+
+def framing(lower, upper=None, floors=None, nx=None, ny=None, xlines=None,
+            ylines=None):
+    """伏図に描く横架材を、壁から決める。
+
+    公式の標準解答例と同じ考え方：
+      ・上の階の壁の下、下の階の壁の上には、必ず梁（桁）を通す
+      ・通り芯には必ず梁を通す（交点に柱が立っている）
+      ・残った所を、床なら @910 の床梁、小屋なら @1,820 の小屋梁で埋める
+      ・梁は、ぶつかる相手の梁（または外周）のところで切って、1本ずつ寸法を書く
+    upper が None なら小屋伏図（lower の階の壁の上に桁・小屋梁）。
+    返り値: [(向き, 通り, 始点, 終点, 断面寸法, 種類)]
+      種類: dosashi 胴差／obari 大梁（壁の上下・通り芯）／yukabari 床梁
+            nokigeta 軒桁／tsumabari 妻梁／keta 桁／koyabari 小屋梁
+    """
+    floors = FLOORS if floors is None else floors
+    nx = NX if nx is None else nx
+    ny = NY if ny is None else ny
+    xlines = XLINES if xlines is None else xlines
+    ylines = YLINES if ylines is None else ylines
+    roof = upper is None
+    fl = {lower: floors[lower]}
+    if not roof:
+        fl[upper] = floors[upper]
+    walls = _wall_segments(fl)
+    main = {}
+    for (ori, ln), segs in walls.items():
+        main.setdefault((ori, float(ln)), []).extend(segs)
+    for g, _ in xlines:
+        main.setdefault(('V', float(g)), []).append((0.0, float(ny)))
+    for g, _ in ylines:
+        main.setdefault(('H', float(g)), []).append((0.0, float(nx)))
+    main = {k: _union([(float(a), float(b)) for a, b in v])
+            for k, v in main.items()}
+    rows = range(2, ny, 2) if roof else range(1, ny)
+    fill = {}
+    for y in rows:
+        y = float(y)
+        free, cur = [], 0.0
+        for a, b in sorted(main.get(('H', y), [])):
+            if a > cur + 1e-9:
+                free.append((cur, a))
+            cur = max(cur, b)
+        if cur < nx - 1e-9:
+            free.append((cur, float(nx)))
+        if free:
+            fill[('H', y)] = free
+
+    def supports(ori, ln):
+        """その通りを横切る梁（相手の向きの main）の位置。"""
+        other = 'V' if ori == 'H' else 'H'
+        return sorted(k for (o, k), segs in main.items() if o == other and
+                      any(a - 1e-9 <= ln <= b + 1e-9 for a, b in segs))
+
+    def pieces(a, b, cuts):
+        pts = [a] + [c for c in cuts if a + 1e-9 < c < b - 1e-9] + [b]
+        return list(zip(pts[:-1], pts[1:]))
+
+    out = []
+    for (ori, ln), segs in sorted(main.items()):
+        perim = ln in (0.0, float(ny if ori == 'H' else nx))
+        for a, b in segs:
+            for p, q in pieces(a, b, supports(ori, ln)):
+                if roof:
+                    kd = (('tsumabari' if ori == 'H' else 'nokigeta')
+                          if perim else 'keta')
+                    size = '120×240'
+                else:
+                    kd = 'dosashi' if perim else 'obari'
+                    size = '120×300' if (perim or ori == 'V') else '120×240'
+                out.append((ori, ln, p, q, size, kd))
+    for (ori, ln), segs in sorted(fill.items()):
+        for a, b in segs:
+            for p, q in pieces(a, b, supports('H', ln)):
+                if roof:
+                    out.append(('H', ln, p, q, '120×240', 'koyabari'))
+                else:
+                    out.append(('H', ln, p, q, '120×%d' % sei(q - p),
+                                'yukabari'))
+    return out
+
+
 def _bearing_marks(d, nx, ny, xlines, ylines):
     """耐力壁に△印を付ける位置を、壁と開口から自動で決める。
 

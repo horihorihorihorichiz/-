@@ -99,25 +99,23 @@ def legend(s, rows):
 # 床伏図（2階床＝3階床も同じ）
 # ============================================================
 def floor_framing():
-    s = base('床伏図の型（2階床伏図／3階床伏図 共通）',
-             '1マス = 910mm　／　梁は「東西方向」に910ピッチで並べ、'
-             'それを「南北方向」の4本の大梁で受ける')
+    s = base('床伏図の型（3階床伏図）',
+             '1マス = 910mm　／　2階・3階の壁の上下と通り芯には必ず梁。'
+             '残りを東西方向 @910 の床小梁で埋める')
 
-    # 床小梁（東西方向 @910）
-    for gy in (1, 3, 4, 5, 7, 8, 9):
-        s.line(px(0), py(gy), px(8), py(gy), stroke=C_KOBARI,
-               stroke_width=2.0)
-    # 東西方向の大梁（2・3通り）
-    for gy in (2, 6):
-        s.line(px(0), py(gy), px(8), py(gy), stroke=C_OOBARI,
-               stroke_width=4.2)
-    # 南北方向の大梁（B・C通り）
-    for gx in (2, 5):
-        s.line(px(gx), py(0), px(gx), py(10), stroke=C_OOBARI,
-               stroke_width=4.8)
-    # 外周＝胴差
-    s.rect(px(0), py(10), 8 * G, 10 * G, fill='none', stroke=C_DOUBUCHI,
-           stroke_width=5.4)
+    # 梁は plans.framing で決める：壁の上下と通り芯に必ず1本、残りを床小梁 @910
+    STYLE = {'yukabari': (C_KOBARI, 2.0), 'obari': (C_OOBARI, 4.6),
+             'dosashi': (C_DOUBUCHI, 5.4)}
+    mem = _plans.framing(2, 3)
+    for kd in ('yukabari', 'obari', 'dosashi'):
+        for ori, ln, a, b, size, k in mem:
+            if k != kd:
+                continue
+            col, wd = STYLE[kd]
+            if ori == 'H':
+                s.line(px(a), py(ln), px(b), py(ln), stroke=col, stroke_width=wd)
+            else:
+                s.line(px(ln), py(a), px(ln), py(b), stroke=col, stroke_width=wd)
 
     hiuchi(s, 1.0)
     columns(s)
@@ -131,6 +129,8 @@ def floor_framing():
            weight='700')
     s.text(px(6.5), py(4) - 8, '床小梁 120×180 @910', size=11, fill=C_KOBARI,
            weight='700')
+    s.text(px(6.5), py(5) - 8, '大梁 120×240（3階の廊下の壁の下）', size=10,
+           fill=C_OOBARI, weight='700')
     s.text(px(1.15), py(0.55), '火打梁 90×90', size=10.5, fill=C_HIUCHI,
            weight='700', anchor='start')
 
@@ -154,7 +154,7 @@ def floor_framing():
         ('tooshi', '', 0, '通し柱 120×120（建物の四隅・1階から3階まで1本）'),
         ('kuda', '', 0, '管柱 120×120（各階ごとの柱・16か所すべて上下でそろう）'),
         ('line', C_DOUBUCHI, 5.4, '胴差 120×300（外周をぐるり1周）'),
-        ('line', C_OOBARI, 4.8, '大梁 120×300／120×240（B・C通り と 2・3通り）'),
+        ('line', C_OOBARI, 4.8, '大梁 120×300／120×240（通り芯と、2階・3階の壁の上下）'),
         ('line', C_KOBARI, 2.0, '床小梁 120×180 ＠910（東西方向に並べる）'),
         ('line', C_HIUCHI, 2.6, '火打梁 90×90（隅8か所・水平のゆがみ止め）'),
     ])
@@ -182,17 +182,19 @@ def roof_framing():
     s.text(px(4), py(-ke) + 22, '屋根の外形（軒の出600・けらば455）',
            size=10.5, fill='#888')
 
-    # 妻梁（東西の外周）と軒桁（柱のある南北の通り＝A・B・C・D）
-    for gy in (0, 10):
-        s.line(px(0), py(gy), px(8), py(gy), stroke=C_DOUBUCHI,
-               stroke_width=5.4)
-    for gx, _ in XLINES:
-        s.line(px(gx), py(0), px(gx), py(10), stroke=C_DOUBUCHI,
-               stroke_width=5.4)
-    # 小屋梁（東西方向・1,820おき。小屋束を受ける）
-    for gy in range(2, 10, 2):
-        s.line(px(0), py(gy), px(8), py(gy), stroke=C_OOBARI,
-               stroke_width=4.2)
+    # 妻梁・軒桁・桁（3階の壁の上）と小屋梁 @1,820 は plans.framing で決める
+    STYLE = {'koyabari': (C_OOBARI, 4.2), 'keta': (C_DOUBUCHI, 4.6),
+             'nokigeta': (C_DOUBUCHI, 5.4), 'tsumabari': (C_DOUBUCHI, 5.4)}
+    mem = _plans.framing(3, None)
+    for kd in ('koyabari', 'keta', 'nokigeta', 'tsumabari'):
+        for ori, ln, a, b, size, k in mem:
+            if k != kd:
+                continue
+            col, wd = STYLE[kd]
+            if ori == 'H':
+                s.line(px(a), py(ln), px(b), py(ln), stroke=col, stroke_width=wd)
+            else:
+                s.line(px(ln), py(a), px(ln), py(b), stroke=col, stroke_width=wd)
 
     # 母屋（南北方向 @910）
     for gx in (1, 2, 3, 5, 6, 7):

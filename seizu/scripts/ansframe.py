@@ -22,13 +22,9 @@ NX, NY = 8, 10
 
 
 def sei(masu, taika=False):
-    """スパン（マス）から梁のせいを決める。上に柱が乗るぶんを見込む。"""
-    mm = masu * 910
-    if mm <= 1900:
-        return 180
-    if mm <= 2800:
-        return 240
-    return 300
+    """スパン（マス）から梁のせいを決める（plans.sei と同じ）。"""
+    import plans as _plans
+    return _plans.sei(masu)
 
 
 def draw(kind='floor'):
@@ -42,7 +38,7 @@ def draw(kind='floor'):
         return MT + (NY - gy) * G
 
     s = Svg(W, H)
-    title = ('３階床伏図（２階の床も同じ組み方）　縮尺1／100' if kind == 'floor'
+    title = ('３階床伏図　縮尺1／100' if kind == 'floor'
              else '小屋伏図　縮尺1／100')
     s.text(W / 2.0, 32, title, size=15, weight='700')
 
@@ -85,37 +81,12 @@ def draw(kind='floor'):
     xs = [g for g, _ in XL]
     ys = [g for g, _ in YL]
 
-    if kind == 'floor':
-        # 外周の胴差
-        for ln in (0, NY):
-            member('H', ln, 0, NX, '120×300')
-        for ln in (0, NX):
-            member('V', ln, 0, NY, '120×300')
-        # 通り芯の大梁
-        for ln in xs[1:-1]:
-            for a, b in zip(ys[:-1], ys[1:]):
-                member('V', ln, a, b, '120×300')
-        for ln in ys[1:-1]:
-            for a, b in zip(xs[:-1], xs[1:]):
-                member('H', ln, a, b, '120×240')
-        # 床小梁（東西方向、910mmおき）
-        for a, b in zip(ys[:-1], ys[1:]):
-            for gy in range(int(a) + 1, int(b)):
-                for c_, e_ in zip(xs[:-1], xs[1:]):
-                    member('H', gy, c_, e_, '120×%d' % sei(e_ - c_))
-    else:
-        # 軒桁（東西の外周）と小屋梁
-        for ln in (0, NY):
-            member('H', ln, 0, NX, '120×240')
-        for ln in (0, NX):
-            member('V', ln, 0, NY, '120×240')
-        for ln in xs[1:-1]:
-            for a, b in zip(ys[:-1], ys[1:]):
-                member('V', ln, a, b, '120×240')
-        # 小屋梁（東西方向、1,820おき）
-        for gy in range(2, NY, 2):
-            for c_, e_ in zip(xs[:-1], xs[1:]):
-                member('H', gy, c_, e_, '120×240')
+    import plans as _plans
+    lo_, up_ = (2, 3) if kind == 'floor' else (3, None)
+    # 壁の上下と通り芯には必ず梁。残りは床梁 @910／小屋梁 @1,820（plans.framing）
+    for ori_, ln_, a_, b_, sz_, _kd in _plans.framing(lo_, up_):
+        member(ori_, ln_, a_, b_, sz_)
+    if kind != 'floor':
         # 棟木（南北・中央）は正角材なので2本の平行線で描く
         for dd in (-hw, hw):
             s.line(px(NX / 2.0) + dd, py(0) - 4, px(NX / 2.0) + dd,
