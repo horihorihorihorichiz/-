@@ -1,0 +1,434 @@
+<title>型の家 3D</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;500;700&family=Roboto+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --paper:#f1eee6; --panel:#fbfaf6; --panel2:#f4f1ea; --ink:#26221d; --sub:#6f675c;
+  --line:#dcd5c8; --accent:#b8432b; --accent-soft:#f6e3dd; --wood:#c8a165;
+  --ok:#3e6b47;
+  --body:'Zen Kaku Gothic New','Hiragino Sans','Noto Sans JP','Yu Gothic',Meiryo,sans-serif;
+  --mono:'Roboto Mono',ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --paper:#1c1b19; --panel:#26241f; --panel2:#2e2b25; --ink:#ece7dc; --sub:#a39b8c;
+    --line:#3a362f; --accent:#e08a6e; --accent-soft:#3d2a24; --wood:#c8a165; --ok:#9ccaa6;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#1c1b19; --panel:#26241f; --panel2:#2e2b25; --ink:#ece7dc; --sub:#a39b8c;
+  --line:#3a362f; --accent:#e08a6e; --accent-soft:#3d2a24; --wood:#c8a165; --ok:#9ccaa6;
+}
+*{box-sizing:border-box;margin:0}
+html,body{height:100%}
+body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:14px;
+  line-height:1.6;overflow:hidden}
+.app{display:grid;grid-template-columns:1fr 300px;grid-template-rows:auto 1fr;height:100vh}
+header{grid-column:1/3;display:flex;align-items:baseline;gap:14px;padding:10px 18px 8px;
+  border-bottom:1px solid var(--line);background:var(--panel)}
+header h1{font-size:19px;font-weight:700;letter-spacing:.02em}
+header .sub{color:var(--sub);font-size:12.5px}
+header .hint{margin-left:auto;color:var(--sub);font-size:12px;font-family:var(--mono)}
+#stage{position:relative;overflow:hidden;background:var(--paper)}
+#stage canvas{display:block;width:100%;height:100%;touch-action:none;cursor:grab}
+#stage canvas:active{cursor:grabbing}
+#cap{position:absolute;left:14px;bottom:14px;max-width:min(560px,calc(100% - 28px));
+  background:color-mix(in srgb,var(--panel) 92%,transparent);border:1px solid var(--line);
+  border-radius:10px;padding:10px 14px;backdrop-filter:blur(6px)}
+#cap b{color:var(--accent)}
+#cap .n{font-family:var(--mono);font-size:11.5px;color:var(--sub);letter-spacing:.08em}
+#cap p{margin-top:2px;font-size:13.5px}
+#cap .sheet{margin-top:4px;font-size:12px;color:var(--sub)}
+#cap .sheet b{color:var(--ok)}
+aside{border-left:1px solid var(--line);background:var(--panel);overflow-y:auto;
+  padding:14px 14px 22px;display:flex;flex-direction:column;gap:18px}
+aside h2{font-size:11.5px;letter-spacing:.14em;color:var(--sub);font-weight:700;
+  margin-bottom:8px}
+.steps{list-style:none;display:flex;flex-direction:column;gap:3px}
+.steps button{width:100%;display:grid;grid-template-columns:26px 1fr;gap:8px;align-items:center;
+  text-align:left;font:inherit;font-size:13.5px;color:var(--ink);background:none;border:0;
+  border-radius:7px;padding:5px 8px;cursor:pointer}
+.steps button .k{font-family:var(--mono);font-size:11px;color:var(--sub)}
+.steps button:hover{background:var(--panel2)}
+.steps button.on{background:var(--accent-soft);color:var(--accent);font-weight:700}
+.steps button.on .k{color:var(--accent)}
+.steps button.done{color:var(--ink)}
+.steps button.todo{color:var(--sub)}
+.row{display:flex;flex-wrap:wrap;gap:6px}
+.btn{font:inherit;font-size:12.5px;padding:6px 11px;border:1px solid var(--line);
+  border-radius:7px;background:var(--panel2);color:var(--ink);cursor:pointer}
+.btn:hover{border-color:var(--accent)}
+.btn.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
+.btn[aria-pressed="true"]{background:var(--accent-soft);border-color:var(--accent);color:var(--accent)}
+.chip{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;padding:5px 10px;
+  border:1px solid var(--line);border-radius:99px;cursor:pointer;background:var(--panel2)}
+.chip input{accent-color:var(--accent);margin:0}
+label.slider{display:block;font-size:12.5px;color:var(--sub)}
+input[type=range]{width:100%;accent-color:var(--accent)}
+.legend{font-size:12px;color:var(--sub);display:grid;grid-template-columns:auto 1fr;gap:3px 8px;
+  align-items:center}
+.legend i{display:inline-block;width:18px;height:10px;border-radius:2px}
+button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+@media(max-width:760px){
+  .app{grid-template-columns:1fr;grid-template-rows:auto 1fr auto}
+  header{grid-column:1}
+  aside{border-left:0;border-top:1px solid var(--line);max-height:44vh}
+  header .hint{display:none}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="app">
+<header>
+  <h1>型の家 3D</h1>
+  <span class="sub">木造3階建て 併用住宅　8マス×10マス（7,280×9,100）</span>
+  <span class="hint">ドラッグで回す／ホイールで寄る／2本指で寄る</span>
+</header>
+<div id="stage">
+  <div id="cap"><div class="n">STEP 0</div><b id="capT"></b><p id="capP"></p><div class="sheet" id="capS"></div></div>
+</div>
+<aside>
+  <section>
+    <h2>建てる順番</h2>
+    <ol class="steps" id="steps"></ol>
+    <div class="row" style="margin-top:8px">
+      <button class="btn primary" id="play">▶ 順番に建てる</button>
+      <button class="btn" id="prev">←</button><button class="btn" id="next">→</button>
+    </div>
+  </section>
+  <section>
+    <h2>見る</h2>
+    <div class="row" id="views">
+      <button class="btn" data-v="se">南東から</button>
+      <button class="btn" data-v="s">南から</button>
+      <button class="btn" data-v="e">東から</button>
+      <button class="btn" data-v="top">真上から（伏図の目）</button>
+    </div>
+    <div class="row" style="margin-top:8px">
+      <label class="chip"><input type="checkbox" id="f1" checked>1階</label>
+      <label class="chip"><input type="checkbox" id="f2" checked>2階</label>
+      <label class="chip"><input type="checkbox" id="f3" checked>3階</label>
+      <label class="chip"><input type="checkbox" id="f4" checked>屋根</label>
+    </div>
+    <div class="row" style="margin-top:8px">
+      <label class="chip"><input type="checkbox" id="walls" checked>壁を見せる</label>
+      <label class="chip"><input type="checkbox" id="labels" checked>部屋の名前</label>
+      <label class="chip"><input type="checkbox" id="spin">自動で回す</label>
+    </div>
+    <label class="slider" style="margin-top:10px">階をはなして見る
+      <input type="range" id="explode" min="0" max="2500" step="50" value="0"></label>
+  </section>
+  <section>
+    <h2>色の意味</h2>
+    <div class="legend">
+      <i style="background:#a83c2a"></i><span>通し柱（四すみ・1本もの）</span>
+      <i style="background:#7a5230"></i><span>管柱（各階ごと）</span>
+      <i style="background:#b58d52"></i><span>胴差・梁・桁・小屋梁</span>
+      <i style="background:#c8a165"></i><span>土台・垂木・母屋・棟木</span>
+      <i style="background:#e6ddcc;border:1px solid #bbb"></i><span>壁（薄い）・床の合板</span>
+      <i style="background:#8fb8cf"></i><span>窓・掃き出し窓</span>
+      <i style="background:#5c6570"></i><span>屋根（4寸・軒の出600）</span>
+    </div>
+  </section>
+</aside>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+/*DATA*/
+const M = DATA.module, NX = DATA.nx, NY = DATA.ny, H = DATA.heights, R = DATA.roof;
+const FL = {1: H.fl['1'], 2: H.fl['2'], 3: H.fl['3']};
+const WALL_TOP = {1: H.beam_top['2'] - 300, 2: H.beam_top['3'] - 300, 3: H.noki - 240};
+const COL = {kiso:'#b9b5ad', slab:'#cfcac0', dodai:'#c8a165', beam:'#b58d52', col:'#7a5230',
+  tooshi:'#a83c2a', wall:'#e6ddcc', glass:'#8fb8cf', floor:'#e6ddcc', roof:'#5c6570',
+  rafter:'#c8a165', moya:'#c8a165', axis:'#b8432b', grid:'#b9b2a4'};
+
+// ---------- 場面
+const stage = document.getElementById('stage');
+const renderer = new THREE.WebGLRenderer({antialias:true});
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+stage.appendChild(renderer.domElement);
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(38, 1, 100, 200000);
+scene.add(new THREE.HemisphereLight(0xffffff, 0x8a7f6c, 0.95));
+const sun = new THREE.DirectionalLight(0xffffff, 0.75); sun.position.set(6000, 14000, 9000);
+scene.add(sun);
+const sun2 = new THREE.DirectionalLight(0xffffff, 0.25); sun2.position.set(-8000, 6000, -6000);
+scene.add(sun2);
+
+function themeBg(){
+  const c = getComputedStyle(document.documentElement).getPropertyValue('--paper').trim();
+  scene.background = new THREE.Color(c || '#f1eee6');
+}
+themeBg();
+matchMedia('(prefers-color-scheme: dark)').addEventListener('change', themeBg);
+new MutationObserver(themeBg).observe(document.documentElement, {attributes:true, attributeFilter:['data-theme']});
+
+const mats = {};
+function mat(key, opt){
+  const k = key + JSON.stringify(opt || {});
+  if (!mats[k]) mats[k] = new THREE.MeshLambertMaterial(Object.assign({color: COL[key]}, opt || {}));
+  return mats[k];
+}
+// x: 東, y: 上, z: 南（平面図のyは北向きなので z = -y*M）
+function box(group, key, x0, x1, y0, y1, z0, z1, opt){
+  const g = new THREE.BoxGeometry(Math.abs(x1 - x0), Math.abs(y1 - y0), Math.abs(z1 - z0));
+  const m = new THREE.Mesh(g, mat(key, opt));
+  m.position.set((x0 + x1) / 2, (y0 + y1) / 2, (z0 + z1) / 2);
+  group.add(m); return m;
+}
+function X(gx){ return gx * M; }
+function Z(gy){ return -gy * M; }
+
+function label(text, size, color, bg){
+  const c = document.createElement('canvas'); const px = 44;
+  const ctx = c.getContext('2d'); ctx.font = `600 ${px}px ${getComputedStyle(document.body).fontFamily}`;
+  const w = Math.ceil(ctx.measureText(text).width) + 28; c.width = w; c.height = px + 24;
+  ctx.font = `600 ${px}px ${getComputedStyle(document.body).fontFamily}`;
+  if (bg){ ctx.fillStyle = bg; ctx.beginPath(); ctx.roundRect(0, 0, w, c.height, 14); ctx.fill(); }
+  ctx.fillStyle = color; ctx.textBaseline = 'middle'; ctx.fillText(text, 14, c.height / 2);
+  const t = new THREE.CanvasTexture(c); t.minFilter = THREE.LinearFilter;
+  const s = new THREE.Sprite(new THREE.SpriteMaterial({map: t, transparent: true, depthTest: false}));
+  s.scale.set(w / c.height * size, size, 1); s.renderOrder = 10; return s;
+}
+
+// ---------- 段階ごとのグループ（level は「階をはなす」で持ち上げる高さの段）
+const STEPS = [
+  ['基礎', 0, '建物の形のとおりに、べた基礎の立上り（地上371）を1階の壁の下ぜんぶに立てる。根入れ300。',
+   '部分詳細図に「べた基礎 立上りt150・底盤t150」'],
+  ['土台と1階の柱', 1, '基礎パッキン20をはさんで土台120×120。その上に柱120×120。四すみだけ通し柱（3階の軒まで1本もの）。',
+   '1階平面図に柱の■／通し柱は○で囲む'],
+  ['1階の壁と床', 1, '柱と柱のあいだに壁。窓は腰800の上、出入口は床から。床は合板t24を梁に直接（根太レス）。',
+   '1階平面図・立面図'],
+  ['2階の床梁', 2, '1階の壁の上と2階の壁の下に必ず梁。通り芯にも梁。残りを910おきの床梁で埋める。外まわりは胴差120×300。',
+   '2階床伏図（当日「2階」と指定されたらこれ）'],
+  ['2階の柱', 2, '胴差・梁の上に、2階の壁の位置で柱を立てる。1階の柱の真上にそろえるほど直下率が上がる。',
+   '2階平面図（伏図では □ か ⊠）'],
+  ['2階の壁と床', 2, '2階の壁。南のバルコニーは掃き出し窓。', '2階平面図・立面図'],
+  ['3階の床梁', 3, '2階の壁の上と3階の壁の下に必ず梁。3階の廊下の壁（5の線）の下にも大梁120×240。',
+   '3階床伏図（この教材の予想）'],
+  ['3階の柱', 3, '3階の柱。軒桁を受ける。', '3階平面図'],
+  ['3階の壁と床', 3, '3階の壁。道路側の窓は直径1mの円が入る大きさ（代替進入口）。', '3階平面図・立面図'],
+  ['小屋組', 4, '3階の壁の上に軒桁・桁120×240。小屋梁は1,820おき。その上に小屋束→母屋90×90（910おき）→棟木120×120。垂木45×105を455おき。',
+   '小屋伏図'],
+  ['屋根', 4, '切妻・棟は南北・4寸勾配。軒の出600、けらば455。軒高9,350・最高の高さ10,806。',
+   '立面図に ▽最高の高さ ▽軒高'],
+];
+const groups = STEPS.map(([name, level]) => { const g = new THREE.Group(); g.userData.level = level; scene.add(g); return g; });
+const labelGroups = {1: new THREE.Group(), 2: new THREE.Group(), 3: new THREE.Group()};
+Object.values(labelGroups).forEach(g => scene.add(g));
+const wallMeshes = [];
+
+// ---------- 基礎
+(function(){
+  const g = groups[0];
+  box(g, 'kiso', X(0) - 240, X(NX) + 240, H.kiso_bottom, H.slab, Z(0) + 240, Z(NY) - 240);
+  for (const [ori, ln, a, b] of DATA.floors[1].walls){
+    if (ori === 'H') box(g, 'kiso', X(a) - 75, X(b) + 75, H.slab, H.kiso_top, Z(ln) + 75, Z(ln) - 75);
+    else box(g, 'kiso', X(ln) - 75, X(ln) + 75, H.slab, H.kiso_top, Z(a) + 75, Z(b) - 75);
+  }
+})();
+
+// ---------- 柱・土台・壁・床
+function columns(n, g){
+  const y0 = n === 1 ? H.dodai : H.beam_top[String(n)];
+  const y1 = WALL_TOP[n];
+  for (const [gx, gy] of DATA.floors[n].kuda)
+    box(g, 'col', X(gx) - 60, X(gx) + 60, y0, y1, Z(gy) + 60, Z(gy) - 60);
+  for (const [gx, gy] of DATA.floors[n].tooshi)
+    box(g, 'tooshi', X(gx) - 62, X(gx) + 62, y0, y1, Z(gy) + 62, Z(gy) - 62);
+}
+(function(){   // 土台
+  const g = groups[1];
+  for (const [ori, ln, a, b] of DATA.floors[1].walls){
+    if (ori === 'H') box(g, 'dodai', X(a) - 60, X(b) + 60, H.kiso_top + 20, H.dodai, Z(ln) + 60, Z(ln) - 60);
+    else box(g, 'dodai', X(ln) - 60, X(ln) + 60, H.kiso_top + 20, H.dodai, Z(a) + 60, Z(b) - 60);
+  }
+  columns(1, g); columns(2, groups[4]); columns(3, groups[7]);
+})();
+
+const FACE = {S: ['H', 0], N: ['H', NY], W: ['V', 0], E: ['V', NX]};
+function walls(n, g){
+  const d = DATA.floors[n], y0 = FL[n], y1 = WALL_TOP[n];
+  const SILL = 800, HEAD = 2100;
+  for (const [ori, ln, a, b] of d.walls){
+    const spans = [];
+    for (const [f, p, l, k] of d.openings){ const [o2, l2] = FACE[f]; if (o2 === ori && l2 === ln) spans.push([p, p + l, k]); }
+    for (const [o2, w, p, l] of d.doors) if (o2 === ori && w === ln) spans.push([p, p + l, 'door']);
+    spans.sort((u, v) => u[0] - v[0]);
+    const piece = (p0, p1, h0, h1, key, opt) => {
+      if (p1 - p0 < 0.01 || h1 - h0 < 1) return;
+      const m = ori === 'H'
+        ? box(g, key, X(p0), X(p1), y0 + h0, y0 + h1, Z(ln) + (key === 'glass' ? 20 : 60), Z(ln) - (key === 'glass' ? 20 : 60), opt)
+        : box(g, key, X(ln) - (key === 'glass' ? 20 : 60), X(ln) + (key === 'glass' ? 20 : 60), y0 + h0, y0 + h1, Z(p0), Z(p1), opt);
+      if (key === 'wall') wallMeshes.push(m);
+    };
+    let cur = a;
+    for (const [p0, p1, k] of spans){
+      const q0 = Math.max(p0, a), q1 = Math.min(p1, b); if (q1 <= q0) continue;
+      piece(cur, q0, 0, y1 - y0, 'wall', {transparent: true, opacity: 0.92});
+      if (k === 'win'){ piece(q0, q1, 0, SILL, 'wall', {transparent: true, opacity: 0.92}); piece(q0, q1, SILL, HEAD, 'glass', {transparent: true, opacity: 0.5}); }
+      else if (k === 'balc' || k === 'entry') piece(q0, q1, 0, HEAD, 'glass', {transparent: true, opacity: k === 'balc' ? 0.5 : 0.25});
+      piece(q0, q1, HEAD, y1 - y0, 'wall', {transparent: true, opacity: 0.92});
+      cur = q1;
+    }
+    piece(cur, b, 0, y1 - y0, 'wall', {transparent: true, opacity: 0.92});
+  }
+  box(g, 'floor', X(0), X(NX), y0 - 39, y0, Z(0), Z(NY), {transparent: true, opacity: 0.35});
+  for (const [nm, ar, a, b, c, e] of d.rooms){
+    const s = label(nm.replace(/\s+/g, ''), 420, '#26221d', 'rgba(255,255,255,.82)');
+    s.position.set(X((a + c) / 2), y0 + 1500, Z((b + e) / 2)); labelGroups[n].add(s);
+  }
+}
+walls(1, groups[2]); walls(2, groups[5]); walls(3, groups[8]);
+
+// ---------- 梁（伏図そのもの）
+function beams(list, top, g, key){
+  for (const [ori, ln, a, b, size] of list){
+    const dep = parseInt(size.split('×')[1], 10);
+    const e = 60 / M;
+    if (ori === 'H') box(g, key, X(a + e), X(b - e), top - dep, top, Z(ln) + 60, Z(ln) - 60);
+    else box(g, key, X(ln) - 60, X(ln) + 60, top - dep, top, Z(a + e), Z(b - e));
+  }
+}
+beams(DATA.framing.f2, H.beam_top['2'], groups[3], 'beam');
+beams(DATA.framing.f3, H.beam_top['3'], groups[6], 'beam');
+beams(DATA.framing.roof, H.noki, groups[9], 'beam');
+
+// ---------- 小屋組・屋根
+const RX = X(R.ridge_x), RUN = RX + R.eave, RISE = RUN * R.slope, ANG = Math.atan(R.slope);
+function yb(x){ return H.noki + R.slope * (RX - Math.abs(x - RX)); }   // 垂木の下端
+(function(){
+  const g = groups[9], z0 = Z(0) + R.kerava, z1 = Z(NY) - R.kerava;
+  for (const gx of [1, 2, 3, 5, 6, 7]) box(g, 'moya', X(gx) - 45, X(gx) + 45, yb(X(gx)) - 90, yb(X(gx)), z0, z1);
+  box(g, 'moya', RX - 60, RX + 60, yb(RX) - 120, yb(RX), z0, z1);                       // 棟木
+  for (let gx = 1; gx < NX; gx++) for (const gy of [2, 4, 6, 8]){                         // 小屋束
+    const top = yb(X(gx)) - (gx === 4 ? 120 : 90);
+    box(g, 'moya', X(gx) - 45, X(gx) + 45, H.noki, top, Z(gy) + 45, Z(gy) - 45);
+  }
+  const L = Math.sqrt(RUN * RUN + RISE * RISE);
+  for (let z = z0; z >= z1 - 1; z -= 455){                                                // 垂木
+    for (const side of [-1, 1]){
+      const geo = new THREE.BoxGeometry(L, 105, 45);
+      const m = new THREE.Mesh(geo, mat('rafter'));
+      const cx = RX + side * RUN / 2;
+      m.position.set(cx, yb(cx) + 60, z); m.rotation.z = -side * ANG; g.add(m);
+    }
+  }
+  const rg = groups[10];
+  for (const gz of [Z(0), Z(NY)]){                                                        // 妻壁（三角の壁）
+    const sh = new THREE.Shape(); sh.moveTo(X(0), H.noki); sh.lineTo(X(NX), H.noki); sh.lineTo(RX, yb(RX)); sh.closePath();
+    const m = new THREE.Mesh(new THREE.ExtrudeGeometry(sh, {depth: 120, bevelEnabled: false}),
+      mat('wall', {transparent: true, opacity: 0.92}));
+    m.position.z = gz - 60; rg.add(m); wallMeshes.push(m);
+  }
+  for (const side of [-1, 1]){                                                            // 屋根面
+    const geo = new THREE.BoxGeometry(L + 40, 60, Math.abs(z1 - z0));
+    const m = new THREE.Mesh(geo, mat('roof'));
+    const cx = RX + side * RUN / 2;
+    m.position.set(cx, yb(cx) + 105 + 45, (z0 + z1) / 2); m.rotation.z = -side * ANG; rg.add(m);
+  }
+})();
+
+// ---------- 地面・通り芯・高さのものさし
+(function(){
+  const g = new THREE.Group(); scene.add(g);
+  const ground = new THREE.Mesh(new THREE.PlaneGeometry(40000, 40000),
+    new THREE.MeshLambertMaterial({color: 0xd9d3c6, transparent: true, opacity: 0.35}));
+  ground.rotation.x = -Math.PI / 2; ground.position.y = -2; g.add(ground);
+  const gm = new THREE.LineBasicMaterial({color: COL.grid, transparent: true, opacity: 0.6});
+  const pts = [];
+  for (let i = 0; i <= NX * 2; i++){ pts.push(new THREE.Vector3(X(i / 2), 1, Z(0)), new THREE.Vector3(X(i / 2), 1, Z(NY))); }
+  for (let j = 0; j <= NY * 2; j++){ pts.push(new THREE.Vector3(X(0), 1, Z(j / 2)), new THREE.Vector3(X(NX), 1, Z(j / 2))); }
+  g.add(new THREE.LineSegments(new THREE.BufferGeometry().setFromPoints(pts), gm));
+  const am = new THREE.LineBasicMaterial({color: COL.axis});
+  const ap = [], ext = 900;
+  for (const [gx] of DATA.xlines) ap.push(new THREE.Vector3(X(gx), 2, Z(0) + ext), new THREE.Vector3(X(gx), 2, Z(NY) - ext));
+  for (const [gy] of DATA.ylines) ap.push(new THREE.Vector3(X(0) - ext, 2, Z(gy)), new THREE.Vector3(X(NX) + ext, 2, Z(gy)));
+  g.add(new THREE.LineSegments(new THREE.BufferGeometry().setFromPoints(ap), am));
+  for (const [gx, nm] of DATA.xlines){ const s = label(nm, 380, '#b8432b'); s.position.set(X(gx), 60, Z(0) + ext + 300); g.add(s); }
+  for (const [gy, nm] of DATA.ylines){ const s = label(nm, 380, '#b8432b'); s.position.set(X(0) - ext - 300, 60, Z(gy)); g.add(s); }
+  const ns = label('南（道路）', 420, '#6f675c'); ns.position.set(X(NX / 2), 60, Z(0) + 2200); g.add(ns);
+  // 高さのものさし（東側）
+  const rx = X(NX) + 1500, rz = Z(0);
+  const rp = [new THREE.Vector3(rx, 0, rz), new THREE.Vector3(rx, H.top, rz)];
+  for (const [y, t] of [[0, 'GL ±0'], [FL[1], '1FL +550'], [FL[2], '2FL +3,650'], [FL[3], '3FL +6,550'], [H.noki, '軒高 +9,350'], [H.top, '最高の高さ +10,806']]){
+    rp.push(new THREE.Vector3(rx - 150, y, rz), new THREE.Vector3(rx + 150, y, rz));
+    const s = label(t, 330, '#26221d', 'rgba(255,255,255,.75)'); s.position.set(rx + 1250, y, rz); g.add(s);
+  }
+  g.add(new THREE.LineSegments(new THREE.BufferGeometry().setFromPoints(rp), new THREE.LineBasicMaterial({color: 0x6f675c})));
+})();
+
+// ---------- カメラ（自前のオービット）
+const target = new THREE.Vector3(X(NX / 2), 4600, Z(NY / 2));
+const cam = {theta: -0.75, phi: 1.02, r: 26000};
+const VIEWS = {se: [-0.75, 1.02, 26000], s: [0, 1.25, 26000], e: [Math.PI / 2, 1.2, 26000], top: [0, 0.06, 24000]};
+function applyCam(){
+  cam.phi = Math.max(0.05, Math.min(1.5, cam.phi)); cam.r = Math.max(6000, Math.min(60000, cam.r));
+  camera.position.set(target.x + cam.r * Math.sin(cam.phi) * Math.sin(cam.theta),
+                      target.y + cam.r * Math.cos(cam.phi),
+                      target.z + cam.r * Math.sin(cam.phi) * Math.cos(cam.theta));
+  camera.lookAt(target);
+}
+const el = renderer.domElement; let drag = null, pinch = null;
+el.addEventListener('pointerdown', e => { drag = {x: e.clientX, y: e.clientY}; el.setPointerCapture(e.pointerId); });
+el.addEventListener('pointermove', e => {
+  if (!drag || pinch) return;
+  cam.theta -= (e.clientX - drag.x) * 0.006; cam.phi -= (e.clientY - drag.y) * 0.006;
+  drag = {x: e.clientX, y: e.clientY}; applyCam();
+});
+el.addEventListener('pointerup', () => { drag = null; });
+el.addEventListener('wheel', e => { e.preventDefault(); cam.r *= Math.exp(e.deltaY * 0.0012); applyCam(); }, {passive: false});
+el.addEventListener('touchstart', e => { if (e.touches.length === 2) pinch = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY); }, {passive: true});
+el.addEventListener('touchmove', e => {
+  if (e.touches.length === 2 && pinch){ const d = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY); cam.r *= pinch / d; pinch = d; applyCam(); }
+}, {passive: true});
+el.addEventListener('touchend', () => { pinch = null; });
+document.querySelectorAll('#views button').forEach(b => b.addEventListener('click', () => { [cam.theta, cam.phi, cam.r] = VIEWS[b.dataset.v]; applyCam(); }));
+
+// ---------- 段階・表示
+let step = STEPS.length - 1, timer = null;
+const stepsEl = document.getElementById('steps');
+STEPS.forEach(([name], i) => {
+  const li = document.createElement('li'); const b = document.createElement('button');
+  b.innerHTML = `<span class="k">${String(i).padStart(2, '0')}</span><span>${name}</span>`;
+  b.addEventListener('click', () => { setStep(i); stopPlay(); }); li.appendChild(b); stepsEl.appendChild(li);
+});
+const floorOn = () => ({0: f1.checked, 1: f1.checked, 2: f2.checked, 3: f3.checked, 4: f4.checked});
+function refresh(){
+  const on = floorOn(), gap = +document.getElementById('explode').value;
+  groups.forEach((g, i) => { g.visible = i <= step && on[g.userData.level]; g.position.y = g.userData.level * gap; });
+  const showL = document.getElementById('labels').checked;
+  [1, 2, 3].forEach(n => { const gi = {1: 2, 2: 5, 3: 8}[n]; labelGroups[n].visible = showL && groups[gi].visible; labelGroups[n].position.y = groups[gi].position.y; });
+  const w = document.getElementById('walls').checked;
+  wallMeshes.forEach(m => { m.material.opacity = w ? 0.92 : 0.12; });
+  [...stepsEl.querySelectorAll('button')].forEach((b, i) => { b.className = i === step ? 'on' : (i < step ? 'done' : 'todo'); });
+  const [name, , text, sheet] = STEPS[step];
+  document.querySelector('#cap .n').textContent = 'STEP ' + String(step).padStart(2, '0') + ' / ' + (STEPS.length - 1);
+  capT.textContent = name; capP.textContent = text; capS.innerHTML = '答案では → <b>' + sheet + '</b>';
+}
+function setStep(i){ step = Math.max(0, Math.min(STEPS.length - 1, i)); refresh(); }
+function stopPlay(){ if (timer){ clearInterval(timer); timer = null; } play.textContent = '▶ 順番に建てる'; }
+play.addEventListener('click', () => {
+  if (timer){ stopPlay(); return; }
+  setStep(0); play.textContent = '■ 止める';
+  timer = setInterval(() => { if (step >= STEPS.length - 1){ stopPlay(); return; } setStep(step + 1); }, 1500);
+});
+prev.addEventListener('click', () => { stopPlay(); setStep(step - 1); });
+next.addEventListener('click', () => { stopPlay(); setStep(step + 1); });
+['f1', 'f2', 'f3', 'f4', 'walls', 'labels', 'explode'].forEach(id => document.getElementById(id).addEventListener('input', refresh));
+addEventListener('keydown', e => { if (e.key === 'ArrowRight') next.click(); if (e.key === 'ArrowLeft') prev.click(); });
+
+function resize(){
+  const w = stage.clientWidth, h = stage.clientHeight;
+  renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix();
+}
+addEventListener('resize', resize); resize(); applyCam(); refresh();
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+(function loop(){
+  requestAnimationFrame(loop);
+  if (document.getElementById('spin').checked && !drag && !reduce){ cam.theta += 0.004; applyCam(); }
+  renderer.render(scene, camera);
+})();
+</script>
