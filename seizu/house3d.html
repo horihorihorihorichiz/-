@@ -69,6 +69,14 @@ input[type=range]{width:100%;accent-color:var(--accent)}
 .legend{font-size:12px;color:var(--sub);display:grid;grid-template-columns:auto 1fr;gap:3px 8px;
   align-items:center}
 .legend i{display:inline-block;width:18px;height:10px;border-radius:2px}
+.rooms{display:flex;flex-direction:column;gap:5px;margin-top:8px}
+.rooms .fl{display:flex;flex-wrap:wrap;gap:4px;align-items:center}
+.rooms .fl b{font-family:var(--mono);font-size:11px;color:var(--sub);width:26px}
+.rooms button{font:inherit;font-size:12px;padding:3px 8px;border:1px solid var(--line);border-radius:6px;
+  background:var(--panel2);color:var(--ink);cursor:pointer}
+.rooms button.here{background:var(--accent-soft);border-color:var(--accent);color:var(--accent);font-weight:700}
+.tiny{font-size:11.5px;color:var(--sub);margin-top:6px}
+body.walk #cap .n{color:var(--ok)}
 button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 @media(max-width:760px){
   .app{grid-template-columns:1fr;grid-template-rows:auto 1fr auto}
@@ -96,6 +104,15 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
       <button class="btn primary" id="play">▶ 順番に建てる</button>
       <button class="btn" id="prev">←</button><button class="btn" id="next">→</button>
     </div>
+  </section>
+  <section>
+    <h2>内覧（中を歩く）</h2>
+    <div class="row">
+      <button class="btn primary" id="tour">🚶 玄関から内覧する</button>
+      <button class="btn" id="exit" hidden>外から見る</button>
+    </div>
+    <div id="rooms" class="rooms"></div>
+    <p class="tiny">部屋を押すとそこまで歩きます。ドラッグで見回す／↑↓で前後、←→で向きを変える</p>
   </section>
   <section>
     <h2>見る</h2>
@@ -259,9 +276,10 @@ function walls(n, g){
     spans.sort((u, v) => u[0] - v[0]);
     const piece = (p0, p1, h0, h1, key, opt) => {
       if (p1 - p0 < 0.01 || h1 - h0 < 1) return;
+      const t = key === 'glass' ? 20 : 57;   // 壁は柱（±60）より少し薄くして面が重ならないようにする
       const m = ori === 'H'
-        ? box(g, key, X(p0), X(p1), y0 + h0, y0 + h1, Z(ln) + (key === 'glass' ? 20 : 60), Z(ln) - (key === 'glass' ? 20 : 60), opt)
-        : box(g, key, X(ln) - (key === 'glass' ? 20 : 60), X(ln) + (key === 'glass' ? 20 : 60), y0 + h0, y0 + h1, Z(p0), Z(p1), opt);
+        ? box(g, key, X(p0), X(p1), y0 + h0, y0 + h1, Z(ln) + t, Z(ln) - t, opt)
+        : box(g, key, X(ln) - t, X(ln) + t, y0 + h0, y0 + h1, Z(p0), Z(p1), opt);
       if (key === 'wall') wallMeshes.push(m);
     };
     let cur = a;
@@ -375,17 +393,18 @@ const el = renderer.domElement; let drag = null, pinch = null;
 el.addEventListener('pointerdown', e => { drag = {x: e.clientX, y: e.clientY}; el.setPointerCapture(e.pointerId); });
 el.addEventListener('pointermove', e => {
   if (!drag || pinch) return;
-  cam.theta -= (e.clientX - drag.x) * 0.006; cam.phi -= (e.clientY - drag.y) * 0.006;
-  drag = {x: e.clientX, y: e.clientY}; applyCam();
+  if (walk.active){ walk.yaw -= (e.clientX - drag.x) * 0.005; walk.pitch = Math.max(-1.2, Math.min(1.2, walk.pitch - (e.clientY - drag.y) * 0.004)); walk.lookedAt = performance.now(); }
+  else { cam.theta -= (e.clientX - drag.x) * 0.006; cam.phi -= (e.clientY - drag.y) * 0.006; applyCam(); }
+  drag = {x: e.clientX, y: e.clientY};
 });
 el.addEventListener('pointerup', () => { drag = null; });
-el.addEventListener('wheel', e => { e.preventDefault(); cam.r *= Math.exp(e.deltaY * 0.0012); applyCam(); }, {passive: false});
+el.addEventListener('wheel', e => { e.preventDefault(); if (walk.active) return; cam.r *= Math.exp(e.deltaY * 0.0012); applyCam(); }, {passive: false});
 el.addEventListener('touchstart', e => { if (e.touches.length === 2) pinch = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY); }, {passive: true});
 el.addEventListener('touchmove', e => {
   if (e.touches.length === 2 && pinch){ const d = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY); cam.r *= pinch / d; pinch = d; applyCam(); }
 }, {passive: true});
 el.addEventListener('touchend', () => { pinch = null; });
-document.querySelectorAll('#views button').forEach(b => b.addEventListener('click', () => { [cam.theta, cam.phi, cam.r] = VIEWS[b.dataset.v]; applyCam(); }));
+document.querySelectorAll('#views button').forEach(b => b.addEventListener('click', () => { if (walk.active) exitWalk(); [cam.theta, cam.phi, cam.r] = VIEWS[b.dataset.v]; applyCam(); }));
 
 // ---------- 段階・表示
 let step = STEPS.length - 1, timer = null;
@@ -393,14 +412,14 @@ const stepsEl = document.getElementById('steps');
 STEPS.forEach(([name], i) => {
   const li = document.createElement('li'); const b = document.createElement('button');
   b.innerHTML = `<span class="k">${String(i).padStart(2, '0')}</span><span>${name}</span>`;
-  b.addEventListener('click', () => { setStep(i); stopPlay(); }); li.appendChild(b); stepsEl.appendChild(li);
+  b.addEventListener('click', () => { if (walk.active) exitWalk(); setStep(i); stopPlay(); }); li.appendChild(b); stepsEl.appendChild(li);
 });
 const floorOn = () => ({0: f1.checked, 1: f1.checked, 2: f2.checked, 3: f3.checked, 4: f4.checked});
 function refresh(){
   const on = floorOn(), gap = +document.getElementById('explode').value;
   groups.forEach((g, i) => { g.visible = i <= step && on[g.userData.level]; g.position.y = g.userData.level * gap; });
   const showL = document.getElementById('labels').checked;
-  [1, 2, 3].forEach(n => { const gi = {1: 2, 2: 5, 3: 8}[n]; labelGroups[n].visible = showL && groups[gi].visible; labelGroups[n].position.y = groups[gi].position.y; });
+  [1, 2, 3].forEach(n => { const gi = {1: 2, 2: 5, 3: 8}[n]; labelGroups[n].visible = showL && groups[gi].visible && !(typeof walk !== 'undefined' && walk.active); labelGroups[n].position.y = groups[gi].position.y; });
   const w = document.getElementById('walls').checked;
   wallMeshes.forEach(m => { m.material.opacity = w ? 0.92 : 0.12; });
   [...stepsEl.querySelectorAll('button')].forEach((b, i) => { b.className = i === step ? 'on' : (i < step ? 'done' : 'todo'); });
@@ -411,6 +430,7 @@ function refresh(){
 function setStep(i){ step = Math.max(0, Math.min(STEPS.length - 1, i)); refresh(); }
 function stopPlay(){ if (timer){ clearInterval(timer); timer = null; } play.textContent = '▶ 順番に建てる'; }
 play.addEventListener('click', () => {
+  if (walk.active) exitWalk();
   if (timer){ stopPlay(); return; }
   setStep(0); play.textContent = '■ 止める';
   timer = setInterval(() => { if (step >= STEPS.length - 1){ stopPlay(); return; } setStep(step + 1); }, 1500);
@@ -418,7 +438,145 @@ play.addEventListener('click', () => {
 prev.addEventListener('click', () => { stopPlay(); setStep(step - 1); });
 next.addEventListener('click', () => { stopPlay(); setStep(step + 1); });
 ['f1', 'f2', 'f3', 'f4', 'walls', 'labels', 'explode'].forEach(id => document.getElementById(id).addEventListener('input', refresh));
-addEventListener('keydown', e => { if (e.key === 'ArrowRight') next.click(); if (e.key === 'ArrowLeft') prev.click(); });
+addEventListener('keydown', e => { if (walk.active) return; if (e.key === 'ArrowRight') next.click(); if (e.key === 'ArrowLeft') prev.click(); });
+
+// ---------- 内覧（玄関から歩く）。部屋どうしは、図面にある建具の位置でつなぐ
+const EYE = 1500, SPEED = 1700;   // 目の高さ mm、歩く速さ mm/s
+const ROOMS = [];
+for (const n of [1, 2, 3]) DATA.floors[n].rooms.forEach(([nm, ar, a, b, c, e], i) =>
+  ROOMS.push({key: n + ':' + i, n, name: nm.replace(/[\s\u3000]+/g, ''), area: ar, a, b, c, e,
+              x: X((a + c) / 2), z: Z((b + e) / 2), y: FL[n] + EYE}));
+const NOTES = {
+  '住宅玄関': '道路から直接入る。土間は GL+150、ホールは GL+550。下足入れ。',
+  '階段': '1階から3階まで同じ位置（直通階段）。まわりは竪穴区画。',
+  '店舗売場': '道路に面した出入口（▲）。陳列棚とレジカウンター。',
+  '厨房・作業場': '売場のすぐ裏。流し台・調理台・作業台・オーブン。勝手口は北。',
+  '店舗用便所': 'お客が使う。洋式便器と手洗い器。売場から直接。',
+  '居間・食事室・台所': '25㎡以上を1室に。南のバルコニーへ掃き出し窓。',
+  '和室6帖': '押入れつき。居間と引込み戸でつながる。',
+  '子供室A': '道路側の窓は直径1mの円が入る大きさ（代替進入口）。',
+  '子供室B': '子供室Aと同じ大きさ。ベッド・机・収納。',
+  '夫婦寝室': '13㎡以上。ベッド2台と収納。',
+  '廊下': '階段から各室へ。行けない部屋を作らないための背骨。',
+};
+const ADJ = new Map();
+function link(k1, k2, via){ (ADJ.get(k1) || ADJ.set(k1, []).get(k1)).push({to: k2, via}); (ADJ.get(k2) || ADJ.set(k2, []).get(k2)).push({to: k1, via}); }
+(function(){
+  const eps = 0.01;
+  for (const n of [1, 2, 3]){
+    const rs = ROOMS.filter(r => r.n === n), d = DATA.floors[n];
+    for (const A of rs) for (const B of rs){
+      if (A === B) continue;
+      if (Math.abs(A.c - B.a) < eps){                              // 東西にとなり合う
+        const o0 = Math.max(A.b, B.b), o1 = Math.min(A.e, B.e);
+        for (const [o, w, p, l] of d.doors) if (o === 'V' && Math.abs(w - A.c) < eps && p >= o0 - eps && p + l <= o1 + eps)
+          link(A.key, B.key, {x: X(w), z: Z(p + l / 2)});
+      }
+      if (Math.abs(A.e - B.b) < eps){                              // 南北にとなり合う
+        const o0 = Math.max(A.a, B.a), o1 = Math.min(A.c, B.c);
+        for (const [o, w, p, l] of d.doors) if (o === 'H' && Math.abs(w - A.e) < eps && p >= o0 - eps && p + l <= o1 + eps)
+          link(A.key, B.key, {x: X(p + l / 2), z: Z(w)});
+      }
+    }
+    const st = rs.find(r => r.name === '階段'), up = ROOMS.find(r => r.n === n + 1 && r.name === '階段');
+    if (st && up) link(st.key, up.key, {x: up.x, z: up.z, y: up.y});
+    if (n === 1) for (const [f, p, l, k, lab] of d.openings) if (k === 'entry' && f === 'S'){
+      const r = rs.find(r => r.b === 0 && r.a <= p + eps && r.c >= p + l - eps);
+      if (r) link('out:' + lab, r.key, {x: X(p + l / 2), z: Z(0)});
+    }
+  }
+})();
+const OUT = {key: 'out:住宅玄関', x: 0, z: 0, y: FL[1] + EYE, name: '道路（玄関の前）', n: 1};
+(function(){ const e = (ADJ.get(OUT.key) || [])[0]; if (e){ OUT.x = e.via.x; OUT.z = e.via.z + 3000; } })();
+function node(key){ return key.startsWith('out') ? OUT : ROOMS.find(r => r.key === key); }
+function route(from, to){
+  const prev = new Map([[from, null]]), q = [from];
+  while (q.length){ const k = q.shift(); if (k === to) break; for (const e of ADJ.get(k) || []) if (!prev.has(e.to)){ prev.set(e.to, {k, via: e.via}); q.push(e.to); } }
+  if (!prev.has(to)) return null;
+  const nodes = []; for (let k = to; k; k = (prev.get(k) || {}).k) nodes.unshift(k);
+  const pts = [];
+  for (let i = 1; i < nodes.length; i++){
+    const e = prev.get(nodes[i]), nd = node(nodes[i]);
+    pts.push({x: e.via.x, y: e.via.y !== undefined ? e.via.y : node(nodes[i - 1]).y, z: e.via.z});
+    pts.push({x: nd.x, y: nd.y, z: nd.z});
+  }
+  return pts;
+}
+const walk = {active: false, at: OUT.key, pos: {x: OUT.x, y: OUT.y, z: OUT.z}, yaw: Math.PI, pitch: -0.06,
+              path: [], seg: 0, hold: 0, queue: [], lookedAt: 0};
+const TOUR = ['1:住宅玄関', '1:階段', '2:階段', '2:居間・食事室・台所', '2:和室6帖', '2:家事室・納戸', '2:洗面脱衣室', '2:浴室', '2:便所',
+              '3:階段', '3:廊下', '3:子供室A', '3:子供室B', '3:夫婦寝室', '3:納戸', '3:便所',
+              '1:店舗売場', '1:厨房・作業場', '1:スタッフルーム', '1:店舗用便所', '1:倉庫']
+  .map(t => { const [n, nm] = t.split(':'); const r = ROOMS.find(r => r.n === +n && r.name === nm); return r && r.key; }).filter(Boolean);
+const roomsEl = document.getElementById('rooms');
+for (const n of [3, 2, 1]){
+  const row = document.createElement('div'); row.className = 'fl'; row.innerHTML = `<b>${n}F</b>`;
+  for (const r of ROOMS.filter(r => r.n === n)){ const b = document.createElement('button'); b.textContent = r.name; b.dataset.key = r.key;
+    b.addEventListener('click', () => { walk.queue = []; goTo(r.key); }); row.appendChild(b); }
+  roomsEl.appendChild(row);
+}
+let orbitFov = camera.fov;
+function enterWalk(){
+  if (walk.active) return;
+  walk.active = true; document.body.classList.add('walk'); exit.hidden = false;
+  camera.fov = 68; camera.updateProjectionMatrix();
+  setStep(STEPS.length - 1); document.getElementById('explode').value = 0; refresh();
+  Object.values(labelGroups).forEach(g => g.visible = false);
+  walk.at = OUT.key; walk.pos = {x: OUT.x, y: OUT.y, z: OUT.z}; walk.yaw = Math.PI; walk.pitch = -0.06; walk.path = []; walk.hold = 0;
+  showRoom(OUT.key);
+}
+function exitWalk(){
+  walk.active = false; walk.queue = []; walk.path = []; document.body.classList.remove('walk'); exit.hidden = true;
+  camera.fov = orbitFov; camera.updateProjectionMatrix(); applyCam(); refresh();
+}
+function goTo(key){
+  if (!walk.active) enterWalk();
+  const pts = route(walk.at, key); if (!pts) return;
+  walk.path = pts; walk.seg = 0; walk.target = key; walk.hold = 0;
+  roomsEl.querySelectorAll('button').forEach(b => b.classList.toggle('here', b.dataset.key === key));
+}
+function showRoom(key){
+  const r = node(key);
+  document.querySelector('#cap .n').textContent = key.startsWith('out') ? '内覧　スタート' : `内覧　${r.n}階`;
+  capT.textContent = r.name; capP.textContent = key.startsWith('out') ? '道路から住宅玄関へ。店とは別の入口です。' : (NOTES[r.name] || '');
+  capS.innerHTML = key.startsWith('out') ? '' : `床面積 <b>${r.area}㎡</b>（${(r.c - r.a)}マス × ${(r.e - r.b)}マス）`;
+  roomsEl.querySelectorAll('button').forEach(b => b.classList.toggle('here', b.dataset.key === key));
+}
+tour.addEventListener('click', () => { enterWalk(); walk.at = OUT.key; walk.pos = {x: OUT.x, y: OUT.y, z: OUT.z}; walk.queue = TOUR.slice(); goTo(walk.queue.shift()); });
+exit.addEventListener('click', exitWalk);
+const keys = new Set();
+addEventListener('keydown', e => { if (walk.active && ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'w', 'a', 's', 'd'].includes(e.key)){ keys.add(e.key); e.preventDefault(); } });
+addEventListener('keyup', e => keys.delete(e.key));
+let lastT = performance.now();
+function walkFrame(now){
+  const dt = Math.min(0.05, (now - lastT) / 1000); lastT = now;
+  const p = walk.pos;
+  if (walk.path.length){                                              // 自動で歩く
+    const goal = walk.path[walk.seg];
+    const dx = goal.x - p.x, dy = goal.y - p.y, dz = goal.z - p.z, dist = Math.hypot(dx, dy, dz);
+    const stepLen = SPEED * dt;
+    if (dist <= stepLen){ Object.assign(p, goal); walk.seg++;
+      if (walk.seg >= walk.path.length){ walk.path = []; walk.at = walk.target; walk.hold = 2.6; showRoom(walk.at); }
+    } else {
+      p.x += dx / dist * stepLen; p.y += dy / dist * stepLen; p.z += dz / dist * stepLen;
+      if (Math.hypot(dx, dz) > 200 && now - walk.lookedAt > 1500){
+        const want = Math.atan2(dx, dz); let d = want - walk.yaw; d = Math.atan2(Math.sin(d), Math.cos(d));
+        walk.yaw += d * Math.min(1, dt * 5); walk.pitch += (-0.06 - walk.pitch) * dt * 3;
+      }
+    }
+  } else if (walk.hold > 0){                                          // 着いたら見回す
+    walk.hold -= dt; if (now - walk.lookedAt > 1500) walk.yaw += Math.sin(walk.hold * 2.4) * dt * 0.9;
+    if (walk.hold <= 0 && walk.queue.length) goTo(walk.queue.shift());
+  } else {                                                            // キーで歩く
+    const f = SPEED * 0.8 * dt;
+    if (keys.has('ArrowUp') || keys.has('w')){ p.x += Math.sin(walk.yaw) * f; p.z += Math.cos(walk.yaw) * f; }
+    if (keys.has('ArrowDown') || keys.has('s')){ p.x -= Math.sin(walk.yaw) * f; p.z -= Math.cos(walk.yaw) * f; }
+    if (keys.has('ArrowLeft') || keys.has('a')) walk.yaw += dt * 1.6;
+    if (keys.has('ArrowRight') || keys.has('d')) walk.yaw -= dt * 1.6;
+  }
+  camera.position.set(p.x, p.y, p.z);
+  camera.lookAt(p.x + Math.sin(walk.yaw) * Math.cos(walk.pitch), p.y + Math.sin(walk.pitch), p.z + Math.cos(walk.yaw) * Math.cos(walk.pitch));
+}
 
 function resize(){
   const w = stage.clientWidth, h = stage.clientHeight;
@@ -428,7 +586,8 @@ addEventListener('resize', resize); resize(); applyCam(); refresh();
 const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 (function loop(){
   requestAnimationFrame(loop);
-  if (document.getElementById('spin').checked && !drag && !reduce){ cam.theta += 0.004; applyCam(); }
+  if (walk.active) walkFrame(performance.now());
+  else if (document.getElementById('spin').checked && !drag && !reduce){ cam.theta += 0.004; applyCam(); }
   renderer.render(scene, camera);
 })();
 </script>
