@@ -266,6 +266,32 @@ function columns(n, g){
 })();
 
 const FACE = {S: ['H', 0], N: ['H', NY], W: ['V', 0], E: ['V', NX]};
+// 折り返し階段（平面図と同じ）：東の段を北へ6段 → 北の踊場で180度 → 西の段を南へ7段で上の階
+const ST = {a: 0, b: 2, c: 2, d: 6, mid: 1, land: 5, n1: 6, n2: 7, T: 227.5 / 910, risers: {1: 15, 2: 14}};
+function stairR(n){ return (FL[n + 1] - FL[n]) / ST.risers[n]; }
+function stairs(n, g){
+  const r = stairR(n), y0 = FL[n];
+  for (let k = 1; k <= ST.n1; k++){                                   // 東の段（北へ上る）
+    const ya = ST.land - ST.n1 * ST.T + (k - 1) * ST.T;
+    box(g, 'dodai', X(ST.mid) + 10, X(ST.c) - 10, y0 + (k - 1) * r, y0 + k * r, Z(ya), Z(ya + ST.T));
+  }
+  box(g, 'dodai', X(ST.a) + 10, X(ST.c) - 10, y0 + ST.n1 * r, y0 + (ST.n1 + 1) * r, Z(ST.land), Z(ST.d) + 10);   // 踊場
+  for (let k = 1; k <= ST.n2; k++){                                   // 西の段（南へ上る）
+    const ya = ST.land - k * ST.T;
+    box(g, 'dodai', X(ST.a) + 10, X(ST.mid) - 10, y0 + (ST.n1 + k) * r, y0 + (ST.n1 + 1 + k) * r, Z(ya), Z(ya + ST.T));
+  }
+  box(g, 'col', X(ST.mid) - 25, X(ST.mid) + 25, y0 + 850, y0 + (ST.n1 + 1) * r + 900, Z(ST.land - ST.n2 * ST.T), Z(ST.land));  // 段の間の手すり壁
+}
+function stairPath(n){                                              // 内覧で階段を上る道すじ（下の階の階段室 → 上の階）
+  const r = stairR(n), y0 = FL[n], pts = [];
+  pts.push({x: X(1.5), y: y0 + EYE, z: Z(ST.land - ST.n1 * ST.T - 0.3), slow: true});
+  for (let k = 1; k <= ST.n1; k++) pts.push({x: X(1.5), y: y0 + k * r + EYE, z: Z(ST.land - ST.n1 * ST.T + (k - 0.5) * ST.T), slow: true});
+  pts.push({x: X(1.5), y: y0 + (ST.n1 + 1) * r + EYE, z: Z(ST.land + 0.5), slow: true, pause: 0.4});
+  pts.push({x: X(0.5), y: y0 + (ST.n1 + 1) * r + EYE, z: Z(ST.land + 0.5), slow: true});
+  for (let k = 1; k <= ST.n2; k++) pts.push({x: X(0.5), y: y0 + (ST.n1 + 1 + k) * r + EYE, z: Z(ST.land - (k - 0.5) * ST.T), slow: true});
+  pts.push({x: X(0.5), y: FL[n + 1] + EYE, z: Z(ST.land - ST.n2 * ST.T - 0.3), slow: true});
+  return pts;
+}
 function walls(n, g){
   const d = DATA.floors[n], y0 = FL[n], y1 = WALL_TOP[n];
   const SILL = 800, HEAD = 2100;
@@ -293,7 +319,16 @@ function walls(n, g){
     }
     piece(cur, b, 0, y1 - y0, 'wall', {transparent: true, opacity: 0.92});
   }
-  box(g, 'floor', X(0), X(NX), y0 - 39, y0, Z(0), Z(NY), {transparent: true, opacity: 0.35});
+  const fo = {transparent: true, opacity: 0.35};
+  if (n === 1) box(g, 'floor', X(0), X(NX), y0 - 39, y0, Z(0), Z(NY), fo);
+  else {                                         // 階段室（0〜2 × 2〜6）は吹抜け。上りきりの所だけ床
+    box(g, 'floor', X(0), X(NX), y0 - 39, y0, Z(0), Z(ST.b), fo);
+    box(g, 'floor', X(ST.c), X(NX), y0 - 39, y0, Z(ST.b), Z(ST.d), fo);
+    box(g, 'floor', X(0), X(NX), y0 - 39, y0, Z(ST.d), Z(NY), fo);
+    box(g, 'floor', X(ST.mid), X(ST.c), y0 - 39, y0, Z(ST.b), Z(ST.land - ST.n1 * ST.T), fo);
+    box(g, 'floor', X(ST.a), X(ST.mid), y0 - 39, y0, Z(ST.b), Z(ST.land - ST.n2 * ST.T), fo);
+  }
+  if (n < 3) stairs(n, g);
   for (const [nm, ar, a, b, c, e] of d.rooms){
     const s = label(nm.replace(/\s+/g, ''), 420, '#26221d', 'rgba(255,255,255,.82)');
     s.position.set(X((a + c) / 2), y0 + 1500, Z((b + e) / 2)); labelGroups[n].add(s);
@@ -441,14 +476,15 @@ next.addEventListener('click', () => { stopPlay(); setStep(step + 1); });
 addEventListener('keydown', e => { if (walk.active) return; if (e.key === 'ArrowRight') next.click(); if (e.key === 'ArrowLeft') prev.click(); });
 
 // ---------- 内覧（玄関から歩く）。部屋どうしは、図面にある建具の位置でつなぐ
-const EYE = 1500, SPEED = 1700;   // 目の高さ mm、歩く速さ mm/s
+const EYE = 1500, SPEED = 1150, SPEED_STAIR = 650;   // 目の高さ mm、歩く速さ mm/s（階段はゆっくり）
 const ROOMS = [];
 for (const n of [1, 2, 3]) DATA.floors[n].rooms.forEach(([nm, ar, a, b, c, e], i) =>
   ROOMS.push({key: n + ':' + i, n, name: nm.replace(/[\s\u3000]+/g, ''), area: ar, a, b, c, e,
               x: X((a + c) / 2), z: Z((b + e) / 2), y: FL[n] + EYE}));
+ROOMS.filter(r => r.name === '階段').forEach(r => { r.x = X(ST.mid); r.z = Z(ST.b + 0.7); });   // 階段室は南の床に立つ
 const NOTES = {
   '住宅玄関': '道路から直接入る。土間は GL+150、ホールは GL+550。下足入れ。',
-  '階段': '1階から3階まで同じ位置（直通階段）。まわりは竪穴区画。',
+  '階段': '折り返し階段。東の段を北へ6段、踊場で回って西の段を南へ7段。1階は15段（蹴上207）、2階は14段。3階まで同じ位置で、まわりは竪穴区画。',
   '店舗売場': '道路に面した出入口（▲）。陳列棚とレジカウンター。',
   '厨房・作業場': '売場のすぐ裏。流し台・調理台・作業台・オーブン。勝手口は北。',
   '店舗用便所': 'お客が使う。洋式便器と手洗い器。売場から直接。',
@@ -460,7 +496,7 @@ const NOTES = {
   '廊下': '階段から各室へ。行けない部屋を作らないための背骨。',
 };
 const ADJ = new Map();
-function link(k1, k2, via){ (ADJ.get(k1) || ADJ.set(k1, []).get(k1)).push({to: k2, via}); (ADJ.get(k2) || ADJ.set(k2, []).get(k2)).push({to: k1, via}); }
+function link(k1, k2, via){ (ADJ.get(k1) || ADJ.set(k1, []).get(k1)).push({to: k2, via, rev: false}); (ADJ.get(k2) || ADJ.set(k2, []).get(k2)).push({to: k1, via, rev: true}); }
 (function(){
   const eps = 0.01;
   for (const n of [1, 2, 3]){
@@ -479,7 +515,7 @@ function link(k1, k2, via){ (ADJ.get(k1) || ADJ.set(k1, []).get(k1)).push({to: k
       }
     }
     const st = rs.find(r => r.name === '階段'), up = ROOMS.find(r => r.n === n + 1 && r.name === '階段');
-    if (st && up) link(st.key, up.key, {x: up.x, z: up.z, y: up.y});
+    if (st && up) link(st.key, up.key, stairPath(n));
     if (n === 1) for (const [f, p, l, k, lab] of d.openings) if (k === 'entry' && f === 'S'){
       const r = rs.find(r => r.b === 0 && r.a <= p + eps && r.c >= p + l - eps);
       if (r) link('out:' + lab, r.key, {x: X(p + l / 2), z: Z(0)});
@@ -491,19 +527,20 @@ const OUT = {key: 'out:住宅玄関', x: 0, z: 0, y: FL[1] + EYE, name: '道路�
 function node(key){ return key.startsWith('out') ? OUT : ROOMS.find(r => r.key === key); }
 function route(from, to){
   const prev = new Map([[from, null]]), q = [from];
-  while (q.length){ const k = q.shift(); if (k === to) break; for (const e of ADJ.get(k) || []) if (!prev.has(e.to)){ prev.set(e.to, {k, via: e.via}); q.push(e.to); } }
+  while (q.length){ const k = q.shift(); if (k === to) break; for (const e of ADJ.get(k) || []) if (!prev.has(e.to)){ prev.set(e.to, {k, via: e.via, rev: e.rev}); q.push(e.to); } }
   if (!prev.has(to)) return null;
   const nodes = []; for (let k = to; k; k = (prev.get(k) || {}).k) nodes.unshift(k);
   const pts = [];
   for (let i = 1; i < nodes.length; i++){
     const e = prev.get(nodes[i]), nd = node(nodes[i]);
-    pts.push({x: e.via.x, y: e.via.y !== undefined ? e.via.y : node(nodes[i - 1]).y, z: e.via.z});
+    const vs = Array.isArray(e.via) ? (e.rev ? [...e.via].reverse() : e.via) : [Object.assign({pause: 0.7}, e.via)];
+    for (const v of vs) pts.push({x: v.x, y: v.y !== undefined ? v.y : node(nodes[i - 1]).y, z: v.z, pause: v.pause || 0, slow: !!v.slow});
     pts.push({x: nd.x, y: nd.y, z: nd.z});
   }
   return pts;
 }
 const walk = {active: false, at: OUT.key, pos: {x: OUT.x, y: OUT.y, z: OUT.z}, yaw: Math.PI, pitch: -0.06,
-              path: [], seg: 0, hold: 0, queue: [], lookedAt: 0};
+              path: [], seg: 0, hold: 0, pause: 0, queue: [], lookedAt: 0};
 const TOUR = ['1:住宅玄関', '1:階段', '2:階段', '2:居間・食事室・台所', '2:和室6帖', '2:家事室・納戸', '2:洗面脱衣室', '2:浴室', '2:便所',
               '3:階段', '3:廊下', '3:子供室A', '3:子供室B', '3:夫婦寝室', '3:納戸', '3:便所',
               '1:店舗売場', '1:厨房・作業場', '1:スタッフルーム', '1:店舗用便所', '1:倉庫']
@@ -532,7 +569,7 @@ function exitWalk(){
 function goTo(key){
   if (!walk.active) enterWalk();
   const pts = route(walk.at, key); if (!pts) return;
-  walk.path = pts; walk.seg = 0; walk.target = key; walk.hold = 0;
+  walk.path = pts; walk.seg = 0; walk.target = key; walk.hold = 0; walk.pause = 0;
   roomsEl.querySelectorAll('button').forEach(b => b.classList.toggle('here', b.dataset.key === key));
 }
 function showRoom(key){
@@ -551,18 +588,27 @@ let lastT = performance.now();
 function walkFrame(now){
   const dt = Math.min(0.05, (now - lastT) / 1000); lastT = now;
   const p = walk.pos;
-  if (walk.path.length){                                              // 自動で歩く
+  const turnTo = (dx, dy, dz, rate) => {                            // 進む向きへ、ゆっくり顔を向ける
+    if (now - walk.lookedAt < 1500) return;
+    const h = Math.hypot(dx, dz);
+    if (h > 150){ const want = Math.atan2(dx, dz); let d = want - walk.yaw; d = Math.atan2(Math.sin(d), Math.cos(d)); walk.yaw += d * Math.min(1, dt * rate); }
+    const wantP = Math.max(-0.4, Math.min(0.4, Math.atan2(dy, Math.max(h, 1)) * 0.7)) - 0.05;
+    walk.pitch += (wantP - walk.pitch) * Math.min(1, dt * 2.5);
+  };
+  if (walk.pause > 0){                                                // ドアの前で一呼吸（次の部屋の方を見る）
+    walk.pause -= dt;
+    const g2 = walk.path[walk.seg]; if (g2) turnTo(g2.x - p.x, 0, g2.z - p.z, 3);
+  } else if (walk.path.length){                                       // 自動で歩く
     const goal = walk.path[walk.seg];
     const dx = goal.x - p.x, dy = goal.y - p.y, dz = goal.z - p.z, dist = Math.hypot(dx, dy, dz);
-    const stepLen = SPEED * dt;
-    if (dist <= stepLen){ Object.assign(p, goal); walk.seg++;
-      if (walk.seg >= walk.path.length){ walk.path = []; walk.at = walk.target; walk.hold = 2.6; showRoom(walk.at); }
+    const stepLen = (goal.slow ? SPEED_STAIR : SPEED) * dt;
+    if (dist <= stepLen){ Object.assign(p, {x: goal.x, y: goal.y, z: goal.z}); walk.seg++; walk.pause = goal.pause || 0;
+      if (walk.seg >= walk.path.length){ walk.path = []; walk.at = walk.target; walk.hold = 3.0; showRoom(walk.at); }
     } else {
       p.x += dx / dist * stepLen; p.y += dy / dist * stepLen; p.z += dz / dist * stepLen;
-      if (Math.hypot(dx, dz) > 200 && now - walk.lookedAt > 1500){
-        const want = Math.atan2(dx, dz); let d = want - walk.yaw; d = Math.atan2(Math.sin(d), Math.cos(d));
-        walk.yaw += d * Math.min(1, dt * 5); walk.pitch += (-0.06 - walk.pitch) * dt * 3;
-      }
+      const g2 = walk.path[walk.seg + 1];
+      const ahead = (g2 && dist < 500) ? [g2.x - p.x, g2.y - p.y, g2.z - p.z] : [dx, dy, dz];   // 角の手前で次の向きを見はじめる
+      turnTo(ahead[0], ahead[1], ahead[2], 4);
     }
   } else if (walk.hold > 0){                                          // 着いたら見回す
     walk.hold -= dt; if (now - walk.lookedAt > 1500) walk.yaw += Math.sin(walk.hold * 2.4) * dt * 0.9;
