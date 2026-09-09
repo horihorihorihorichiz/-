@@ -1,0 +1,381 @@
+<!DOCTYPE html><html lang="ja"><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>これが来たら、これを意識する｜予想条件リスト</title>
+<style>
+:root{
+  --bg:#fbfaf7; --card:#fff; --line:#e5e0d6; --ink:#232019; --dim:#6b6459;
+  --accent:#b03060; --accent2:#1f6fb2; --ok:#1e7e34; --warn:#c0392b;
+  --amber:#fff8e1; --amberline:#e0c060;
+  --radius:12px;
+  --font:'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP',
+        'Yu Gothic',Meiryo,system-ui,sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font);background:var(--bg);color:var(--ink);
+  line-height:1.85;-webkit-text-size-adjust:100%}
+.wrap{max-width:900px;margin:0 auto;padding:24px 18px 80px}
+header.top{border-bottom:3px solid var(--accent);padding-bottom:14px;
+  margin-bottom:26px}
+header.top .kicker{font-size:12px;letter-spacing:.14em;color:var(--accent);
+  font-weight:700}
+header.top h1{font-size:26px;line-height:1.4;margin-top:4px}
+header.top p{color:var(--dim);font-size:14px;margin-top:6px}
+h2{font-size:20px;margin:38px 0 12px;padding-left:12px;
+  border-left:5px solid var(--accent)}
+h3{font-size:16px;margin:24px 0 8px;color:var(--accent2)}
+p{margin:10px 0}
+ul,ol{margin:10px 0 10px 1.4em}
+li{margin:5px 0}
+a{color:var(--accent2)}
+strong{background:linear-gradient(transparent 62%,#ffe9a8 62%)}
+.card{background:var(--card);border:1px solid var(--line);
+  border-radius:var(--radius);padding:18px;margin:16px 0}
+.note{background:var(--amber);border:1px solid var(--amberline);
+  border-radius:var(--radius);padding:14px 16px;margin:16px 0;font-size:14.5px}
+.note b{color:#6b5200}
+.warn{background:#fdeeee;border:1px solid #e0a0a0}
+.warn b{color:var(--warn)}
+.good{background:#f1f8f2;border:1px solid #b9d8bd}
+.good b{color:var(--ok)}
+figure{margin:22px 0;text-align:center}
+figure img{max-width:100%;height:auto;border:1px solid var(--line);
+  border-radius:8px;background:#fff}
+figcaption{font-size:13px;color:var(--dim);margin-top:8px}
+table{border-collapse:collapse;width:100%;font-size:14px;margin:14px 0;
+  display:block;overflow-x:auto;white-space:nowrap}
+th,td{border:1px solid var(--line);padding:7px 10px;text-align:left}
+th{background:#f3efe7;font-weight:700}
+td.num,th.num{text-align:right}
+tr.total td{background:#f7f3ea;font-weight:700}
+.nav{display:flex;flex-wrap:wrap;gap:10px;margin:22px 0}
+.nav a{display:block;flex:1 1 200px;background:var(--card);
+  border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px;
+  text-decoration:none;color:var(--ink)}
+.nav a:hover{border-color:var(--accent)}
+.nav a b{display:block;font-size:15px;margin-bottom:2px}
+.nav a span{font-size:12.5px;color:var(--dim)}
+.back{display:inline-block;font-size:13px;margin-bottom:14px}
+.kv{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0}
+.kv div{background:#f3efe7;border-radius:8px;padding:8px 12px;font-size:13.5px}
+.kv b{color:var(--accent)}
+footer{margin-top:60px;padding-top:18px;border-top:1px solid var(--line);
+  font-size:12.5px;color:var(--dim)}
+@media print{
+  body{background:#fff}
+  .nav,.back,footer{display:none}
+  figure img{border:none}
+  h2{break-after:avoid}
+}
+
+@media(max-width:520px){
+  .wrap{padding:18px 14px 70px}
+  header.top h1{font-size:21px}
+  h2{font-size:18px}
+}
+
+.q{border-left:4px solid #b9b3a6;background:#f7f5f0;padding:10px 14px;
+  margin:12px 0;font-size:13.5px;color:#333}
+.q .src{display:block;font-size:11.5px;color:#777;margin-top:6px}
+.check{list-style:none;padding:0;margin:8px 0}
+.check li{margin:0}
+.check label{display:flex;gap:10px;align-items:flex-start;padding:6px 8px;
+  border-radius:7px;cursor:pointer;font-size:14px}
+.check label:hover{background:#f1ece2}
+.check input{width:17px;height:17px;margin-top:4px;flex:none;accent-color:#3e6b47}
+.check input:checked + span{color:#888;text-decoration:line-through}
+.tag{display:inline-block;font-size:11px;font-weight:700;color:#fff;
+  background:#c0392b;border-radius:4px;padding:1px 7px;margin-right:6px;vertical-align:middle}
+.tag.g{background:#3e6b47}.tag.b{background:#2f7fd0}.tag.k{background:#8a8f88}
+table{display:table;table-layout:fixed;white-space:normal}
+th,td{overflow-wrap:anywhere;vertical-align:top}
+td.c{width:24%}td.r{width:20%;color:#6b6459;font-size:12.5px}
+.p{display:inline-block;font-family:var(--mono);font-size:11px;padding:0 6px;border-radius:4px;
+  background:#f3efe7;color:#6b6459;margin-right:4px}
+.p.hi{background:#fdeeee;color:#c0392b;font-weight:700}
+.p.mid{background:#fff8e1;color:#7a5a00;font-weight:700}
+.red{background:#fdeeee;border:1px solid #e0a0a0;border-radius:12px;padding:14px 16px;margin:16px 0}
+.red h4{color:#c0392b;margin:0 0 6px;font-size:15px}
+.red li{margin:6px 0}
+</style>
+</head><body><div class="wrap">
+<a class="back" href="index.html">← もくじにもどる</a>
+
+<header class="top">
+  <div class="kicker">令和8年9月13日　商店街に建つ併用住宅（木造3階建て）</div>
+  <h1>これが来たら、これを意識する ── 予想条件リスト</h1>
+  <p>課題の発表は「商店街に建つ併用住宅（木造3階建て）」の一言だけで、
+  店の種類も敷地も高さも<b>当日まで分かりません</b>。
+  だから「何が来るか」を当てるより、<b>「来たらどう動くか」を先に決めておく</b>ページです。
+  当日は問題文を読みながら、来た条件の□にチェックを入れてください。</p>
+</header>
+
+<div class="note"><b>どうやって作ったか。</b>
+建築技術教育普及センターが公表している<b>平成30年〜令和7年の問題用紙</b>（手元にある8年分）から、
+毎年のように付く条件と、たまに付く条件を拾いました。
+そこに、資格学校（総合資格・TAC・日建学院・製図ラボ・全日本建築士会）と独学系の
+課題分析に書かれている「今年はこれが来そう」を重ねています。
+<b>確率の印（◎○△）は私の判断</b>で、公式の情報ではありません。</div>
+
+<h2>0. 当日、問題文はこの順で読む</h2>
+<p>25分で2回読みます。1回目は<b>下の7つに○を付けるだけ</b>。2回目で細かい条件を拾います。</p>
+<ol>
+<li><b>店の種類と、店が何階まであるか</b>（1階だけ＝型のまま／2階まで＝型を捨てる）</li>
+<li><b>敷地図</b>：道路の向き・幅、角地か、高低差、隣の建物との距離</li>
+<li><b>用途地域と防火の指定</b>（準防火＝型のまま／防火地域＝耐火建築物）</li>
+<li><b>高さの制限</b>（最高○m・軒○m）と<b>延べ面積の範囲</b></li>
+<li><b>家族構成</b>（高齢者がいるか、車椅子か、二世帯か）</li>
+<li><b>要求室の表</b>の「〜できるようにする」を全部線で引く（全部が条件）</li>
+<li><b>要求図書</b>：伏図は何階か、立面図はどの面か、部分詳細図はどこを切るか</li>
+</ol>
+
+<h2>1. 店の種類が決めるもの</h2>
+<p>過去の併用住宅は、飲食（平成19年 喫茶店、平成25年 レストラン、平成30年 カフェ）、
+物販（平成21年 工房のある店舗、平成27年 乳幼児用雑貨店）、事務所（令和元年 設計事務所）、
+医院（令和3年 歯科診療所）です。今年は「商店街」なので<b>飲食か物販</b>が本命です。</p>
+<table>
+<tr><th style="width:18%">来た店</th><th style="width:26%">要求されそうな室・家具</th><th>意識すること</th><th style="width:18%">型の対応</th></tr>
+<tr><td class="c"><span class="p hi">◎</span><b>パン屋・菓子・惣菜</b>（物販＋厨房）</td>
+  <td>売場（陳列棚・レジ）、厨房・作業場（作業台・オーブン）、スタッフルーム、店舗用便所、倉庫。勝手口</td>
+  <td>商品の搬入は勝手口から。客が厨房を通らない。店舗用便所は売場から直接</td>
+  <td>そのまま型（予想問題A）</td></tr>
+<tr><td class="c"><span class="p hi">◎</span><b>カフェ・喫茶・食堂</b>（飲食）</td>
+  <td>客席（テーブル・椅子○席以上）、厨房、食品庫、客用便所、洗面コーナー。ときどき屋外テラス席</td>
+  <td>客席の面積は<b>席数×1.5〜2㎡</b>で見当をつける。厨房→客席の配膳動線と、客→便所の動線を交差させない。テラス席は道路に面して</td>
+  <td>売場を客席に、作業場を厨房に読みかえる。席の数だけ確認</td></tr>
+<tr><td class="c"><span class="p mid">○</span><b>雑貨・物販</b></td>
+  <td>売場、レジカウンター、倉庫（ストック）、作業室（ラッピング等）、スタッフルーム</td>
+  <td>売場は道路側の間口いっぱいに（ショーウィンドウ）。倉庫は搬入口のそば</td>
+  <td>厨房を作業室に読みかえる</td></tr>
+<tr><td class="c"><span class="p mid">○</span><b>事務所・教室・塾・ギャラリー</b></td>
+  <td>事務室、応接室、資料室／教室、講師室、待合</td>
+  <td>来客と住まいの入口を分ける。教室なら机の数と避難</td>
+  <td>売場＝事務室、作業場＝資料室</td></tr>
+<tr><td class="c"><span class="p">△</span><b>美容室・整体・小さな医院</b></td>
+  <td>施術スペース、待合、シャンプー台／診察室、待合、受付</td>
+  <td>待合は入口のそば。水を使う席は西の列（配管）に寄せる</td>
+  <td>売場＝施術、厨房＝準備室</td></tr>
+<tr><td class="c"><span class="p mid">○</span><b>貸店舗</b>（他人が営業）</td>
+  <td>店舗部分の要求室は少なめ。「店舗用○○」と分けて書かれる</td>
+  <td>住宅との<b>完全分離</b>（店から住宅へ行く戸を作らない）。メーター・便所も別</td>
+  <td>階段→売場のドアを消す</td></tr>
+</table>
+<div class="note warn"><b>店が2階まで（住宅は3階だけ）と書かれたら、型は使えません。</b>
+全日本建築士会は「非住宅部分が1階か1〜2階のいずれか」と読んでいます。
+2階まで店なら、<b>客用の階段が店の中にもう1本</b>要ります（住宅の階段とは別）。
+延べ面積の配分も変わります。この場合の考え方は8章の赤信号を見てください。</div>
+
+<h2>2. 敷地と法規の条件</h2>
+<table>
+<tr><th style="width:22%">来た条件</th><th style="width:22%">どこで見たか</th><th>意識すること</th><th style="width:18%">教材のどこ</th></tr>
+<tr><td class="c"><span class="p hi">◎</span>近隣商業地域＋<b>準防火地域</b></td>
+  <td class="r">平成30年・令和3年（どちらも商業系の敷地）。型もこの前提</td>
+  <td>木造3階＝<b>準耐火建築物</b>。外壁・軒裏を防火構造以上、階段まわりを竪穴区画、延焼のおそれのある部分の窓に防火設備（◯防）。記述の「防火」はこれ</td>
+  <td>早見盤・記述カード</td></tr>
+<tr><td class="c"><span class="p mid">○</span><b>防火地域</b></td>
+  <td class="r">商店街の中心部なら指定されていることが多い（学校の分析）</td>
+  <td>階数3以上は<b>耐火建築物</b>（法61条）。木造なら1時間耐火の仕様（強化石膏ボード2枚張り等）を記述に書く。図面の描き方は変わらない。<b>「準耐火」と書くと条件違反</b></td>
+  <td>穴うめドリル「防火」</td></tr>
+<tr><td class="c"><span class="p hi">◎</span>建蔽率80%・容積率300%（近隣商業）</td>
+  <td class="r">令和3年・平成30年</td>
+  <td>まず問題にならない。角地なら＋10%。<b>容積率は前面道路×6/10</b>と比べて小さい方</td>
+  <td>まるごと解説 8章</td></tr>
+<tr><td class="c"><span class="p mid">○</span><b>角地</b>（2面道路・隅切り）</td>
+  <td class="r">平成30年・令和2年（交差点付近に駐車の出入口禁止の注あり）</td>
+  <td>出入口を2面のどちらに向けるか決める。隅切りは敷地に入らない。交差点そばに駐車・搬入口を置かない</td>
+  <td>予想問題E</td></tr>
+<tr><td class="c"><span class="p mid">○</span>道路が<b>東・北</b>にある</td>
+  <td class="r">毎年、敷地図で変わる</td>
+  <td>店の間口を道路に向ける。住宅の玄関も道路側。北道路なら型を南北に裏返す（階段は北から上る）</td>
+  <td>予想問題D・F</td></tr>
+<tr><td class="c"><span class="p">△</span>敷地に<b>高低差</b>・傾斜</td>
+  <td class="r">令和3年（南から北へ上り勾配。道路境界をGL±0とする）</td>
+  <td>GLをどこに置くか問題文で確認。屋外スロープ（1/12以下・1/15）。基礎の立上りの高さが変わる。1階の床高を上げて逃がす</td>
+  <td>早見盤「スロープ」</td></tr>
+<tr><td class="c"><span class="p mid">○</span><b>隣の建物と近い</b>（延焼ライン）</td>
+  <td class="r">平成30年（延焼ラインの作図を要求）</td>
+  <td>隣地境界から1階3m・2階以上5mの線を1階平面図に描き、その中の窓に◯防。商店街は隣と近いので来やすい</td>
+  <td>まるごと解説 3章</td></tr>
+<tr><td class="c"><span class="p">△</span>敷地内の<b>既存樹木</b>・保存する塀</td>
+  <td class="r">令和元年（既存樹木）</td>
+  <td>建物と駐輪をよける。配置図に描いて「保存」と書く</td>
+  <td>外まわりずかん</td></tr>
+<tr><td class="c"><span class="p hi">◎</span><b>敷地内の通路 有効1.5m</b>・避難経路</td>
+  <td class="r">令和7年（バルコニー前面の空地と避難経路）</td>
+  <td>出入口▲から道路まで幅1.5mの通路を先に描く。3階建ての令128条もこれ</td>
+  <td>本番チェック進行表</td></tr>
+</table>
+
+<h2>3. 高さ・構造・階段の条件</h2>
+<table>
+<tr><th style="width:22%">来た条件</th><th style="width:22%">どこで見たか</th><th>意識すること</th><th style="width:18%">教材のどこ</th></tr>
+<tr><td class="c"><span class="p hi">◎</span>最高<b>10m以下・軒9m以下</b></td>
+  <td class="r">平成30年・令和3年（3階建てはこの組合せ）</td>
+  <td>型（軒9,350・最高10,806）は<b>アウト</b>。階高を1階2,900・2階2,700・3階2,700、1FLを500、屋根を3寸に。軒8,800・最高9,892</td>
+  <td>旬ネタ 3節</td></tr>
+<tr><td class="c"><span class="p mid">○</span>最高11m・軒9.5m</td>
+  <td class="r">教材の予想</td><td>型のまま</td><td>—</td></tr>
+<tr><td class="c"><span class="p hi">◎</span>耐力壁は<b>バランスよく</b>配置・△印</td>
+  <td class="r">毎年（令和元・2・5・7年）</td>
+  <td>外周の4辺それぞれの両端1/4に耐力壁（四分割法）。△は白ぬき・先を壁へ。記述で「筋かい45×90たすき掛け＋構造用合板t9、壁倍率」</td>
+  <td>穴うめドリル「構造」</td></tr>
+<tr><td class="c"><span class="p mid">○</span>1階の柱は<b>135角</b>と指定</td>
+  <td class="r">令43条2項（3階建ての1階）。学校が注意点に挙げている</td>
+  <td>凡例欄の1階の管柱・通し柱を135×135に書きかえるだけ。図は変えない。指定がなければ120＋構造計算の記述</td>
+  <td>まるごと解説 5章</td></tr>
+<tr><td class="c"><span class="p hi">◎</span>火打梁の代わりに<b>構造用面材</b>でもよい</td>
+  <td class="r">令和元・2・7年（毎年この一文）</td>
+  <td>教材は火打梁で描く（書くことが少ない）。面材にするなら「構造用合板t24、N75@150」まで明記</td>
+  <td>部材ずかん</td></tr>
+<tr><td class="c"><span class="p hi">◎</span><b>蹴上180以下・踏面225以上</b></td>
+  <td class="r">令和元年・令和2年（注3）。3年に1度は来る</td>
+  <td>型の階段（蹴上207）は使えない。3,100÷180＝17.2→<b>18段</b>。折り返しなら8段＋踊場＋9段で、階段室を<b>2×5マス（1,820×4,550）</b>に1マス伸ばす。踏面225なら9段＝2,025で入る</td>
+  <td>早見盤「蹴上180」</td></tr>
+<tr><td class="c"><span class="p mid">○</span>階段に<b>踊場を設ける</b></td>
+  <td class="r">令和元年の注</td>
+  <td>型は折り返しなので踊場がある。直階段にしないこと</td>
+  <td>まるごと解説 3章</td></tr>
+<tr><td class="c"><span class="p">△</span><b>住宅用エレベーター</b></td>
+  <td class="r">平成30年・令和3年（RC3階のとき、心々1,500×1,500）</td>
+  <td>木造では来にくいが、来たら階段の横に1,500角の枠を1〜3階同じ位置に。床面積に算入。竪穴区画に含める</td>
+  <td>—</td></tr>
+<tr><td class="c"><span class="p mid">○</span>床は<b>根太レス</b>／断熱材の<b>材料名・厚さ</b>を明記</td>
+  <td class="r">令和7年（断熱の材料名・厚さ・施工箇所）</td>
+  <td>部分詳細図の文字がそのまま点。GW16K t100・防湿フィルムt0.2・床断熱XPS t50</td>
+  <td>部分詳細図の描き方</td></tr>
+</table>
+
+<h2>4. 住まいの条件</h2>
+<table>
+<tr><th style="width:22%">来た条件</th><th style="width:22%">どこで見たか</th><th>意識すること</th><th style="width:18%">教材のどこ</th></tr>
+<tr><td class="c"><span class="p mid">○</span><b>高齢の親が同居</b>（階段を使わずに生活）</td>
+  <td class="r">平成26年（車椅子）・平成29年・令和2年</td>
+  <td>親の寝室と便所を<b>1階</b>に。店とどう分けるか。段差なし・手すり・引戸・廊下有効780以上</td>
+  <td>予想問題B</td></tr>
+<tr><td class="c"><span class="p">△</span><b>車椅子</b>使用者</td>
+  <td class="r">平成26年</td>
+  <td>玄関にスロープ（1/12）、便所は1,820×1,820、廊下有効900以上、出入口有効800以上、引戸</td>
+  <td>早見盤「スロープ」</td></tr>
+<tr><td class="c"><span class="p">△</span><b>二世帯</b>（台所2つ・玄関2つ）</td>
+  <td class="r">平成30年（RC）</td>
+  <td>3階にミニキッチンと便所を足す。玄関は共用でよいか問題文で確認。面積が増えるので9マス幅も考える</td>
+  <td>予想問題B（9マス）</td></tr>
+<tr><td class="c"><span class="p hi">◎</span>LDKは1室に<b>25㎡以上</b>、和室は<b>居間に隣接</b></td>
+  <td class="r">令和5年・7年の書き方</td>
+  <td>型の居間29.81㎡・和室は引込み戸で隣接。「〜㎡以上」は面積表で全部確認</td>
+  <td>本番チェック進行表</td></tr>
+<tr><td class="c"><span class="p mid">○</span><b>バルコニー</b>を設ける</td>
+  <td class="r">令和3年・7年（設置場所は適宜）</td>
+  <td>2階南に掃き出し窓＋バルコニー。手すり1,100以上。床面積に入れない。部分詳細図がここを切る可能性（令和3年）</td>
+  <td>描き方 1-2節</td></tr>
+<tr><td class="c"><span class="p mid">○</span><b>屋外テラス</b>をLDKと直接行き来</td>
+  <td class="r">令和元・2・7年（毎年ちかい）</td>
+  <td><b>要注意。</b>LDKが2階だと地面のテラスには直接行けない。「屋外テラス」が住宅用なら<b>店の奥行きを減らして1階に下屋を作り、その屋根をテラス（ルーフテラス）にする</b>か、LDKを1階に置きかえる。カフェのテラス席なら道路側の1階でよい</td>
+  <td>8章 赤信号</td></tr>
+<tr><td class="c"><span class="p mid">○</span><b>吹抜け</b>（○㎡以上）</td>
+  <td class="r">令和5年（10㎡以上）・令和7年</td>
+  <td>居間の上（3階の床）に穴。伏図でその範囲に梁を通さず、周りに火打梁。1階平面図に破線、上階に「吹抜」。床面積に入れない。竪穴区画の対象</td>
+  <td>まるごと解説 5章</td></tr>
+<tr><td class="c"><span class="p mid">○</span>玄関に<b>土間</b>（1,820×1,820以上）・土間コンクリート</td>
+  <td class="r">令和5年（土間コンクリート仕上げ）・令和7年（心々1,820×1,820以上）</td>
+  <td>玄関土間を1マス角以上に。GLからの高さ（＋150など）を平面図に書く。店の売場を土間にする指定もあり得る</td>
+  <td>型の1階</td></tr>
+<tr><td class="c"><span class="p hi">◎</span>子ども室<b>2室・同じ広さ</b>／夫婦寝室○㎡以上</td>
+  <td class="r">令和元・7年の書き方</td>
+  <td>型は子供室12.42㎡×2、寝室19.87㎡。「各○㎡以上」を面積表で確認</td>
+  <td>型の3階</td></tr>
+</table>
+
+<h2>5. 屋外施設の条件</h2>
+<table>
+<tr><th style="width:24%">来た条件</th><th style="width:22%">どこで見たか</th><th>意識すること</th></tr>
+<tr><td class="c"><span class="p hi">◎</span><b>駐輪スペース</b> ○台</td>
+  <td class="r">毎年（令和7年10台、平成30年8台、令和元年4台、令和3年5台）</td>
+  <td>1台 500×1,900。10台なら5,000×1,900＝5.5マス×2マス。店の前に置くと出入口をふさぐので横へ</td></tr>
+<tr><td class="c"><span class="p mid">○</span><b>駐車スペース</b> 1〜2台（住宅用・搬入用）</td>
+  <td class="r">令和元年2台・令和2年1台（幅3,500）・令和3年2台</td>
+  <td>1台 2,500×5,000（3マス×5.5マス）。8マス間口では店の横に入らない。<b>裏（北）へ回すか、来客用は近隣駐車場</b>と書かれることが多い</td></tr>
+<tr><td class="c"><span class="p hi">◎</span><b>ゴミ置き場</b> 2,000×1,000</td>
+  <td class="r">令和7年</td>
+  <td>勝手口のそば。店のゴミと家のゴミ。道路から見えにくい所</td></tr>
+<tr><td class="c"><span class="p">△</span><b>緑化スペース</b> 15㎡以上（道路に面して）</td>
+  <td class="r">令和2年</td>
+  <td>植栽の記号を並べて面積を書く。駐輪と取り合いになる</td></tr>
+<tr><td class="c"><span class="p mid">○</span>門・塀・植栽</td>
+  <td class="r">毎年</td>
+  <td>塀H1,200。店の前は塀を切って開く。商店街なので<b>店の前面は塀なし</b>が自然</td></tr>
+<tr><td class="c"><span class="p mid">○</span>店の<b>搬入口・勝手口</b>を設ける</td>
+  <td class="r">物販・飲食では毎回に近い</td>
+  <td>北または横。道路から搬入口までの通路を確保</td></tr>
+</table>
+
+<h2>6. 要求図書のゆれ</h2>
+<table>
+<tr><th style="width:24%">来た書き方</th><th>意識すること</th></tr>
+<tr><td class="c">伏図が「<b>2階床伏図</b>」</td><td>1階の壁の上・2階の壁の下に梁。店舗売場の上は柱だけで受けるので、C通りの大梁を落とさない</td></tr>
+<tr><td class="c">伏図が「<b>3階床伏図兼小屋伏図</b>」1枠</td><td>2階の壁の上・3階の壁の下に梁。小屋伏図も同じ枠に描くのか、別枠かは用紙で確認</td></tr>
+<tr><td class="c">立面図が「<b>道路側</b>」「東側」</td><td>南以外の面を描く練習が要る。窓の位置は平面図から糸を垂らす</td></tr>
+<tr><td class="c">部分詳細図が「<b>軒先</b>」「<b>バルコニー</b>」「基礎〜2階床」</td><td>切る場所は問題文が決める（令和元年 軒先、令和3年 バルコニー）。切断位置を打つ平面図もかわる</td></tr>
+<tr><td class="c">立面図に「<b>建築物の最高の高さ</b>」＋軒高・各階床高</td><td>今年は断面図がないので、高さは立面図でしか見せられない。GL・1FL・2FL・3FL・軒高・最高を全部書く</td></tr>
+<tr><td class="c">「延べ面積 ○㎡以上△㎡以下」</td><td>1マス0.8281㎡。8×10＝198.72／9×10＝223.56／7×11＝191.28／7×10＝173.90。範囲を見てマス数を選ぶ</td></tr>
+<tr><td class="c">計画の要点が「<b>商店街との関係</b>」「上下階の音」「省エネ」</td><td>商店街＝ファサード・ショーウィンドウ・庇・看板・通りへの開き方。音＝店の上に寝室を置かない・床の遮音。省エネ＝断熱・通風・日射（平成30年③）</td></tr>
+</table>
+
+<h2>7. 当日のチェック（来た条件に印を付ける）</h2>
+<p>チェックはこの端末に保存されます。本番では問題用紙の余白に同じ印を付けてください。</p>
+<ul class="check" data-store="yosou">
+<li><label><input type="checkbox"><span><span class="tag">店</span>店は<b>1階だけ</b>か（2階まで＝型を捨てて客用階段を足す）</span></label></li>
+<li><label><input type="checkbox"><span><span class="tag">店</span>店の種類：物販／飲食／事務所／貸店舗 ── 要求室と家具の名前を全部拾った</span></label></li>
+<li><label><input type="checkbox"><span><span class="tag b">敷地</span>道路の向き・幅員・角地・隅切り・高低差・既存樹木</span></label></li>
+<li><label><input type="checkbox"><span><span class="tag b">敷地</span>準防火か防火地域か（防火地域＝耐火建築物と記述）</span></label></li>
+<li><label><input type="checkbox"><span><span class="tag g">高さ</span>最高○m・軒○m ── 型の10,806／9,350で足りるか</span></label></li>
+<li><label><input type="checkbox"><span><span class="tag g">高さ</span>蹴上・踏面の数字の指定（180以下なら階段室を1マス伸ばす）</span></label></li>
+<li><label><input type="checkbox"><span><span class="tag g">面積</span>延べ面積の範囲 → 8×10で入るか、9×10か7×11か</span></label></li>
+<li><label><input type="checkbox"><span><span class="tag k">住</span>高齢者・車椅子・二世帯の有無（1階に寝室が要るか）</span></label></li>
+<li><label><input type="checkbox"><span><span class="tag k">住</span>屋外テラス／バルコニー／吹抜け／土間 の指定</span></label></li>
+<li><label><input type="checkbox"><span><span class="tag k">外</span>駐輪○台・駐車○台・ゴミ置き場・緑化・塀の指定</span></label></li>
+<li><label><input type="checkbox"><span><span class="tag">図</span>伏図は何階か／立面図はどの面か／部分詳細図はどこを切るか／高さを書く図面</span></label></li>
+<li><label><input type="checkbox"><span><span class="tag">記述</span>3問のテーマを先に読んだ（構造・動線・防火避難・商店街・音・省エネ）</span></label></li>
+</ul>
+
+<h2>8. 赤信号 ── これが来たら「型のまま」をやめる</h2>
+<div class="red">
+<h4>型を大きく変えないと条件違反になる5つ</h4>
+<ul>
+<li><b>店が2階まで。</b>住宅は3階だけ。店内に客用階段（幅900以上・蹴上220以下）をもう1本。住宅の玄関と階段は別。2階の店の上（3階）が住宅なので、3階床伏図の梁は店の壁に合わせる。延べ面積のうち店が2/3になる</li>
+<li><b>防火地域。</b>木造3階＝耐火建築物。記述の「準耐火」を全部「耐火」に書きかえ、外壁・軒裏・床・屋根を「1時間耐火構造（強化石膏ボードt15を2枚張り 等）」と書く。図面は同じ</li>
+<li><b>屋外テラスをLDKと直接行き来（LDKは2階）。</b>店の奥行きを1〜2マス減らして1階の北に下屋を作り、その屋根をルーフテラスに。そのとき伏図は「3階床伏図兼2階小屋伏図」になり、下屋の屋根を描く。これが無理ならLDKを1階の奥に置き、店を小さくする</li>
+<li><b>蹴上180以下。</b>18段。階段室を2×5マス（0〜2×2〜7）に伸ばし、店舗用便所と倉庫を北へずらす。2階・3階の便所と廊下の位置はそのまま</li>
+<li><b>延べ面積が240㎡超、または160㎡未満。</b>8×10（198.72）では入らない。9×10（223.56）・9×11（245.9）か、7×10（173.9）・7×9（156.5）を選び直す。マス数を決めてから部屋を割る</li>
+</ul>
+</div>
+<div class="note good"><b>逆に、これが来ても慌てない。</b>
+道路の向き（D・E・F）、間口の広さ（B・C）、高齢者の同居（B）、高さ9m（旬ネタ3節）、
+軒先の部分詳細図（描き方1-2）、窓の◯防、駐輪10台、ゴミ置き場は、
+<b>全部この教材に答えがあります。</b>問題文の該当ページを開くだけです。</div>
+
+<h2>9. 出典</h2>
+<ul>
+<li>建築技術教育普及センター　二級建築士「設計製図の試験」問題用紙（平成30年・令和元年・2年・3年・5年・7年）と標準解答例・合否判定基準</li>
+<li>総合資格学院「令和8年度 二級建築士 設計製図試験 課題発表」（想定用途別の室構成・法規の注意点）</li>
+<li>一般社団法人 全日本建築士会「令和8年度 二級建築士設計製図試験の課題発表」（店が1階か1〜2階かの読み）</li>
+<li>TAC・日建学院・製図ラボ・最端製図の課題分析ページ（過去課題の一覧と特徴）</li>
+<li>独学合格チャンネル（note）「令和8年 二級建築士 製図課題 徹底分析」</li>
+</ul>
+
+<footer>この教材は予想です。正解は当日の問題文だけ。条件を1つ読み落とすと、図面がうまくてもランクⅣになります。</footer>
+</div>
+<script>
+document.querySelectorAll('.check[data-store]').forEach(list=>{
+  const key='seizu-'+list.dataset.store;
+  let saved=[];
+  try{saved=JSON.parse(localStorage.getItem(key)||'[]');}catch(e){}
+  const boxes=[...list.querySelectorAll('input')];
+  boxes.forEach((b,i)=>{
+    b.checked=!!saved[i];
+    b.onchange=()=>{try{localStorage.setItem(key,
+      JSON.stringify(boxes.map(x=>x.checked)));}catch(e){}};
+  });
+});
+</script>
+</body></html>
