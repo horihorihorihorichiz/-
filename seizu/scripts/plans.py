@@ -59,7 +59,7 @@ FLOORS = {
         # 室内の建具（開口）: (向き, 壁の位置, 沿い座標, 長さ)
         doors=[
             ('H', 2, 0.4, 1.2),   # 玄関 → 階段
-            ('V', 2, 3.2, 1.0),   # 階段 → 売場（竪穴区画：防火設備）
+            ('V', 2, 2.2, 1.0),   # 階段（南の上りはじめ側）→ 売場（竪穴区画：防火設備）
             ('H', 6, 3.0, 1.6),   # 売場 → 厨房
             ('V', 2, 6.5, 1.0),   # 厨房 → 店舗用便所
             ('V', 2, 8.5, 1.0),   # 厨房 → 倉庫
@@ -76,8 +76,8 @@ FLOORS = {
             ('洗面脱衣室',        '3.31', 0, 6, 2, 8, 'water'),
             ('浴　室',            '3.31', 0, 8, 2, 10, 'water'),
             ('居間・食事室・台所', '29.81', 2, 0, 8, 6, 'living'),
-            ('和室 6帖',          '9.93', 2, 6, 5, 10, 'living'),
-            ('家事室・納戸',      '9.93', 5, 6, 8, 10, 'store'),
+            ('和室 6帖',          '9.93', 5, 6, 8, 10, 'living'),
+            ('家事室・納戸',      '9.93', 2, 6, 5, 10, 'store'),
         ],
         openings=[
             ('S', 2.5, 3.0, 'balc', 'バルコニー'),
@@ -93,12 +93,12 @@ FLOORS = {
             ('W', 8.4, 1.2, 'win', ''),
         ],
         doors=[
-            ('H', 2, 0.4, 1.2),   # 便所 → 階段ホール
-            ('V', 2, 3.2, 1.0),   # 階段ホール → 居間
-            ('H', 6, 0.4, 1.2),   # 階段ホール → 洗面脱衣室
+            ('H', 2, 0.4, 1.2),   # 便所 → 階段ホール（南の上りはじめ側）
+            ('V', 2, 2.2, 1.0),   # 階段ホール → 居間（竪穴区画：防火設備）
+            ('H', 6, 3.0, 1.0),   # 居間 → 家事室・納戸
+            ('H', 6, 5.5, 2.0),   # 居間 → 和室（引込み戸）
+            ('V', 2, 6.5, 1.0),   # 家事室 → 洗面脱衣室（家事動線）
             ('H', 8, 0.4, 1.2),   # 洗面脱衣室 → 浴室
-            ('H', 6, 3.0, 2.0),   # 居間 → 和室（引込み戸）
-            ('V', 5, 7.5, 1.2),   # 和室 → 家事室・納戸
         ],
         note='水まわりを西側にまとめて、1階・3階と配管の位置をそろえる。',
         stair_up='UP 14段で3階へ（蹴上207.1 / 踏面227.5）／ DN 15段で1階へ',
@@ -110,29 +110,30 @@ FLOORS = {
             ('便　所',   '3.31', 0, 0, 2, 2, 'water'),
             ('階　段',   '6.62', 0, 2, 2, 6, 'stair'),
             ('納　戸',   '6.62', 0, 6, 2, 10, 'store'),
-            ('子供室A',  '12.42', 2, 0, 5, 5, 'living'),
-            ('子供室B',  '12.42', 5, 0, 8, 5, 'living'),
-            ('廊　下',   '4.96', 2, 5, 8, 6, 'hall'),
+            ('廊　下',   '4.96', 2, 0, 3, 6, 'hall'),
+            ('子供室A',  '12.42', 3, 0, 8, 3, 'living'),
+            ('子供室B',  '12.42', 3, 3, 8, 6, 'living'),
             ('夫婦寝室', '19.87', 2, 6, 8, 10, 'living'),
         ],
         openings=[
-            ('S', 2.6, 1.8, 'win', ''),
-            ('S', 5.6, 1.8, 'win', ''),
+            ('S', 3.4, 1.8, 'win', ''),
+            ('S', 5.8, 1.8, 'win', ''),
             ('S', 0.4, 1.2, 'win', ''),
-            ('E', 2.0, 2.0, 'win', ''),
-            ('E', 6.0, 2.0, 'win', ''),
+            ('E', 0.5, 2.0, 'win', ''),
+            ('E', 3.5, 2.0, 'win', ''),
+            ('E', 7.0, 2.0, 'win', ''),
             ('N', 2.6, 2.2, 'win', ''),
             ('N', 5.6, 2.2, 'win', ''),
-            ('W', 1.0, 2.5, 'win', ''),
+            ('W', 0.4, 1.2, 'win', ''),
             ('W', 9.0, 1.0, 'win', ''),
         ],
         doors=[
-            ('H', 2, 0.4, 1.2),   # 便所 → 階段ホール
-            ('V', 2, 5.2, 0.8),   # 階段ホール → 廊下
-            ('H', 6, 0.4, 1.2),   # 階段ホール → 納戸
-            ('H', 5, 3.0, 1.0),   # 廊下 → 子供室A
-            ('H', 5, 6.0, 1.0),   # 廊下 → 子供室B
-            ('H', 6, 4.0, 1.0),   # 廊下 → 夫婦寝室
+            ('H', 2, 0.4, 1.2),   # 便所 → 階段ホール（南の上りはじめ側）
+            ('V', 2, 2.2, 1.0),   # 階段ホール → 廊下（竪穴区画：防火設備）
+            ('V', 3, 1.0, 1.0),   # 廊下 → 子供室A
+            ('V', 3, 4.0, 1.0),   # 廊下 → 子供室B
+            ('H', 6, 2.05, 0.9),  # 廊下 → 夫婦寝室
+            ('V', 2, 7.5, 1.0),   # 夫婦寝室 → 納戸（ウォークインクロゼット）
         ],
         note='廊下を東西に1本通して、階段から全部屋へ行けるようにする。',
         stair_up='DN 14段で2階へ（上に階はないので上りはない）',
@@ -661,6 +662,27 @@ def framing(lower, upper=None, floors=None, nx=None, ny=None, xlines=None,
     return out
 
 
+def mirror_ns(d, ny=None):
+    """南北を入れかえた階（北道路の問題F用）。階段は北から上って南に踊り場。"""
+    ny = NY if ny is None else ny
+    m = dict(d)
+    m['rooms'] = [(nm, ar, a, ny - e, c, ny - b, k)
+                  for nm, ar, a, b, c, e, k in d['rooms']]
+    ops = []
+    for f, p, l, k, lab in d.get('openings', []):
+        if f in ('S', 'N'):
+            ops.append(({'S': 'N', 'N': 'S'}[f], p, l, k, lab))
+        else:
+            ops.append((f, ny - (p + l), l, k, lab))
+    m['openings'] = ops
+    m['doors'] = [(('H', ny - w, p, l) if o == 'H' else ('V', w, ny - (p + l), l))
+                  for o, w, p, l in d.get('doors', [])]
+    sa, sb, sc, sd = d.get('stair_box', (0, 2, 2, 6))
+    m['stair_box'] = (sa, ny - sd, sc, ny - sb)
+    m['stair_flip'] = True
+    return m
+
+
 def _bearing_marks(d, nx, ny, xlines, ylines):
     """耐力壁に△印を付ける位置を、壁と開口から自動で決める。
 
@@ -848,7 +870,9 @@ def draw_floor(n, d=None):
     #   3階 … 下りだけ（DN・西）
     mid = (sa + sc) / 2.0
     T = 227.5 / 910.0                     # 踏面227.5mm（910÷4）をマスに直す
-    land = sd - 1                         # 踊り場（北の1マス）
+    flip = bool(d.get('stair_flip'))      # True: 北から上って南に踊り場（玄関が北のとき）
+    land = (sb + 1) if flip else (sd - 1) # 踊り場（北または南の1マス）
+    sg = -1.0 if flip else 1.0            # 段の並ぶ向き（踊り場から見て）
     n1, n2 = d.get('stair_runs', (6, 7))  # 東の段・西の段の踏面の数
     col = '#8a6d00'
     mode = d.get('stair_mode') or (
@@ -857,22 +881,25 @@ def draw_floor(n, d=None):
     s.line(px(sa) + 3, py(land), px(sc) - 3, py(land), stroke=col,
            stroke_width=1.6)
     # 2本の段を分ける線（手すり側）
-    s.line(px(mid), py(sb), px(mid), py(land), stroke=col, stroke_width=1.4)
+    s.line(px(mid), py(sd if flip else sb), px(mid), py(land), stroke=col,
+           stroke_width=1.4)
     for k in range(1, n1 + 1):            # 東の段
-        yy = py(land - k * T)
+        yy = py(land - sg * k * T)
         s.line(px(mid) + 2, yy, px(sc) - 3, yy, stroke=col, stroke_width=0.9)
     for k in range(1, n2 + 1):            # 西の段
-        yy = py(land - k * T)
+        yy = py(land - sg * k * T)
         s.line(px(sa) + 3, yy, px(mid) - 2, yy, stroke=col, stroke_width=0.9)
 
     def _arrow(gx, n, label, color):
         """南のはしから北へ向かう矢印。上りも下りも歩き出す向きは同じ。"""
         ax = px(gx)
-        ybot, ytop = py(land - n * T - 0.22), py(land - 0.12)
-        s.line(ax, ybot, ax, ytop + 9, stroke=color, stroke_width=1.6)
-        s.polygon([(ax, ytop), (ax - 5, ytop + 9), (ax + 5, ytop + 9)],
+        ybot, ytop = py(land - sg * (n * T + 0.22)), py(land - sg * 0.12)
+        e = 9 if not flip else -9
+        s.line(ax, ybot, ax, ytop + e, stroke=color, stroke_width=1.6)
+        s.polygon([(ax, ytop), (ax - 5, ytop + e), (ax + 5, ytop + e)],
                   fill=color)
-        s.text(ax, ybot + 14, label, size=11, fill=color, weight='700')
+        s.text(ax, ybot + (14 if not flip else -8), label, size=11,
+               fill=color, weight='700')
 
     def _cut(g0, g1, gy):
         """切断線。ここから先は「切ったより上」なので本来は見えない。"""
@@ -882,10 +909,10 @@ def draw_floor(n, d=None):
 
     if mode in ('bottom', 'middle'):
         _arrow((mid + sc) / 2.0, n1, 'UP', col)
-        _cut(mid + 0.05, sc - 0.05, land - (n1 - 1) * T)
+        _cut(mid + 0.05, sc - 0.05, land - sg * (n1 - 1) * T)
     if mode in ('middle', 'top'):
         _arrow((sa + mid) / 2.0, n2, 'DN', '#2f7fd0')
-    s.text(px(mid), py(land + 0.42), '踊場', size=9.5, fill='#a08840')
+    s.text(px(mid), py(land + sg * 0.42), '踊場', size=9.5, fill='#a08840')
 
     # ---- 耐力壁の△印（要求図書に「耐力壁には△印を付ける」と明記） ----
     for ori, ln_, mid_ in _bearing_marks(d, nx, ny, xlines, ylines):

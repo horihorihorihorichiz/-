@@ -237,6 +237,64 @@ def check_framing():
                '%s：%s通りに梁が通っていない' % (name, y))
 
 
+# ---------------------------------------------------------------- 7c 階段室のドアと到達
+def check_stair_access():
+    """折り返し階段のドアは上りはじめ側（踊り場の反対）だけ。全室に階段や入口からドアで行ける。"""
+    import answers
+    sets = [('型', {1: plans.FLOORS[1], 2: plans.FLOORS[2], 3: plans.FLOORS[3]})]
+    for k, fl in sorted(answers.PLANS.items()):
+        sets.append(('予想問題' + k, {1: fl[0], 2: fl[1], 3: fl[2]}))
+    for name, fl in sets:
+        for n, d in fl.items():
+            sa, sb, sc, sd = d.get('stair_box', (0, 2, 2, 6))
+            flip = bool(d.get('stair_flip'))
+            nx, ny = d.get('nx', plans.NX), d.get('ny', plans.NY)
+            hall = (sd - 1.5, sd) if flip else (sb, sb + 1.5)
+            land_wall, hall_wall = (sb, sd) if flip else (sd, sb)
+            rooms = d['rooms']
+
+            def rid(x, y):          # 点を含む部屋（重なっていたら小さいほう）
+                best = None
+                for i, (_, _, a, b, c, e, _) in enumerate(rooms):
+                    if a - 1e-6 <= x <= c + 1e-6 and b - 1e-6 <= y <= e + 1e-6:
+                        if best is None or (c - a) * (e - b) < best[1]:
+                            best = (i, (c - a) * (e - b))
+                return None if best is None else best[0]
+            adj = {i: set() for i in range(len(rooms))}
+            for o, w, p, l in d.get('doors', []):
+                mid = p + l / 2.0
+                r1, r2 = ((rid(w - .01, mid), rid(w + .01, mid)) if o == 'V'
+                          else (rid(mid, w - .01), rid(mid, w + .01)))
+                if r1 is not None and r2 is not None and r1 != r2:
+                    adj[r1].add(r2)
+                    adj[r2].add(r1)
+                if o == 'V' and w in (sa, sc) and p < sd and p + l > sb:
+                    ck(hall[0] - 1e-6 <= p and p + l <= hall[1] + 1e-6,
+                       '%s %d階：階段室の横のドア(%s,%s)が上りはじめ側（%s〜%s）にない'
+                       % (name, n, w, p, hall[0], hall[1]))
+                elif o == 'H' and w == land_wall and p < sc and p + l > sa:
+                    ck(False, '%s %d階：踊り場側の壁(%s)にドアがある' % (name, n, w))
+            start = {i for i, r in enumerate(rooms) if r[6] == 'stair'}
+            if n == 1:
+                for f, p, l, k, lab in d.get('openings', []):
+                    if k != 'entry':
+                        continue
+                    m = p + l / 2.0
+                    r = {'S': rid(m, .01), 'N': rid(m, ny - .01),
+                         'W': rid(.01, m), 'E': rid(nx - .01, m)}[f]
+                    if r is not None:
+                        start.add(r)
+            seen, q = set(start), list(start)
+            while q:
+                i = q.pop()
+                for j in adj[i]:
+                    if j not in seen:
+                        seen.add(j)
+                        q.append(j)
+            for i, r in enumerate(rooms):
+                ck(i in seen, '%s %d階：%s に階段・入口からドアで行けない' % (name, n, r[0]))
+
+
 # ---------------------------------------------------------------- 8 本文
 def check_text(ncol):
     pages = html('kaisetsu.src.html', 'onepage.src.html', 'buzai.src.html',
@@ -265,6 +323,7 @@ def main():
     check_stair()
     check_beam()
     check_framing()
+    check_stair_access()
     check_text(0)
     print('柱 1階%d・2階%d・3階%d本（うち3階とも同じ位置 %d本）／'
           '1階%.2f㎡・延べ%.2f㎡／1FL+%d・軒%d・最高%d'
