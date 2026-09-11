@@ -45,6 +45,53 @@ def _openings(d, nx, ny):
     return op
 
 
+def genkan_face(d):
+    """住宅玄関のドアがある外壁の向き（土間はその向きに1マス）。"""
+    ents = [(f, l, lab) for f, p, l, k, lab in d['openings'] if k == 'entry']
+    for f, l, lab in ents:
+        if '玄関' in (lab or ''):
+            return f
+    side = d.get('road_side', 'S')
+    road = [(l, f) for f, l, lab in ents if f in side]
+    return min(road)[1] if road else 'S'
+
+
+DOMA = dict(gl='GL＋400', porch='GL＋380', kamachi=150)   # 玄関土間・ポーチ
+
+
+def _draw_genkan(s, px, py, name, ar, a, b, c, e, face, fl):
+    """玄関は道路がわ1マスを土間にして上がり框で分け、両方の高さを書く。
+
+    土間 GL＋400（土間コンクリート）→ 上がり框 150 → ホール GL＋550。
+    令和7年の標準解答例（玄関＋370／ホール＋500）と同じ考え方。
+    """
+    wt = WT * G / 2.0
+    if face == 'S':
+        dm, hl = (a, b, c, b + 1), (a, b + 1, c, e)
+        ln = ((px(a) + wt, py(b + 1)), (px(c) - wt, py(b + 1)))
+    elif face == 'N':
+        dm, hl = (a, e - 1, c, e), (a, b, c, e - 1)
+        ln = ((px(a) + wt, py(e - 1)), (px(c) - wt, py(e - 1)))
+    elif face == 'E':
+        dm, hl = (c - 1, b, c, e), (a, b, c - 1, e)
+        ln = ((px(c - 1), py(b) - wt), (px(c - 1), py(e) + wt))
+    else:
+        dm, hl = (a, b, a + 1, e), (a + 1, b, c, e)
+        ln = ((px(a + 1), py(b) - wt), (px(a + 1), py(e) + wt))
+    (x1_, y1_), (x2_, y2_) = ln
+    s.line(x1_, y1_, x2_, y2_, stroke=INK, stroke_width=1.8)     # 上がり框
+
+    def ctr(r):
+        return (px(r[0]) + px(r[2])) / 2.0, (py(r[1]) + py(r[3])) / 2.0
+    cx, cy = ctr(hl)
+    s.text(cx, cy - 7, name, size=10, weight='700')
+    s.text(cx, cy + 4, ar + '㎡', size=9)
+    s.text(cx, cy + 15, fl, size=8.5, fill='#333')
+    cx, cy = ctr(dm)
+    s.text(cx, cy - 1, '土間', size=8.5)
+    s.text(cx, cy + 10, DOMA['gl'], size=8.5, fill='#333')
+
+
 def draw(d, title, sub=''):
     nx = d.get('nx', plans.NX)
     ny = d.get('ny', plans.NY)
@@ -59,6 +106,7 @@ def draw(d, title, sub=''):
         d = dict(d, openings=fit_openings(d, nx, ny, xlines, ylines))
 
     site = d.get('site')
+    rface = None                        # 配置図で道路のある面
     frame = site or d.get('frame')      # 2階・3階も1階と同じ用紙の大きさにする
     if frame:
         SW, SD = frame['sw'] / 910.0, frame['sd'] / 910.0
@@ -148,6 +196,7 @@ def draw(d, title, sub=''):
         # 道路の面
         face = ('S' if 'S' in side else 'N' if 'N' in side
                 else 'E' if 'E' in side else 'W')
+        rface = face
         # 出入口（住宅玄関・店舗出入口）を道路の面から拾う
         ents = [(p_, l_, lab_) for f_, p_, l_, k_, lab_ in d['openings']
                 if f_ == face and k_ == 'entry']
@@ -200,9 +249,8 @@ def draw(d, title, sub=''):
                 b_ = to_wall(gc + dd, 0.0)
                 s.line(a_[0], a_[1], b_[0], b_[1], stroke='#666',
                        stroke_width=0.8)
-            tx_, ty_ = out(gc + gw + 0.3, yard / 2.0)
-            s.text(tx_, ty_ + 4, 'アプローチ', size=8, anchor='start',
-                   fill='#333')
+            tx_, ty_ = out(gc, (yard - 1.0) / 2.0 + 0.15)
+            s.text(tx_, ty_ + 4, 'アプローチ', size=8, fill='#333')
             tip = out(gc, 0.02)                # 先っぽは敷地の内がわ
             back = out(gc, -0.26)              # おしりは道路がわ
             if face in ('S', 'N'):
@@ -212,13 +260,59 @@ def draw(d, title, sub=''):
                 s.polygon([tip, (back[0], back[1] - 6),
                            (back[0], back[1] + 6)], fill=INK)
 
-        # 駐輪スペース … 店舗の前（客が使う）
+        # 玄関ポーチ … 玄関の前に1マス。GL＋380（土間より20低くして雨を入れない）
+        if house:
+            gc = house[0] + house[1] / 2.0
+            gw = max(house[1], 1.0) / 2.0
+            c0, c1 = to_wall(gc - gw, 0.0), to_wall(gc + gw, 1.0)
+            s.rect(min(c0[0], c1[0]), min(c0[1], c1[1]),
+                   abs(c1[0] - c0[0]), abs(c1[1] - c0[1]),
+                   fill='#fff', stroke=INK, stroke_width=1.0)
+            tx_, ty_ = to_wall(gc, 0.62)
+            s.text(tx_, ty_ - 1, 'ポーチ', size=8)
+            s.text(tx_, ty_ + 9, DOMA['porch'], size=8, fill='#333')
+
+        # 店舗出入口の段 … 売場の床は GL＋550 なので、外から3段（踏面270）
+        shop = [(p_, l_) for p_, l_, lab_ in ents if (p_, l_) != house]
+        shop = max(shop, key=lambda t_: t_[1]) if shop else None
+        if shop:
+            sp_, sl_ = shop
+            n_step, tread = 3, 270 / 910.0
+            for k in range(1, n_step + 1):
+                a_ = to_wall(sp_, k * tread)
+                b_ = to_wall(sp_ + sl_, k * tread)
+                s.line(a_[0], a_[1], b_[0], b_[1], stroke=INK,
+                       stroke_width=0.9)
+            for v_ in (sp_, sp_ + sl_):
+                a_ = to_wall(v_, 0.0)
+                b_ = to_wall(v_, n_step * tread)
+                s.line(a_[0], a_[1], b_[0], b_[1], stroke=INK,
+                       stroke_width=0.9)
+            tx_, ty_ = to_wall(sp_ + sl_ / 2.0, n_step * tread + 0.3)
+            s.text(tx_, ty_ + 3, '3段', size=8, fill='#333')
+
+        # 駐輪スペース … 店の出入口の横（客が使う）。段やアプローチには重ねない
         n_bike = 4
         bw_, bd_ = 600 / 910.0, 1800 / 910.0
         if yard > bd_ + 0.3:
-            start = span[1] - 0.4 - n_bike * bw_
-            if house and start < house[0] + house[1] + 0.3:
-                start = span[1] - 0.4 - n_bike * bw_
+            lo_, hi_ = ((sx0, sx1) if face in ('S', 'N') else (sy0, sy1))
+            used = []
+            if house:
+                used.append((house[0] + house[1] / 2.0 - gw - 0.05,
+                             house[0] + house[1] / 2.0 + gw + 0.05))
+            if shop:
+                used.append((shop[0] - 0.2, shop[0] + shop[1] + 0.2))
+            cands = [span[1] - 0.4 - n_bike * bw_]
+            if shop:
+                cands = [shop[0] + shop[1] + 0.2, shop[0] - 0.2 - n_bike * bw_] + cands
+            start = cands[-1]
+            for c_ in cands:
+                if c_ < lo_ + 0.3 or c_ + n_bike * bw_ > hi_ - 0.3:
+                    continue
+                if any(c_ < u1 and c_ + n_bike * bw_ > u0 for u0, u1 in used):
+                    continue
+                start = c_
+                break
             for k in range(n_bike):
                 v0 = start + k * bw_
                 c0 = out(v0, 0.18)
@@ -226,9 +320,13 @@ def draw(d, title, sub=''):
                 x_, y_ = min(c0[0], c1[0]), min(c0[1], c1[1])
                 s.rect(x_, y_, abs(c1[0] - c0[0]), abs(c1[1] - c0[1]),
                        fill='#fff', stroke='#333', stroke_width=0.8)
-            tx_, ty_ = out(start - 0.2, 0.18 + bd_ / 2.0)
-            s.text(tx_, ty_ + 3, '駐輪スペース（%d台）' % n_bike, size=8,
-                   anchor='end')
+            if face in ('S', 'N'):
+                tx_, ty_ = out(start - 0.2, 0.18 + bd_ / 2.0)
+                s.text(tx_, ty_ + 3, '駐輪スペース（%d台）' % n_bike, size=8,
+                       anchor='end')
+            else:                              # 東西の道路なら手前に横書き
+                tx_, ty_ = out(start - 0.25, 0.18 + bd_ / 2.0)
+                s.text(tx_, ty_ + 3, '駐輪スペース（%d台）' % n_bike, size=8)
 
         # 植栽 … 建物の横のあき（アプローチや駐輪とぶつからないところ）
         if face in ('S', 'N'):
@@ -570,8 +668,16 @@ def draw(d, title, sub=''):
             desk(c - 1.6, b + .3)
             closet(c - 1.0, e - 1.0, c - .1, e - .1)
         elif '玄関' in name:
-            R(a + .1, e - .5, a + 1.2, e - .1)
-            T(a + .1, e - .5, a + 1.2, e - .1, '下足入れ', 7)
+            gf = genkan_face(d)
+            if gf in ('S', 'N'):                  # ホールがわの西の壁ぎわ
+                hb_ = b + 1 if gf == 'S' else b
+                R(a + .1, hb_ + .1, a + .5, hb_ + .9)
+                s.text_rot(px(a + .3) + 2.5, py(hb_ + .5), '下足入れ', -90,
+                           size=6.5)
+            else:                                # ホールがわの南の壁ぎわ
+                ha_ = a if gf == 'E' else a + 1
+                R(ha_ + .1, b + .1, ha_ + .9, b + .5)
+                T(ha_ + .1, b + .1, ha_ + .9, b + .5, '下足入れ', 6.5)
         elif '倉庫' in name or '納戸' in name or '収納' in name:
             for i in range(2):
                 R(a + .12, b + .3 + i * (hh - .8), c - .12,
@@ -684,6 +790,9 @@ def draw(d, title, sub=''):
     # ---- 室名・面積・床高 ----
     fl = d.get('floor_label', '')
     for name, ar, a, b, c, e, kind in d['rooms']:
+        if fl and '玄関' in name:
+            _draw_genkan(s, px, py, name, ar, a, b, c, e, genkan_face(d), fl)
+            continue
         cx = (px(a) + px(c)) / 2.0
         cy = (py(b + .62) if kind == 'stair'
               else py(e) + ((e - b) * G) * (0.30 if (e - b) >= 3 else 0.42))
@@ -708,14 +817,22 @@ def draw(d, title, sub=''):
     ys = [g for g, _ in ylines]
     bal = G + 6 if any(k == 'balc' and f == 'S'
                        for lst in op.values() for _, _, k, f in lst) else 0
+    # 道路がわはポーチ・段・駐輪で混むので、寸法は反対がわに出す
+    if site and rface == 'S':
+        dy1, dy2 = y0 - 66, y0 - 94
+    else:
+        dy1, dy2 = y1 + 34 + bal, y1 + 62 + bal
     for a, b in zip(xs[:-1], xs[1:]):
-        s.dim_h(px(a), px(b), y1 + 34 + bal,
-                format(int((b - a) * 910), ','), size=9)
-    s.dim_h(x0, x1, y1 + 62 + bal, format(nx * 910, ','))
+        s.dim_h(px(a), px(b), dy1, format(int((b - a) * 910), ','), size=9)
+    s.dim_h(x0, x1, dy2, format(nx * 910, ','))
+    if site and rface == 'E':
+        dx1, dx2, anc, ddx = x0 - 66, x0 - 132, 'end', -6
+    else:
+        dx1, dx2, anc, ddx = x1 + 30, x1 + 96, 'start', 6
     for a, b in zip(ys[:-1], ys[1:]):
-        s.dim_v(py(a), py(b), x1 + 30, format(int((b - a) * 910), ','),
-                size=9, anchor='start', dx=6)
-    s.dim_v(y1, y0, x1 + 96, format(ny * 910, ','), anchor='start', dx=6)
+        s.dim_v(py(a), py(b), dx1, format(int((b - a) * 910), ','),
+                size=9, anchor=anc, dx=ddx)
+    s.dim_v(y1, y0, dx2, format(ny * 910, ','), anchor=anc, dx=ddx)
 
     # ---- 部分詳細図の切断位置と方向（1階平面図に記入する） ----
     if d.get('cut'):
@@ -781,7 +898,7 @@ if __name__ == '__main__':
                 f0.get('ylines', plans.YLINES))
             dd['floor_label'] = 'GL＋550' if i == 0 else ''
             if i == 0:
-                dd['cut'] = dd.get('nx', plans.NX) - 1.0
+                dd['cut'] = dd.get('cut', dd.get('nx', plans.NX) - 1.0)
                 dd['site'] = sitemap.SITES[k]
             draw(dd, ti).save(os.path.join(OUT, 'ans2%s_%df.svg' % (k, i + 1)))
     print('wrote ans2*_?f.svg')

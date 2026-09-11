@@ -297,7 +297,7 @@ function walls(n, g){
   const SILL = 800, HEAD = 2100;
   for (const [ori, ln, a, b] of d.walls){
     const spans = [];
-    for (const [f, p, l, k] of d.openings){ const [o2, l2] = FACE[f]; if (o2 === ori && l2 === ln) spans.push([p, p + l, k]); }
+    for (const [f, p, l, k, lab] of d.openings){ const [o2, l2] = FACE[f]; if (o2 === ori && l2 === ln) spans.push([p, p + l, k, lab]); }
     for (const [o2, w, p, l] of d.doors) if (o2 === ori && w === ln) spans.push([p, p + l, 'door']);
     spans.sort((u, v) => u[0] - v[0]);
     const piece = (p0, p1, h0, h1, key, opt) => {
@@ -309,19 +309,31 @@ function walls(n, g){
       if (key === 'wall') wallMeshes.push(m);
     };
     let cur = a;
-    for (const [p0, p1, k] of spans){
+    for (const [p0, p1, k, lab] of spans){
       const q0 = Math.max(p0, a), q1 = Math.min(p1, b); if (q1 <= q0) continue;
       piece(cur, q0, 0, y1 - y0, 'wall', {transparent: true, opacity: 0.92});
+      const h0 = (n === 1 && DATA.doma && lab && lab.includes('玄関')) ? DATA.doma.gl - y0 : 0;   // 玄関のドアは土間まで下ろす
       if (k === 'win'){ piece(q0, q1, 0, SILL, 'wall', {transparent: true, opacity: 0.92}); piece(q0, q1, SILL, HEAD, 'glass', {transparent: true, opacity: 0.5}); }
-      else if (k === 'balc' || k === 'entry') piece(q0, q1, 0, HEAD, 'glass', {transparent: true, opacity: k === 'balc' ? 0.5 : 0.25});
+      else if (k === 'balc' || k === 'entry') piece(q0, q1, h0, HEAD, 'glass', {transparent: true, opacity: k === 'balc' ? 0.5 : 0.25});
       piece(q0, q1, HEAD, y1 - y0, 'wall', {transparent: true, opacity: 0.92});
       cur = q1;
     }
     piece(cur, b, 0, y1 - y0, 'wall', {transparent: true, opacity: 0.92});
   }
   const fo = {transparent: true, opacity: 0.35};
-  if (n === 1) box(g, 'floor', X(0), X(NX), y0 - 39, y0, Z(0), Z(NY), fo);
-  else {                                         // 階段室（0〜2 × 2〜6）は吹抜け。上りきりの所だけ床
+  if (n === 1 && !DATA.doma) box(g, 'floor', X(0), X(NX), y0 - 39, y0, Z(0), Z(NY), fo);
+  else if (n === 1){                             // 玄関の道路がわ1マスは土間（GL+400）。床板はそこだけあける
+    const D = DATA.doma, [a, b, c, e] = D.zone;
+    if (b > 0) box(g, 'floor', X(0), X(NX), y0 - 39, y0, Z(0), Z(b), fo);
+    if (e < NY) box(g, 'floor', X(0), X(NX), y0 - 39, y0, Z(e), Z(NY), fo);
+    if (a > 0) box(g, 'floor', X(0), X(a), y0 - 39, y0, Z(b), Z(e), fo);
+    if (c < NX) box(g, 'floor', X(c), X(NX), y0 - 39, y0, Z(b), Z(e), fo);
+    box(g, 'slab', X(a), X(c), D.gl - 100, D.gl, Z(b), Z(e));                       // 土間コンクリート
+    const [ka, kb, kc, ke] = D.kamachi;
+    box(g, 'dodai', X(ka), X(kc), D.gl, y0, Z(kb), Z(ke));                          // 上がり框（150）
+    const [pa, pb, pc, pe] = D.porch;
+    box(g, 'slab', X(pa), X(pc), D.porch_gl - 100, D.porch_gl, Z(pb), Z(pe));       // ポーチ
+  } else {                                         // 階段室（0〜2 × 2〜6）は吹抜け。上りきりの所だけ床
     box(g, 'floor', X(0), X(NX), y0 - 39, y0, Z(0), Z(ST.b), fo);
     box(g, 'floor', X(ST.c), X(NX), y0 - 39, y0, Z(ST.b), Z(ST.d), fo);
     box(g, 'floor', X(0), X(NX), y0 - 39, y0, Z(ST.d), Z(NY), fo);
@@ -483,7 +495,7 @@ for (const n of [1, 2, 3]) DATA.floors[n].rooms.forEach(([nm, ar, a, b, c, e], i
               x: X((a + c) / 2), z: Z((b + e) / 2), y: FL[n] + EYE}));
 ROOMS.filter(r => r.name === '階段').forEach(r => { r.x = X(ST.mid); r.z = Z(ST.b + 0.7); });   // 階段室は南の床に立つ
 const NOTES = {
-  '住宅玄関': '道路から直接入る。土間は GL+150、ホールは GL+550。下足入れ。',
+  '住宅玄関': '道路から直接入る。ポーチ GL+380 → 土間 GL+400（土間コンクリート）→ 上がり框150 → ホール GL+550。下足入れ。',
   '階段': '折り返し階段。東の段を北へ6段、踊場で回って西の段を南へ7段。1階は15段（蹴上207）、2階は14段。3階まで同じ位置で、まわりは竪穴区画。',
   '店舗売場': '道路に面した出入口（▲）。陳列棚とレジカウンター。',
   '厨房・作業場': '売場のすぐ裏。流し台・調理台・作業台・オーブン。勝手口は北。',
@@ -525,7 +537,7 @@ function link(k1, k2, via){ (ADJ.get(k1) || ADJ.set(k1, []).get(k1)).push({to: k
     }
   }
 })();
-const OUT = {key: 'out:住宅玄関', x: 0, z: 0, y: FL[1] + EYE, name: '道路（玄関の前）', n: 1};
+const OUT = {key: 'out:住宅玄関', x: 0, z: 0, y: (DATA.doma ? DATA.doma.porch_gl : FL[1]) + EYE, name: '道路（玄関の前）', n: 1};
 (function(){ const e = (ADJ.get(OUT.key) || [])[0]; if (e){ OUT.x = e.via.x; OUT.z = e.via.z + 3000; } })();
 function node(key){ return key.startsWith('out') ? OUT : ROOMS.find(r => r.key === key); }
 function route(from, to){

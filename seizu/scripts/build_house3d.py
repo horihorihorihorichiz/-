@@ -13,6 +13,25 @@ import plans
 BASE = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..')
 
 
+def doma_of(fits1):
+    """玄関土間（道路がわ1マス、GL+400）・上がり框・ポーチ（GL+380）の位置。"""
+    d = plans.FLOORS[1]
+    _, _, a, b, c, e, _ = [r for r in d['rooms'] if '玄関' in r[0]][0]
+    face, p, l = [(f, float(p_), float(l_)) for f, p_, l_, k, lab in fits1
+                  if k == 'entry' and '玄関' in (lab or '')][0]
+    k = 0.13                                     # 框の幅（120mm）
+    if face == 'S':
+        zone, kam, porch = (a, b, c, b + 1), (a, b + 1 - k, c, b + 1), (p, b - 1, p + l, b)
+    elif face == 'N':
+        zone, kam, porch = (a, e - 1, c, e), (a, e - 1, c, e - 1 + k), (p, e, p + l, e + 1)
+    elif face == 'E':
+        zone, kam, porch = (c - 1, b, c, e), (c - 1, b, c - 1 + k, e), (c, p, c + 1, p + l)
+    else:
+        zone, kam, porch = (a, b, a + 1, e), (a + 1 - k, b, a + 1, e), (a - 1, p, a, p + l)
+    return dict(face=face, zone=list(zone), kamachi=list(kam),
+                porch=list(porch), gl=400, porch_gl=380)
+
+
 def export():
     nx, ny = plans.NX, plans.NY
     fits = plans.fit_all(plans.FLOORS, nx, ny, plans.XLINES, plans.YLINES)
@@ -40,7 +59,7 @@ def export():
         module=910, nx=nx, ny=ny,
         xlines=[[g, nm] for g, nm in plans.XLINES],
         ylines=[[g, nm] for g, nm in plans.YLINES],
-        floors=floors, framing=fr,
+        floors=floors, framing=fr, doma=doma_of(fits[1]),
         heights=dict(gl=0, kiso_bottom=-300, slab=-150, kiso_top=371,
                      dodai=511, fl={'1': 550, '2': 3650, '3': 6550},
                      beam_top={'2': 3611, '3': 6511}, noki=9350, top=10806,
