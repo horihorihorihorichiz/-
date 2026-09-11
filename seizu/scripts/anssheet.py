@@ -2,7 +2,7 @@
 """公式の標準解答例と同じ描き方で平面図を描く。
 
 ・壁は2本線（厚さ120mm）。柱は壁の中の黒い四角
-・建具は記号（引違い窓・開き戸・引戸）
+・建具は記号（引違い窓・片引き戸・引違い戸。開き戸は使わない）
 ・家具と設備を描く
 ・室名の下に面積と床高
 ・耐力壁は△、出入口は▲
@@ -431,8 +431,58 @@ def draw(d, title, sub=''):
         jamb(ori, ln_, a)
         jamb(ori, ln_, b)
 
+    def single_slide(ori, ln_, a, b, side):
+        """片引き戸。戸1枚を穴の中に太線、引込み側の壁ぞいに細線（戸のしまう場所）。
+
+        side = +1 なら b のほうへ、-1 なら a のほうへしまう。
+        """
+        w_ = b - a
+        jamb(ori, ln_, a)
+        jamb(ori, ln_, b)
+        q0, q1 = (b, b + w_) if side > 0 else (a - w_, a)
+        if ori == 'V':
+            s.line(px(ln_) + h * 0.5, py(a), px(ln_) + h * 0.5, py(b),
+                   stroke=INK, stroke_width=1.6)
+            s.line(px(ln_) + h * 0.5, py(q0), px(ln_) + h * 0.5, py(q1),
+                   stroke='#777', stroke_width=0.7)
+        else:
+            s.line(px(a), py(ln_) - h * 0.5, px(b), py(ln_) - h * 0.5,
+                   stroke=INK, stroke_width=1.6)
+            s.line(px(q0), py(ln_) - h * 0.5, px(q1), py(ln_) - h * 0.5,
+                   stroke='#777', stroke_width=0.7)
+
+    def slide_room(ori, ln_, a, b):
+        """片引き戸にできるか。壁ぞいに戸1枚ぶんの余白がある側を返す（なければ 0）。"""
+        w_ = b - a
+        segs = plans._wall_segments({0: d}).get((ori, ln_), [])
+        seg = [(p_, q_) for p_, q_ in segs if p_ - 1e-6 <= a and b <= q_ + 1e-6]
+        if not seg:
+            return 0
+        lo_, hi_ = seg[0]
+        for p_, q_, k_, f_ in op.get((ori, ln_), []):
+            if (p_, q_) == (a, b):
+                continue
+            if q_ <= a + 1e-6:
+                lo_ = max(lo_, q_)
+            if p_ >= b - 1e-6:
+                hi_ = min(hi_, p_)
+        # 直交する壁（柱）にぶつかる所までしか引き込めない
+        for (o2, l2), s2 in plans._wall_segments({0: d}).items():
+            if o2 == ori:
+                continue
+            if any(p_ - 1e-9 <= ln_ <= q_ + 1e-9 for p_, q_ in s2):
+                if b - 1e-6 <= l2 < hi_:
+                    hi_ = l2
+                if lo_ < l2 <= a + 1e-6:
+                    lo_ = l2
+        if hi_ - b >= w_ - 1e-6:
+            return 1
+        if a - lo_ >= w_ - 1e-6:
+            return -1
+        return 0
+
     def hinged(ori, ln_, a, b, inward=1):
-        """開き戸。戸の板と四分円の弧。"""
+        """開き戸。戸の板と四分円の弧。（この教材の解答例では使わない）"""
         r = (b - a) * G
         jamb(ori, ln_, a)
         jamb(ori, ln_, b)
@@ -461,12 +511,13 @@ def draw(d, title, sub=''):
             elif kind == 'entry':
                 slide(ori, ln_, a, b)
             else:
-                if b - a >= 1.4:
+                # 室内の建具はすべて引き戸（段差なし・開いた戸が通路をふさがない）。
+                # 戸をしまう壁があれば片引き戸、なければ引違い戸
+                side = slide_room(ori, ln_, a, b)
+                if b - a >= 1.9 or side == 0:
                     slide(ori, ln_, a, b)
                 else:
-                    inward = 1 if (ln_ < (nx if ori == 'V' else ny) / 2.0) \
-                        else -1
-                    hinged(ori, ln_, a, b, inward)
+                    single_slide(ori, ln_, a, b, side)
                 # 階段室（竪穴区画）の壁にある建具は防火設備
                 fa, fb, fc, fd = d.get('stair_box', (0, 2, 2, 6))
                 on_stair = ((ori == 'V' and ln_ in (fa, fc)
