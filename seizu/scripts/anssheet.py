@@ -525,16 +525,17 @@ def draw(d, title, sub=''):
                             (ori == 'H' and ln_ in (fb, fd)
                              and a >= fa - 1e-6 and b <= fc + 1e-6))
                 if on_stair:
-                    if ori == 'V':
-                        s.text(px(ln_) + (10 if ln_ >= fc else -10),
-                               py(b) - 4, '防火設備', size=6.5, fill='#111',
-                               anchor='start' if ln_ >= fc else 'end')
-                    elif ln_ <= fb:
-                        s.text(px(b) + 3, py(ln_) + 12, '防火設備',
-                               size=6.5, fill='#111', anchor='start')
-                    else:
-                        s.text(px(a) - 3, py(ln_) - 6, '防火設備',
-                               size=6.5, fill='#111', anchor='end')
+                    if ori == 'V':                 # 東西の壁 → 階段室の内がわに
+                        inside = ln_ >= fc
+                        s.text(px(ln_) + (-6 if inside else 6),
+                               py((a + b) / 2.0) + 3, '防火設備', size=6.5,
+                               fill='#111', anchor='end' if inside else 'start')
+                    elif ln_ <= fb:                # 南の壁 → 上（階段室の中）
+                        s.text(px((a + b) / 2.0), py(ln_) - 5, '防火設備',
+                               size=6.5, fill='#111')
+                    else:                          # 北の壁 → 下（「竪穴区画」の次の行）
+                        s.text(px((a + b) / 2.0), py(ln_) + 22, '防火設備',
+                               size=6.5, fill='#111')
     # ---- バルコニー（壁の外に1マス張り出す。手すりは外側の2本線） ----
     for key, lst in op.items():
         ori, ln_ = key
@@ -755,28 +756,37 @@ def draw(d, title, sub=''):
     sa, sb, sc, sd = d.get('stair_box', (0, 2, 2, 6))
     mid = (sa + sc) / 2.0
     Tt = 0.25          # 踏面227.5mm（910÷4）。令23条の210mm以上を満たす
-    land = sd - 1
+    flip = bool(d.get('stair_flip'))   # True: 北の玄関から上って南に踊り場（F型）
+    land = (sb + 1) if flip else (sd - 1)
+    sg = -1.0 if flip else 1.0         # 段の並ぶ向き（踊り場から見て）
     n1, n2 = d.get('stair_runs', (6, 7))
     mode = d.get('stair_mode') or (
         'top' if 'DN' in d.get('stair_up', '') else 'bottom')
     s.line(px(sa) + h, py(land), px(sc) - h, py(land), stroke=INK,
            stroke_width=1.2)
-    s.text(px(mid), py(land + 0.45), '踊場', size=8, fill='#333')
-    s.line(px(mid), py(sb), px(mid), py(land), stroke=INK, stroke_width=1.5)
-    s.text(px(mid) + 12, py(land) + 12, '手摺', size=7.5, fill='#333')
+    s.text(px(mid), py(land + sg * 0.45) + (0 if not flip else 6), '踊場',
+           size=8, fill='#333')
+    s.line(px(mid), py(sd if flip else sb), px(mid), py(land), stroke=INK,
+           stroke_width=1.5)
+    if flip:                            # 段の途中に、手摺の線にそって縦書き
+        s.text_rot(px(mid) - 5, py(land - sg * n1 * Tt / 2.0), '手摺', -90,
+                   size=7.5, fill='#333')
+    else:
+        s.text(px(mid) + 12, py(land) + 12, '手摺', size=7.5, fill='#333')
     for k in range(1, n1 + 1):
-        s.line(px(mid) + 1.5, py(land - k * Tt), px(sc) - h,
-               py(land - k * Tt), stroke=INK, stroke_width=0.8)
+        s.line(px(mid) + 1.5, py(land - sg * k * Tt), px(sc) - h,
+               py(land - sg * k * Tt), stroke=INK, stroke_width=0.8)
     for k in range(1, n2 + 1):
-        s.line(px(sa) + h, py(land - k * Tt), px(mid) - 1.5,
-               py(land - k * Tt), stroke=INK, stroke_width=0.8)
+        s.line(px(sa) + h, py(land - sg * k * Tt), px(mid) - 1.5,
+               py(land - sg * k * Tt), stroke=INK, stroke_width=0.8)
 
     def arrow(gx, n, lab_):
         ax = px(gx)
-        yb, yt = py(land - n * Tt - .22), py(land - .12)
-        s.line(ax, yb, ax, yt + 8, stroke=INK, stroke_width=1.2)
-        s.polygon([(ax, yt), (ax - 4, yt + 8), (ax + 4, yt + 8)], fill=INK)
-        s.text(ax, yb + 12, lab_, size=9, weight='700')
+        yb, yt = py(land - sg * (n * Tt + .22)), py(land - sg * .12)
+        e_ = 8 if not flip else -8                 # 矢印は踊り場へ向く
+        s.line(ax, yb, ax, yt + e_, stroke=INK, stroke_width=1.2)
+        s.polygon([(ax, yt), (ax - 4, yt + e_), (ax + 4, yt + e_)], fill=INK)
+        s.text(ax, yb + (12 if not flip else -6), lab_, size=9, weight='700')
 
     def brk(g0, g1, gy):
         x_0, x_1, yy = px(g0), px(g1), py(gy)
@@ -785,7 +795,7 @@ def draw(d, title, sub=''):
 
     if mode in ('bottom', 'middle'):
         arrow((mid + sc) / 2.0, n1, 'UP')
-        brk(mid + .05, sc - .05, land - (n1 - 1) * Tt)
+        brk(mid + .05, sc - .05, land - sg * (n1 - 1) * Tt)
     if mode in ('middle', 'top'):
         arrow((sa + mid) / 2.0, n2, 'DN')
 
@@ -845,7 +855,7 @@ def draw(d, title, sub=''):
             _draw_genkan(s, px, py, name, ar, a, b, c, e, genkan_face(d), fl)
             continue
         cx = (px(a) + px(c)) / 2.0
-        cy = (py(b + .62) if kind == 'stair'
+        cy = (py(e - 1.05 if d.get('stair_flip') else b + .62) if kind == 'stair'
               else py(e) + ((e - b) * G) * (0.30 if (e - b) >= 3 else 0.42))
         big = (c - a) >= 5
         s.text(cx, cy - 4, name, size=11.5 if big else 10, weight='700')
