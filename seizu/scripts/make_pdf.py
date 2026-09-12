@@ -211,12 +211,39 @@ RENSHU_CSS = ("<style>@page{size:420mm 297mm;margin:0}"
 def build_renshu():
     """練習用の白紙答案用紙。A2横1枚（本番と同じ）と、A3横4枚に割ったもの。"""
     build_a3(['renshu_a2'], os.path.join(OUT, '練習用答案用紙_A2.pdf'))
+    build_split('renshu_a2',
+                os.path.join(OUT, '練習用答案用紙_A3実寸2枚.pdf'))
     names = ['renshu1', 'renshu2', 'renshu3', 'renshu4']
     html = [RENSHU_CSS] + ['<div class="pg">%s</div>' % _svg(n)
                            for n in names]
     p = os.path.join(TMP, 'a3_renshu.html')
     io.open(p, 'w', encoding='utf-8').write(''.join(html))
     to_pdf(p, os.path.join(OUT, '練習用答案用紙_A3.pdf'))
+
+
+SPLIT_CSS = ("<style>@page{size:297mm 420mm;margin:0}"
+             "html,body{margin:0;padding:0;background:#fff}"
+             ".pg{width:297mm;height:420mm;break-after:page;"
+             "overflow:hidden;position:relative}"
+             ".pg:last-child{break-after:auto}"
+             ".pg .in{position:absolute;top:0;width:594mm;height:420mm}"
+             ".pg .in svg{width:594mm;height:420mm;display:block}</style>")
+
+
+def build_split(name, pdf_name):
+    """A2横1枚を、A3たて2枚（実寸のまま）に切って出す。
+
+    家やコンビニのプリンタはA3までのことが多い。100%で印刷して
+    2枚を貼り合わせると、目盛4.55mmがそのままのA2になる。
+    """
+    svg = _svg(name)
+    html = [SPLIT_CSS]
+    for i in (0, 1):
+        html.append('<div class="pg"><div class="in" style="left:%dmm">%s'
+                    '</div></div>' % (0 if i == 0 else -297, svg))
+    p = os.path.join(TMP, 'split_%s.html' % name)
+    io.open(p, 'w', encoding='utf-8').write(''.join(html))
+    to_pdf(p, pdf_name)
 
 
 def build_mondaishu():
@@ -228,6 +255,8 @@ def build_mondaishu():
                  os.path.join(d, '予想問題%s_問題.pdf' % k))
         build_a3(['kaitou_%s' % k],
                  os.path.join(d, '予想問題%s_解答例.pdf' % k))
+        build_split('kaitou_%s' % k,
+                    os.path.join(d, '予想問題%s_解答例_A3実寸2枚.pdf' % k))
     build_a2('mondai_all.html', os.path.join(d, '00_問題編_A-F.pdf'))
     build_a3(['kaitou_%s' % k for k in KEYS],
              os.path.join(d, '00_解答編_A-F.pdf'))
