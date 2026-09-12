@@ -252,7 +252,7 @@ def draw(d, title, sub='', conflicts=None):
                 b_ = to_wall(gc + dd, 0.0)
                 s.line(a_[0], a_[1], b_[0], b_[1], stroke='#666',
                        stroke_width=0.8)
-            tx_, ty_ = out(gc, (yard - 1.0) / 2.0 + 0.15)
+            tx_, ty_ = out(gc, (yard - 1.66) / 2.0)
             s.text(tx_, ty_ + 4, 'アプローチ', size=8, fill='#333')
             tip = out(gc, 0.02)                # 先っぽは敷地の内がわ
             back = out(gc, -0.26)              # おしりは道路がわ
@@ -274,6 +274,20 @@ def draw(d, title, sub='', conflicts=None):
             tx_, ty_ = to_wall(gc, 0.62)
             s.text(tx_, ty_ - 1, 'ポーチ', size=8)
             s.text(tx_, ty_ + 9, DOMA['porch'], size=8, fill='#333')
+            # 地面からポーチまでの段（190×2＝380）。踏面300
+            n_st, tr_ = 2, 300 / 910.0
+            for k_ in range(1, n_st + 1):
+                a_ = to_wall(gc - gw, 1.0 + k_ * tr_)
+                b_ = to_wall(gc + gw, 1.0 + k_ * tr_)
+                s.line(a_[0], a_[1], b_[0], b_[1], stroke=INK,
+                       stroke_width=0.9)
+            for v_ in (gc - gw, gc + gw):
+                a_ = to_wall(v_, 1.0)
+                b_ = to_wall(v_, 1.0 + n_st * tr_)
+                s.line(a_[0], a_[1], b_[0], b_[1], stroke=INK,
+                       stroke_width=0.9)
+            tx_, ty_ = to_wall(gc + gw + 0.25, 1.0 + n_st * tr_ / 2.0)
+            s.text(tx_, ty_ + 3, '2段', size=8, anchor='start', fill='#333')
 
         # 店舗出入口の段 … 売場の床は GL＋550 なので、外から3段（踏面270）
         shop = [(p_, l_) for p_, l_, lab_ in ents if (p_, l_) != house]

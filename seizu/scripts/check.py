@@ -305,6 +305,34 @@ def check_furniture():
     ck(not bad, '家具の置き場所に問題なし（全6型×3階）')
 
 
+def check_elevation():
+    """立面図の窓が平面図とずれていないか。
+
+    どちらの立面図も plans.fit_all から開口を拾っていること（手で書いた数字を
+    使っていないこと）と、A型の答案の南面の開口が型と同じであること
+    （anselev_s.svg を A の解答例の立面図として使っているため）を見る。
+    """
+    import io as _io
+    import os as _os
+    here = _os.path.dirname(_os.path.abspath(__file__))
+    for nm in ('elevation.py', 'anselev.py'):
+        src = _io.open(_os.path.join(here, nm), encoding='utf-8').read()
+        ck('fit_all' in src, '%s が平面図から開口を拾っていない' % nm)
+    fl = plans.FLOORS
+    kata = {n: sorted((p, l, k) for f, p, l, k, _ in
+                      plans.fit_all(fl)[n] if f == 'S') for n in (1, 2, 3)}
+    A = {i + 1: d for i, d in enumerate(answers.PLANS['A'])}
+    f0 = A[1]
+    fa = plans.fit_all(A, f0.get('nx', plans.NX), f0.get('ny', plans.NY),
+                       f0.get('xlines', plans.XLINES),
+                       f0.get('ylines', plans.YLINES))
+    for n in (1, 2, 3):
+        got = sorted((p, l, k) for f, p, l, k, _ in fa[n] if f == 'S')
+        ck(got == kata[n],
+           'A型%d階の南面の開口が型とちがう（立面図は型で描いている）%s / %s'
+           % (n, got, kata[n]))
+
+
 def check_text(ncol):
     pages = html('kaisetsu.src.html', 'onepage.src.html', 'buzai.src.html',
                  'shousai_howto.src.html', '02-katachi.html',
@@ -334,6 +362,7 @@ def main():
     check_framing()
     check_stair_access()
     check_furniture()
+    check_elevation()
     check_text(0)
     print('柱 1階%d・2階%d・3階%d本（うち3階とも同じ位置 %d本）／'
           '1階%.2f㎡・延べ%.2f㎡／1FL+%d・軒%d・最高%d'

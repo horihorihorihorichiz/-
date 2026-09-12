@@ -146,9 +146,9 @@ def draw():
            stroke_width=1.6)                            # 透湿防水シート
     band(s, 69, 87, TOP_HI, 3100, '#f7f7f7')       # 通気胴縁 t=18
     band(s, 87, 103, TOP_HI, 3100, '#cfd8dc')       # サイディング t=16
-    band(s, -75, -60, TOP_HI, 3250, '#ebebeb')     # 強化石膏ボード t=15
+    band(s, -75, -60, TOP_HI, 3650, '#ebebeb')     # 強化石膏ボード t=15（2階の床の上に立つ）
     # 1階の天井
-    band(s, xin, -60, 3250, 3240.5, '#ebebeb')
+    band(s, xin, -75, 3250, 3240.5, '#ebebeb')
     for k in range(6):
         xx = xin + 40 + k * 62
         band(s, xx, xx + 40, 3290, 3250, '#efdcbb', stroke='#c9a86c', sw=0.7)

@@ -64,17 +64,23 @@ def elevation():
         col = '#2f7fd0' if kind == 'win' else '#d0342f'
         s.rect(X(x0), Y(y1), (x1 - x0) * S, (y1 - y0) * S, fill='#dff0fb',
                stroke=col, stroke_width=1.4)
-    win(1820, 5460, FL1 + 100, FL1 + 2300, 'door')     # 店舗の出入口
-    win(300, 1500, FL1 + 700, FL1 + 2100)              # 住宅玄関まわり
-    win(5900, 7000, FL1 + 800, FL1 + 2100)
-    win(1000, 3200, FL2 + 300, FL2 + 2100)             # 2階 掃出し窓
-    win(3700, 5900, FL2 + 800, FL2 + 2100)
-    win(6200, 7000, FL2 + 800, FL2 + 1900)
-    win(900, 2900, FL3 + 800, FL3 + 2000)              # 3階 子供室
-    win(4300, 6300, FL3 + 800, FL3 + 2000)
-    # バルコニー
-    s.rect(X(800), Y(FL2 + 1100), 2600 * S, 1100 * S, fill='none',
-           stroke='#6b8fa8', stroke_width=1.6)
+    # 窓・出入口は平面図（plans.fit_all）からそのまま拾う。手で書いた数字は使わない
+    import plans as _p
+    _fits = _p.fit_all(_p.FLOORS)
+    for _n, _fl in ((1, FL1), (2, FL2), (3, FL3)):
+        for _f, _pos, _ln, _k, _lab in _fits[_n]:
+            if _f != 'S':
+                continue
+            _a, _b = _pos * 910.0, (_pos + _ln) * 910.0
+            if _k == 'entry':
+                win(_a, _b, _fl, _fl + 2000, 'door')
+            elif _k == 'balc':
+                win(_a, _b, _fl, _fl + 2000)
+                s.rect(X(_a) - 5, Y(_fl + 1100), (_b - _a) * S + 10,
+                       1100 * S, fill='none', stroke='#6b8fa8',
+                       stroke_width=1.6)
+            else:
+                win(_a, _b, _fl + 800, _fl + 2100)
 
     # 寸法（右側）
     dx = X(WIDTH + EAVE) + 46

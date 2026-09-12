@@ -158,7 +158,7 @@ def draw(step):
 
     # 6 …… 外壁の6層
     if step >= 6:
-        rect(s, -75, -60, Z_DODAI, Z_2FL, BOARD, a(6), aw(6))     # 石膏15
+        rect(s, -75, -60, Z_1FL, Z_2FL, BOARD, a(6), aw(6))       # 石膏15（床の上に立つ）
         rect(s, -60, 60, Z_DODAI, Z_BEAM_B, INS, a(6), aw(6))     # 柱＋GW
         rect(s, -64, -60, Z_DODAI, Z_BEAM_B, '#cfe0ef', a(6), aw(6))  # 防湿
         rect(s, 60, 69, Z_PACK, Z_2FL, PLY, a(6), aw(6))          # 合板9
@@ -395,7 +395,7 @@ def kansei():
     rect(s, XL + 40, -60, Z_INS1, Z_DODAI, INS)
     rect(s, XL + 40, -60, Z_DODAI, Z_PLY1, PLY)
     rect(s, XL + 40, -60, Z_PLY1, Z_1FL, '#e8d7b8')
-    rect(s, -75, -60, Z_DODAI, Z_2FL, BOARD)
+    rect(s, -75, -60, Z_1FL, Z_2FL, BOARD)
     rect(s, -60, 60, Z_DODAI, Z_BEAM_B, INS)
     rect(s, -64, -60, Z_DODAI, Z_BEAM_B, '#cfe0ef')
     rect(s, 60, 69, Z_PACK, Z_2FL, PLY)
