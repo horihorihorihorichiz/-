@@ -61,9 +61,10 @@ def hikido(a, b, y):
 
 def katahikido(a, b, y):
     """片引き戸。戸1枚を穴の中に太線、引込み側の壁ぞいに細線。"""
-    s.line(a, y - h * 0.5, b, y - h * 0.5, stroke=INK, stroke_width=2.4)
-    s.line(b, y - h * 0.5, b + (b - a), y - h * 0.5, stroke='#888',
-           stroke_width=1.0)
+    s.line(a, y, b, y, stroke=INK, stroke_width=0.9)                 # 穴の中のレール
+    s.line(a, y - h * 1.8, b, y - h * 1.8, stroke=INK, stroke_width=2.6)   # 戸1枚（壁の面から少し出す）
+    s.line(b, y - h * 1.8, b + (b - a), y - h * 1.8, stroke='#888',
+           stroke_width=1.0)                                        # 引込み
     jamb(a, y)
     jamb(b, y)
 
@@ -97,7 +98,7 @@ ROWS = [
     ('引違い窓', 2, madoru, '細い線を3本。いちばんよく使う',
      '1,820（2マス）／1,365（1.5マス）'),
     ('片引き戸（かたひきど）', 1, katahikido,
-     '戸1枚を太線、横の壁に「引込み」の細線。この教材の部屋の戸は全部これ',
+     '穴の中はレールの細線。戸1枚は壁の面から少し出して太線、横に「引込み」の細線',
      '910（1マス）'),
     ('引違い戸', 2, hikido, '戸を2枚、少しずらして太めの線。和室・出入口',
      '1,820（2マス）／1,365（1.5マス）'),

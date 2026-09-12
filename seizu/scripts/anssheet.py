@@ -440,15 +440,20 @@ def draw(d, title, sub=''):
         jamb(ori, ln_, a)
         jamb(ori, ln_, b)
         q0, q1 = (b, b + w_) if side > 0 else (a - w_, a)
+        off = h + 4.5                 # 戸の板は壁の面から少し出して描く（壁と区別がつく）
         if ori == 'V':
-            s.line(px(ln_) + h * 0.5, py(a), px(ln_) + h * 0.5, py(b),
-                   stroke=INK, stroke_width=1.6)
-            s.line(px(ln_) + h * 0.5, py(q0), px(ln_) + h * 0.5, py(q1),
-                   stroke='#777', stroke_width=0.7)
+            s.line(px(ln_), py(a), px(ln_), py(b), stroke=INK,
+                   stroke_width=0.6)                            # 穴の中のレール
+            s.line(px(ln_) + off, py(a), px(ln_) + off, py(b), stroke=INK,
+                   stroke_width=1.8)                            # 戸1枚
+            s.line(px(ln_) + off, py(q0), px(ln_) + off, py(q1),
+                   stroke='#777', stroke_width=0.7)             # 引込み
         else:
-            s.line(px(a), py(ln_) - h * 0.5, px(b), py(ln_) - h * 0.5,
-                   stroke=INK, stroke_width=1.6)
-            s.line(px(q0), py(ln_) - h * 0.5, px(q1), py(ln_) - h * 0.5,
+            s.line(px(a), py(ln_), px(b), py(ln_), stroke=INK,
+                   stroke_width=0.6)
+            s.line(px(a), py(ln_) - off, px(b), py(ln_) - off, stroke=INK,
+                   stroke_width=1.8)
+            s.line(px(q0), py(ln_) - off, px(q1), py(ln_) - off,
                    stroke='#777', stroke_width=0.7)
 
     def slide_room(ori, ln_, a, b):
