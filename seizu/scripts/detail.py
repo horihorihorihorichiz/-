@@ -137,8 +137,9 @@ def draw():
     # 胴差
     band(s, -60, 60, 3611, 3311, 'url(#pWood)', stroke='#8a6a35', sw=1.4)
     # 2階の床
-    band(s, xin, 60, 3635, 3611, '#f5e7cb')          # 構造用合板 t=24
-    band(s, xin, 60, 3650, 3635, '#e6d3ad')          # フローリング t=15
+    # 床の合板と仕上げは柱の内がわの面で止める（柱勝ち。1階と同じ描き方）
+    band(s, xin, -60, 3635, 3611, '#f5e7cb')         # 構造用合板 t=24
+    band(s, xin, -60, 3650, 3635, '#e6d3ad')         # フローリング t=15
     # 外壁（上）
     band(s, 60, 69, TOP_HI, 3311, '#f0e2c8')       # 構造用合板 t=9
     s.line(X(69), Y(TOP_HI), X(69), Y(3100), stroke='#2f7fd0',
@@ -198,8 +199,8 @@ def draw():
     # 土台
     band(s, -60, 60, 511, 391, 'url(#pWood)', stroke='#8a6a35', sw=1.4)
     # 1階の床
-    band(s, xin, 60, 535, 511, '#f5e7cb')
-    band(s, xin, 550, 550, 535, '#e6d3ad')
+    band(s, xin, -60, 535, 511, '#f5e7cb')           # 構造用合板 t=24（柱の内がわで止める）
+    band(s, xin, -60, 550, 535, '#e6d3ad')           # フローリング t=15
     band(s, xin, -60, 511, 461, 'url(#pIns)', stroke='#d98cae', sw=0.8)
     # 柱＋グラスウール
     band(s, -60, 60, BOT_HI, 511, 'url(#pIns)', stroke='none')

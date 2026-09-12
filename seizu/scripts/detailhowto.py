@@ -149,8 +149,8 @@ def draw(step):
     # 5 …… 1階の床
     if step >= 5:
         rect(s, XL + 40, -60, Z_INS1, Z_DODAI, INS, a(5), aw(5))  # 床断熱
-        rect(s, XL + 40, 60, Z_DODAI, Z_PLY1, PLY, a(5), aw(5))   # 合板t24
-        rect(s, XL + 40, 60, Z_PLY1, Z_1FL, '#e8d7b8', a(5), aw(5))
+        rect(s, XL + 40, -60, Z_DODAI, Z_PLY1, PLY, a(5), aw(5))   # 合板t24
+        rect(s, XL + 40, -60, Z_PLY1, Z_1FL, '#e8d7b8', a(5), aw(5))
         if step == 5:
             note(s, -560, Z_1FL + 70, '構造用合板 t=24 ＋ 仕上 t=15')
             note(s, -560, Z_1FL + 20, '→ ここで 1FL＝GL+550 になる')
@@ -185,8 +185,8 @@ def draw(step):
         s.line(X(-46), Y(Z_BEAM_T + 70), X(-46), Y(Z_BEAM_B - 70),
                stroke=a(7), stroke_width=aw(7) + 0.3)            # 羽子板ボルト
         s.circle(X(-46), Y(Z_BEAM_B - 70), 2.2, fill=a(7), stroke='none')
-        rect(s, XL + 40, 60, Z_BEAM_T, Z_PLY2, PLY, a(7), aw(7))
-        rect(s, XL + 40, 60, Z_PLY2, Z_2FL, '#e8d7b8', a(7), aw(7))
+        rect(s, XL + 40, -60, Z_BEAM_T, Z_PLY2, PLY, a(7), aw(7))
+        rect(s, XL + 40, -60, Z_PLY2, Z_2FL, '#e8d7b8', a(7), aw(7))
         s.line(X(XL + 40), Y(Z_CEIL), X(-75), Y(Z_CEIL), stroke=a(7),
                stroke_width=aw(7))
         if step == 7:
@@ -393,8 +393,8 @@ def kansei():
     s.line(X(-20), Y(Z_DODAI + 30), X(-20), Y(Z_KISO - 250), stroke=INK,
            stroke_width=1.6)
     rect(s, XL + 40, -60, Z_INS1, Z_DODAI, INS)
-    rect(s, XL + 40, 60, Z_DODAI, Z_PLY1, PLY)
-    rect(s, XL + 40, 60, Z_PLY1, Z_1FL, '#e8d7b8')
+    rect(s, XL + 40, -60, Z_DODAI, Z_PLY1, PLY)
+    rect(s, XL + 40, -60, Z_PLY1, Z_1FL, '#e8d7b8')
     rect(s, -75, -60, Z_DODAI, Z_2FL, BOARD)
     rect(s, -60, 60, Z_DODAI, Z_BEAM_B, INS)
     rect(s, -64, -60, Z_DODAI, Z_BEAM_B, '#cfe0ef')
@@ -406,8 +406,8 @@ def kansei():
     s.line(X(-46), Y(Z_BEAM_T + 70), X(-46), Y(Z_BEAM_B - 70), stroke=INK,
            stroke_width=1.1)
     s.circle(X(-46), Y(Z_BEAM_B - 70), 2.2, fill=INK, stroke='none')
-    rect(s, XL + 40, 60, Z_BEAM_T, Z_PLY2, PLY)
-    rect(s, XL + 40, 60, Z_PLY2, Z_2FL, '#e8d7b8')
+    rect(s, XL + 40, -60, Z_BEAM_T, Z_PLY2, PLY)
+    rect(s, XL + 40, -60, Z_PLY2, Z_2FL, '#e8d7b8')
     s.line(X(XL + 40), Y(Z_CEIL), X(-75), Y(Z_CEIL), stroke=INK,
            stroke_width=1.2)
     s.rect(X(-75), Y(WIN_T), 178 * SC, (WIN_T - WIN_B) * SC, fill='#fff',
