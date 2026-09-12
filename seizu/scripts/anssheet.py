@@ -444,20 +444,22 @@ def draw(d, title, sub='', conflicts=None):
         jamb(ori, ln_, b)
         q0, q1 = (b, b + w_) if side > 0 else (a - w_, a)
         off = h + 4.5                 # 戸の板は壁の面から少し出して描く（壁と区別がつく）
+        # 階段室の壁の戸は、板を階段室の外がわに出す（竪穴区画の一点鎖線と重ねない）
+        fa_, fb_, fc_, fd_ = d.get('stair_box', (0, 2, 2, 6))
         if ori == 'V':
+            sg_ = -1 if abs(ln_ - fa_) < 1e-6 and fb_ - 1e-6 <= a and b <= fd_ + 1e-6 else 1
+            xo = px(ln_) + sg_ * off
             s.line(px(ln_), py(a), px(ln_), py(b), stroke=INK,
                    stroke_width=0.6)                            # 穴の中のレール
-            s.line(px(ln_) + off, py(a), px(ln_) + off, py(b), stroke=INK,
-                   stroke_width=1.8)                            # 戸1枚
-            s.line(px(ln_) + off, py(q0), px(ln_) + off, py(q1),
-                   stroke='#777', stroke_width=0.7)             # 引込み
+            s.line(xo, py(a), xo, py(b), stroke=INK, stroke_width=1.8)   # 戸1枚
+            s.line(xo, py(q0), xo, py(q1), stroke='#777', stroke_width=0.7)  # 引込み
         else:
+            sg_ = -1 if abs(ln_ - fb_) < 1e-6 and fa_ - 1e-6 <= a and b <= fc_ + 1e-6 else 1
+            yo = py(ln_) - sg_ * off
             s.line(px(a), py(ln_), px(b), py(ln_), stroke=INK,
                    stroke_width=0.6)
-            s.line(px(a), py(ln_) - off, px(b), py(ln_) - off, stroke=INK,
-                   stroke_width=1.8)
-            s.line(px(q0), py(ln_) - off, px(q1), py(ln_) - off,
-                   stroke='#777', stroke_width=0.7)
+            s.line(px(a), yo, px(b), yo, stroke=INK, stroke_width=1.8)
+            s.line(px(q0), yo, px(q1), yo, stroke='#777', stroke_width=0.7)
 
     def slide_room(ori, ln_, a, b):
         """片引き戸にできるか。壁ぞいに戸1枚ぶんの余白がある側を返す（なければ 0）。"""
