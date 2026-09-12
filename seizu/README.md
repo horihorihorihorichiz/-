@@ -18,6 +18,7 @@
 | `mondai_all.html` / `kaitou_all.html` | 6セットを1本にまとめたもの |
 | `04-yosou.html` | 予想問題A〜H（かんたん版・記述の記入欄つき） |
 | `honban.html` | 本番の進め方（開始の合図から筆を置くまで、分きざみの手順） |
+| `kodomo.html` | 小学生でもわかる 答案の描き方（線と記号のいみ・描く順番） |
 | `onepage.html` | 全部入りの1枚ページ（携帯用）。`onepage.src.html` + `parts/` から生成 |
 | `timetrial.xlsx` | タイムトライアル記録表 |
 | `figures/*.svg` | 図面（スクリプトで生成） |
