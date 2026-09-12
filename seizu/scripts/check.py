@@ -311,17 +311,23 @@ def check_kaitou_figs():
     import io as _io
     import os as _os
     base = _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), '..')
+    import answers as _ans
+    import anselev as _ae
     need = ('１階平面図兼配置図', '２階平面図', '３階平面図',
-            '3階床伏図', '小屋伏図', '南側立面図', '部分詳細図')
+            '3階床伏図', '小屋伏図', '部分詳細図')
     for t in 'ABCDEF':
         p = _os.path.join(base, 'kaitou_%s.html' % t)
         src = _io.open(p, encoding='utf-8').read()
         for nm in need:
             ck(nm in src, '解答例%s に %s がない' % (t, nm))
-        for nm in ('ans%s_1f' % t, 'ans%sfuse_floor' % t,
-                   'ans%sfuse_roof' % t, 'ans%selev_s' % t):
-            if t == 'A':
-                continue
+        # 立面図は道路のある面。指定と図がそろっているか
+        face = _ans.ELEV_FACE[t]
+        ck('%s立面図' % _ae.FACE_NAME[face] in src,
+           '解答例%s の立面図が %s でない' % (t, _ae.FACE_NAME[face]))
+        fig = ['ans%s_1f' % t, 'ans%selev' % t]
+        fig += (['ansfuse_floor', 'ansfuse_roof'] if t == 'A'
+                else ['ans%sfuse_floor' % t, 'ans%sfuse_roof' % t])
+        for nm in fig:
             ck(_os.path.exists(_os.path.join(base, 'figures', nm + '.svg')),
                'figures/%s.svg がない' % nm)
 

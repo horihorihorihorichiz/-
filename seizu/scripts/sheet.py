@@ -326,13 +326,16 @@ def sheet(sp, blank=False):
                blank=blank)
 
     # ================= 中の段：伏図・立面図・部分詳細図 =================
-    ev = 'anselev_s' if key == 'A' else 'ans%selev_s' % key
+    import answers as _ans
+    import anselev as _ae
+    ev = 'ans%selev' % key
+    evname = _ae.FACE_NAME[_ans.ELEV_FACE[key]]
     ff = 'ansfuse_floor' if key == 'A' else 'ans%sfuse_floor' % key
     fr = 'ansfuse_roof' if key == 'A' else 'ans%sfuse_roof' % key
     dt = 'dh_nokisaki' if key == 'D' else 'detail'
     slots = [('⑷ ３階床伏図（1／100）', ff, SC100, GP4, 320.0),
              ('⑷ 小屋伏図（1／100）', fr, SC100, GP4, 320.0),
-             ('⑸ 南側立面図（1／100）', ev, SC100, GP4, 352.0),
+             ('⑸ %s立面図（1／100）' % evname, ev, SC100, GP4, 352.0),
              ('⑹ 部分詳細図（断面）（1／20）', dt, SC20, GP10, 334.0)]
     tot = sum(w for _, _, _, _, w in slots)
     gap = ((COL2X - 10 - CX0) - tot) / (len(slots) - 1)

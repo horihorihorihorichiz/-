@@ -391,6 +391,9 @@ print('wrote ansA/E/F の2階・3階')
 # 予想問題ごとの 床伏図・小屋伏図・南側立面図
 # （A以外も「実際に必要な図面が全部そろった解答例」にするため）
 # ============================================================
+# 立面図をどの面で描くか。道路に面した側を描くのがふつう。
+ELEV_FACE = {'A': 'S', 'B': 'S', 'C': 'S', 'D': 'E', 'E': 'S', 'F': 'N'}
+
 GRIDS = {
     'A': {},
     'B': dict(nx=BG['nx'], ny=BG['ny'], xlines=BX, ylines=BY),
@@ -410,6 +413,8 @@ if __name__ == '__main__':
             os.path.join(OUT, 'ans%sfuse_floor.svg' % _t))
         _af.draw('roof', floors=_fl, tag=_t, **_kw).save(
             os.path.join(OUT, 'ans%sfuse_roof.svg' % _t))
-        _ae.draw(floors=_fl, tag=_t, **_kw).save(
-            os.path.join(OUT, 'ans%selev_s.svg' % _t))
-    print('wrote ansB〜F の 床伏図・小屋伏図・南側立面図')
+        _ae.draw(floors=_fl, tag=_t, face=ELEV_FACE[_t], **_kw).save(
+            os.path.join(OUT, 'ans%selev.svg' % _t))
+    _ae.draw(tag='A', face=ELEV_FACE['A']).save(
+        os.path.join(OUT, 'ansAelev.svg'))
+    print('wrote ansA〜F の 床伏図・小屋伏図・立面図')

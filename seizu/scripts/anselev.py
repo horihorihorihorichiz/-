@@ -29,10 +29,14 @@ SHOP_STEPS = 3               # 地面から店舗の床 GL+550 まで
 DOOR_H = 2000                # 出入口の高さ
 
 
-def south_openings(n, floors=None, **kw):
-    """その南面の開口を（位置, 幅, 種別, 名前）で返す。"""
+FACE_NAME = {'S': '南側', 'N': '北側', 'E': '東側', 'W': '西側'}
+KERABA = 455                 # けらば（妻がわの屋根の出）
+
+
+def south_openings(n, floors=None, face='S', **kw):
+    """その面の開口を（位置, 幅, 種別, 名前）で返す。"""
     ops = plans.fit_all(floors or plans.FLOORS, **kw)[n]
-    return [(p, l, k, lab) for f, p, l, k, lab in ops if f == 'S']
+    return [(p, l, k, lab) for f, p, l, k, lab in ops if f == face]
 
 
 def draw(floors=None, nx=None, ny=None, xlines=None, ylines=None, tag='',
@@ -49,9 +53,13 @@ def draw(floors=None, nx=None, ny=None, xlines=None, ylines=None, tag='',
                ny=plans.NY if ny is None else ny,
                xlines=plans.XLINES if xlines is None else xlines,
                ylines=plans.YLINES if ylines is None else ylines)
-    rise = nx * 910 / 2.0 * 0.4
+    ny_ = gkw['ny']
+    gable = face in ('S', 'N')          # 妻がわ（屋根が三角に見える）
+    span = nx if gable else ny_         # この面の間口（マス）
+    mirror = face in ('N', 'W')         # 向こうから見るので左右が入れかわる
+    rise = nx * 910 / 2.0 * 0.4         # 棟の高さは、けた行の間口で決まる
     TOP = int(round(NOKI + rise))
-    W = ML + nx * G + MR
+    W = ML + span * G + MR
     H = MT + TOP * K + MB
 
     def px(gx):
@@ -61,7 +69,7 @@ def draw(floors=None, nx=None, ny=None, xlines=None, ylines=None, tag='',
         return MT + (TOP - mm) * K
 
     s = Svg(W, H)
-    ttl = '南側立面図　縮尺1／100'
+    ttl = '%s立面図　縮尺1／100' % FACE_NAME[face]
     if tag:
         ttl = '予想問題　%s 解答例　%s' % (tag, ttl)
     s.text(W / 2.0, 30, ttl, size=15, weight='700')
@@ -76,7 +84,11 @@ def draw(floors=None, nx=None, ny=None, xlines=None, ylines=None, tag='',
         s.line(0, v, W, v, stroke='#e0e0e0', stroke_width=0.5)
         v += half
 
-    x0, x1 = px(0), px(nx)
+    x0, x1 = px(0), px(span)
+
+    def hx(pos):
+        """その面の左右の位置。裏から見る面（北・西）は左右が入れかわる。"""
+        return px(span - pos) if mirror else px(pos)
     gl = py(0)
 
     # ---- 地面 ----
@@ -94,20 +106,35 @@ def draw(floors=None, nx=None, ny=None, xlines=None, ylines=None, tag='',
     s.rect(x0, py(NOKI), x1 - x0, (NOKI - 550) * K, fill='#fff', stroke=INK,
            stroke_width=1.6)
 
-    # ---- 屋根（切妻・妻面。4寸勾配、軒の出600） ----
-    ex0, ex1 = x0 - NOKIDE * K, x1 + NOKIDE * K
-    mid = (x0 + x1) / 2.0
-    ey = py(NOKI)
-    apex = py(TOP)
+    # ---- 屋根（切妻。棟は南北方向） ----
+    ey, apex = py(NOKI), py(TOP)
     t = 180 * K                                  # 屋根の厚み
-    s.poly([(ex0, ey), (mid, apex), (ex1, ey)], stroke=INK, stroke_width=1.6,
-           fill='none')
-    dy = t * (1 + 0.4 ** 2) ** 0.5
-    s.poly([(ex0, ey + dy), (mid, apex + dy), (ex1, ey + dy)], stroke=INK,
-           stroke_width=1.2, fill='none')
-    s.line(ex0, ey, ex0, ey + dy, stroke=INK, stroke_width=1.2)
-    s.line(ex1, ey, ex1, ey + dy, stroke=INK, stroke_width=1.2)
-    s.text(mid + 80, apex + 62, '4 / 10（4寸勾配）', size=9, anchor='start')
+    if gable:
+        # 妻がわ（南・北）… 三角に見える。左右に軒の出600
+        ex0, ex1 = x0 - NOKIDE * K, x1 + NOKIDE * K
+        mid = (x0 + x1) / 2.0
+        s.poly([(ex0, ey), (mid, apex), (ex1, ey)], stroke=INK,
+               stroke_width=1.6, fill='none')
+        dy = t * (1 + 0.4 ** 2) ** 0.5
+        s.poly([(ex0, ey + dy), (mid, apex + dy), (ex1, ey + dy)],
+               stroke=INK, stroke_width=1.2, fill='none')
+        s.line(ex0, ey, ex0, ey + dy, stroke=INK, stroke_width=1.2)
+        s.line(ex1, ey, ex1, ey + dy, stroke=INK, stroke_width=1.2)
+        s.text(mid + 80, apex + 62, '4 / 10（4寸勾配）', size=9,
+               anchor='start')
+    else:
+        # 平がわ（東・西）… 屋根の面をまっすぐ見るので、四角に見える。
+        # 上の辺が棟、下の辺が軒。左右に出るのは「けらば」455
+        ex0, ex1 = x0 - KERABA * K, x1 + KERABA * K
+        s.rect(ex0, apex, ex1 - ex0, ey - apex, fill='#fff', stroke=INK,
+               stroke_width=1.6)
+        s.line(ex0, ey + t, ex1, ey + t, stroke=INK, stroke_width=1.2)
+        s.line(ex0, apex, ex1, apex, stroke=INK, stroke_width=1.8)
+        s.text(x1 - 6, apex - 6, '棟（この向きでは水平に見える）', size=9,
+               anchor='end', fill='#333')
+        s.text(x0 + 6, apex + (ey - apex) / 2.0,
+               '屋根面（4寸勾配・手前に下がる）', size=9, anchor='start',
+               fill='#333')
 
     # ---- 窓・出入口（平面図から拾う） ----
     def sash(a, b, lo, hi, panes=2):
@@ -153,15 +180,16 @@ def draw(floors=None, nx=None, ny=None, xlines=None, ylines=None, tag='',
 
     for n in (1, 2, 3):
         f = FL[n - 1]
-        for pos, ln, kind, lab in south_openings(n, floors, **gkw):
-            a, b = px(pos), px(pos + ln)
+        for pos, ln, kind, lab in south_openings(n, floors, face=face,
+                                                  **gkw):
+            a, b = sorted((hx(pos), hx(pos + ln)))
             if kind == 'entry':
                 # 玄関は土間（GL+400）、店・勝手口は床（GL+550）に立つ。
                 # ドアの下は床の高さで、そこまで外から段で上がる。
                 genkan = '玄関' in lab
                 sill = DOMA_GL if genkan else f
                 door(a, b, py(sill), py(sill + DOOR_H))
-                if n == 1:
+                if n == 1 and gable is not None:
                     steps(a, b, sill, PORCH_GL if genkan else 0,
                           PORCH_STEPS if genkan else SHOP_STEPS, genkan)
             elif kind == 'balc':
@@ -188,7 +216,7 @@ def draw(floors=None, nx=None, ny=None, xlines=None, ylines=None, tag='',
     s.dim_v(gl, py(TOP), x1 + 46, format(TOP, ','), anchor='start', dx=6)
     s.dim_v(gl, py(NOKI), x1 + 20, format(NOKI, ','), size=9,
             anchor='start', dx=5)
-    s.dim_h(x0, x1, gl + 46, format(nx * 910, ','))
+    s.dim_h(x0, x1, gl + 46, format(int(span * 910), ','))
     return s
 
 
