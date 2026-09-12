@@ -94,7 +94,7 @@ def panel(key, i):
         d['site'] = sitemap.SITES[key]
     # 2階・3階は敷地を描かないので、建物ぶんの大きさだけにする
     # （本番の答案用紙でも、敷地が入るのは1階平面図兼配置図だけ）
-    sv = anssheet.draw(d, TITLES[i])
+    sv = anssheet.draw(d, '')
     t = sv.dump()
     body = t[t.index('>', t.index('<svg')) + 1:t.rindex('</svg>')]
     return body, sv.w, sv.h
@@ -109,7 +109,7 @@ def place(body, pre, x, y, sc):
             % (x, y, sc, body))
 
 
-def legend(s, lx=750.0, ly=748.0, lw=880.0, dims=True):
+def legend(s, lx=750.0, ly=748.0, lw=880.0, dims=True, note=True):
     """伏図の凡例欄。dims=False なら寸法らんを空にする（練習用紙）。"""
     s.text(lx, ly - 10, '凡　例（床伏図兼小屋伏図の表示記号）', size=15,
            anchor='start', weight='700')
@@ -180,9 +180,14 @@ def legend(s, lx=750.0, ly=748.0, lw=880.0, dims=True):
                    size=11 if len(dim) < 8 else 9.5, weight='700')
     s.text(lx - 6, ly + 62, '記号', size=10.5, anchor='end', fill='#555')
     s.text(lx - 6, ly + 105, '寸法', size=10.5, anchor='end', fill='#555')
-    s.text(lx, ly + 138, '※ 平角材（120×240 など）の断面寸法は、この欄ではなく '
-           '床伏図の中の梁1本ずつのわきに記入する。', size=11,
-           anchor='start', fill=INK)
+    if note:
+        s.text(lx, ly + 138, '※ 平角材（120×240 など）の断面寸法は、この欄ではなく '
+               '床伏図の中の梁1本ずつのわきに記入する。', size=11,
+               anchor='start', fill=INK)
+    else:
+        s.text(lx, ly + 122, '※ 平角材（120×240 など）の断面寸法は、'
+               '床伏図の中の梁1本ずつのわきに記入する。', size=8.5,
+               anchor='start', fill='#555')
 
 
 def wrap_text(s, x, y, w, text, size=8.4, lh=11.0, color=INK, maxlines=99):
@@ -220,33 +225,38 @@ def fit(s, name, pre, x, y, w, h, sc):
                 y + max(0.0, (h - bh * sc) / 2.0), sc))
 
 
-def area_table(s, x, y, w, site, keisan, a1, a2, a3, blank=False):
-    """面積表（細い列に入る、2行組の形）。"""
-    s.text(x, y - 8, '⑺　面　積　表', size=13, anchor='start', weight='700')
+def area_table(s, x, y, w, site, keisan, a1, a2, a3, blank=False,
+               rh=46.0, band=False):
+    """面積表。band=True で下の帯に入る1行組の形になる。"""
+    s.text(x, y - 8, '⑺　面　積　表', size=12, anchor='start', weight='700')
     rows = [('敷地面積', '', site),
             ('建築面積', keisan, '%.2f' % a1),
             ('床面積　1階　ア', keisan, '%.2f' % a1),
             ('　　　　2階　イ', keisan, '%.2f' % a2),
             ('　　　　3階　ウ', keisan, '%.2f' % a3),
             ('延べ面積　ア＋イ＋ウ', '', '%.2f' % (a1 + a2 + a3))]
-    rh = 46.0
     s.rect(x, y, w, rh * len(rows), fill='#fff', stroke=INK, stroke_width=1.2)
+    kx = x + w * 0.42
+    vx = x + w - 58
+    s.line(kx, y, kx, y + rh * len(rows), stroke=INK, stroke_width=0.8)
+    s.line(vx, y, vx, y + rh * len(rows), stroke=INK, stroke_width=0.8)
     for i, (nm, ks, va) in enumerate(rows):
         yy = y + i * rh
         if i:
             s.line(x, yy, x + w, yy, stroke=INK, stroke_width=0.8)
-        s.text(x + 8, yy + 19, nm, size=12, anchor='start',
+        s.text(x + 8, yy + rh * 0.72, nm, size=10.5, anchor='start',
                weight='700' if i in (0, 5) else '400')
         if not blank:
             if ks:
-                s.text(x + 8, yy + 38, '（計算式）' + ks, size=9.5,
+                s.text(kx + 6, yy + rh * 0.72, '（計算式）' + ks, size=9,
                        anchor='start', fill='#555')
-            s.text(x + w - 26, yy + 38, va, size=13.5, anchor='end',
+            s.text(x + w - 22, yy + rh * 0.72, va, size=11, anchor='end',
                    weight='700')
-        s.text(x + w - 6, yy + 38, '㎡', size=10, anchor='end')
-    wrap_text(s, x, y + rh * len(rows) + 16, w,
-              '※ 小数点以下第3位以下は切り捨て。計算式はm単位で書く。',
-              size=9.5, lh=12.0, color='#555')
+        s.text(x + w - 5, yy + rh * 0.72, '㎡', size=9, anchor='end')
+    if not band:
+        wrap_text(s, x, y + rh * len(rows) + 16, w,
+                  '※ 小数点以下第3位以下は切り捨て。計算式はm単位で書く。',
+                  size=9.5, lh=12.0, color='#555')
     return y + rh * len(rows) + 42
 
 
@@ -284,112 +294,156 @@ def youten_box(s, x, y, w, h, items=None):
 
 
 def sheet(sp, blank=False):
-    """A2横1枚の答案。blank=True で白紙の練習用紙になる。"""
+    """A2横1枚の答案。枠割りは公表されている本物の答案用紙に合わせる。
+
+    令和7年の答案用紙（A2横1枚）は
+      左の列 … 1階平面図兼配置図／南側立面図
+      中の列 … 2階平面図／床伏図兼小屋伏図／凡例
+      右の列 … 矩計図（1/20）を紙の高さいっぱいの細長い枠で
+      下 　　… 面積表・計画の要点等・受験番号
+    今年は3階建てなので平面図が1枚増え、部分詳細図（断面）1/20 になる。
+    その分だけ列を増やし、置き場所の考え方は本物と同じにしてある。
+    """
     key, sub, nx, ny, site, keisan, a1, a2, a3 = sp
     s = Svg(W, H)
     s.rect(0, 0, W, H, fill='none', stroke=INK, stroke_width=1.4)
 
-    # ---- 左の縦書きタイトル帯 ----
+    # ---- 左の縦書きタイトル帯（本物と同じ位置） ----
     s.line(46, 0, 46, H, stroke=INK, stroke_width=1.0)
-    s.text_rot(26, 190, '二級建築士試験', -90, size=17, weight='700')
-    s.text_rot(26, 420, '「設計製図の試験」', -90, size=15)
+    s.text_rot(26, 210, '令和8年　二級建築士試験', -90, size=15, weight='700')
+    s.text_rot(26, 520, '「設計製図の試験」', -90, size=14)
     if blank:
-        s.text_rot(26, 760, '練習用 答案用紙', -90, size=16, weight='700')
-        s.text_rot(26, 1010, 'A2横1枚（本番と同じ）', -90, size=12)
+        s.text_rot(26, 820, '練習用 答案用紙', -90, size=15, weight='700')
     else:
-        s.text_rot(26, 730, '予想問題　%s' % key, -90, size=16, weight='700')
-        s.text_rot(26, 940, '解　答　例', -90, size=15)
+        s.text_rot(26, 760, '予想問題　%s' % key, -90, size=15, weight='700')
+        s.text_rot(26, 980, '解　答　例', -90, size=14)
 
-    # ================= 上の段：平面図3枚 =================
-    ptitles = ['⑴ １階平面図 兼 配置図（1／100）', '⑵ ２階平面図（1／100）',
-               '⑶ ３階平面図（1／100）']
-    if blank:
-        pw = (COL1X - 10 - CX0) / 3.0 - 10
-        for i in range(3):
-            x = CX0 + i * (pw + 15)
-            grid_frame(s, x, R1Y, pw, R1H, ptitles[i], GP4)
-    else:
-        ps = [panel(key, i) for i in range(3)]
-        sc = SC100
-        gap = 14.0
-        x = CX0
-        for i, (body, bw, bh) in enumerate(ps):
-            s.add(place(body, '%s%d' % (key.lower(), i), x,
-                        R1Y + (R1H - bh * sc) / 2.0, sc))
-            x += bw * sc + gap
-            if i < 2:
-                s.line(x - gap / 2.0, R1Y, x - gap / 2.0, R1Y + R1H,
-                       stroke=INK, stroke_width=0.6)
+    # ---- 列の割り ----
+    y0, ybot = 12.0, 1028.0                    # 図面の帯（上下）
+    c1, w1 = 54.0, 480.0                       # 1階平面図・立面図
+    c2, w2 = 546.0, 348.0                      # 2階・3階平面図・計画の要点等
+    c3, w3 = 906.0, 348.0                      # 床伏図・小屋伏図
+    c4, w4 = 1266.0, 408.0                     # 部分詳細図（紙の高さいっぱい）
+    by, bh = 1036.0, 150.0                     # 下の帯
 
-    # 面積表（上の段の右のはしら）
-    area_table(s, COL1X, R1Y + 34, CX1 - COL1X, site, keisan, a1, a2, a3,
-               blank=blank)
-
-    # ================= 中の段：伏図・立面図・部分詳細図 =================
+    ev = 'ans%selev' % key
     import answers as _ans
     import anselev as _ae
-    ev = 'ans%selev' % key
     evname = _ae.FACE_NAME[_ans.ELEV_FACE[key]]
     ff = 'ansfuse_floor' if key == 'A' else 'ans%sfuse_floor' % key
     fr = 'ansfuse_roof' if key == 'A' else 'ans%sfuse_roof' % key
     dt = 'dh_nokisaki' if key == 'D' else 'detail'
-    slots = [('⑷ ３階床伏図（1／100）', ff, SC100, GP4, 320.0),
-             ('⑷ 小屋伏図（1／100）', fr, SC100, GP4, 320.0),
-             ('⑸ %s立面図（1／100）' % evname, ev, SC100, GP4, 352.0),
-             ('⑹ 部分詳細図（断面）（1／20）', dt, SC20, GP10, 334.0)]
-    tot = sum(w for _, _, _, _, w in slots)
-    gap = ((COL2X - 10 - CX0) - tot) / (len(slots) - 1)
-    x = CX0
-    for i, (ti, nm, sc, gp, wdt) in enumerate(slots):
-        if blank:
-            grid_frame(s, x, R2Y, wdt, R2H, ti, gp)
+
+    def slot(x, y, w, h, title, fig=None, sc=SC100, gp=GP4, pre=''):
+        if blank or fig is None:
+            grid_frame(s, x, y, w, h, title, gp)
         else:
-            frame(s, x, R2Y, wdt, R2H, ti)
-            fit(s, nm, '%s%s' % (key.lower(), 'fgesd'[i]), x, R2Y + 12,
-                wdt, R2H - 12, sc)
-        x += wdt + gap
+            frame(s, x, y, w, h, title)
+            fit(s, fig, pre, x, y + 22, w, h - 22, sc)
 
-    # 計画の要点等（中の段の右のはしら）
-    yt = None if blank else list(_youten(key))
-    youten_box(s, COL2X, R2Y + 20, CX1 - COL2X, R2H - 20, yt)
-
-    # ================= 下の段：凡例欄とタイトル欄 =================
-    legend(s, lx=CX0 + 46, ly=R3Y + 22, lw=1010.0, dims=not blank)
-
-    bx = 1180.0
-    s.rect(bx, R3Y, CX1 - bx, 58, fill='#fff', stroke=INK, stroke_width=1.4)
+    # ---- 左の列：1階平面図 兼 配置図／立面図 ----
+    h1 = 580.0
     if blank:
-        s.text(bx + (CX1 - bx) / 2.0, R3Y + 38, '練習用　答案用紙', size=20,
-               weight='700')
-        s.rect(bx, R3Y + 68, CX1 - bx, 34, fill='#fff', stroke=INK,
-               stroke_width=1.0)
-        s.line(bx + 210, R3Y + 68, bx + 210, R3Y + 102, stroke=INK,
-               stroke_width=0.8)
-        s.text(bx + 10, R3Y + 90, '受験番号', size=11, anchor='start',
-               fill='#555')
-        s.text(bx + 220, R3Y + 90, '氏名', size=11, anchor='start',
-               fill='#555')
-        s.text(bx, R3Y + 128,
-               '※ 目盛は実寸。ふつうの枠は4.55mm（1／100 で455mm）、'
-               '部分詳細図の枠は10mm（1／20 で200mm）。',
+        grid_frame(s, c1, y0, w1, h1,
+                   '⑴ １階平面図 兼 配置図　縮尺1／100　（目盛4.55mm）', GP4)
+    else:
+        frame(s, c1, y0, w1, h1,
+              '⑴ １階平面図 兼 配置図　縮尺1／100　（目盛4.55mm）')
+        body, bw, bh_ = panel(key, 0)
+        s.add(place(body, key.lower() + '0',
+                    c1 + max(0.0, (w1 - bw * SC100) / 2.0),
+                    y0 + 22 + max(0.0, (h1 - 22 - bh_ * SC100) / 2.0), SC100))
+    slot(c1, y0 + h1 + 8, w1, ybot - (y0 + h1 + 8),
+         '⑸ %s立面図' % evname,
+         ev, pre=key.lower() + 'e')
+
+    # ---- 中の列：2階・3階平面図／計画の要点等 ----
+    hp = 500.0
+    for i2, ti in ((1, '⑵ ２階平面図　縮尺1／100　（目盛4.55mm）'),
+                   (2, '⑶ ３階平面図　縮尺1／100　（目盛4.55mm）')):
+        yy = y0 + (i2 - 1) * (hp + 8)
+        if blank:
+            grid_frame(s, c2, yy, w2, hp, ti, GP4)
+        else:
+            frame(s, c2, yy, w2, hp, ti)
+            body, bw, bh_ = panel(key, i2)
+            s.add(place(body, '%s%d' % (key.lower(), i2),
+                        c2 + max(0.0, (w2 - bw * SC100) / 2.0),
+                        yy + 22 + max(0.0, (hp - 22 - bh_ * SC100) / 2.0),
+                        SC100))
+
+
+    # ---- 中の列その2：床伏図・小屋伏図 ----
+    hf = 404.0
+    slot(c3, y0, w3, hf, '⑷ ３階床伏図',
+         ff, pre=key.lower() + 'f')
+    slot(c3, y0 + hf + 8, w3, hf, '⑷ 小屋伏図',
+         fr, pre=key.lower() + 'g')
+    # ---- ⑻ 計画の要点等（本物の答案用紙と同じく、罫線の欄） ----
+    ry = y0 + 2 * (hf + 8)
+    s.rect(c3, ry, w3, ybot - ry, fill='none', stroke=INK, stroke_width=1.0)
+    s.text(c3 + 8, ry + 17, '⑻　計画の要点等', size=11, anchor='start',
+           weight='700')
+    s.line(c3, ry + 24, c3 + w3, ry + 24, stroke=INK, stroke_width=0.8)
+    qs = [q for q, _ in _youten(key)] if not blank else ['', '', '']
+    n_ = 3
+    ih = (ybot - ry - 24) / n_
+    for i3 in range(n_):
+        yy = ry + 24 + i3 * ih
+        if i3:
+            s.line(c3, yy, c3 + w3, yy, stroke=INK, stroke_width=0.7)
+        s.text(c3 + 6, yy + 14, '%s' % '①②③'[i3], size=9.5,
+               anchor='start', weight='700')
+        if not blank:
+            wrap_text(s, c3 + 20, yy + 14, w3 - 28, plain(qs[i3]), size=8.4,
+                      lh=10.4, color='#333')
+        for k_ in range(1, 4):
+            ly_ = yy + 22 + k_ * 12
+            if ly_ < yy + ih - 4:
+                s.line(c3 + 8, ly_, c3 + w3 - 8, ly_, stroke='#bbb',
+                       stroke_width=0.6)
+    if not blank:
+        s.text(c3 + w3 - 6, ybot - 6,
+               '※ 解答例の本文は別紙「計画の要点等（記述だけ）」に',
+               size=8, anchor='end', fill='#666')
+
+    # ---- 右の列：部分詳細図（紙の高さいっぱい） ----
+    slot(c4, y0, w4, ybot - y0,
+         '⑹ 部分詳細図（断面）　（目盛10mm）',
+         dt, sc=SC20, gp=GP10, pre=key.lower() + 'd')
+
+    # ---- 下の帯：面積表・凡例・受験番号 ----
+    area_table(s, c1, by + 22, 500.0, site, keisan, a1, a2, a3, blank=blank,
+               rh=19.0, band=True)
+    s.text(c1, by + 148, '※ 小数点以下第3位以下は切り捨て。計算式はm単位。',
+           size=9, anchor='start', fill='#555')
+    legend(s, lx=c1 + 600, ly=by + 22, lw=640.0, dims=not blank,
+           note=False)
+    bx = 1346.0
+    s.rect(bx, by, CX1 - bx, 54, fill='#fff', stroke=INK, stroke_width=1.4)
+    s.text(bx + (CX1 - bx) / 2.0, by + 36,
+           '練習用　答案用紙' if blank else '標　準　解　答　例',
+           size=18, weight='700')
+    s.rect(bx, by + 62, CX1 - bx, 32, fill='#fff', stroke=INK,
+           stroke_width=1.0)
+    s.line(bx + 190, by + 62, bx + 190, by + 94, stroke=INK, stroke_width=0.8)
+    s.text(bx + 8, by + 83, '受験番号', size=10.5, anchor='start',
+           fill='#555')
+    s.text(bx + 198, by + 83, '氏名', size=10.5, anchor='start', fill='#555')
+    if blank:
+        s.text(bx, by + 116,
+               '※ 目盛は実寸。印刷は「実際のサイズ／100%」で。',
                size=9.5, anchor='start', fill='#555')
-        s.text(bx, R3Y + 146,
-               '※ 印刷は「実際のサイズ／100%」で。'
-               '「用紙に合わせる」にすると縮尺が狂う。',
+        s.text(bx, by + 132,
+               '※「用紙に合わせる」にすると縮尺が狂う。',
                size=9.5, anchor='start', fill='#555')
     else:
-        s.text(bx + (CX1 - bx) / 2.0, R3Y + 38, '標　準　解　答　例', size=20,
-               weight='700')
-        s.text(bx, R3Y + 76, '予想問題　%s　%s' % (key, sub), size=11.5,
+        s.text(bx, by + 114, '予想問題　%s　%s' % (key, sub), size=10.5,
                anchor='start', weight='700')
-        s.text(bx, R3Y + 94,
+        s.text(bx, by + 132,
                '木造3階建て　／　%dマス × %dマス（%s × %s）'
                % (nx, ny, format(nx * 910, ','), format(ny * 910, ',')),
-               size=10, anchor='start', fill='#555')
-        yy = R3Y + 114
-        for t in POINTS[key]:
-            yy = wrap_text(s, bx, yy, CX1 - bx, '・' + t, size=9.2, lh=11.5,
-                           color='#333')
+               size=9.5, anchor='start', fill='#555')
     return s
 
 
