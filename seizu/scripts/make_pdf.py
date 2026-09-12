@@ -250,7 +250,8 @@ if __name__ == '__main__':
             ('kodomo.html', '小学生でもわかる答案の描き方.pdf'),
             ('honban.html', '本番の進め方.pdf'),
             ('checkrun.html', '本番チェック進行表.pdf'),
-            ('anaume.html', '記述穴うめドリル.pdf')):
+            ('anaume.html', '記述穴うめドリル.pdf'),
+            ('kijutsu.html', '計画の要点等_記述だけ.pdf')):
         build_plain(_src, _pdf)
     build_renshu()
     build_mondaishu()
