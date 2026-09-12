@@ -21,10 +21,18 @@ TOP = 10806                  # 最高の高さ
 NOKIDE = 600                 # 軒の出
 
 
+# 玄関まわりの高さ（平面図の記入と同じ数字にそろえる）
+DOMA_GL = 400                # 玄関土間（土足のところ）
+PORCH_GL = 380               # 玄関ポーチ
+PORCH_STEPS = 2              # 地面からポーチまで（190×2）
+SHOP_STEPS = 3               # 地面から店舗の床 GL+550 まで
+DOOR_H = 2000                # 出入口の高さ
+
+
 def south_openings(n, floors=None, **kw):
-    """その階の南面の開口を（位置, 幅, 種別）で返す。"""
+    """その南面の開口を（位置, 幅, 種別, 名前）で返す。"""
     ops = plans.fit_all(floors or plans.FLOORS, **kw)[n]
-    return [(p, l, k) for f, p, l, k, _ in ops if f == 'S']
+    return [(p, l, k, lab) for f, p, l, k, lab in ops if f == 'S']
 
 
 def draw(floors=None, nx=None, ny=None, xlines=None, ylines=None, tag='',
@@ -112,12 +120,50 @@ def draw(floors=None, nx=None, ny=None, xlines=None, ylines=None, tag='',
             xx = a + (b - a) * i / float(panes)
             s.line(xx, hi + 3, xx, lo - 3, stroke=INK, stroke_width=0.9)
 
+    def door(a, b, lo, hi):
+        """出入口。窓とちがって下まで枠があるので、中は縦1本＋引手。"""
+        s.rect(a, hi, b - a, lo - hi, fill='#fff', stroke=INK,
+               stroke_width=1.6)
+        s.rect(a + 3, hi + 3, b - a - 6, lo - hi - 6, fill='none',
+               stroke=INK, stroke_width=1.0)
+        mid = (a + b) / 2.0
+        s.line(mid, hi + 3, mid, lo - 3, stroke=INK, stroke_width=1.0)
+        for d in (-9, 9):                       # 引手（両開き・引違いどちらでも）
+            s.line(mid + d, lo - (lo - hi) * 0.46,
+                   mid + d, lo - (lo - hi) * 0.40,
+                   stroke=INK, stroke_width=1.4)
+
+    def steps(a, b, sill, porch, n_st, genkan):
+        """出入口の下。ポーチ（あれば）と、地面からの段。
+
+        正面から見た段は「幅は変わらず、蹴上ごとに横線が1本」。
+        幅は開口の左右に半マス（455）ずつ広げる。
+        """
+        ext = G * 0.5
+        pa, pb = a - ext, b + ext
+        top = porch if genkan else sill
+        s.rect(pa, py(top), pb - pa, top * K, fill='#fff', stroke=INK,
+               stroke_width=1.2)
+        r = top / float(n_st)
+        for i in range(1, n_st):
+            s.line(pa, py(r * i), pb, py(r * i), stroke=INK,
+                   stroke_width=1.0)
+        if genkan:                              # ポーチ（+380）→ 土間（+400）
+            s.line(a, py(sill), b, py(sill), stroke=INK, stroke_width=1.2)
+
     for n in (1, 2, 3):
         f = FL[n - 1]
-        for pos, ln, kind in south_openings(n, floors, **gkw):
+        for pos, ln, kind, lab in south_openings(n, floors, **gkw):
             a, b = px(pos), px(pos + ln)
             if kind == 'entry':
-                sash(a, b, py(f), py(f + 2000), 2)
+                # 玄関は土間（GL+400）、店・勝手口は床（GL+550）に立つ。
+                # ドアの下は床の高さで、そこまで外から段で上がる。
+                genkan = '玄関' in lab
+                sill = DOMA_GL if genkan else f
+                door(a, b, py(sill), py(sill + DOOR_H))
+                if n == 1:
+                    steps(a, b, sill, PORCH_GL if genkan else 0,
+                          PORCH_STEPS if genkan else SHOP_STEPS, genkan)
             elif kind == 'balc':
                 sash(a, b, py(f), py(f + 2000), 2)
                 s.rect(a - 6, py(f + 1100), (b - a) + 12, 1100 * K,

@@ -338,6 +338,15 @@ def check_elevation():
     for nm in ('elevation.py', 'anselev.py'):
         src = _io.open(_os.path.join(here, nm), encoding='utf-8').read()
         ck('fit_all' in src, '%s が平面図から開口を拾っていない' % nm)
+        # 玄関は土間 GL+400 に立つ。1FL から立たせると平面図と食いちがう
+        ck("'玄関' in" in src, '%s が玄関の土間を見ていない' % nm)
+        ck('400' in src, '%s に玄関土間 GL+400 がない' % nm)
+    import anselev as _ae
+    import anssheet as _as
+    ck(_ae.DOMA_GL == 400, '立面図の玄関土間が GL+400 でない')
+    ck(_ae.PORCH_GL == 380, '立面図のポーチが GL+380 でない')
+    ck(_as.DOMA['gl'] == 'GL＋400' and _as.DOMA['porch'] == 'GL＋380',
+       '平面図と立面図で玄関まわりの高さが合っていない')
     fl = plans.FLOORS
     kata = {n: sorted((p, l, k) for f, p, l, k, _ in
                       plans.fit_all(fl)[n] if f == 'S') for n in (1, 2, 3)}

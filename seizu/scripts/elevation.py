@@ -73,7 +73,22 @@ def elevation():
                 continue
             _a, _b = _pos * 910.0, (_pos + _ln) * 910.0
             if _k == 'entry':
-                win(_a, _b, _fl, _fl + 2000, 'door')
+                # 玄関は土間 GL+400、店・勝手口は床 GL+550 に立つ。
+                # その下に、地面からの段（玄関はポーチ GL+380 を経由）を描く。
+                _g = '玄関' in _lab
+                _sill = 400 if _g else _fl
+                win(_a, _b, _sill, _sill + 2000, 'door')
+                if _n == 1:
+                    _top = 380 if _g else _sill
+                    _ns = 2 if _g else 3
+                    _e = 455.0
+                    s.rect(X(_a - _e), Y(_top), (_b - _a + 2 * _e) * S,
+                           _top * S, fill='#efe9dd', stroke='#8b8377',
+                           stroke_width=1.2)
+                    for _i in range(1, _ns):
+                        _y = Y(_top * _i / float(_ns))
+                        s.line(X(_a - _e), _y, X(_b + _e), _y,
+                               stroke='#8b8377', stroke_width=0.9)
             elif _k == 'balc':
                 win(_a, _b, _fl, _fl + 2000)
                 s.rect(X(_a) - 5, Y(_fl + 1100), (_b - _a) * S + 10,
