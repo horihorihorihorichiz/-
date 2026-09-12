@@ -385,3 +385,31 @@ for _n, _d in (('ansA_2f', A2), ('ansA_3f', A3), ('ansE_2f', E2),
                ('ansE_3f', E3), ('ansF_2f', F2), ('ansF_3f', F3)):
     draw_floor(1, _d).save(os.path.join(OUT, _n + '.svg'))
 print('wrote ansA/E/F の2階・3階')
+
+
+# ============================================================
+# 予想問題ごとの 床伏図・小屋伏図・南側立面図
+# （A以外も「実際に必要な図面が全部そろった解答例」にするため）
+# ============================================================
+GRIDS = {
+    'A': {},
+    'B': dict(nx=BG['nx'], ny=BG['ny'], xlines=BX, ylines=BY),
+    'C': dict(nx=CG['nx'], ny=CG['ny'], xlines=CX, ylines=CY),
+    'D': dict(xlines=DX, ylines=DY),
+    'E': {},
+    'F': {},
+}
+
+if __name__ == '__main__':
+    import ansframe as _af
+    import anselev as _ae
+    for _t in ('B', 'C', 'D', 'E', 'F'):
+        _fl = {1: PLANS[_t][0], 2: PLANS[_t][1], 3: PLANS[_t][2]}
+        _kw = GRIDS[_t]
+        _af.draw('floor', floors=_fl, tag=_t, **_kw).save(
+            os.path.join(OUT, 'ans%sfuse_floor.svg' % _t))
+        _af.draw('roof', floors=_fl, tag=_t, **_kw).save(
+            os.path.join(OUT, 'ans%sfuse_roof.svg' % _t))
+        _ae.draw(floors=_fl, tag=_t, **_kw).save(
+            os.path.join(OUT, 'ans%selev_s.svg' % _t))
+    print('wrote ansB〜F の 床伏図・小屋伏図・南側立面図')

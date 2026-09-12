@@ -136,7 +136,7 @@ FLOORS = {
             ('H', 6, 2.05, 0.9),  # 廊下 → 夫婦寝室
             ('V', 2, 7.5, 1.0),   # 夫婦寝室 → 納戸（ウォークインクロゼット）
         ],
-        note='廊下を東西に1本通して、階段から全部屋へ行けるようにする。',
+        note='廊下を南北に1本通して、階段から全部屋へ行けるようにする。',
         stair_up='DN 14段で2階へ（上に階はないので上りはない）',
         stair_mode='top',
     ),
@@ -328,12 +328,21 @@ def fit_all(floors, nx=None, ny=None, xlines=None, ylines=None):
                 break
     out = {}
     for n, ops in fits.items():
-        new = []
+        new, seen = [], {}
         for f, p, l, k, lab in ops:
             cross = xs if f in ('S', 'N') else ys
             g = chosen.get((f, _seg_of(cross, p + l / 2.0)))
             if g:
                 p, l = g
+            key = (f, round(p, 3), round(l, 3))
+            if key in seen:
+                # 同じ位置・同じ幅に寄った開口が2つできることがある。
+                # 出入口・バルコニーを残し、ただの窓は捨てる（二重描きの防止）。
+                i = seen[key]
+                if new[i][3] == 'win' and k != 'win':
+                    new[i] = (f, round(p, 3), round(l, 3), k, lab)
+                continue
+            seen[key] = len(new)
             new.append((f, round(p, 3), round(l, 3), k, lab))
         out[n] = new
     return out

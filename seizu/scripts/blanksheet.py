@@ -2,7 +2,7 @@
 """練習用の白紙答案用紙（A3横×3枚）。
 
 本番の答案用紙はA2横1枚だが、家庭やコンビニではA3までしか出せない。
-そこで A3横3枚に分け、かわりに**目盛を実寸のまま**にしてある。
+そこで A3横4枚に分け、かわりに**目盛を実寸のまま**にしてある。
 　・ふつうのらん　　　　1目盛 4.55mm（1／100 で 455mm）
 　・部分詳細図のらん　　1目盛 10mm （1／20 で 200mm）
 ※ 印刷は「実際のサイズ／100%」で。「用紙に合わせる」にすると縮尺が狂う。
@@ -40,7 +40,7 @@ def base(no, name):
     s.text_rot(27, 250, '二級建築士試験「設計製図の試験」', -90, size=13,
                weight='700')
     s.text_rot(27, 560, '練習用 答案用紙', -90, size=12)
-    s.text_rot(27, 740, '%d / 3' % no, -90, size=12, weight='700')
+    s.text_rot(27, 740, '%d / 4' % no, -90, size=12, weight='700')
     s.text(56, 38, name, size=15, anchor='start', weight='700')
     return s
 
@@ -78,6 +78,7 @@ def page1():
 # ============================================================ 2枚目：伏図
 def page2():
     s = base(2, '床伏図 兼 小屋伏図（1／100）　目盛 4.55mm')
+    namebox(s, W - 320, 18)
     x0, y0 = 52.0, 58.0
     ymid = 560.0
     cw = (W - 14 - x0) / 2.0
@@ -99,6 +100,7 @@ def page2():
 # ============================================ 3枚目：立面図・部分詳細図・面積表
 def page3():
     s = base(3, '立面図・部分詳細図・面積表')
+    namebox(s, W - 320, 18)
     x0 = 52.0
     xd = 700.0                                   # 部分詳細図らんの左はし
     frame(s, x0, 58.0, xd - 14, 476.0, '⑸ 立面図（1／100）　目盛 4.55mm')
@@ -131,18 +133,60 @@ def page3():
            '※ 計算式は m 単位で書く。小数点以下第3位以下は切り捨て。',
            size=10.5, anchor='start', fill='#555')
     s.text(x0, ty + rh * len(rows) + 42,
-           '※ 計画の要点等（⑻）は本番では答案用紙の中の罫線に書く。この練習用紙にはないので、別の紙に3問ぶん罫線を引いて練習する。',
+           '※ 計画の要点等（⑻）は 4／4 の用紙に書く。',
            size=10.5, anchor='start', fill='#555')
+    return s
+
+
+# ============================================================ 4枚目：計画の要点等
+def page4():
+    """⑻ 計画の要点等。本番は答案用紙の罫線に書く欄。
+
+    問題の数（3〜4問）と文字数は年で変わるので、4問ぶんと図示欄を用意した。
+    問題文をそのまま書き写す行を1行、そのあとに罫線8行。
+    """
+    s = base(4, '⑻ 計画の要点等（記述）　※ 問題文の問いを書き写してから答える')
+    namebox(s, W - 320, 18)
+    x0 = 52.0
+    cw = (W - 14 - x0 - 16) / 2.0
+    bh, nline, lp = 248.0, 8, 24.0
+
+    def qbox(x, y, no):
+        s.rect(x, y, cw, bh, fill='none', stroke=INK, stroke_width=1.2)
+        s.line(x, y + 30, x + cw, y + 30, stroke=INK, stroke_width=0.8)
+        s.text(x + 8, y + 21, no, size=12, anchor='start', weight='700')
+        s.line(x + 30, y + 24, x + cw - 10, y + 24, stroke='#999',
+               stroke_width=0.6)
+        for i in range(1, nline + 1):
+            yy = y + 30 + i * lp
+            if yy < y + bh - 6:
+                s.line(x + 10, yy, x + cw - 10, yy, stroke='#bbb',
+                       stroke_width=0.6)
+
+    for i, no in enumerate(('①', '②', '③')):
+        qbox(x0, 58.0 + i * (bh + 10), no)
+    qbox(x0 + cw + 16, 58.0, '④（問いが4つのとき）')
+
+    # 図示欄（「図示せよ」が出たとき用の方眼）
+    gx, gy = x0 + cw + 16, 58.0 + bh + 10
+    gh = 824.0 - gy
+    grid(s, gx, gy + 24, gx + cw, gy + gh, GP4)
+    s.rect(gx, gy, cw, gh, fill='none', stroke=INK, stroke_width=1.2)
+    s.rect(gx, gy, cw, 24, fill='#fff', stroke='none')
+    s.line(gx, gy + 24, gx + cw, gy + 24, stroke=INK, stroke_width=0.8)
+    s.text(gx + 8, gy + 17,
+           '図示欄（「図示しなさい」が出たときに使う。目盛 4.55mm）',
+           size=11, anchor='start', weight='700')
     return s
 
 
 FIG = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'figures')
 
 if __name__ == '__main__':
-    for i, fn in enumerate((page1, page2, page3), 1):
+    for i, fn in enumerate((page1, page2, page3, page4), 1):
         s = fn()
         s.save(os.path.join(OUT, 'renshu%d.svg' % i))
     # 解説書に載せる見本（2種類の方眼のちがいが分かる3枚目）
     page3().save(os.path.join(FIG, 'renshu.svg'))
-    print('wrote sheets/renshu1〜3.svg ＋ figures/renshu.svg'
+    print('wrote sheets/renshu1〜4.svg ＋ figures/renshu.svg'
           '  （A3横・目盛4.55mm / 10mm 実寸）')

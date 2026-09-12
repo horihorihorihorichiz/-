@@ -201,6 +201,23 @@ def build_a3(names, pdf_name):
     to_pdf(p, pdf_name)
 
 
+RENSHU_CSS = ("<style>@page{size:420mm 297mm;margin:0}"
+              "html,body{margin:0;padding:0;background:#fff}"
+              ".pg{width:420mm;height:297mm;break-after:page;overflow:hidden}"
+              ".pg:last-child{break-after:auto}"
+              ".pg svg{width:420mm;height:297mm;display:block}</style>")
+
+
+def build_renshu():
+    """練習用の白紙答案用紙（A3横4枚）。目盛を実寸にしたまま印刷する。"""
+    names = ['renshu1', 'renshu2', 'renshu3', 'renshu4']
+    html = [RENSHU_CSS] + ['<div class="pg">%s</div>' % _svg(n)
+                           for n in names]
+    p = os.path.join(TMP, 'a3_renshu.html')
+    io.open(p, 'w', encoding='utf-8').write(''.join(html))
+    to_pdf(p, os.path.join(OUT, '練習用答案用紙_A3.pdf'))
+
+
 def build_mondaishu():
     """1問ずつ「問題」と「解答例」を別のPDFにして pdf/予想問題集/ に置く。"""
     d = os.path.join(OUT, '予想問題集')
@@ -208,11 +225,12 @@ def build_mondaishu():
     for k in KEYS:
         build_a2('mondai_%s.html' % k,
                  os.path.join(d, '予想問題%s_問題.pdf' % k))
-        build_a3(['kaitou_%s' % k, 'kaitou_common1', 'kaitou_common2'],
+        build_a3(['kaitou_%s' % k, 'kaitou_%s_c1' % k, 'kaitou_%s_c2' % k],
                  os.path.join(d, '予想問題%s_解答例.pdf' % k))
     build_a2('mondai_all.html', os.path.join(d, '00_問題編_A-F.pdf'))
-    build_a3(['kaitou_%s' % k for k in KEYS] +
-             ['kaitou_common1', 'kaitou_common2'],
+    build_a3([n for k in KEYS
+              for n in ('kaitou_%s' % k, 'kaitou_%s_c1' % k,
+                        'kaitou_%s_c2' % k)],
              os.path.join(d, '00_解答編_A-F.pdf'))
 
 
@@ -223,4 +241,5 @@ if __name__ == '__main__':
     build_plain('kaisetsu.html', '二級建築士_答案用紙まるごと解説.pdf')
     build_plain('mondai_all.html', '予想問題集A-F_問題用紙.pdf')
     build_plain('kaitou_all.html', '予想問題集A-F_標準解答例.pdf')
+    build_renshu()
     build_mondaishu()

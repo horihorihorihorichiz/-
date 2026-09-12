@@ -259,8 +259,9 @@ def sheet(sp):
            % (nx, ny, format(nx * 910, ','), format(ny * 910, ',')),
            size=10, anchor='start', fill='#555')
     s.text(bx, by + 98,
-           '※ 立面図・床伏図兼小屋伏図・部分詳細図は、別紙「共通図」を'
-           '見てください。', size=10, anchor='start', fill='#555')
+           '※ 立面図・床伏図兼小屋伏図・部分詳細図は、次の2枚'
+           '「共通図①②（予想問題 %s）」にあります。' % key,
+           size=10, anchor='start', fill='#555')
 
     # ---- 採点のポイント ----
     py_, ph = 1030.0, 108.0
@@ -280,14 +281,24 @@ def load_file(name):
     return body, float(m.group(1)), float(m.group(2))
 
 
-COMMON = [('共通図 ①　立面図と部分詳細図',
-           [('anselev_s', 'SC100'), ('detail', 'SC20')],
-           'この2枚は「型（8マス×10マス）」のもの。'
-           '問題B（9マス）・C（7マス）は間口が違うので寸法を読みかえる。'),
-          ('共通図 ②　床伏図と小屋伏図',
-           [('ansfuse_floor', 'SC100'), ('ansfuse_roof', 'SC100')],
-           '梁は2階・3階の壁の上下と通り芯に必ず通し、残りを床梁@910で埋める。'
-           '小屋伏図は棟が南北方向・4寸勾配。3階の壁の上には桁。')]
+def common_names(key):
+    """予想問題ごとの「共通図」2枚ぶんの中身。A以外もその建物の図を使う。"""
+    ev = 'anselev_s' if key == 'A' else 'ans%selev_s' % key
+    ff = 'ansfuse_floor' if key == 'A' else 'ans%sfuse_floor' % key
+    fr = 'ansfuse_roof' if key == 'A' else 'ans%sfuse_roof' % key
+    dt = 'dh_nokisaki' if key == 'D' else 'detail'
+    n1 = ('共通図 ①　立面図と部分詳細図',
+          [(ev, 'SC100'), (dt, 'SC20')],
+          ('部分詳細図はこの問題だけ「軒先まわり」。'
+           '切断位置は3階平面図の外壁に打つ。'
+           if key == 'D' else
+           '外壁の断面は建物の大きさに関係なく同じ。'
+           '立面図はこの問題の間口・最高の高さで描いてある。'))
+    n2 = ('共通図 ②　床伏図と小屋伏図',
+          [(ff, 'SC100'), (fr, 'SC100')],
+          '梁は2階・3階の壁の上下と通り芯に必ず通し、残りを床梁@910で埋める。'
+          '小屋伏図は棟が南北方向・4寸勾配。3階の壁の上には桁。')
+    return [n1, n2]
 
 
 def common_sheet(title, names, note):
@@ -321,8 +332,11 @@ if __name__ == '__main__':
         path = os.path.join(OUT, 'kaitou_%s.svg' % sp[0])
         io.open(path, 'w', encoding='utf-8').write(to_mono(s.dump()))
         print('wrote', os.path.basename(path))
-    for k, (ti, names, note) in enumerate(COMMON, 1):
-        path = os.path.join(OUT, 'kaitou_common%d.svg' % k)
-        io.open(path, 'w', encoding='utf-8').write(
-            to_mono(common_sheet(ti, names, note).dump()))
-        print('wrote', os.path.basename(path))
+    for sp in SPECS:
+        key = sp[0]
+        for k, (ti, names, note) in enumerate(common_names(key), 1):
+            path = os.path.join(OUT, 'kaitou_%s_c%d.svg' % (key, k))
+            io.open(path, 'w', encoding='utf-8').write(
+                to_mono(common_sheet('%s（予想問題 %s）' % (ti, key),
+                                     names, note).dump()))
+        print('wrote kaitou_%s_c1 / _c2' % key)

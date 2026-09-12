@@ -27,7 +27,18 @@ def sei(masu, taika=False):
     return _plans.sei(masu)
 
 
-def draw(kind='floor'):
+def draw(kind='floor', floors=None, nx=None, ny=None, xlines=None,
+         ylines=None, tag=''):
+    """伏図を1枚描く。
+
+    floors/nx/ny/xlines/ylines を渡すと、予想問題B〜Fのように
+    大きさや通りの位置がちがう建物でもそのまま描ける（省略すると型）。
+    """
+    NX = nx if nx is not None else globals()['NX']
+    NY = ny if ny is not None else globals()['NY']
+    XL = xlines if xlines is not None else globals()['XL']
+    YL = ylines if ylines is not None else globals()['YL']
+    gkw = dict(floors=floors, nx=NX, ny=NY, xlines=XL, ylines=YL)
     W = ML + NX * G + MR
     H = MT + NY * G + MB
 
@@ -40,6 +51,8 @@ def draw(kind='floor'):
     s = Svg(W, H)
     title = ('３階床伏図　縮尺1／100' if kind == 'floor'
              else '小屋伏図　縮尺1／100')
+    if tag:
+        title = '予想問題　%s 解答例　%s' % (tag, title)
     s.text(W / 2.0, 32, title, size=15, weight='700')
 
     # 方眼（目盛4.55mm＝455mm）
@@ -84,7 +97,7 @@ def draw(kind='floor'):
     import plans as _plans
     lo_, up_ = (2, 3) if kind == 'floor' else (3, None)
     # 壁の上下と通り芯には必ず梁。残りは床梁 @910／小屋梁 @1,820（plans.framing）
-    for ori_, ln_, a_, b_, sz_, _kd in _plans.framing(lo_, up_):
+    for ori_, ln_, a_, b_, sz_, _kd in _plans.framing(lo_, up_, **gkw):
         member(ori_, ln_, a_, b_, sz_)
     if kind != 'floor':
         # 棟木（南北・中央）は正角材なので2本の平行線で描く
@@ -95,7 +108,7 @@ def draw(kind='floor'):
                anchor='start')
         for gy in range(2, NY, 2):          # 棟束（棟木を受ける）
             s.circle(px(NX / 2.0), py(gy), 3.6, fill=INK)
-        for gx in (1, 2, 3, 5, 6, 7):
+        for gx in [g for g in range(1, NX) if abs(g - NX / 2.0) > 1e-9]:
             s.line(px(gx), py(0) - 4, px(gx), py(NY) + 4, stroke=INK,
                    stroke_width=0.9, stroke_dasharray='14 3 2 3')
             for gy in range(2, NY, 2):
@@ -105,17 +118,19 @@ def draw(kind='floor'):
 
     # 火打梁（建物の四隅と、中央の区画の四隅。合計8か所）
     d_ = 1.0
+    ix0, ix1 = XL[1][0], XL[-2][0]          # 中の通り（東西）
+    iy0, iy1 = YL[1][0], YL[-2][0]          # 中の通り（南北）
     for (x_, y_, sx, sy) in ((0, 0, 1, 1), (NX, 0, -1, 1),
                              (0, NY, 1, -1), (NX, NY, -1, -1),
-                             (2, 2, 1, 1), (5, 2, -1, 1),
-                             (2, 6, 1, -1), (5, 6, -1, -1)):
+                             (ix0, iy0, 1, 1), (ix1, iy0, -1, 1),
+                             (ix0, iy1, 1, -1), (ix1, iy1, -1, -1)):
         s.line(px(x_ + sx * d_), py(y_), px(x_), py(y_ + sy * d_),
                stroke=INK, stroke_width=1.2, stroke_dasharray='8 4')
 
     # 柱（下の階＝×、上の階＝小さい四角、重なる＝四角にバツ、通し柱＝○で囲む）
     import plans as _plans
     lower, upper = (2, 3) if kind == 'floor' else (3, None)
-    TOOSHI, BOTH, LOW, UP = _plans.columns_pair(lower, upper)
+    TOOSHI, BOTH, LOW, UP = _plans.columns_pair(lower, upper, **gkw)
     # 公式の凡例どおり：四角は梁の幅（120）と同じ大きさ、×は少しはみ出す
     r = hw + 0.3
     rx = hw * 1.7

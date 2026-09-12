@@ -305,6 +305,26 @@ def check_furniture():
     ck(not bad, '家具の置き場所に問題なし（全6型×3階）')
 
 
+
+def check_kaitou_figs():
+    """予想問題A〜Fの標準解答例に、要求図書が7つ全部そろっているか。"""
+    import io as _io
+    import os as _os
+    base = _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), '..')
+    need = ('１階平面図兼配置図', '２階平面図', '３階平面図',
+            '3階床伏図', '小屋伏図', '南側立面図', '部分詳細図')
+    for t in 'ABCDEF':
+        p = _os.path.join(base, 'kaitou_%s.html' % t)
+        src = _io.open(p, encoding='utf-8').read()
+        for nm in need:
+            ck(nm in src, '解答例%s に %s がない' % (t, nm))
+        for nm in ('ans%s_1f' % t, 'ans%sfuse_floor' % t,
+                   'ans%sfuse_roof' % t, 'ans%selev_s' % t):
+            if t == 'A':
+                continue
+            ck(_os.path.exists(_os.path.join(base, 'figures', nm + '.svg')),
+               'figures/%s.svg がない' % nm)
+
 def check_elevation():
     """立面図の窓が平面図とずれていないか。
 
@@ -363,6 +383,7 @@ def main():
     check_stair_access()
     check_furniture()
     check_elevation()
+    check_kaitou_figs()
     check_text(0)
     print('柱 1階%d・2階%d・3階%d本（うち3階とも同じ位置 %d本）／'
           '1階%.2f㎡・延べ%.2f㎡／1FL+%d・軒%d・最高%d'

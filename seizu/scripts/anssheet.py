@@ -1079,9 +1079,9 @@ def draw(d, title, sub='', conflicts=None):
             s.line(cx_, yy_, cx_ + 22, yy_, stroke=INK, stroke_width=1.4)
             s.polygon([(cx_ + 22, yy_), (cx_ + 13, yy_ - 4),
                        (cx_ + 13, yy_ + 4)], fill=INK)
-        s.text(cx_ - 8, py(0) - 34, 'Ｙ', size=10, anchor='end',
+        s.text(cx_ - 8, py(0) - 34, 'Ａ', size=10, anchor='end',
                weight='700')
-        s.text(cx_ - 8, py(0) + 48, 'Ｙ', size=10, anchor='end',
+        s.text(cx_ - 8, py(0) + 48, 'Ａ', size=10, anchor='end',
                weight='700')
         s.text(cx_ + 26, py(0) + 52, '部分詳細図の切断位置', size=8,
                anchor='start', fill='#333')

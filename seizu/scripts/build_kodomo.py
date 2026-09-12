@@ -10,7 +10,11 @@ import os
 import re
 import sys
 
-import pymupdf
+import glob
+import re
+import subprocess
+import tempfile
+import pathlib
 from PIL import Image, ImageDraw, ImageFont
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -29,15 +33,58 @@ def font(sz):
         return ImageFont.load_default()
 
 
+def _chrome():
+    for p in ('/opt/pw-browsers/chromium-1194/chrome-linux/chrome',
+              '/usr/bin/chromium', '/usr/bin/chromium-browser',
+              '/usr/bin/google-chrome'):
+        if os.path.exists(p):
+            return p
+    for p in glob.glob('/opt/pw-browsers/*/chrome-linux/chrome'):
+        return p
+    return 'chrome'
+
+
+CHROME = _chrome()
+_CACHE = {}
+
+
+def _render(svg, scale):
+    """SVG を Chromium で PNG に焼く。破線・一点鎖線もそのまま出る
+    （pymupdf の SVG 描画は破線を実線にしてしまうので使わない）。"""
+    key = (svg, scale)
+    if key in _CACHE:
+        return _CACHE[key]
+    src = os.path.join(FIG, svg)
+    head = io.open(src, encoding='utf-8').read(1200)
+    m = re.search(r'viewBox="([\d.\- ]+)"', head)
+    if m:
+        vb = [float(v) for v in m.group(1).split()]
+        w, h = vb[2], vb[3]
+    else:
+        w = float(re.search(r'width="([\d.]+)"', head).group(1))
+        h = float(re.search(r'height="([\d.]+)"', head).group(1))
+    tmp = tempfile.mkdtemp()
+    png = os.path.join(tmp, 'o.png')
+    subprocess.run(
+        [CHROME, '--headless', '--disable-gpu', '--no-sandbox',
+         '--hide-scrollbars', '--default-background-color=ffffffff',
+         '--force-device-scale-factor=%g' % scale,
+         '--window-size=%d,%d' % (int(round(w)), int(round(h))),
+         '--screenshot=' + png,
+         '--virtual-time-budget=8000',
+         pathlib.Path(src).absolute().as_uri()],
+        check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    im = Image.open(png).convert('RGB')
+    _CACHE[key] = im
+    return im
+
+
 def crop(svg, box, scale=2.0):
     """svg の (x0,y0,x1,y1) を 0〜1 の割合で切り抜いて PIL 画像にする。"""
-    d = pymupdf.open(os.path.join(FIG, svg))
-    pg = d[0]
-    r = pg.rect
-    clip = pymupdf.Rect(r.x0 + r.width * box[0], r.y0 + r.height * box[1],
-                        r.x0 + r.width * box[2], r.y0 + r.height * box[3])
-    pix = pg.get_pixmap(matrix=pymupdf.Matrix(scale, scale), clip=clip)
-    return Image.open(io.BytesIO(pix.tobytes('png'))).convert('RGB')
+    im = _render(svg, scale)
+    W, H = im.size
+    return im.crop((int(W * box[0]), int(H * box[1]),
+                    int(W * box[2]), int(H * box[3]))).copy()
 
 
 def label(im, x, y, text, color=(176, 48, 96), size=20, w=None):
@@ -73,18 +120,22 @@ def figures():
 
     # 壁・柱・窓・戸の記号（1階の玄関〜階段〜売場の角）
     im = crop('ans2A_1f.svg', (0.2, 0.44, 0.6, 0.78), 2.4)
-    label(im, 420, 40, '壁＝2本線', size=18)
-    label(im, 420, 560, '柱＝黒い四角', size=18)
-    label(im, 560, 120, '窓＝細い線3本\n（▽は耐力壁の印）', size=18)
-    arrow(im, (560, 130), (525, 40))
+    label(im, 520, 60, '壁＝2本線', size=18)
+    arrow(im, (516, 72), (392, 180))
+    label(im, 520, 400, '柱＝黒い四角', size=18)
+    arrow(im, (516, 412), (396, 437))
+    label(im, 520, 660, '△▽＝耐力壁の印', size=18)
+    arrow(im, (516, 672), (424, 712))
     F['kigou'] = im
 
     # 引き戸の記号
-    im = crop('ans2A_1f.svg', (0.32, 0.44, 0.56, 0.62), 3.0)
-    label(im, 230, 380, '①レール（細い線）＝壁の穴\n②戸の板（太い線）＝穴の横に出す\n③引込み（うすい線）＝戸のしまう所', size=17)
-    arrow(im, (230, 400), (142, 470))
-    arrow(im, (230, 424), (158, 470))
-    arrow(im, (230, 448), (158, 330))
+    im = crop('ans2A_1f.svg', (0.30, 0.52, 0.56, 0.72), 3.0)
+    label(im, 300, 150,
+          '①レール（細い線）＝壁の穴\n②戸の板（太い線）＝穴の横に出す\n'
+          '③引込み（うすい線）＝戸のしまう所', size=17)
+    arrow(im, (296, 160), (196, 345))
+    arrow(im, (296, 183), (212, 300))
+    arrow(im, (296, 206), (212, 170))
     F['hikido'] = im
 
     # 玄関の土間と上がり框

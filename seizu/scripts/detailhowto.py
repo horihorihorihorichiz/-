@@ -126,7 +126,7 @@ def draw(step):
 
     # 3 …… 基礎
     if step >= 3:
-        rect(s, XL + 40, 240, Z_BOT, Z_SLAB, CONC, a(3), aw(3))  # 底盤
+        rect(s, XL + 40, 75, Z_BOT, Z_SLAB, CONC, a(3), aw(3))  # 底盤
         rect(s, -75, 75, Z_SLAB, Z_KISO, CONC, a(3), aw(3))      # 立上り
         if step == 3:
             note(s, 260, Z_BOT + 40, 'べた基礎 底盤 t150')
@@ -152,9 +152,9 @@ def draw(step):
         rect(s, XL + 40, -60, Z_DODAI, Z_PLY1, PLY, a(5), aw(5))   # 合板t24
         rect(s, XL + 40, -60, Z_PLY1, Z_1FL, '#e8d7b8', a(5), aw(5))
         if step == 5:
-            note(s, -560, Z_1FL + 70, '構造用合板 t=24 ＋ 仕上 t=15')
-            note(s, -560, Z_1FL + 20, '→ ここで 1FL＝GL+550 になる')
-            note(s, -560, Z_INS1 - 40, '床断熱 t=50（1階の床だけに入れる）')
+            note(s, -760, Z_1FL + 460, '構造用合板 t=24 ＋ 仕上 t=15')
+            note(s, -760, Z_1FL + 300, '→ ここで 1FL＝GL+550 になる')
+            note(s, -760, Z_INS1 - 260, '床断熱 t=50（1階の床だけに入れる）')
 
     # 6 …… 外壁の6層
     if step >= 6:
@@ -190,10 +190,12 @@ def draw(step):
         s.line(X(XL + 40), Y(Z_CEIL), X(-75), Y(Z_CEIL), stroke=a(7),
                stroke_width=aw(7))
         if step == 7:
-            note(s, -560, Z_BEAM_T + 90, '胴差 120×300')
-            note(s, -560, Z_BEAM_T + 40, '＋ 合板t24 ＋ 仕上t15 → 2FL')
-            note(s, -560, Z_BEAM_B - 130, '羽子板ボルト φ13（柱と梁をつなぐ金物）')
-            note(s, -560, Z_CEIL - 70, '天井 GL+3,250（天井高2,700＝13目盛半）')
+            note(s, -760, 3560, '胴差 120×300')
+            note(s, -760, 3390, '＋ 合板t24 ＋ 仕上t15 → 2FL', size=9.5)
+            note(s, -760, 3180, '天井 GL+3,250')
+            note(s, -760, 2880, '（天井高2,700 ＝ 13目盛半）', size=9.5)
+            note(s, 130, 3300, '羽子板ボルト φ13', size=9.5)
+            note(s, 130, 3150, '（柱と梁をつなぐ金物）', size=9.5)
 
     # 8 …… 開口部
     if step >= 8:
@@ -206,8 +208,8 @@ def draw(step):
             note(s, 118, WIN_T + 40, '開口部（腰窓）')
             note(s, 118, (WIN_B + WIN_T) / 2.0 + 60, 'まぐさ・窓台')
             note(s, 118, (WIN_B + WIN_T) / 2.0, 'アルミサッシ＋複層ガラス')
-            note(s, -560, WIN_B - 60, '腰高800（4目盛）')
-            note(s, -560, WIN_B - 120, '窓の高さ1,300（6目盛半）')
+            note(s, -760, WIN_B - 60, '腰高800（4目盛）')
+            note(s, -760, WIN_B - 230, '窓の高さ1,300（6目盛半）')
 
     # 9 …… 寸法と文字
     if step >= 9:
@@ -237,7 +239,7 @@ def draw(step):
         ('1階の床', '合板t24＋仕上t15。これで1FL＝GL+550'),
         ('外壁を内から外へ6層', '15/120/9/18/16 ＝ 178。約0.9目盛'),
         ('2階の床と1階の天井', '胴差120×300を先に置くと位置が決まる'),
-        ('開口部を入れる', '「開口部を含む」ことが要求されている'),
+        ('開口部を入れる', '窓の下枠と上枠が入る位置で切ると情報量が増える'),
         ('寸法と文字を入れる', 'ここが点になる。図より文字のほうが大事'),
     )
     head(s, step, TITLES[step - 1][0], TITLES[step - 1][1])
@@ -386,7 +388,7 @@ def kansei():
     grid(s)
 
     # ---- 図（ぜんぶ黒）
-    rect(s, XL + 40, 240, Z_BOT, Z_SLAB, CONC)
+    rect(s, XL + 40, 75, Z_BOT, Z_SLAB, CONC)
     rect(s, -75, 75, Z_SLAB, Z_KISO, CONC)
     rect(s, -60, 60, Z_KISO, Z_PACK, '#e2e2e2')
     rect(s, -60, 60, Z_PACK, Z_DODAI, WOOD)
@@ -583,7 +585,7 @@ def hashira():
     s.text(cx + 156, cy + 112, 'グラスウール16K', size=11,
            anchor='start')
     s.text(cx + 156, cy + 130, 't=100（断熱）', size=11, anchor='start')
-    s.text(cx + 156, cy + 176, '石膏ボード t=15', size=11,
+    s.text(cx + 156, cy + 176, '強化石膏ボード t=15', size=11,
            anchor='start', fill='#777')
     for i, r_ in enumerate((
             '・切った断面がそのまま出る',
@@ -953,9 +955,9 @@ def takasa():
                       (0.0, -300.0, '300')):
         s.dim_v(TY(a), TY(b), bx2 + 96, lab, size=10.5, anchor='start',
                 dx=6, color='#2f7fd0')
-    s.text(bx2 + 96, TY(10806) - 22, '階と階の間', size=11,
+    s.text(bx2 + 96, TY(10806) - 44, '階と階の間', size=11,
            anchor='middle', fill='#2f7fd0', weight='700')
-    s.text(bx1 - 54, TY(10806) - 22, 'GLからの高さ', size=11, anchor='end',
+    s.text(bx1 - 54, TY(10806) - 44, 'GLからの高さ', size=11, anchor='end',
            fill=INK, weight='700')
     s.text(40, 756,
            '★ 左の数字は「地面から何mm」。右の数字は「そのすぐ下の線から何mm」。',

@@ -21,14 +21,28 @@ TOP = 10806                  # 最高の高さ
 NOKIDE = 600                 # 軒の出
 
 
-def south_openings(n):
+def south_openings(n, floors=None, **kw):
     """その階の南面の開口を（位置, 幅, 種別）で返す。"""
-    ops = plans.fit_all(plans.FLOORS)[n]
+    ops = plans.fit_all(floors or plans.FLOORS, **kw)[n]
     return [(p, l, k) for f, p, l, k, _ in ops if f == 'S']
 
 
-def draw():
-    nx = plans.NX
+def draw(floors=None, nx=None, ny=None, xlines=None, ylines=None, tag='',
+         face='S'):
+    """南側立面図。floors などを渡すと予想問題B〜Fの建物でも描ける。
+
+    屋根は切妻・棟が南北なので、妻面（南）は三角に見える。
+    最高の高さは 軒高 ＋ 間口の半分 × 0.4（4寸勾配）で決まるので、
+    間口がちがえば最高の高さも変わる。
+    """
+    floors = floors or plans.FLOORS
+    nx = plans.NX if nx is None else nx
+    gkw = dict(nx=nx,
+               ny=plans.NY if ny is None else ny,
+               xlines=plans.XLINES if xlines is None else xlines,
+               ylines=plans.YLINES if ylines is None else ylines)
+    rise = nx * 910 / 2.0 * 0.4
+    TOP = int(round(NOKI + rise))
     W = ML + nx * G + MR
     H = MT + TOP * K + MB
 
@@ -39,7 +53,10 @@ def draw():
         return MT + (TOP - mm) * K
 
     s = Svg(W, H)
-    s.text(W / 2.0, 30, '南側立面図　縮尺1／100', size=15, weight='700')
+    ttl = '南側立面図　縮尺1／100'
+    if tag:
+        ttl = '予想問題　%s 解答例　%s' % (tag, ttl)
+    s.text(W / 2.0, 30, ttl, size=15, weight='700')
 
     half = G / 2.0
     v = px(0) % half
@@ -72,9 +89,8 @@ def draw():
     # ---- 屋根（切妻・妻面。4寸勾配、軒の出600） ----
     ex0, ex1 = x0 - NOKIDE * K, x1 + NOKIDE * K
     mid = (x0 + x1) / 2.0
-    rise = (x1 - x0) / 2.0 * 0.4
     ey = py(NOKI)
-    apex = ey - rise
+    apex = py(TOP)
     t = 180 * K                                  # 屋根の厚み
     s.poly([(ex0, ey), (mid, apex), (ex1, ey)], stroke=INK, stroke_width=1.6,
            fill='none')
@@ -83,7 +99,7 @@ def draw():
            stroke_width=1.2, fill='none')
     s.line(ex0, ey, ex0, ey + dy, stroke=INK, stroke_width=1.2)
     s.line(ex1, ey, ex1, ey + dy, stroke=INK, stroke_width=1.2)
-    s.text(mid + 46, apex + 40, '4 / 10（4寸勾配）', size=9, anchor='start')
+    s.text(mid + 80, apex + 62, '4 / 10（4寸勾配）', size=9, anchor='start')
 
     # ---- 窓・出入口（平面図から拾う） ----
     def sash(a, b, lo, hi, panes=2):
@@ -98,7 +114,7 @@ def draw():
 
     for n in (1, 2, 3):
         f = FL[n - 1]
-        for pos, ln, kind in south_openings(n):
+        for pos, ln, kind in south_openings(n, floors, **gkw):
             a, b = px(pos), px(pos + ln)
             if kind == 'entry':
                 sash(a, b, py(f), py(f + 2000), 2)
