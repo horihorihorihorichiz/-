@@ -122,8 +122,36 @@ def to_pdf(html_path, pdf_path):
          '--print-to-pdf=' + pdf_path,
          pathlib.Path(html_path).absolute().as_uri()],
         check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    shrink(pdf_path)
     print('wrote %s  (%.1f MB)'
           % (pdf_path, os.path.getsize(pdf_path) / 1048576.0))
+
+
+def shrink(pdf_path):
+    """PDFを小さくする。図は線のまま（ラスタ化しない）。
+
+    Chromiumが1ページごとにフォントを丸ごと埋めこむので、
+    使った字だけに絞り、重複した中身をまとめ直す。見た目は変わらない。
+    """
+    try:
+        import pymupdf
+    except ImportError:
+        return
+    try:
+        d = pymupdf.open(pdf_path)
+        try:
+            d.subset_fonts()
+        except Exception:
+            pass
+        tmp = pdf_path + '.tmp'
+        d.save(tmp, garbage=4, deflate=True, deflate_fonts=True, clean=True)
+        d.close()
+        if os.path.getsize(tmp) < os.path.getsize(pdf_path):
+            os.replace(tmp, pdf_path)
+        else:
+            os.remove(tmp)
+    except Exception as e:                       # 失敗しても元のPDFは残す
+        print('  （小さくできませんでした: %s）' % e)
 
 
 def build_hayami():
