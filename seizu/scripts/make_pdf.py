@@ -209,7 +209,8 @@ RENSHU_CSS = ("<style>@page{size:420mm 297mm;margin:0}"
 
 
 def build_renshu():
-    """練習用の白紙答案用紙（A3横4枚）。目盛を実寸にしたまま印刷する。"""
+    """練習用の白紙答案用紙。A2横1枚（本番と同じ）と、A3横4枚に割ったもの。"""
+    build_a3(['renshu_a2'], os.path.join(OUT, '練習用答案用紙_A2.pdf'))
     names = ['renshu1', 'renshu2', 'renshu3', 'renshu4']
     html = [RENSHU_CSS] + ['<div class="pg">%s</div>' % _svg(n)
                            for n in names]
@@ -225,12 +226,10 @@ def build_mondaishu():
     for k in KEYS:
         build_a2('mondai_%s.html' % k,
                  os.path.join(d, '予想問題%s_問題.pdf' % k))
-        build_a3(['kaitou_%s' % k, 'kaitou_%s_c1' % k, 'kaitou_%s_c2' % k],
+        build_a3(['kaitou_%s' % k],
                  os.path.join(d, '予想問題%s_解答例.pdf' % k))
     build_a2('mondai_all.html', os.path.join(d, '00_問題編_A-F.pdf'))
-    build_a3([n for k in KEYS
-              for n in ('kaitou_%s' % k, 'kaitou_%s_c1' % k,
-                        'kaitou_%s_c2' % k)],
+    build_a3(['kaitou_%s' % k for k in KEYS],
              os.path.join(d, '00_解答編_A-F.pdf'))
 
 
