@@ -241,5 +241,17 @@ if __name__ == '__main__':
     build_plain('kaisetsu.html', '二級建築士_答案用紙まるごと解説.pdf')
     build_plain('mondai_all.html', '予想問題集A-F_問題用紙.pdf')
     build_plain('kaitou_all.html', '予想問題集A-F_標準解答例.pdf')
+    for _src, _pdf in (
+            ('yosou.html', '予想条件リスト.pdf'),
+            ('kotoshi.html', '今年の試験・旬ネタ.pdf'),
+            ('buzai.html', '部材ずかん.pdf'),
+            ('sotomawari.html', '外まわりずかん.pdf'),
+            ('shousai_howto.html', '部分詳細図の描き方.pdf'),
+            ('howto.html', '二級建築士_部分詳細図かんたんガイド.pdf'),
+            ('kodomo.html', '小学生でもわかる答案の描き方.pdf'),
+            ('honban.html', '本番の進め方.pdf'),
+            ('checkrun.html', '本番チェック進行表.pdf'),
+            ('anaume.html', '記述穴うめドリル.pdf')):
+        build_plain(_src, _pdf)
     build_renshu()
     build_mondaishu()
