@@ -296,6 +296,15 @@ def check_stair_access():
 
 
 # ---------------------------------------------------------------- 8 本文
+def check_furniture():
+    """家具・設備：戸の前（開口幅×奥行0.9マス）と出入口の前に置かない、家具どうし重ねない。"""
+    import anssheet
+    bad = anssheet.audit_all()
+    for m in bad:
+        ck(False, '家具の置き場所：' + m)
+    ck(not bad, '家具の置き場所に問題なし（全6型×3階）')
+
+
 def check_text(ncol):
     pages = html('kaisetsu.src.html', 'onepage.src.html', 'buzai.src.html',
                  'shousai_howto.src.html', '02-katachi.html',
@@ -324,6 +333,7 @@ def main():
     check_beam()
     check_framing()
     check_stair_access()
+    check_furniture()
     check_text(0)
     print('柱 1階%d・2階%d・3階%d本（うち3階とも同じ位置 %d本）／'
           '1階%.2f㎡・延べ%.2f㎡／1FL+%d・軒%d・最高%d'

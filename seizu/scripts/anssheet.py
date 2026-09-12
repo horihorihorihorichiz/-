@@ -92,7 +92,10 @@ def _draw_genkan(s, px, py, name, ar, a, b, c, e, face, fl):
     s.text(cx, cy + 10, DOMA['gl'], size=8.5, fill='#333')
 
 
-def draw(d, title, sub=''):
+def draw(d, title, sub='', conflicts=None):
+    """答案用紙の平面図を描く。conflicts に「置けなかった家具」を追記する。"""
+    if conflicts is None:
+        conflicts = []
     nx = d.get('nx', plans.NX)
     ny = d.get('ny', plans.NY)
     xlines = d.get('xlines', plans.XLINES)
@@ -577,18 +580,128 @@ def draw(d, title, sub=''):
                            'バルコニー', -90, size=7.5, fill='#111')
 
     # ---- 家具・設備 ----
+    # 実際に使えるように置く：戸の前（開口の幅 × 奥行0.9マス）と外の出入口の前には
+    # 何も置かない。家具どうしも重ねない。置けなかったものは conflicts に記録する。
     cur = [None]                       # いま家具を描いている部屋
     ROOMS = [(r[2], r[3], r[4], r[5]) for r in d['rooms']]
+    PLACED = {}                        # 部屋番号 → [(名前, a, b, c, e)]
+    CLEAR = 0.9                        # 戸の前にあける奥行（マス）
+
+    zones = []                         # （四角, 種類）戸・出入口の前の「あけておく」所
+    for o_, w_, p_, l_ in d.get('doors', []):
+        if o_ == 'H':
+            zones.append(((p_, w_ - CLEAR, p_ + l_, w_ + CLEAR), 'door'))
+        else:
+            zones.append(((w_ - CLEAR, p_, w_ + CLEAR, p_ + l_), 'door'))
+    for f_, p_, l_, k_, _lab in d['openings']:
+        if k_ != 'entry':
+            continue
+        if f_ == 'S':
+            zones.append(((p_, 0, p_ + l_, CLEAR), 'entry'))
+        elif f_ == 'N':
+            zones.append(((p_, ny - CLEAR, p_ + l_, ny), 'entry'))
+        elif f_ == 'E':
+            zones.append(((nx - CLEAR, p_, nx, p_ + l_), 'entry'))
+        else:
+            zones.append(((0, p_, CLEAR, p_ + l_), 'entry'))
+
+    def hit(r1, r2, eps=1e-6):
+        return (r1[0] < r2[2] - eps and r1[2] > r2[0] + eps
+                and r1[1] < r2[3] - eps and r1[3] > r2[1] + eps)
 
     def ok_here(a, b, c, e):
         """他の部屋にかぶる家具は描かない（L字の部屋のはみ出しよけ）。"""
+        me = ROOMS[cur[0]] if cur[0] is not None else None
         for i, (ra, rb, rc, re) in enumerate(ROOMS):
             if i == cur[0]:
                 continue
+            if me and ra <= me[0] and rb <= me[1] and rc >= me[2] and re >= me[3]:
+                continue                       # 自分をすっぽり含む部屋（L字の親）は無視
             if a < rc - 1e-6 and c > ra + 1e-6 and b < re - 1e-6 \
                     and e > rb + 1e-6:
                 return False
         return True
+
+    def free(rect, room):
+        """その四角に置けるか：部屋の中・戸の前でない・他の家具と重ならない。"""
+        ra, rb, rc, re = room
+        a, b, c, e = rect
+        if a < ra - 1e-6 or c > rc + 1e-6 or b < rb - 1e-6 or e > re + 1e-6:
+            return False
+        if not ok_here(a, b, c, e):
+            return False
+        if any(hit(rect, z) for z, _ in zones):
+            return False
+        return not any(hit(rect, r[1:]) for r in PLACED.get(cur[0], []))
+
+    def spots(room, w, hh, m=0.1, step=0.25):
+        """置き場所の候補：四すみ → 4つの壁ぞいを 0.25マスきざみ → 中ほど。"""
+        ra, rb, rc, re = room
+        out = [(ra + m, rb + m), (rc - m - w, rb + m),
+               (ra + m, re - m - hh), (rc - m - w, re - m - hh)]
+        xx = ra + m
+        while xx <= rc - m - w + 1e-6:
+            out += [(xx, rb + m), (xx, re - m - hh)]
+            xx += step
+        yy = rb + m
+        while yy <= re - m - hh + 1e-6:
+            out += [(ra + m, yy), (rc - m - w, yy)]
+            yy += step
+        out.append(((ra + rc) / 2.0 - w / 2.0, (rb + re) / 2.0 - hh / 2.0))
+        return out
+
+    def on_wall(rect, room, w, hh, m=0.1):
+        """長い辺が壁にくっついているか（流し台・棚・ベッドなどは壁づけ）。"""
+        ra, rb, rc, re = room
+        a, b, c, e = rect
+        ys = abs(b - (rb + m)) < 1e-6 or abs(e - (re - m)) < 1e-6
+        xs = abs(a - (ra + m)) < 1e-6 or abs(c - (rc - m)) < 1e-6
+        if abs(w - hh) < 1e-6:
+            return xs or ys
+        return ys if w > hh else xs
+
+    def zdist(rect, kind=None):
+        """戸の前の四角までの近さ（小さいほど戸に近い）。その部屋にかかる戸だけ見る。"""
+        room = ROOMS[cur[0]]
+        ds = []
+        for z, k_ in zones:
+            if kind and k_ != kind:
+                continue
+            if not hit(z, room):
+                continue
+            cx, cy = (z[0] + z[2]) / 2.0, (z[1] + z[3]) / 2.0
+            ds.append(abs((rect[0] + rect[2]) / 2.0 - cx)
+                      + abs((rect[1] + rect[3]) / 2.0 - cy))
+        return min(ds) if ds else 0.0
+
+    def put(name, sizes, prefer='far', cands=None, kind=None, optional=False,
+            wall=False):
+        """家具を置く。sizes=[(幅, 奥行, 描く関数), ...]（向きちがいの候補）。
+
+        候補の場所のうち、置ける最初の所に描く。
+        prefer='far'  … 戸からいちばん遠い所から順に試す（便器・浴槽・ベッド）
+        prefer='near' … 戸にいちばん近い所から順（レジ・収納）
+        prefer='list' … cands の順のまま
+        """
+        room = ROOMS[cur[0]]
+        for w, hh, fn in sizes:
+            cs = cands if cands is not None else spots(room, w, hh)
+            rects = [(x, y, x + w, y + hh) for x, y in cs]
+            if wall:
+                rects = [r for r in rects if on_wall(r, room, w, hh)]
+            if prefer == 'far':       # 0.5マスきざみで見て、同じなら四すみ優先（候補の順）
+                rects.sort(key=lambda r: -round(zdist(r, kind) * 2) / 2.0)
+            elif prefer == 'near':
+                rects.sort(key=lambda r: round(zdist(r, kind) * 2) / 2.0)
+            for r in rects:
+                if free(r, room):
+                    fn(r[0], r[1])
+                    PLACED.setdefault(cur[0], []).append((name,) + r)
+                    return r
+        if not optional:                   # 問題文で要求された家具だけ記録する
+            conflicts.append('%s：「%s」を置く場所がない（戸の前をあけると入らない）'
+                             % (d['rooms'][cur[0]][0].replace('　', ''), name))
+        return None
 
     def R(a, b, c, e, fill='#fff', sw=0.85, dash=None):
         if not ok_here(a, b, c, e):
@@ -605,81 +718,89 @@ def draw(d, title, sub=''):
               'stroke="#333" stroke-width="0.85"/>'
               % (px(cx), py(cy), rx * G, ry * G))
 
-    def toilet(a, b):
-        """洋式便器と手洗い器。1マスに収める。"""
-        R(a + .12, b + .72, a + .62, b + .90)          # ロータンク
-        ell(a + .37, b + .52, .17, .22)                # 便座
-        R(a + .72, b + .70, a + .95, b + .92)          # 手洗い器
-        ell(a + .835, b + .81, .07, .07)
+    # ---- 家具の描き方（x, y は置く四角の左下） ----
+    def toilet(x, y):                   # 0.85 × 0.95：洋式便器（タンク付き）と小さな手洗い
+        R(x + .02, y + .72, x + .52, y + .90)
+        ell(x + .27, y + .50, .17, .22)
+        R(x + .62, y + .70, x + .85, y + .92)
+        ell(x + .735, y + .81, .07, .07)
 
-    def basin(a, b, w=.9):
-        R(a, b, a + w, b + .5)
-        ell(a + w / 2.0, b + .25, .16, .13)
+    def basin_h(x, y, w=.9):            # w × 0.5：洗面台（横向き）
+        R(x, y, x + w, y + .5)
+        ell(x + w / 2.0, y + .25, .16, .13)
 
-    def washer(a, b):
-        R(a, b, a + .7, b + .7)
-        ell(a + .35, b + .35, .2, .2)
+    def basin_v(x, y, w=.9):            # 0.5 × w：洗面台（縦向き）
+        R(x, y, x + .5, y + w)
+        ell(x + .25, y + w / 2.0, .13, .16)
 
-    def bath(a, b, c, e):
-        R(a + .06, b + .06, c - .06, e - .06)
-        R(a + .16, b + .16, c - .16, e - .34)
+    def washer(x, y):                   # 0.7 × 0.7：洗濯機
+        R(x, y, x + .7, y + .7)
+        ell(x + .35, y + .35, .2, .2)
 
-    def kitchen(a, b, ln, vertical=False):
-        """流し台・調理台・コンロ台・冷蔵庫を1列に並べる。"""
-        if vertical:
-            R(a, b, a + .6, b + ln)
-            ell(a + .3, b + ln - .45, .16, .16)
-            for i in range(2):
-                for j in range(2):
-                    ell(a + .18 + i * .24, b + .30 + j * .22, .06, .06)
-            R(a, b + ln, a + .6, b + ln + .6)
-            T(a, b + ln, a + .6, b + ln + .6, '冷', 7.5)
-        else:
-            R(a, b, a + ln, b + .6)
-            ell(a + .45, b + .3, .16, .16)
-            for i in range(2):
-                for j in range(2):
-                    ell(a + ln - .45 + i * .22, b + .18 + j * .24, .06, .06)
-            R(a + ln, b, a + ln + .6, b + .6)
-            T(a + ln, b, a + ln + .6, b + .6, '冷', 7.5)
+    def tub_v(x, y, ln=1.7):            # 0.8 × ln：浴槽（縦）
+        R(x, y, x + .8, y + ln)
+        R(x + .1, y + .1, x + .7, y + ln - .1)
 
-    def bed(a, b, w=1.0, hh=2.2):
-        R(a, b, a + w, b + hh)
-        s.line(px(a), py(b + hh - .35), px(a + w), py(b + hh - .35),
+    def tub_h(x, y, ln=1.7):            # ln × 0.8：浴槽（横）
+        R(x, y, x + ln, y + .8)
+        R(x + .1, y + .1, x + ln - .1, y + .7)
+
+    def kitchen_h(x, y, ln):            # (ln+0.6) × 0.6：流し・調理台・コンロ＋冷蔵庫
+        R(x, y, x + ln, y + .6)
+        ell(x + .45, y + .3, .16, .16)
+        for i in range(2):
+            for j in range(2):
+                ell(x + ln - .45 + i * .22, y + .18 + j * .24, .06, .06)
+        R(x + ln, y, x + ln + .6, y + .6)
+        T(x + ln, y, x + ln + .6, y + .6, '冷', 7.5)
+
+    def kitchen_v(x, y, ln):            # 0.6 × (ln+0.6)
+        R(x, y, x + .6, y + ln)
+        ell(x + .3, y + ln - .45, .16, .16)
+        for i in range(2):
+            for j in range(2):
+                ell(x + .18 + i * .24, y + .30 + j * .22, .06, .06)
+        R(x, y + ln, x + .6, y + ln + .6)
+        T(x, y + ln, x + .6, y + ln + .6, '冷', 7.5)
+
+    def bed(x, y, w=1.0, hh=2.2):       # 1.0 × 2.2
+        R(x, y, x + w, y + hh)
+        s.line(px(x), py(y + hh - .35), px(x + w), py(y + hh - .35),
                stroke='#333', stroke_width=0.7)
 
-    def desk(a, b, w=1.3, hh=.7):
-        R(a, b, a + w, b + hh)
+    def desk(x, y, w=1.3, hh=.7):
+        R(x, y, x + w, y + hh)
 
-    def closet(a, b, c, e, t='収納'):
-        R(a, b, c, e, dash='4 3')
-        T(a, b, c, e, t, 8)
+    def closet(x, y, w=.9, hh=.9, t='収納'):
+        R(x, y, x + w, y + hh, dash='4 3')
+        T(x, y, x + w, y + hh, t, 8)
 
-    def sofa(a, b, w=2.0):
-        R(a, b, a + w, b + .9)
-        s.line(px(a), py(b + .62), px(a + w), py(b + .62), stroke='#333',
+    def sofa(x, y, w=2.0):              # w × 0.9
+        R(x, y, x + w, y + .9)
+        s.line(px(x), py(y + .62), px(x + w), py(y + .62), stroke='#333',
                stroke_width=0.7)
 
-    def table(a, b, c, e, n=3):
+    def table(x, y, w=2.2, hh=1.2, n=3):   # w × hh（いすを含む）
+        a, b, c, e = x, y, x + w, y + hh
         R(a + .25, b + .25, c - .25, e - .25)
         for i in range(n):
-            t = a + .45 + i * ((c - a - .9) / max(1, n - 1))
-            R(t - .16, b - .02, t + .16, b + .22)
-            R(t - .16, e - .22, t + .16, e + .02)
+            t_ = a + .45 + i * ((c - a - .9) / max(1, n - 1))
+            R(t_ - .16, b, t_ + .16, b + .22)
+            R(t_ - .16, e - .22, t_ + .16, e)
 
-    def display(a, b, c, e, n=3):
-        """陳列棚。細長い棚を数本ならべる。"""
-        for i in range(n):
-            y = b + .3 + i * ((e - b - .6) / max(1, n - 1))
-            R(a + .2, y - .16, c - .2, y + .16)
+    def shelf(x, y, w, hh=.25):
+        R(x, y, x + w, y + hh)
 
-    def counter(a, b, c, e):
-        R(a, b, c, e)
-        T(a, b, c, e, 'レジ', 8)
+    def counter(x, y, w=1.5, hh=.65):
+        R(x, y, x + w, y + hh)
+        T(x, y, x + w, y + hh, 'レジ', 8)
+
+    def lockers(x, y):                  # 0.8 × 0.8：ロッカー2つ
+        for i in range(2):
+            R(x + i * .45, y, x + .35 + i * .45, y + .8)
+        T(x - .05, y - .25, x + .85, y - .05, 'ロッカー', 6.5)
 
     def tatami(a, b, c, e):
-        for i in range(int(round((c - a) * (e - b) / 2.0))):
-            pass
         n = int(round((e - b) / 1.0))
         for i in range(1, n):
             s.line(px(a) + 2, py(b + i), px(c) - 2, py(b + i), stroke='#999',
@@ -689,65 +810,98 @@ def draw(d, title, sub=''):
 
     def furnish(name, a, b, c, e):
         w, hh = c - a, e - b
+        room = (a, b, c, e)
         if '便所' in name:
-            toilet(a + (w - 1) / 2.0, b + .05)
+            put('洋式便器', [(.85, .95, toilet)], 'far', wall=True)
             if '店舗' in name:
-                R(a + .15, e - .65, a + .7, e - .15)
-                T(a + .15, e - .65, a + .7, e - .15, '手洗', 6.5)
+                put('手洗い器', [(.55, .5, lambda x, y: (R(x, y, x + .55, y + .5),
+                                                    T(x, y, x + .55, y + .5, '手洗', 6.5)))],
+                    'near', wall=True)
         elif '洗面' in name and '脱衣' in name:
-            basin(a + .1, e - .6, w - .9)
-            washer(c - .85, b + .15)
+            put('洗濯機', [(.7, .7, washer)], 'far', wall=True)
+            put('洗面台', [(bw, .5, (lambda bw_: lambda x, y: basin_h(x, y, bw_))(bw))
+                          for bw in (1.2, 1.0, .85) if bw <= w - .9] +
+                         [(.5, bw, (lambda bw_: lambda x, y: basin_v(x, y, bw_))(bw))
+                          for bw in (1.2, 1.0, .85) if bw <= hh - .9], 'far', wall=True)
         elif '浴室' in name:
-            bath(a, b, c, e)
+            R(a + .06, b + .06, c - .06, e - .06)          # ユニットバスの外形
+            ln_ = min(1.7, max(w, hh) - .3)
+            put('浴槽', [(.8, ln_, lambda x, y: tub_v(x, y, ln_)),
+                        (ln_, .8, lambda x, y: tub_h(x, y, ln_))], 'far', wall=True)
         elif '厨房' in name or '作業場' in name:
-            kitchen(a + .3, b + .3, w - 1.5)
-            R(c - .9, e - 1.2, c - .2, e - .2)
-            T(c - .9, e - 1.2, c - .2, e - .2, '作業台', 7.5)
-            R(a + .15, b + 1.15, a + .85, b + 1.85)
-            T(a + .15, b + 1.15, a + .85, b + 1.85, 'ｵｰﾌﾞﾝ', 6)
+            sizes = []
+            for ln_ in (2.0, 1.6, 1.4):          # 長い順に試す（戸の前をあけて入る長さ）
+                sizes.append((ln_ + .6, .6, (lambda L: lambda x, y: kitchen_h(x, y, L))(ln_)))
+                sizes.append((.6, ln_ + .6, (lambda L: lambda x, y: kitchen_v(x, y, L))(ln_)))
+            put('流し台・調理台・コンロ台・冷蔵庫', sizes, 'far', wall=True)
+            def box(lab, size):
+                def fn(x, y):
+                    R(x, y, x + size[0], y + size[1])
+                    T(x, y, x + size[0], y + size[1], lab, size[2])
+                return fn
+            put('作業台', [(.7, 1.0, box('作業台', (.7, 1.0, 7.5))), (1.0, .7, box('作業台', (1.0, .7, 7.5))),
+                          (.6, .9, box('作業台', (.6, .9, 6.5))), (.9, .6, box('作業台', (.9, .6, 6.5)))], 'far', wall=True)
+            put('オーブン', [(.7, .7, box('ｵｰﾌﾞﾝ', (.7, .7, 6))), (.6, .6, box('ｵｰﾌﾞﾝ', (.6, .6, 5.5)))], 'far', wall=True)
         elif '売場' in name:
-            display(c - 2.8, b + .6, c - .3, e - .6, 3)
-            display(a + .3, e - 2.4, c - 3.2, e - .4, 2)
-            counter(a + .35, b + .3, a + 1.85, b + .95)
+            # 陳列棚：壁ぎわと中ほどに長い棚を3本（戸と出入口の前はあける）。
+            # レジは出入口の近く（ただし出入口の前はあける）
+            L = min(3.0, max(w, hh) - 2.4)
+            sz = []
+            for L_ in (L, L - 1.0):
+                sz += [(.32, L_, (lambda q: lambda x, y: shelf(x, y, .32, q))(L_)),
+                       (L_, .32, (lambda q: lambda x, y: shelf(x, y, q, .32))(L_))]
+            for i in range(3):
+                put('陳列棚', sz, 'far', optional=(i == 2))
+            put('レジカウンター', [(1.5, .65, lambda x, y: counter(x, y)),
+                                  (.65, 1.5, lambda x, y: (R(x, y, x + .65, y + 1.5),
+                                                          T(x, y, x + .65, y + 1.5, 'レジ', 8)))],
+                'near', kind='entry')
         elif '居間' in name or 'ＬＤＫ' in name or 'LDK' in name:
-            kitchen(a + .35, e - 1.0, 1.8)
-            table(a + w * .35, b + .5, a + w * .35 + 2.2, b + 1.7, 3)
-            sofa(c - 2.4, b + .35, 2.0)
+            # 台所は北の壁（家事室・和室がわ）に。入らなければ西の壁の北寄り。ソファーは窓（南）がわ
+            xs = [a + .1 + i * .25 for i in range(int((w - 2.6) / .25) + 1)]
+            ys = [e - .1 - 2.4 - i * .25 for i in range(int((hh - 2.6) / .25) + 1)]
+            r_ = put('台所設備機器', [(2.4, .6, lambda x, y: kitchen_h(x, y, 1.8))], 'list',
+                     cands=[(x, e - .1 - .6) for x in xs], optional=True, wall=True)
+            if r_ is None:
+                put('台所設備機器', [(.6, 2.4, lambda x, y: kitchen_v(x, y, 1.8))], 'list',
+                    cands=[(a + .1, y) for y in ys], wall=True)
+            put('テーブル・椅子', [(2.2, 1.2, lambda x, y: table(x, y, 2.2, 1.2, 3)),
+                                 (1.2, 2.2, lambda x, y: table(x, y, 1.2, 2.2, 2))],
+                'list', cands=spots(room, 2.2, 1.2, .5))
+            put('ソファー', [(2.0, .9, sofa), (.9, 2.0, lambda x, y: R(x, y, x + .9, y + 2.0))], 'far')
         elif '和室' in name:
             tatami(a, b, c, e)
-            closet(c - 1.0, b + .1, c - .1, b + 1.0, '押入')
+            put('押入れ', [(.9, .9, lambda x, y: closet(x, y, .9, .9, '押入'))], 'far', wall=True)
         elif '寝室' in name:
-            bed(a + .35, b + .4)
-            bed(a + 1.55, b + .4)
-            closet(c - 1.0, e - 1.0, c - .1, e - .1)
+            put('ベッド1', [(1.0, 2.2, bed), (2.2, 1.0, lambda x, y: bed(x, y, 2.2, 1.0))], 'far', wall=True)
+            put('ベッド2', [(1.0, 2.2, bed), (2.2, 1.0, lambda x, y: bed(x, y, 2.2, 1.0))], 'far', wall=True)
+            put('収納', [(.9, .9, closet)], 'near', wall=True)
         elif '子供室' in name or '子ども室' in name:
-            bed(a + .3, e - 2.6)
-            desk(c - 1.6, b + .3)
-            closet(c - 1.0, e - 1.0, c - .1, e - .1)
+            put('ベッド', [(1.0, 2.2, bed), (2.2, 1.0, lambda x, y: bed(x, y, 2.2, 1.0))], 'far', wall=True)
+            put('机', [(1.3, .7, desk), (.7, 1.3, lambda x, y: desk(x, y, .7, 1.3))], 'far', wall=True)
+            put('収納', [(.9, .9, closet)], 'near', wall=True)
         elif '玄関' in name:
-            gf = genkan_face(d)
-            if gf in ('S', 'N'):                  # ホールがわの西の壁ぎわ
-                hb_ = b + 1 if gf == 'S' else b
-                R(a + .1, hb_ + .1, a + .5, hb_ + .9)
-                s.text_rot(px(a + .3) + 2.5, py(hb_ + .5), '下足入れ', -90,
-                           size=6.5)
-            else:                                # ホールがわの南の壁ぎわ
-                ha_ = a if gf == 'E' else a + 1
-                R(ha_ + .1, b + .1, ha_ + .9, b + .5)
-                T(ha_ + .1, b + .1, ha_ + .9, b + .5, '下足入れ', 6.5)
+            put('下足入れ', [(.4, .8, lambda x, y: (R(x, y, x + .4, y + .8),
+                                                  s.text_rot(px(x + .2) + 2.5, py(y + .4), '下足入れ', -90, size=6.5))),
+                            (.8, .4, lambda x, y: (R(x, y, x + .8, y + .4),
+                                                  T(x, y, x + .8, y + .4, '下足入れ', 6.5)))], 'far', wall=True)
         elif '倉庫' in name or '納戸' in name or '収納' in name:
-            for i in range(2):
-                R(a + .12, b + .3 + i * (hh - .8), c - .12,
-                  b + .55 + i * (hh - .8))
+            sw_ = max(.8, min(w, hh) - .3)
+            put('棚', [(sw_, .3, lambda x, y: shelf(x, y, sw_, .3)),
+                      (.3, sw_, lambda x, y: shelf(x, y, .3, sw_))], 'far', optional=True, wall=True)
+            put('棚', [(sw_ - .5, .3, lambda x, y: shelf(x, y, sw_ - .5, .3)),
+                      (.3, sw_ - .5, lambda x, y: shelf(x, y, .3, sw_ - .5))], 'far', optional=True, wall=True)
             T(a, b, c, e, '棚', 8)
         elif 'スタッフ' in name:
-            table(a + .5, b + .6, a + 2.2, b + 1.6, 2)
-            for i in range(2):
-                R(c - 1.0 + i * .45, e - 1.0, c - .65 + i * .45, e - .2)
-            T(c - 1.05, e - 1.25, c - .15, e - 1.05, 'ロッカー', 6.5)
+            put('テーブル・椅子', [(1.7, 1.1, lambda x, y: table(x, y, 1.7, 1.1, 2)),
+                                 (1.1, 1.7, lambda x, y: table(x, y, 1.1, 1.7, 2)),
+                                 (1.4, 1.0, lambda x, y: table(x, y, 1.4, 1.0, 2)),
+                                 (1.0, 1.4, lambda x, y: table(x, y, 1.0, 1.4, 2))], 'far')
+            put('ロッカー', [(.8, .8, lockers)], 'near', wall=True)
         elif '家事' in name:
-            R(a + .12, e - .7, c - .12, e - .15)
-            T(a + .12, e - .7, c - .12, e - .15, '棚', 7.5)
+            sw_ = max(.8, min(w, hh) - .3)
+            put('棚', [(sw_, .5, lambda x, y: (shelf(x, y, sw_, .5), T(x, y, x + sw_, y + .5, '棚', 7.5))),
+                      (.5, sw_, lambda x, y: (shelf(x, y, .5, sw_), T(x, y, x + .5, y + sw_, '棚', 7.5)))], 'far', wall=True)
         elif '廊下' in name or 'ホール' in name:
             pass
 
@@ -936,35 +1090,54 @@ def draw(d, title, sub=''):
     return s
 
 
-if __name__ == '__main__':
+def sheet_data(k, i):
+    """予想問題 k（A〜F）の i 階（0始まり）の答案用紙データと図名。"""
     import answers
     import sitemap
-    FITS = {}
+    fl = answers.PLANS[k]
+    f0 = fl[0]
+    floors = {j + 1: e for j, e in enumerate(fl)}
+    fits = plans.fit_all(floors, f0.get('nx', plans.NX), f0.get('ny', plans.NY),
+                         f0.get('xlines', plans.XLINES), f0.get('ylines', plans.YLINES))
+    ti = ('１階平面図 兼 配置図　縮尺1／100', '２階平面図　縮尺1／100',
+          '３階平面図　縮尺1／100')[i]
+    dd = dict(fl[i])
+    dd['openings'] = fits[i + 1]
+    dd['fitted'] = True
+    dd['doors'] = plans.fit_doors(dd, floors)
+    dd['fitted_doors'] = True
+    dd['tooshi'], dd['kuda'] = plans.columns_of(
+        i + 1, floors, f0.get('nx', plans.NX), f0.get('ny', plans.NY),
+        f0.get('xlines', plans.XLINES), f0.get('ylines', plans.YLINES))
+    dd['floor_label'] = 'GL＋550' if i == 0 else ''
+    if i == 0:
+        dd['cut'] = dd.get('cut', dd.get('nx', plans.NX) - 1.0)
+        dd['site'] = sitemap.SITES[k]
+    return dd, ti
+
+
+def audit_all():
+    """全6型×3階の家具を置いてみて、置けなかったものを返す（check.py から使う）。"""
+    out = []
     for k in 'ABCDEF':
-        f0 = answers.PLANS[k][0]
-        FITS[k] = plans.fit_all(
-            {i + 1: dd for i, dd in enumerate(answers.PLANS[k])},
-            f0.get('nx', plans.NX), f0.get('ny', plans.NY),
-            f0.get('xlines', plans.XLINES), f0.get('ylines', plans.YLINES))
+        for i in range(3):
+            dd, ti = sheet_data(k, i)
+            cf = []
+            draw(dd, ti, conflicts=cf)
+            out += ['%s型 %d階 %s' % (k, i + 1, m) for m in cf]
+    return out
+
+
+if __name__ == '__main__':
+    bad = []
     for k in 'ABCDEF':
-        f0 = answers.PLANS[k][0]
-        for i, ti in enumerate(('１階平面図 兼 配置図　縮尺1／100',
-                                '２階平面図　縮尺1／100',
-                                '３階平面図　縮尺1／100')):
-            dd = dict(answers.PLANS[k][i])
-            dd['openings'] = FITS[k][i + 1]
-            dd['fitted'] = True
-            dd['doors'] = plans.fit_doors(
-                dd, {j + 1: e for j, e in enumerate(answers.PLANS[k])})
-            dd['fitted_doors'] = True
-            dd['tooshi'], dd['kuda'] = plans.columns_of(
-                i + 1, {j + 1: e for j, e in enumerate(answers.PLANS[k])},
-                f0.get('nx', plans.NX), f0.get('ny', plans.NY),
-                f0.get('xlines', plans.XLINES),
-                f0.get('ylines', plans.YLINES))
-            dd['floor_label'] = 'GL＋550' if i == 0 else ''
-            if i == 0:
-                dd['cut'] = dd.get('cut', dd.get('nx', plans.NX) - 1.0)
-                dd['site'] = sitemap.SITES[k]
-            draw(dd, ti).save(os.path.join(OUT, 'ans2%s_%df.svg' % (k, i + 1)))
+        for i in range(3):
+            dd, ti = sheet_data(k, i)
+            cf = []
+            draw(dd, ti, conflicts=cf).save(os.path.join(OUT, 'ans2%s_%df.svg' % (k, i + 1)))
+            bad += ['%s型 %d階 %s' % (k, i + 1, m) for m in cf]
     print('wrote ans2*_?f.svg')
+    for m in bad:
+        print('NG', m)
+    if bad:
+        raise SystemExit('家具の置き場所に問題 %d 件' % len(bad))
