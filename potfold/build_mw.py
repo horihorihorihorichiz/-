@@ -15,7 +15,7 @@ NB = 24                      # 母集団の対応表の刻み
 
 
 if __name__ == '__main__':
-    t, eq, tx = run(n_deals=150000, opps=KS, runouts=40, batch=300, seed=91, with_texture=True)
+    t, eq, tx = run(n_deals=110000, opps=KS, runouts=30, batch=200, seed=91, with_texture=True)
     out = {'hands': HAND, 'textures': TEXTURE, 'ks': list(KS), 'rows': {}}
 
     def stats(sel):
