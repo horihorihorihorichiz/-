@@ -7,7 +7,7 @@
 """
 import json
 import numpy as np
-from solve import _decide, _threshold_from
+from solve import _decide, _threshold_from, RAKE
 
 D1 = [(1, 1), (2, 3), (4, 7)]          # コーラー1人のときの距離のまとめ方
 D2 = [(1, 2), (3, 4), (5, 7)]          # コーラー2人のとき（いちばん早い人までの距離）
@@ -71,7 +71,7 @@ def situation_thresholds(eq, sc, opp_th):
             mx = msc.max(axis=1)
             ties = (msc == mx[:, None]).sum(axis=1)
             share = np.where(sc[:, seat] == mx, 1.0 / ties, 0.0)
-            pay = share * (1.0 + m) - 1.0
+            pay = np.where(m >= 2, share * (1.0 + m) * (1 - RAKE) - 1.0, 1 - RAKE)
             e_seat = eq[:, seat]
 
             sel = c_before == 0

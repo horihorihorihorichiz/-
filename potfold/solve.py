@@ -39,13 +39,20 @@ def _decide(eq, thresholds, n, force_seat=None):
     return cont, c, c_before
 
 
-def _payoff(cont, m, sc, seat, n):
-    """席 seat が続けたときの損得（最初のポット P を1単位とする）。"""
+RAKE = 0.02      # 実際のハンド履歴から逆算した手数料率
+
+
+def _payoff(cont, m, sc, seat, n, rake=RAKE):
+    """席 seat がコールしたときの損得（最初のポット P0 を1単位とする）。
+
+    2人以上残れば最終ポット (1+m)*P0 から手数料を引いた額を分け合う。
+    自分だけが残った場合はベットが戻り、ポット P0 から手数料を引いた分が利益。
+    """
     msc = np.where(cont[:, :n], sc[:, :n], np.int64(-1))
     mx = msc.max(axis=1)
     ties = (msc == mx[:, None]).sum(axis=1)
     share = np.where(sc[:, seat] == mx, 1.0 / ties, 0.0)
-    return share * (1.0 + m) - 1.0
+    return np.where(m >= 2, share * (1.0 + m) * (1 - rake) - 1.0, 1 - rake)
 
 
 def _threshold_from(eqv, pay):
@@ -124,6 +131,7 @@ def evaluate_strategy(eq, sc, n, thresholds):
         ties = (msc == mx[:, None]).sum(axis=1)
         share = np.where((sc[:, seat] == mx) & cont[:, seat], 1.0 / ties, 0.0)
         pot = 1.0 + m
-        gain = np.where(cont[:, seat], share * pot - 1.0, 0.0) - ante
+        gain = np.where(cont[:, seat],
+                        np.where(m >= 2, share * pot * (1 - RAKE) - 1.0, 1 - RAKE), 0.0) - ante
         res.append((float(cont[:, seat].mean()), float(gain.mean())))
     return res
