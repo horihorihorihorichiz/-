@@ -3,3 +3,6 @@ node_modules/
 slides/exports/*.pptx
 slides/exports/*.pdf
 slides/exports/*.png
+potfold/deals.npz
+potfold/__pycache__/
+potfold/gen.log
