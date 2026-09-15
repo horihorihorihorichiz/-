@@ -9,7 +9,7 @@ N_SEATS = 8
 SYM_COLS = [7, 5, 3, 1, 0]          # 自分の後ろに残っている人数
 
 
-def collect(n_deals=60000, seed=21, batch=400):
+def collect(n_deals=150000, seed=21, batch=400):
     rng = np.random.default_rng(seed)
     H, F, E = [], [], []
     done = 0
@@ -67,7 +67,7 @@ if __name__ == '__main__':
     for t in range(len(TEXTURE)):
         for h in range(len(HAND)):
             sel = (ht == h) & (tx == t)
-            if sel.sum() < 200:
+            if sel.sum() < 400:
                 continue
             med = float(np.median(eq[sel]))
             out['rows']['%d-%d' % (t, h)] = {'n': int(sel.sum()), 'eq': round(med, 4),

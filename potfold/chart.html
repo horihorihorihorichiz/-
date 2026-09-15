@@ -1,0 +1,213 @@
+<title>Pot Fold ハンドチャート</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@500;700&family=Noto+Sans+JP:wght@400;500&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+:root{
+  --ground:#F4F6F3; --surface:#FFFFFF; --surface-2:#EBEFEA;
+  --ink:#141B17; --muted:#5D6B63; --faint:#8C978F;
+  --line:#D7DDD9; --line-strong:#B9C2BC;
+  --brand:#2F4C7A; --brand-soft:#E3E9F2;
+  --go:#0E7C58; --go-soft:#DCEFE6;
+  --mid:#1F6FA8; --mid-soft:#DDEAF4;
+  --no:#B3452F; --no-soft:#F6E2DC;
+  --shadow:0 1px 2px rgba(20,27,23,.06), 0 8px 24px rgba(20,27,23,.05);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --ground:#0F1417; --surface:#171E21; --surface-2:#1F282B;
+    --ink:#E6ECE8; --muted:#9BA8A1; --faint:#71807A;
+    --line:#2A3438; --line-strong:#3C4A4E;
+    --brand:#8FB0DE; --brand-soft:#1D2A3A;
+    --go:#4FC08D; --go-soft:#123026;
+    --mid:#79B4DC; --mid-soft:#13293A;
+    --no:#E58465; --no-soft:#331A14;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.3);
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#0F1417; --surface:#171E21; --surface-2:#1F282B;
+  --ink:#E6ECE8; --muted:#9BA8A1; --faint:#71807A;
+  --line:#2A3438; --line-strong:#3C4A4E;
+  --brand:#8FB0DE; --brand-soft:#1D2A3A;
+  --go:#4FC08D; --go-soft:#123026;
+  --mid:#79B4DC; --mid-soft:#13293A;
+  --no:#E58465; --no-soft:#331A14;
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.3);
+}
+*{box-sizing:border-box}
+body{margin:0; background:var(--ground); color:var(--ink);
+  font-family:"Noto Sans JP",system-ui,sans-serif; font-size:14px; line-height:1.7; -webkit-text-size-adjust:100%}
+.wrap{max-width:920px; margin:0 auto; padding:26px 16px 56px}
+h1,h2{font-family:"Zen Kaku Gothic New","Noto Sans JP",system-ui,sans-serif; margin:0; text-wrap:balance}
+h1{font-size:24px; font-weight:700; letter-spacing:.02em}
+.sub{color:var(--muted); font-size:12.5px; margin:5px 0 0}
+
+.rule{margin:22px 0; padding:14px 16px; background:var(--surface); border:1px solid var(--line);
+  border-left:3px solid var(--brand); border-radius:0 8px 8px 0}
+.rule p{margin:0; font-size:12.5px; color:var(--muted)}
+.rule b{color:var(--ink); font-weight:600}
+.rule .eqn{font-family:"IBM Plex Mono",monospace; color:var(--ink); font-weight:600; font-size:13px}
+
+.legend{display:flex; flex-wrap:wrap; gap:6px 18px; margin:18px 0 6px; font-size:12px; color:var(--muted)}
+.legend span{display:flex; align-items:center; gap:6px}
+
+.tabs{display:flex; flex-wrap:wrap; gap:5px; margin:20px 0 14px}
+.tab{padding:6px 12px; border:1px solid var(--line); border-radius:6px; background:var(--surface);
+  color:var(--ink); font-family:inherit; font-size:12.5px; cursor:pointer}
+.tab:hover:not(.on){border-color:var(--brand)}
+.tab.on{background:var(--brand); border-color:var(--brand); color:#fff}
+:root[data-theme="dark"] .tab.on{color:#0F1417}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .tab.on{color:#0F1417} }
+.tab:focus-visible{outline:2px solid var(--brand); outline-offset:1px}
+
+.card{background:var(--surface); border:1px solid var(--line); border-radius:10px;
+  box-shadow:var(--shadow); padding:14px 16px}
+.tablewrap{overflow-x:auto}
+table{width:100%; border-collapse:collapse; font-size:13px; min-width:560px}
+thead th{font-size:10.5px; letter-spacing:.07em; color:var(--muted); font-weight:500;
+  padding:0 6px 8px; border-bottom:1px solid var(--line-strong); text-align:center; white-space:nowrap}
+thead th:first-child{text-align:left; padding-left:0}
+thead th.eq{text-align:right}
+thead th .pos{display:block; color:var(--faint); font-size:9.5px; letter-spacing:.02em}
+tbody td{padding:6px; border-bottom:1px solid var(--line); text-align:center}
+tbody td:first-child{text-align:left; padding-left:0; white-space:nowrap}
+tbody td.eq{text-align:right; font-family:"IBM Plex Mono",monospace; font-variant-numeric:tabular-nums; color:var(--muted)}
+tbody tr:last-child td{border-bottom:none}
+tbody tr.sep td{border-top:2px solid var(--line-strong)}
+.sym{display:inline-block; min-width:28px; padding:1px 6px; border-radius:4px;
+  font-family:"Zen Kaku Gothic New",sans-serif; font-weight:700; font-size:12.5px; line-height:1.55}
+.s-all{background:var(--go-soft); color:var(--go)}
+.s-num{background:var(--mid-soft); color:var(--mid)}
+.s-zero{background:var(--surface-2); color:var(--muted)}
+.s-no{background:var(--no-soft); color:var(--no)}
+.thin{font-size:11px; color:var(--faint)}
+
+.note{margin-top:12px; font-size:12px; color:var(--muted)}
+.note b{color:var(--ink); font-weight:600}
+
+h2.sec{font-size:11px; font-weight:700; letter-spacing:.14em; color:var(--muted); margin:30px 0 12px}
+table.odds{min-width:0; font-size:12.5px}
+table.odds td{text-align:right; font-family:"IBM Plex Mono",monospace; font-variant-numeric:tabular-nums}
+table.odds td:first-child{text-align:left; font-family:"Noto Sans JP",sans-serif}
+
+.keys{display:grid; grid-template-columns:1fr; gap:10px; margin-top:12px}
+@media (min-width:660px){ .keys{grid-template-columns:1fr 1fr} }
+.key{background:var(--surface); border:1px solid var(--line); border-radius:8px; padding:12px 14px}
+.key h3{margin:0 0 4px; font-family:"Zen Kaku Gothic New",sans-serif; font-size:13px; font-weight:700}
+.key p{margin:0; font-size:12px; color:var(--muted)}
+.key .big{font-family:"IBM Plex Mono",monospace; font-weight:600; color:var(--ink)}
+
+footer{margin-top:30px; padding-top:16px; border-top:1px solid var(--line); color:var(--faint); font-size:11.5px}
+footer p{margin:0 0 5px}
+footer b{color:var(--muted); font-weight:500}
+</style>
+
+<div class="wrap">
+  <h1>Pot Fold ハンドチャート</h1>
+  <p class="sub">フロップでコールするかフォールドするかの早見表。20万配札の計算による繰り返し最適応答。</p>
+
+  <div class="rule">
+    <p><b>この形式のポットオッズ</b>　ベット額は最初のポット P0 に固定。自分を含めコーラーが m 人なら最終ポットは (1+m)×P0 なので、必要エクイティは <span class="eqn">1 / (1 + m)</span>。自分以外に k 人コールするなら <span class="eqn">1 / (k + 2)</span> で足りる。均等割りの 1/(k+1) より常に低く、ポットオッズは良い。</p>
+  </div>
+
+  <div class="legend">
+    <span><i class="sym s-all">全</i> コーラーが何人でもコール</span>
+    <span><i class="sym s-num">2</i> コーラーがその人数までコール</span>
+    <span><i class="sym s-zero">0</i> ノーコーラーのときだけ</span>
+    <span><i class="sym s-all">○</i> 自分が最初。コール</span>
+    <span><i class="sym s-no">×</i> フォールド</span>
+  </div>
+
+  <div class="tabs" id="tabs"></div>
+
+  <div class="card">
+    <div class="tablewrap"><table id="chart"></table></div>
+    <p class="note" id="note"></p>
+  </div>
+
+  <h2 class="sec">ボードテクスチャによる差（トップペア Aキッカーのエクイティ）</h2>
+  <div class="card"><div class="tablewrap"><table id="cmp"></table></div></div>
+
+  <h2 class="sec">要点</h2>
+  <div class="keys">
+    <div class="key">
+      <h3>ストレートが完成しうるボード</h3>
+      <p>フロップ3枚が5段以内に収まる形（全体の <span class="big">31.5%</span>）。トップペアのエクイティが <span class="big">85% → 74%</span> と11ポイント落ちる。ミドルペア以下はさらに厳しい。</p>
+    </div>
+    <div class="key">
+      <h3>ペアボード</h3>
+      <p>ボードのペアは全員が共有するので、ホールカード2枚のツーペアは実質ワンペア。<span class="big">トリップス</span>は無条件にコールしてよいが、それ以外は1段下げて考える。</p>
+    </div>
+    <div class="key">
+      <h3>モノトーン</h3>
+      <p>フラッシュが完成しうるため全体に厳しい。セットですら <span class="big">83%</span>（レインボーなら95%）。フラッシュが完成していない手は大きく割り引く。</p>
+    </div>
+    <div class="key">
+      <h3>無条件でコールできる手</h3>
+      <p><span class="big">セット・トリップス・ツーペア</span>。ここから上はどのポジション・どのコーラー数でもコール。オーバーペアとトップペアは、前に3人コールすると厳しくなる。</p>
+    </div>
+  </div>
+
+  <footer>
+    <p><b>エクイティ</b>　ヘッズアップ（相手1人、ランダムハンド）に対する勝率の中央値。フロップ時点でターン・リバーを配り切って計算した。実際のコーラーはこれより強いレンジなので、記号はその補正込み。</p>
+    <p><b>前提</b>　ホールデム形式（ホールカード2枚）、レーキなし、相手も同じ基準で打つ想定。アンティ額は結果に影響しない。</p>
+    <p><b>注意</b>　分析用の確率計算であり、自動プレイの仕組みではない。日本国内から実際に金銭を賭けてオンラインでプレイすることは賭博罪に当たるおそれがある。</p>
+  </footer>
+</div>
+
+<script>
+"use strict";
+const D={"hands":["ストレート以上","セット","トリップス","ツーペア","オーバーペア QQ以上","オーバーペア JJ以下","トップペア Aキッカー","トップペア K・Qキッカー","トップペア J〜9キッカー","トップペア 8以下キッカー","ミドルペア","ボトムペア","アンダーペア（ボード中位）","アンダーペア（ボード下位）","フラッシュドロー","オープンエンダー","ガットショット","Aハイ","ノーペア"],"textures":["ペアボード・ストレートあり","ペアボード・ストレートなし","モノトーン","ツートーン・ストレートあり","ツートーン・ストレートなし","レインボー・ストレートあり","レインボー・ストレートなし"],"cols":[7,5,3,1,0],"rows":{"all-0":[0.9454,"○全全全全",8978],"all-1":[0.9321,"○全全全全",7666],"all-2":[0.9315,"○全全全全",17594],"all-3":[0.8717,"○全全全全",23304],"all-4":[0.829,"○全全23",11318],"all-5":[0.7554,"○0112",5402],"all-6":[0.813,"○1122",8616],"all-7":[0.8089,"○1122",17213],"all-8":[0.8061,"○1122",26165],"all-9":[0.7812,"○1122",60811],"all-10":[0.6855,"×0011",101081],"all-11":[0.5886,"××011",112996],"all-12":[0.673,"×0011",28917],"all-13":[0.4848,"×××01",16759],"all-14":[0.5665,"××001",40448],"all-15":[0.4713,"×××01",33103],"all-16":[0.4044,"×××00",96868],"all-17":[0.4984,"××001",93972],"all-18":[0.3145,"×××00",488789],"0-0":[0.9912,"○全全全全",1289],"0-2":[0.9175,"○全全全全",11364],"0-4":[0.8514,"○全全全全",1351],"0-5":[0.7613,"○0122",1323],"0-6":[0.7806,"○1122",524],"0-7":[0.7817,"○1122",1159],"0-8":[0.7639,"○0122",1653],"0-9":[0.756,"○0112",3865],"0-11":[0.6899,"×0011",6187],"0-12":[0.7179,"○0112",1150],"0-13":[0.5387,"××001",2877],"0-14":[0.5906,"××011",2761],"0-15":[0.4908,"××001",1790],"0-16":[0.4311,"×××00",6224],"0-17":[0.5722,"××011",12159],"0-18":[0.3488,"×××00",65236],"1-0":[0.9908,"○全全全全",703],"1-2":[0.9527,"○全全全全",6230],"1-4":[0.8675,"○全全全全",849],"1-7":[0.8194,"○全全22",550],"1-8":[0.7962,"○1122",986],"1-9":[0.7801,"○1122",2232],"1-11":[0.6534,"×0011",5291],"1-12":[0.717,"○0112",2598],"1-13":[0.5173,"××001",922],"1-14":[0.5925,"××011",1952],"1-17":[0.5789,"××011",9494],"1-18":[0.3501,"×××00",50474],"2-0":[0.9534,"○全全全全",2636],"2-1":[0.8254,"○全全23",497],"2-3":[0.7472,"○0112",1382],"2-4":[0.788,"○1122",561],"2-6":[0.7156,"○0112",500],"2-7":[0.7119,"○0112",970],"2-8":[0.7081,"○0012",1486],"2-9":[0.6794,"×0011",3390],"2-10":[0.6068,"××011",6393],"2-11":[0.515,"××001",6340],"2-12":[0.6398,"×0011",1508],"2-13":[0.4756,"×××01",786],"2-14":[0.5161,"××001",14236],"2-15":[0.3906,"×××00",1151],"2-16":[0.3304,"×××00",3294],"2-17":[0.3909,"×××00",2658],"2-18":[0.2461,"×××00",14031],"3-0":[0.9165,"○全全全全",2579],"3-1":[0.901,"○全全全全",1361],"3-3":[0.8351,"○全全2全",4133],"3-4":[0.7686,"○1122",1482],"3-5":[0.7142,"○0112",1128],"3-6":[0.734,"○0112",1019],"3-7":[0.7814,"○1122",3053],"3-8":[0.7763,"○1122",4021],"3-9":[0.7576,"○0112",9713],"3-10":[0.6643,"×0011",17855],"3-11":[0.5878,"××011",17847],"3-12":[0.7009,"○0011",2773],"3-13":[0.469,"×××01",3552],"3-14":[0.5875,"××011",6600],"3-15":[0.4652,"×××01",10133],"3-16":[0.3996,"×××00",26906],"3-17":[0.4378,"×××00",6715],"3-18":[0.299,"×××00",54442],"4-1":[0.9345,"○全全全全",2932],"4-3":[0.878,"○全全全全",9194],"4-4":[0.835,"○全全2全",3730],"4-5":[0.7818,"○1122",999],"4-6":[0.8288,"○全全23",3346],"4-7":[0.8167,"○全222",5741],"4-8":[0.8132,"○1122",9230],"4-9":[0.7886,"○1122",21107],"4-10":[0.6927,"×0011",39047],"4-11":[0.5761,"××011",39356],"4-12":[0.654,"×0011",11461],"4-13":[0.469,"×××01",3693],"4-14":[0.5884,"××011",14899],"4-15":[0.476,"×××01",7362],"4-16":[0.4041,"×××00",24175],"4-17":[0.4834,"×××01",33977],"4-18":[0.3076,"×××00",155767],"5-0":[0.9372,"○全全全全",1771],"5-1":[0.9219,"○全全全全",940],"5-3":[0.856,"○全全全全",2742],"5-4":[0.7805,"○1122",963],"5-5":[0.7283,"○0112",845],"5-6":[0.7372,"○0112",672],"5-7":[0.7919,"○1122",2102],"5-8":[0.7989,"○1122",2730],"5-9":[0.772,"○1122",6450],"5-10":[0.6754,"×0011",11768],"5-11":[0.598,"××011",12020],"5-12":[0.7096,"○0112",1905],"5-13":[0.4724,"×××01",2512],"5-15":[0.4711,"×××01",7255],"5-16":[0.4098,"×××00",18892],"5-17":[0.4506,"×××01",4779],"5-18":[0.3031,"×××00",38678],"6-1":[0.9546,"○全全全全",1936],"6-3":[0.8996,"○全全全全",5853],"6-4":[0.8474,"○全全3全",2382],"6-5":[0.7923,"○1122",615],"6-6":[0.8458,"○全全3全",2190],"6-7":[0.834,"○全全23",3638],"6-8":[0.8323,"○全全23",6059],"6-9":[0.8083,"○1122",14054],"6-10":[0.7077,"○0012",26018],"6-11":[0.5864,"××011",25955],"6-12":[0.6644,"×0011",7522],"6-13":[0.4685,"×××01",2417],"6-15":[0.485,"×××01",5412],"6-16":[0.4148,"×××00",17174],"6-17":[0.4928,"××001",24190],"6-18":[0.3126,"×××00",110161]}};
+const TABS=[["all","まとめて"]].concat(D.textures.map((t,i)=>[String(i),t]));
+let cur="all";
+
+function symClass(s){ return s==="全"||s==="○" ? "s-all" : s==="×" ? "s-no" : s==="0" ? "s-zero" : "s-num"; }
+function colHead(c){
+  const pos = c===0 ? "ラストアクション" : c===7 ? "ファーストアクション" : "";
+  return '<th>後ろ'+c+'人'+(pos?'<span class="pos">'+pos+'</span>':'')+'</th>';
+}
+function renderTabs(){
+  const el=document.getElementById("tabs"); el.innerHTML="";
+  for(const [k,name] of TABS){
+    const b=document.createElement("button");
+    b.type="button"; b.className="tab"+(k===cur?" on":"");
+    b.textContent=name; b.setAttribute("aria-pressed",k===cur);
+    b.addEventListener("click",()=>{ cur=k; renderTabs(); renderChart(); });
+    el.appendChild(b);
+  }
+}
+function renderChart(){
+  let h='<thead><tr><th>ハンド</th><th class="eq">エクイティ</th>'+D.cols.map(colHead).join('')+'</tr></thead><tbody>';
+  let prev=-1, shown=0;
+  for(let i=0;i<D.hands.length;i++){
+    const r=D.rows[cur+"-"+i];
+    if(!r) continue;
+    const [eq,sym,n]=r;
+    const band = i<=3 ? 0 : i<=13 ? 1 : 2;
+    const cls = (band!==prev && prev>=0) ? ' class="sep"' : '';
+    prev=band; shown++;
+    h+='<tr'+cls+'><td>'+D.hands[i]+(n<800?' <span class="thin">*</span>':'')+'</td>'+
+       '<td class="eq">'+Math.round(eq*100)+'%</td>'+
+       [...sym].map(s=>'<td><span class="sym '+symClass(s)+'">'+s+'</span></td>').join('')+'</tr>';
+  }
+  document.getElementById("chart").innerHTML=h+'</tbody>';
+  const t=document.getElementById("note");
+  t.innerHTML = (cur==="all"
+    ? "全ボードテクスチャの平均。テクスチャによる差は大きいので、上の切り替えで確認する。"
+    : "このテクスチャでの目安。該当しないハンドの行は出ない（例：ペアボードではセットはフルハウスになる）。")
+    + ' <span class="thin">* は標本が少なく精度が低い行。</span>';
+}
+function renderCmp(){
+  const H=6;   // トップペア Aキッカー
+  let h='<thead><tr><th>ボードテクスチャ</th><th class="eq">エクイティ</th>'+D.cols.map(colHead).join('')+'</tr></thead><tbody>';
+  for(let t=0;t<D.textures.length;t++){
+    const r=D.rows[t+"-"+H];
+    if(!r) continue;
+    h+='<tr><td>'+D.textures[t]+'</td><td class="eq">'+Math.round(r[0]*100)+'%</td>'+
+       [...r[1]].map(s=>'<td><span class="sym '+symClass(s)+'">'+s+'</span></td>').join('')+'</tr>';
+  }
+  document.getElementById("cmp").innerHTML=h+'</tbody>';
+}
+renderTabs(); renderChart(); renderCmp();
+</script>
