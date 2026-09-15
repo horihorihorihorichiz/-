@@ -3,32 +3,36 @@ import numpy as np
 from evaluator import _STRAIGHT
 
 HAND = [
-    'ストレート以上',                # 0
-    'セット',                        # 1
-    'トリップス',                    # 2
+    'ストレート以上',             # 0
+    'セット',                         # 1
+    'トリップス',                   # 2
     'ツーペア',                      # 3
-    'オーバーペア QQ以上',           # 4
-    'オーバーペア JJ以下',           # 5
-    'ペア＋フラッシュドロー',        # 6
-    'トップペア Aキッカー',          # 7
-    'トップペア K・Qキッカー',       # 8
-    'トップペア J〜9キッカー',       # 9
-    'トップペア 8以下キッカー',      # 10
-    'ミドルペア',                    # 11
-    'ボトムペア',                    # 12
-    'アンダーペア（ボード中位）',    # 13
-    'アンダーペア（ボード下位）',    # 14
-    'コンボドロー（フラドロ＋ストレート）',  # 15
-    'ナッツフラッシュドロー',        # 16
-    'フラッシュドロー K・Qハイ',     # 17
-    'フラッシュドロー 弱い',         # 18
-    'オープンエンダー',              # 19
-    'ガットショット＋ツーオーバー',  # 20
-    'ツーオーバー（A含む）',         # 21
-    'ツーオーバー（Aなし）',         # 22
-    'ガットショット',                # 23
-    'Aハイ',                         # 24
-    'ノーペア',                      # 25
+    'オーバーペア QQ以上',       # 4
+    'オーバーペア JJ以下',       # 5
+    'ペア＋フラッシュドロー', # 6
+    'トップペア（ボードのAをペア）', # 7
+    'トップペア Aキッカー',     # 8
+    'トップペア K・Qキッカー', # 9
+    'トップペア J〜9キッカー', # 10
+    'トップペア 8以下キッカー', # 11
+    'ミドルペア',                   # 12
+    'ボトムペア',                   # 13
+    'アンダーペア（ボード中位）', # 14
+    'アンダーペア（ボード下位）', # 15
+    'コンボドロー（フラドロ＋ストレート）', # 16
+    'ナッツフラッシュドロー', # 17
+    'フラッシュドロー K・Qハイ', # 18
+    'フラッシュドロー 弱い',   # 19
+    'オープンエンダー A・K持ち', # 20
+    'オープンエンダー Q〜T持ち', # 21
+    'オープンエンダー 9以下',  # 22
+    'ガットショット A・K持ち', # 23
+    'ガットショット Q〜T持ち', # 24
+    'ガットショット 9以下',     # 25
+    'ツーオーバー（A含む）',   # 26
+    'ツーオーバー（Aなし）',   # 27
+    'Aハイ',                           # 28
+    'ノーペア',                      # 29
 ]
 
 
@@ -118,29 +122,38 @@ def hand_type(hole, flop):
     n_over = (hr > br[:, 0][:, None]).sum(axis=1)
     has_ace = (hr == 12).any(axis=1)
 
-    t = np.full(n, 25, dtype=np.int64)
-    t = np.where(has_ace, 24, t)
-    t = np.where(outs == 1, 23, t)
-    t = np.where(n_over >= 2, np.where(has_ace, 21, 22), t)
-    t = np.where((outs == 1) & (n_over >= 2), 20, t)
-    t = np.where(outs >= 2, 19, t)
-    t = np.where(fd, np.where(fd_high == 12, 16, np.where(fd_high >= 10, 17, 18)), t)
-    t = np.where(fd & (outs >= 1), 15, t)
+    hi_card = hr.max(axis=1)      # 自分の高いほうの札
+
+    # ストレートドローは「自分の一番高い札」で3段に分ける。
+    # 引いても上のストレートに負ける形（例：9TJ に 27）と、
+    # 外しても高い札が残る形を切り分けるため。
+    def sd_group(base):
+        return np.where(hi_card >= 11, base, np.where(hi_card >= 8, base + 1, base + 2))
+
+    t = np.full(n, 29, dtype=np.int64)
+    t = np.where(has_ace, 28, t)
+    t = np.where(n_over >= 2, np.where(has_ace, 26, 27), t)
+    t = np.where(outs == 1, sd_group(23), t)
+    t = np.where(outs >= 2, sd_group(20), t)
+    t = np.where(fd, np.where(fd_high == 12, 17, np.where(fd_high >= 10, 18, 19)), t)
+    t = np.where(fd & (outs >= 1), 16, t)
 
     # ペア系。ボードがペアでも同じ規則で通し、最後に上位役で上書きする
-    t = np.where(pocket & (hr[:, 0] < br[:, 2]), 14, t)
-    t = np.where(pocket & (hr[:, 0] > br[:, 2]) & (hr[:, 0] < br[:, 0]), 13, t)
-    t = np.where((~pocket) & (n_hit == 1) & (top_pos == 2), 12, t)
-    t = np.where((~pocket) & (n_hit == 1) & (top_pos == 1), 11, t)
+    t = np.where(pocket & (hr[:, 0] < br[:, 2]), 15, t)
+    t = np.where(pocket & (hr[:, 0] > br[:, 2]) & (hr[:, 0] < br[:, 0]), 14, t)
+    t = np.where((~pocket) & (n_hit == 1) & (top_pos == 2), 13, t)
+    t = np.where((~pocket) & (n_hit == 1) & (top_pos == 1), 12, t)
     tp = (~pocket) & (n_hit == 1) & (top_pos == 0)
-    t = np.where(tp & (kicker <= 6), 10, t)
-    t = np.where(tp & (kicker >= 7) & (kicker <= 9), 9, t)
-    t = np.where(tp & (kicker >= 10) & (kicker <= 11), 8, t)
-    t = np.where(tp & (kicker == 12), 7, t)
+    t = np.where(tp & (kicker <= 6), 11, t)
+    t = np.where(tp & (kicker >= 7) & (kicker <= 9), 10, t)
+    t = np.where(tp & (kicker >= 10) & (kicker <= 11), 9, t)
+    t = np.where(tp & (kicker == 12), 8, t)
+    # ボードの最高位が A の場合は、A をペアにしているので別扱い
+    t = np.where(tp & (br[:, 0] == 12), 7, t)
     t = np.where(pocket & (hr[:, 0] > br[:, 0]) & (hr[:, 0] <= 9), 5, t)
     t = np.where(pocket & (hr[:, 0] > br[:, 0]) & (hr[:, 0] >= 10), 4, t)
     # ペアができていて、なおかつフラッシュドローもある
-    is_pair = (t >= 4) & (t <= 14)
+    is_pair = (t >= 4) & (t <= 15)
     t = np.where(is_pair & fd, 6, t)
     t = np.where((~pocket) & (n_hit == 2), 3, t)
 

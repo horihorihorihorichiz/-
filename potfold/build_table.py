@@ -59,18 +59,25 @@ if __name__ == '__main__':
         sel = ht == h
         if sel.sum() < 300:
             continue
-        med = float(np.median(eq[sel]))
+        v = eq[sel]
+        med = float(np.median(v))
+        q1, q3 = float(np.percentile(v, 25)), float(np.percentile(v, 75))
         syms = [verdict(med, grid[c]) for c in SYM_COLS]
-        print('%-24s %5.2f%% %6.1f%%   %s' % (HAND[h], 100 * sel.mean(), 100 * med, '　　'.join(syms)))
-        out['rows']['all-%d' % h] = {'n': int(sel.sum()), 'eq': round(med, 4), 'sym': syms}
+        print('%-26s %5.2f%% %6.1f%% (%.0f〜%.0f)   %s'
+              % (HAND[h], 100 * sel.mean(), 100 * med, 100 * q1, 100 * q3, '　'.join(syms)))
+        out['rows']['all-%d' % h] = {'n': int(sel.sum()), 'eq': round(med, 4),
+                                     'q1': round(q1, 4), 'q3': round(q3, 4), 'sym': syms}
 
     for t in range(len(TEXTURE)):
         for h in range(len(HAND)):
             sel = (ht == h) & (tx == t)
             if sel.sum() < 400:
                 continue
-            med = float(np.median(eq[sel]))
+            v = eq[sel]
+            med = float(np.median(v))
+            q1, q3 = float(np.percentile(v, 25)), float(np.percentile(v, 75))
             out['rows']['%d-%d' % (t, h)] = {'n': int(sel.sum()), 'eq': round(med, 4),
+                                             'q1': round(q1, 4), 'q3': round(q3, 4),
                                              'sym': [verdict(med, grid[c]) for c in SYM_COLS]}
     json.dump(out, open('handtable.json', 'w'), ensure_ascii=False, indent=1)
     print('\n保存: handtable.json')

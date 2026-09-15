@@ -104,6 +104,20 @@ def situation_thresholds(eq, sc, opp_th):
             t = _threshold_from(e, p)
             if t is not None:
                 grid[s][behind] = round(float(t), 4)
+
+    # コーラーが増える／遠くなるほど基準は厳しくなるはず。
+    # 乱数のぶれで前後する分だけならして、順序を保つ。
+    for behind in range(8):
+        for chain in ([0, 1, 2, 3], [4, 5, 6], [1, 4], [4, 7]):
+            run = None
+            for s in chain:
+                v = grid[s][behind]
+                if v is None:
+                    continue
+                if run is not None and v < run:
+                    grid[s][behind] = run
+                else:
+                    run = v
     return grid, counts
 
 

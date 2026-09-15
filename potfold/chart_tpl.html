@@ -173,8 +173,8 @@ footer b{color:var(--muted); font-weight:500}
 
   <div class="card">
     <div class="legend">
-      <span><i class="mk m-yes">○</i> コール</span>
-      <span><i class="mk m-thin">△</i> ぎりぎり（3ポイント以内）</span>
+      <span><i class="mk m-yes">○</i> コール（この型なら概ね足りる）</span>
+      <span><i class="mk m-thin">△</i> 手による（型の中で答えが割れる）</span>
       <span><i class="mk m-no">×</i> フォールド</span>
       <span><i class="mk m-na">—</i> その状況は起こらない</span>
     </div>
@@ -204,7 +204,7 @@ footer b{color:var(--muted); font-weight:500}
     </div>
     <div class="key">
       <h3>ドローは中身で大きく違う</h3>
-      <p>フラッシュドローは <span class="big">ナッツ 68% / K・Qハイ 62% / 弱い 50%</span> と18ポイント開く。ツーオーバーも <span class="big">A含む 53% / Aなし 40%</span> で13ポイント差。同じ札でもストレートドローが付けば上がる（76s は 50.6% → 63.6%）。ただし表の「コンボドロー 60%」が低めなのは、低い絵札の組み合わせが多いため。</p>
+      <p>ガットショットは <span class="big">A・K持ち 53% / Q〜T持ち 44% / 9以下 32%</span> と21ポイント開く。9♠T♦J♥ に 27 は <span class="big">27.5%</span> しかなく、何もない A2（37.9%）より弱い。8が落ちてもQ持ちに上から負け、外せば何も残らないため。フラッシュドローも <span class="big">ナッツ 68% / K・Qハイ 62% / 弱い 50%</span>、ツーオーバーも <span class="big">A含む 53% / Aなし 40%</span> と開く。</p>
     </div>
     <div class="key">
       <h3>ペアボード</h3>
@@ -221,6 +221,10 @@ footer b{color:var(--muted); font-weight:500}
     <div class="key">
       <h3>観戦メモ：$2〜$6 卓（12ハンド）</h3>
       <p>フロップに平均 <span class="big">1.9人</span> がポット（1人あたり27%）。ショーダウンに出た19手のうち <span class="big">7手</span> がボトムペア・ガットショット・アンダーペア・ツーオーバーといった弱い手だった。人数は「標準」並みでも中身は「緩い」。レーキは勝負になったポットで2%を再確認。標本が少ないので目安にとどめる。</p>
+    </div>
+    <div class="key">
+      <h3>矛盾の検査</h3>
+      <p>表の数字は自動検査を通している。役の判定器が5枚総当たりと一致すること、全ハンドの平均エクイティが0.5になること、<b>役の強さの上下関係が逆転していないこと</b>（22組を全ボードで照合）、<b>コーラーが増える／遠くなるほど必要エクイティが厳しくなること</b>、各行の標本が400件以上あること、など<span class="big">13項目</span>。現在すべて通過。</p>
     </div>
     <div class="key">
       <h3>ショートスタックのオールイン</h3>
@@ -262,11 +266,13 @@ function need(v){ const t=G()[v.s][v.b]; return (t===null||t===undefined) ? null
 function colHead(b, me){
   return '<th'+(b===me?' class="me"':'')+'>'+posName(b)+'<span class="pos">後ろ'+b+'人</span></th>';
 }
-function mark(eq,thr){
+/* 中央値だけでなく、その型の真ん中半分（25〜75%）が必要エクイティの
+   どちら側にあるかで判定する。またぐ場合は「手による」。 */
+function mark(it,thr){
   if(thr===null||thr===undefined) return '<span class="mk m-na">—</span>';
-  if(eq>=thr+0.03) return '<span class="mk m-yes">○</span>';
-  if(eq>=thr) return '<span class="mk m-thin">△</span>';
-  return '<span class="mk m-no">×</span>';
+  if(it.q1>=thr) return '<span class="mk m-yes">○</span>';
+  if(it.q3<thr) return '<span class="mk m-no">×</span>';
+  return '<span class="mk m-thin">△</span>';
 }
 function tabs(el,list,cur,onPick){
   el.innerHTML="";
@@ -359,31 +365,35 @@ function naReason(i){
 
 function renderChart(){
   const v=derive(), thr=G()[v.s], C=cols();
-  let h='<thead><tr><th>ハンド</th><th class="eq">エクイティ</th>'+C.map(b=>colHead(b, v.b)).join('')+'</tr></thead><tbody>';
-  let prev=-1;
+  // エクイティの高い順に並べる。型ごとの上下関係がそのまま読める。
+  const items=[], missing=[];
   for(let i=0;i<D.hands.length;i++){
     const r=D.rows[tex+"-"+i];
-    const band = i<=3 ? 0 : i<=14 ? 1 : i<=23 ? 2 : 3;
-    const cls=[]; if(band!==prev && prev>=0) cls.push("sep"); prev=band;
-    if(!r){
-      if(tex==="all") continue;
-      cls.push("na");
-      h+='<tr class="'+cls.join(' ')+'"><td>'+D.hands[i]+'</td><td class="eq">—</td>'+
-         '<td colspan="'+C.length+'" style="text-align:left">'+naReason(i)+'</td></tr>';
-      continue;
-    }
-    const eq=r[0], n=r[1];
-    h+='<tr'+(cls.length?' class="'+cls.join(' ')+'"':'')+'><td>'+D.hands[i]+(n<800?' <span class="thin">*</span>':'')+'</td>'+
-       '<td class="eq">'+Math.round(eq*100)+'%</td>'+
-       C.map(b=>'<td'+(b===v.b?' class="me"':'')+'>'+mark(eq,thr[b])+'</td>').join('')+'</tr>';
+    if(r) items.push({i:i, eq:r[0], n:r[1], q1:r[2], q3:r[3]});
+    else if(tex!=="all") missing.push(i);
   }
+  items.sort(function(a,b){ return b.eq-a.eq; });
+  let h='<thead><tr><th>ハンド</th><th class="eq">エクイティ</th><th class="eq">真ん中半分</th>'+
+        C.map(function(b){ return colHead(b, v.b); }).join('')+'</tr></thead><tbody>';
+  items.forEach(function(it){
+    h+='<tr><td>'+D.hands[it.i]+(it.n<800?' <span class="thin">*</span>':'')+'</td>'+
+       '<td class="eq">'+Math.round(it.eq*100)+'%</td>'+
+       '<td class="eq thin">'+Math.round(it.q1*100)+'〜'+Math.round(it.q3*100)+'%</td>'+
+       C.map(function(b){ return '<td'+(b===v.b?' class="me"':'')+'>'+mark(it,thr[b])+'</td>'; }).join('')+'</tr>';
+  });
+  missing.forEach(function(i){
+    h+='<tr class="na"><td>'+D.hands[i]+'</td><td class="eq">—</td>'+
+       '<td colspan="'+(C.length+1)+'" style="text-align:left">'+naReason(i)+'</td></tr>';
+  });
   document.getElementById("chart").innerHTML=h+'</tbody>';
-  const live=C.filter(b=>thr[b]!==null&&thr[b]!==undefined);
-  const allZero = live.length>0 && live.every(b=>thr[b]===0);
+  const live=C.filter(function(b){ return thr[b]!==null&&thr[b]!==undefined; });
+  const allZero = live.length>0 && live.every(function(b){ return thr[b]===0; });
   const n1 = allZero
     ? "この状況では<b>どのハンドでもポット</b>。相手が固いほど、ポットしたあと全員がフォールドする確率が高く、それだけで割に合う。"
     : (v.s===0 ? "誰もポットしていない場面。" : "<b>"+D.sit[v.s]+"</b>の場面。");
-  document.getElementById("note").innerHTML = n1 + " 色の付いた列が自分のポジション（"+P()[hero]+"）。" +
+  document.getElementById("note").innerHTML = n1 +
+    " 色の付いた列が自分のポジション（"+P()[hero]+"）。エクイティの高い順に並べてある。" +
+    "「真ん中半分」はその型に含まれる手の 25〜75% の範囲で、<b>△ はこの範囲が必要エクイティをまたぐ</b>という意味。" +
     (tex==="all" ? " 全ボードテクスチャの平均。" : "") +
     ' <span class="thin">* は標本が少なく精度が低い行。</span>';
 }
