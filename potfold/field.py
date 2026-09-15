@@ -55,12 +55,16 @@ def observables(eq, opp_th, n=8):
 
 
 def situation_thresholds(eq, sc, opp_th):
-    """8つの状況 × 後ろの人数 の必要エクイティを返す。"""
+    """8つの状況 × 後ろの人数 の必要エクイティと、最終的な参加人数を返す。"""
     bank = {}
+    msum = {}
 
-    def add(key, e, p):
+    def add(key, e, p, mv=None):
         a, b = bank.get(key, ([], []))
         a.append(e); b.append(p); bank[key] = (a, b)
+        if mv is not None:
+            s_, c_ = msum.get(key, (0.0, 0))
+            msum[key] = (s_ + float(mv.sum()), c_ + int(mv.size))
 
     for n in range(2, 9):
         th = [np.array(t) for t in opp_th[str(n)]['thresholds']]
@@ -76,7 +80,7 @@ def situation_thresholds(eq, sc, opp_th):
 
             sel = c_before == 0
             if sel.any():
-                add((behind, 0), e_seat[sel], pay[sel])
+                add((behind, 0), e_seat[sel], pay[sel], m[sel])
 
             if seat >= 1:
                 first = np.argmax(cont[:, :seat], axis=1)
@@ -85,18 +89,22 @@ def situation_thresholds(eq, sc, opp_th):
                 for i, (lo, hi) in enumerate(D1):
                     s = one & (dist >= lo) & (dist <= hi)
                     if s.any():
-                        add((behind, 1 + i), e_seat[s], pay[s])
+                        add((behind, 1 + i), e_seat[s], pay[s], m[s])
                 two = c_before == 2
                 for i, (lo, hi) in enumerate(D2):
                     s = two & (dist >= lo) & (dist <= hi)
                     if s.any():
-                        add((behind, 4 + i), e_seat[s], pay[s])
+                        add((behind, 4 + i), e_seat[s], pay[s], m[s])
                 many = c_before >= 3
                 if many.any():
-                    add((behind, 7), e_seat[many], pay[many])
+                    add((behind, 7), e_seat[many], pay[many], m[many])
 
     grid = [[None] * 8 for _ in range(8)]
     counts = [[0] * 8 for _ in range(8)]
+    mean_m = [[None] * 8 for _ in range(8)]
+    for (behind, s), (tot, cnt) in msum.items():
+        if cnt:
+            mean_m[s][behind] = round(tot / cnt, 3)
     for (behind, s), (a, b) in bank.items():
         e = np.concatenate(a); p = np.concatenate(b)
         counts[s][behind] = int(e.size)
@@ -118,7 +126,7 @@ def situation_thresholds(eq, sc, opp_th):
                     grid[s][behind] = run
                 else:
                     run = v
-    return grid, counts
+    return grid, counts, mean_m
 
 
 if __name__ == '__main__':
@@ -131,10 +139,10 @@ if __name__ == '__main__':
     for name, gamma in LEVELS:
         opp = loosen(base, eq, gamma)
         callers, rate, allfold = observables(eq, opp)
-        grid, counts = situation_thresholds(eq, sc, opp)
+        grid, counts, mean_m = situation_thresholds(eq, sc, opp)
         out[name] = {'callers': round(callers, 2), 'rate': round(rate, 4),
                      'allfold': round(allfold, 3), 'gamma': gamma,
-                     'grid': grid, 'counts': counts}
+                     'grid': grid, 'counts': counts, 'meanM': mean_m}
         print('\n=== %s（8人卓で平均 %.1f 人がコール／1人あたり %.0f%%／コールに全員降りる割合 %.0f%%）==='
               % (name, callers, 100 * rate, 100 * allfold))
         print('%-16s %s' % ('前の状況', ' '.join('後ろ%d' % b for b in range(7, -1, -1))))

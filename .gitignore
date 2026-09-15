@@ -6,3 +6,5 @@ slides/exports/*.png
 potfold/deals.npz
 potfold/__pycache__/
 potfold/gen.log
+potfold/mw.log
+potfold/table.log
