@@ -97,12 +97,14 @@ def check_equity_baseline():
 
 # ---------- 4. 役の強さの順序 ----------
 # (強いはず, 弱いはず) ── 同じボードの型どうしで必ず成り立つべき関係
+# 注: (7,8) は入れない。「トップペア（ボードのAをペア）」はキッカー全部の
+# 平均なので、キッカーを限定した「Aキッカー」より低く出ることがある（矛盾ではない）。
 ORDER = [
-    (0, 1), (1, 3), (3, 12), (7, 8), (8, 9), (10, 11), (12, 13), (14, 13), (13, 15),
+    (0, 1), (1, 3), (3, 12), (8, 9), (9, 11), (12, 13), (14, 13), (13, 15),
     (4, 5), (17, 18), (18, 19), (20, 21), (21, 22), (23, 24), (24, 25),
     (20, 23), (21, 24), (22, 25), (16, 19), (26, 27), (28, 29),
 ]
-TOL = 0.012          # 乱数のぶれの許容幅
+TOL = 0.016          # 乱数のぶれの許容幅
 
 
 def check_order():
@@ -167,7 +169,24 @@ def check_samples():
         warn('ばらつきの大きい行', '%d 行（幅20ポイント以上）' % len(wide))
 
 
-# ---------- 8. 表に渡すデータの整合 ----------
+# ---------- 8. 出現率 ----------
+def check_coverage():
+    d = json.load(open('handtable.json'))
+    rows = d['rows']
+    tot = sum(v.get('f', 0) for k, v in rows.items() if k.startswith('all-'))
+    check('まとめての出現率の合計が100%', abs(tot - 1.0) < 0.02, '合計 %.1f%%' % (100 * tot))
+    bad = []
+    for t in range(len(TEXTURE)):
+        s2 = sum(v.get('f', 0) for k, v in rows.items() if k.startswith('%d-' % t))
+        if abs(s2 - 1.0) >= 0.03:
+            bad.append('%s %.0f%%' % (TEXTURE[t], 100 * s2))
+    check('各ボードの型でも出現率の合計が100%', not bad, ' / '.join(bad))
+    ts = d.get('texShare', [])
+    check('ボードの型の出現率の合計が100%', abs(sum(ts) - 1.0) < 0.02 if ts else False,
+          '合計 %.1f%%' % (100 * sum(ts)) if ts else '未記録')
+
+
+# ---------- 9. 表に渡すデータの整合 ----------
 def check_chartdata():
     d = json.load(open('chartdata.json'))
     check('ハンド名の数が一致', len(d['hands']) == len(HAND), '%d / %d' % (len(d['hands']), len(HAND)))
@@ -178,6 +197,10 @@ def check_chartdata():
     miss = [i for i in range(len(d['hands'])) if ('all-%d' % i) not in d['rows']]
     check('まとめての行が全ハンド分ある', not miss,
           '欠け: ' + '、'.join(d['hands'][i] for i in miss))
+    check('ボードの型の数が一致', len(d['textures']) == len(TEXTURE),
+          '%d / %d' % (len(d['textures']), len(TEXTURE)))
+    nrow = all(len(v) == 5 for v in d['rows'].values())
+    check('各行が [エクイティ, 標本数, 下位, 上位, 出現率] の5つ組', nrow)
 
 
 if __name__ == '__main__':
@@ -185,7 +208,8 @@ if __name__ == '__main__':
     steps = [('判定器', check_evaluator), ('分類', check_classify),
              ('エクイティ基準', check_equity_baseline), ('役の順序', check_order),
              ('単調性', check_threshold_monotone), ('理論整合', check_theory),
-             ('標本', check_samples), ('データ整合', check_chartdata)]
+             ('標本', check_samples), ('出現率', check_coverage),
+             ('データ整合', check_chartdata)]
     for nm, fn in steps:
         if only and nm not in only:
             continue

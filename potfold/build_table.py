@@ -9,7 +9,7 @@ N_SEATS = 8
 SYM_COLS = [7, 5, 3, 1, 0]          # 自分の後ろに残っている人数
 
 
-def collect(n_deals=150000, seed=21, batch=400):
+def collect(n_deals=260000, seed=21, batch=400):
     rng = np.random.default_rng(seed)
     H, F, E = [], [], []
     done = 0
@@ -52,7 +52,9 @@ if __name__ == '__main__':
     tx = board_texture(flop)
     grid = json.load(open('grid.json'))['grid']
 
-    out = {'hands': HAND, 'textures': TEXTURE, 'cols': SYM_COLS, 'rows': {}}
+    tex_share = [round(float((tx == t).mean()), 5) for t in range(len(TEXTURE))]
+    out = {'hands': HAND, 'textures': TEXTURE, 'cols': SYM_COLS,
+           'texShare': tex_share, 'rows': {}}
     print('\n全体（場札の型をまとめた場合）')
     print('%-24s %6s %7s   %s' % ('手の型', '出現率', '勝率', '　'.join('後ろ%d' % c for c in SYM_COLS)))
     for h in range(len(HAND)):
@@ -66,7 +68,8 @@ if __name__ == '__main__':
         print('%-26s %5.2f%% %6.1f%% (%.0f〜%.0f)   %s'
               % (HAND[h], 100 * sel.mean(), 100 * med, 100 * q1, 100 * q3, '　'.join(syms)))
         out['rows']['all-%d' % h] = {'n': int(sel.sum()), 'eq': round(med, 4),
-                                     'q1': round(q1, 4), 'q3': round(q3, 4), 'sym': syms}
+                                     'q1': round(q1, 4), 'q3': round(q3, 4),
+                                     'f': round(float(sel.mean()), 5), 'sym': syms}
 
     for t in range(len(TEXTURE)):
         for h in range(len(HAND)):
@@ -76,8 +79,10 @@ if __name__ == '__main__':
             v = eq[sel]
             med = float(np.median(v))
             q1, q3 = float(np.percentile(v, 25)), float(np.percentile(v, 75))
+            share = float(sel.sum()) / max(1, int((tx == t).sum()))     # その型の中での出現率
             out['rows']['%d-%d' % (t, h)] = {'n': int(sel.sum()), 'eq': round(med, 4),
                                              'q1': round(q1, 4), 'q3': round(q3, 4),
+                                             'f': round(share, 5),
                                              'sym': [verdict(med, grid[c]) for c in SYM_COLS]}
     json.dump(out, open('handtable.json', 'w'), ensure_ascii=False, indent=1)
     print('\n保存: handtable.json')

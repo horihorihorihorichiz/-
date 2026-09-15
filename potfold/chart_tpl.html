@@ -179,6 +179,7 @@ footer b{color:var(--muted); font-weight:500}
       <span><i class="mk m-na">—</i> その状況は起こらない</span>
     </div>
     <div class="tablewrap"><table class="main" id="chart"></table></div>
+    <p class="note" id="sumNote"></p>
     <p class="note" id="note"></p>
   </div>
 
@@ -195,8 +196,8 @@ footer b{color:var(--muted); font-weight:500}
       <p>ラストアクションで1人コールを受けたとき、直前の席からなら <span class="big">32%</span> で足りるが、4人以上前からだと <span class="big">66%</span> 必要。同じ「1人コール」でも <span class="big">34ポイント</span> 違う。2人コールでも <span class="big">64% → 77%</span> と13ポイント差がある。3人以上まで増えると位置差はほぼ消え、どこからでも <span class="big">82〜84%</span> 必要。</p>
     </div>
     <div class="key">
-      <h3>3枚目のカードで一変する</h3>
-      <p>上2枚を 8-7 に固定して3枚目だけ変えると、<b>8-7-2</b> から <b>8-7-6</b> でトップペアAキッカーは <span class="big">76.8% → 65.8%</span>、セットは <span class="big">94.4% → 85.1%</span>。できている役はどれも10ポイント前後落ちる。フロップ3枚が5段以内に収まる形（全体の <span class="big">31.5%</span>）が境目。</p>
+      <h3>ボードの高さがいちばん効く</h3>
+      <p>ボードの型を決める軸を効き具合で選び直した。トップペアAキッカーで比べると <b>高さ</b> が <span class="big">15ポイント</span>（ハイ87%／ロー72%）、<b>ストレートの可能性</b> が <span class="big">11ポイント</span>、<b>モノトーン</b> が <span class="big">11〜13ポイント</span>。一方レインボーとツートーンの差は <span class="big">1ポイント</span> しかないので分けていない（フラッシュドローの有無はハンド側で拾っている）。上2枚を 8-7 に固定して3枚目を 2→6 に変えると、トップペアAキッカーは 76.8%→65.8% に落ちる。</p>
     </div>
     <div class="key">
       <h3>相手が緩いほど、受けは広くなる</h3>
@@ -221,6 +222,10 @@ footer b{color:var(--muted); font-weight:500}
     <div class="key">
       <h3>観戦メモ：$2〜$6 卓（12ハンド）</h3>
       <p>フロップに平均 <span class="big">1.9人</span> がポット（1人あたり27%）。ショーダウンに出た19手のうち <span class="big">7手</span> がボトムペア・ガットショット・アンダーペア・ツーオーバーといった弱い手だった。人数は「標準」並みでも中身は「緩い」。レーキは勝負になったポットで2%を再確認。標本が少ないので目安にとどめる。</p>
+    </div>
+    <div class="key">
+      <h3>どの行に当たるか</h3>
+      <p>上から順に当てはめ、<b>最初に当たった行</b>がそのハンドの行になる。①ストレート以上（フラッシュ・フルハウス含む）②セット・トリップス ③ツーペア ④ペア＋フラッシュドロー ⑤ペア各種（オーバー／トップ／ミドル／ボトム／アンダー）⑥コンボドロー ⑦フラッシュドロー ⑧オープンエンダー ⑨ガットショット ⑩ツーオーバー ⑪Aハイ ⑫ノーペア。<br>例：ミドルペア＋フラッシュドローは「ペア＋フラッシュドロー」、トップペア＋ガットショットは「トップペア」に入る。</p>
     </div>
     <div class="key">
       <h3>矛盾の検査</h3>
@@ -369,23 +374,29 @@ function renderChart(){
   const items=[], missing=[];
   for(let i=0;i<D.hands.length;i++){
     const r=D.rows[tex+"-"+i];
-    if(r) items.push({i:i, eq:r[0], n:r[1], q1:r[2], q3:r[3]});
+    if(r) items.push({i:i, eq:r[0], n:r[1], q1:r[2], q3:r[3], f:r[4]});
     else if(tex!=="all") missing.push(i);
   }
   items.sort(function(a,b){ return b.eq-a.eq; });
-  let h='<thead><tr><th>ハンド</th><th class="eq">エクイティ</th><th class="eq">真ん中半分</th>'+
+  let h='<thead><tr><th>ハンド</th><th class="eq">出現率</th><th class="eq">エクイティ</th><th class="eq">真ん中半分</th>'+
         C.map(function(b){ return colHead(b, v.b); }).join('')+'</tr></thead><tbody>';
+  let fsum=0;
   items.forEach(function(it){
+    fsum+=it.f;
     h+='<tr><td>'+D.hands[it.i]+(it.n<800?' <span class="thin">*</span>':'')+'</td>'+
+       '<td class="eq thin">'+(it.f*100).toFixed(it.f<0.01?2:1)+'%</td>'+
        '<td class="eq">'+Math.round(it.eq*100)+'%</td>'+
        '<td class="eq thin">'+Math.round(it.q1*100)+'〜'+Math.round(it.q3*100)+'%</td>'+
        C.map(function(b){ return '<td'+(b===v.b?' class="me"':'')+'>'+mark(it,thr[b])+'</td>'; }).join('')+'</tr>';
   });
   missing.forEach(function(i){
     h+='<tr class="na"><td>'+D.hands[i]+'</td><td class="eq">—</td>'+
-       '<td colspan="'+(C.length+1)+'" style="text-align:left">'+naReason(i)+'</td></tr>';
+       '<td colspan="'+(C.length+2)+'" style="text-align:left">'+naReason(i)+'</td></tr>';
   });
   document.getElementById("chart").innerHTML=h+'</tbody>';
+  document.getElementById("sumNote").innerHTML =
+    'この'+(tex==="all"?'表':'ボードの型')+'に出る手は上の'+items.length+'行で<b>すべて</b>。出現率の合計 <b>'+
+    (fsum*100).toFixed(1)+'%</b>。どのハンドも必ずどれか1行に入る。';
   const live=C.filter(function(b){ return thr[b]!==null&&thr[b]!==undefined; });
   const allZero = live.length>0 && live.every(function(b){ return thr[b]===0; });
   const n1 = allZero
