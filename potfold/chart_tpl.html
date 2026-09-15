@@ -205,8 +205,8 @@ footer b{color:var(--muted); font-weight:500}
       <p>後ろ3人で「4人以上前からの1人コール」を受けたとき、必要エクイティは相手が固い卓なら <span class="big">94%</span>、緩い卓なら <span class="big">66%</span>、とても緩い卓なら <span class="big">59%</span>。緩い相手のコールは中身が薄いので、こちらは広く受けられる。逆に<b>誰もコールしていない場面</b>の基準は相手の傾向でほとんど変わらない（後ろに人が残っている事実は変わらないため）。</p>
     </div>
     <div class="key">
-      <h3>ドローは中身で大きく違う</h3>
-      <p>ガットショットは <span class="big">A・K持ち 53% / Q〜T持ち 44% / 9以下 32%</span> と21ポイント開く。9♠T♦J♥ に 27 は <span class="big">27.5%</span> しかなく、何もない A2（37.9%）より弱い。8が落ちてもQ持ちに上から負け、外せば何も残らないため。フラッシュドローも <span class="big">ナッツ 68% / K・Qハイ 62% / 弱い 50%</span>、ツーオーバーも <span class="big">A含む 53% / Aなし 40%</span> と開く。</p>
+      <h3>人数が増えるとドローが逆転する</h3>
+      <p>タイマン勝率から予想される値と、相手3人での実際の値のズレを全ハンドで調べた。<b>ドロー系はすべて過小評価</b>されていた。コンボドロー <span class="big">+15</span>、オープンエンダー9以下 <span class="big">+13</span>、フラッシュドロー（K・Qハイ／弱い）<span class="big">+11</span>、ナッツフラドロ <span class="big">+10</span>、ガットショット9以下 <span class="big">+7</span>。<b>弱いドローほどズレが大きい</b>。理由は、ドローの勝ちは「引いたら勝つ」なので人数にあまり左右されないのに対し、できている役の勝ちは「いま先頭」なので人が増えるほど掛け算で落ちるため。<br>できている役（ペア・ヒット系）はズレ <span class="big">±1</span>、アンダーペアとAハイは <span class="big">−3</span>。この表は場面ごとの人数でのエクイティを使うので、この差が織り込まれている。</p>
     </div>
     <div class="key">
       <h3>ペアボード</h3>
@@ -269,6 +269,39 @@ function derive(){
 }
 function need(v){ const t=G()[v.s][v.b]; return (t===null||t===undefined) ? null : t; }
 
+/* ---- 人数に合わせた換算 ----
+   必要エクイティはタイマン単位で求めてあるので、その場面の相手人数の単位に直す。
+   ハンド側も同じ人数でのエクイティを使う。こうしないと、引けば人数に関係なく
+   勝つドローを過小評価してしまう。 */
+function interp(xs, ys, x){
+  if(x<=xs[0]) return ys[0];
+  if(x>=xs[xs.length-1]) return ys[ys.length-1];
+  for(let i=1;i<xs.length;i++) if(x<=xs[i]){
+    const w=(x-xs[i-1])/(xs[i]-xs[i-1]);
+    return ys[i-1]*(1-w)+ys[i]*w;
+  }
+  return ys[ys.length-1];
+}
+function kInfo(){
+  const v=derive();
+  const mm=D.fields[fld].meanM[v.s];
+  const m=(mm && mm[v.b]!==null && mm[v.b]!==undefined) ? mm[v.b] : 2;
+  const kf=Math.min(4, Math.max(1, m-1));
+  const k0=Math.floor(kf), k1=Math.min(k0+1,4);
+  return {m:m, kf:kf, k0:k0, k1:k1, w:kf-k0};
+}
+function handEq(r, ki){
+  const a=r[ki.k0-1], b=r[ki.k1-1], w=ki.w;
+  return [a[0]*(1-w)+b[0]*w, a[1]*(1-w)+b[1]*w, a[2]*(1-w)+b[2]*w];
+}
+function needK(thr, ki){
+  if(thr===null||thr===undefined) return null;
+  if(thr<=0) return 0;
+  const c0=D.curve[ki.k0-1], c1=D.curve[ki.k1-1];
+  const ys=c0.map(function(x,i){ return x*(1-ki.w)+c1[i]*ki.w; });
+  return interp(D.curveX, ys, thr);
+}
+
 function colHead(b, me){
   return '<th'+(b===me?' class="me"':'')+'>'+posName(b)+'<span class="pos">後ろ'+b+'人</span></th>';
 }
@@ -319,7 +352,7 @@ function renderTabs(){
 }
 
 function renderMap(){
-  const pos=P(), v=derive(), t=need(v), felt=document.getElementById("felt");
+  const pos=P(), v=derive(), ki=kInfo(), t=needK(need(v), ki), felt=document.getElementById("felt");
   let h='<div class="felt-label">'+(v.k ? v.k+' POT' : 'NO POT')+
         '<b>'+(t===null ? '—' : Math.round(t*100)+'%')+'</b>NEED</div>';
   for(let i=0;i<nseat;i++){
@@ -351,8 +384,8 @@ function renderMap(){
   const who = v.k ? v.idx.map(i=>'<b>'+pos[i]+'</b>').join('・')+' がポット' : '誰もポットしていない';
   const dist = v.k ? '（いちばん早いのは自分の '+v.d+' 席前）' : '';
   document.getElementById("spotRead").innerHTML =
-    '<div class="eyebrow">'+pos[hero]+' の判断 ／ 後ろ '+v.b+'人</div>'+
-    '<div class="need">'+(t===null ? '—' : Math.round(t*100)+'%')+'<small>以上のエクイティでポット</small></div>'+
+    '<div class="eyebrow">'+pos[hero]+' の判断 ／ 後ろ '+v.b+'人 ／ 最終 '+ki.m.toFixed(2)+'人</div>'+
+    '<div class="need">'+(t===null ? '—' : Math.round(t*100)+'%')+'<small>以上のエクイティでポット（相手 '+ki.kf.toFixed(1)+'人に対して）</small></div>'+
     '<p>'+who+dist+'。表では「'+D.sit[v.s]+'」の列にあたる。</p>'+
     '<p class="hint">前の席を押すと POT／FOLD が切り替わる。後ろの席を押すとそこが自分の席になる。</p>';
 }
@@ -371,17 +404,17 @@ function naReason(i){
 }
 
 function renderChart(){
-  const v=derive(), thr=G()[v.s], C=cols();
-  // エクイティの高い順に並べる。型ごとの上下関係がそのまま読める。
+  const v=derive(), C=cols(), ki=kInfo(), tk=needK(G()[v.s][v.b], ki);
   const items=[], missing=[];
   for(let i=0;i<D.hands.length;i++){
     const r=D.rows[tex+"-"+i];
-    if(r) items.push({i:i, eq:r[0], n:r[1], q1:r[2], q3:r[3], f:r[4]});
+    if(r){ const e=handEq(r,ki); items.push({i:i, eq:e[0], q1:e[1], q3:e[2], f:r[4], n:r[5]}); }
     else if(tex!=="all") missing.push(i);
   }
   items.sort(function(a,b){ return b.eq-a.eq; });
-  let h='<thead><tr><th>ハンド</th><th class="eq">出現率</th><th class="eq">エクイティ</th><th class="eq">真ん中半分</th>'+
-        C.map(function(b){ return colHead(b, v.b); }).join('')+'</tr></thead><tbody>';
+  const kLab = ki.kf<1.05 ? "相手1人" : ("相手"+ki.kf.toFixed(1)+"人");
+  let h='<thead><tr><th>ハンド</th><th class="eq">出現率</th><th class="eq">エクイティ<span class="pos">'+kLab+'</span></th>'+
+        '<th class="eq">真ん中半分</th>'+C.map(function(b){ return colHead(b, v.b); }).join('')+'</tr></thead><tbody>';
   let fsum=0;
   items.forEach(function(it){
     fsum+=it.f;
@@ -389,7 +422,12 @@ function renderChart(){
        '<td class="eq thin">'+(it.f*100).toFixed(it.f<0.01?2:1)+'%</td>'+
        '<td class="eq">'+Math.round(it.eq*100)+'%</td>'+
        '<td class="eq thin">'+Math.round(it.q1*100)+'〜'+Math.round(it.q3*100)+'%</td>'+
-       C.map(function(b){ return '<td'+(b===v.b?' class="me"':'')+'>'+mark(it,thr[b])+'</td>'; }).join('')+'</tr>';
+       C.map(function(b){
+         const t2=needK(G()[v.s][b], {k0:ki.k0,k1:ki.k1,w:ki.w});
+         const r2=D.rows[tex+"-"+it.i];
+         const e2=handEq(r2,{k0:ki.k0,k1:ki.k1,w:ki.w});
+         return '<td'+(b===v.b?' class="me"':'')+'>'+mark({q1:e2[1],q3:e2[2]}, t2)+'</td>';
+       }).join('')+'</tr>';
   });
   missing.forEach(function(i){
     h+='<tr class="na"><td>'+D.hands[i]+'</td><td class="eq">—</td>'+
@@ -399,20 +437,18 @@ function renderChart(){
   document.getElementById("sumNote").innerHTML =
     'この'+(tex==="all"?'表':'ボードの型')+'に出る手は上の'+items.length+'行で<b>すべて</b>。出現率の合計 <b>'+
     (fsum*100).toFixed(1)+'%</b>。どのハンドも必ずどれか1行に入る。';
-  const live=C.filter(function(b){ return thr[b]!==null&&thr[b]!==undefined; });
-  const allZero = live.length>0 && live.every(function(b){ return thr[b]===0; });
-  const n1 = allZero
-    ? "この状況では<b>どのハンドでもポット</b>。相手が固いほど、ポットしたあと全員がフォールドする確率が高く、それだけで割に合う。"
+  const n1 = (tk!==null && tk<=0)
+    ? "この状況では<b>どのハンドでもポット</b>。ポットしたあと全員がフォールドする確率が高く、それだけで割に合う。"
     : (v.s===0 ? "誰もポットしていない場面。" : "<b>"+D.sit[v.s]+"</b>の場面。");
   document.getElementById("note").innerHTML = n1 +
-    " 色の付いた列が自分のポジション（"+P()[hero]+"）。エクイティの高い順に並べてある。" +
+    " エクイティは<b>この場面の人数（最終 "+ki.m.toFixed(2)+"人、相手 "+ki.kf.toFixed(1)+"人）に対する値</b>で、" +
+    "必要エクイティも同じ人数の単位に直してある。色の付いた列が自分のポジション（"+P()[hero]+"）。" +
     "「真ん中半分」はその型に含まれる手の 25〜75% の範囲で、<b>△ はこの範囲が必要エクイティをまたぐ</b>という意味。" +
-    (tex==="all" ? " 全ボードテクスチャの平均。" : "") +
     ' <span class="thin">* は標本が少なく精度が低い行。</span>';
 }
 
 function renderThr(){
-  const g=G(), C=cols(), v=derive();
+  const g=G(), C=cols(), v=derive(), ki=kInfo();
   let h='<thead><tr><th>前の状況</th>'+C.map(b=>colHead(b, v.b)).join('')+'</tr></thead><tbody>';
   D.sit.forEach(function(name,i){
     h+='<tr'+(i===v.s?' class="hi"':'')+'><td>'+name+'</td>'+

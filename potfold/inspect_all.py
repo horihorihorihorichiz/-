@@ -128,19 +128,52 @@ TOL = 0.016          # 乱数のぶれの許容幅
 
 
 def check_order():
-    rows = json.load(open('handtable.json'))['rows']
+    """相手1人でも3人でも、役の上下関係が崩れていないか。"""
+    rows = json.load(open('multiway.json'))['rows']
     keys = ['all'] + [str(i) for i in range(len(TEXTURE))]
     bad = []
-    for k in keys:
-        for hi, lo in ORDER:
-            a, b = rows.get('%s-%d' % (k, hi)), rows.get('%s-%d' % (k, lo))
-            if not a or not b:
-                continue
-            if a['eq'] < b['eq'] - TOL:
-                nm = 'まとめて' if k == 'all' else TEXTURE[int(k)]
-                bad.append('%s: %s %.0f%% ＜ %s %.0f%%'
-                           % (nm, HAND[hi], 100*a['eq'], HAND[lo], 100*b['eq']))
-    check('役の強さの順序が守られている', not bad, ' / '.join(bad[:6]))
+    for kk in ('1', '3'):
+        for k in keys:
+            for hi, lo in ORDER:
+                a, b = rows.get('%s-%d' % (k, hi)), rows.get('%s-%d' % (k, lo))
+                if not a or not b:
+                    continue
+                if a[kk][0] < b[kk][0] - TOL:
+                    nm = 'まとめて' if k == 'all' else TEXTURE[int(k)]
+                    bad.append('相手%s人 %s: %s %.0f%% ＜ %s %.0f%%'
+                               % (kk, nm, HAND[hi], 100*a[kk][0], HAND[lo], 100*b[kk][0]))
+    check('役の強さの順序が守られている（相手1人・3人とも）', not bad, ' / '.join(bad[:5]))
+
+
+def check_multiway():
+    """人数が増えたときの減り方が、母集団の見込みとどれだけずれるか。
+
+    タイマン勝率だけで判断すると、このズレの分だけ評価を誤る。
+    表は人数別のエクイティを使うことで織り込み済みなので、ここでは
+    ズレの大きい型が想定どおり（ドロー系）かどうかを確かめる。
+    """
+    mw = json.load(open('multiway.json'))
+    cx = np.array(mw['curveX']); c3 = np.array(mw['curve']['3'])
+    big = []
+    for i in range(len(HAND)):
+        r = mw['rows'].get('all-%d' % i)
+        if not r:
+            continue
+        gap = r['3'][0] - float(np.interp(r['1'][0], cx, c3))
+        if abs(gap) >= 0.05:
+            big.append((HAND[i], gap))
+    draws = [n for n, g in big if g > 0]
+    ok = all(('ドロー' in n or 'エンダー' in n or 'ガットショット' in n) for n in draws)
+    check('人数によるズレが大きいのはドロー系だけ', ok,
+          '、'.join('%s %+.0f' % (n, 100*g) for n, g in sorted(big, key=lambda x: -x[1])))
+
+
+def check_coverage_mw():
+    mw = json.load(open('multiway.json'))
+    tot = sum(v.get('f', 0) for k, v in mw['rows'].items() if k.startswith('all-'))
+    check('人数別データでも出現率の合計が100%', abs(tot - 1.0) < 0.03, '合計 %.1f%%' % (100*tot))
+    shapes = all(all(len(v[str(k)]) == 3 for k in (1, 2, 3, 4)) for v in mw['rows'].values())
+    check('全行に相手1〜4人のエクイティが揃っている', shapes)
 
 
 # ---------- 5. 必要エクイティの単調性 ----------
@@ -219,8 +252,8 @@ def check_chartdata():
           '欠け: ' + '、'.join(d['hands'][i] for i in miss))
     check('ボードの型の数が一致', len(d['textures']) == len(TEXTURE),
           '%d / %d' % (len(d['textures']), len(TEXTURE)))
-    nrow = all(len(v) == 5 for v in d['rows'].values())
-    check('各行が [エクイティ, 標本数, 下位, 上位, 出現率] の5つ組', nrow)
+    nrow = all(len(v) == 6 and all(len(x) == 3 for x in v[:4]) for v in d['rows'].values())
+    check('各行が [相手1〜4人のエクイティ, 出現率, 標本数] の形', nrow)
 
 
 if __name__ == '__main__':
@@ -229,6 +262,7 @@ if __name__ == '__main__':
              ('エクイティ基準', check_equity_baseline), ('役の順序', check_order),
              ('単調性', check_threshold_monotone), ('理論整合', check_theory),
              ('標本', check_samples), ('出現率', check_coverage),
+             ('人数の効き', check_multiway), ('人数別の網羅', check_coverage_mw),
              ('データ整合', check_chartdata)]
     for nm, fn in steps:
         if only and nm not in only:
