@@ -1,0 +1,573 @@
+<title>Pot Fold 判断盤</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@500;700&family=Noto+Sans+JP:wght@400;500&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+:root{
+  --ground:#F4F6F3; --surface:#FFFFFF; --surface-2:#EBEFEA;
+  --ink:#141B17; --muted:#5D6B63; --faint:#8C978F;
+  --line:#D7DDD9; --line-strong:#B9C2BC;
+  --brand:#2F4C7A; --brand-soft:#E3E9F2;
+  --go:#0E7C58; --go-soft:#DCEFE6;
+  --no:#B3452F; --no-soft:#F6E2DC;
+  --red:#B3452F;
+  --shadow:0 1px 2px rgba(20,27,23,.06), 0 8px 24px rgba(20,27,23,.05);
+  --r:10px;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --ground:#0F1417; --surface:#171E21; --surface-2:#1F282B;
+    --ink:#E6ECE8; --muted:#9BA8A1; --faint:#71807A;
+    --line:#2A3438; --line-strong:#3C4A4E;
+    --brand:#8FB0DE; --brand-soft:#1D2A3A;
+    --go:#4FC08D; --go-soft:#123026;
+    --no:#E58465; --no-soft:#331A14;
+    --red:#E58465;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.3);
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#0F1417; --surface:#171E21; --surface-2:#1F282B;
+  --ink:#E6ECE8; --muted:#9BA8A1; --faint:#71807A;
+  --line:#2A3438; --line-strong:#3C4A4E;
+  --brand:#8FB0DE; --brand-soft:#1D2A3A;
+  --go:#4FC08D; --go-soft:#123026;
+  --no:#E58465; --no-soft:#331A14;
+  --red:#E58465;
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.3);
+}
+
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--ground); color:var(--ink);
+  font-family:"Noto Sans JP",system-ui,sans-serif;
+  font-size:14px; line-height:1.7;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:1040px; margin:0 auto; padding:24px 16px 56px}
+h1,h2,h3{font-family:"Zen Kaku Gothic New","Noto Sans JP",system-ui,sans-serif; margin:0; text-wrap:balance}
+
+/* ---------- 見出し ---------- */
+.masthead{display:flex; flex-wrap:wrap; align-items:baseline; gap:8px 14px; margin-bottom:20px}
+.masthead h1{font-size:23px; font-weight:700; letter-spacing:.02em}
+.masthead p{margin:0; color:var(--muted); font-size:12.5px}
+
+/* ---------- 判定 ---------- */
+.verdict{
+  background:var(--surface); border:1px solid var(--line); border-radius:var(--r);
+  box-shadow:var(--shadow); overflow:hidden; margin-bottom:18px;
+}
+.verdict-head{display:flex; align-items:stretch; flex-wrap:wrap}
+.verdict-call{
+  flex:0 0 auto; min-width:168px; padding:20px 26px;
+  display:flex; flex-direction:column; justify-content:center; gap:2px;
+}
+.verdict-call.go{background:var(--go-soft)}
+.verdict-call.no{background:var(--no-soft)}
+.verdict-call.na{background:var(--surface-2)}
+.call-label{font-size:11px; letter-spacing:.14em; color:var(--muted); font-weight:500}
+.call-word{font-family:"Zen Kaku Gothic New",sans-serif; font-size:34px; font-weight:700; line-height:1.15}
+.go .call-word{color:var(--go)} .no .call-word{color:var(--no)} .na .call-word{color:var(--faint); font-size:22px}
+.call-margin{font-family:"IBM Plex Mono",monospace; font-size:12.5px; color:var(--muted); font-variant-numeric:tabular-nums}
+
+.verdict-meter{flex:1 1 300px; padding:18px 22px; border-left:1px solid var(--line); min-width:0}
+@media (max-width:620px){ .verdict-meter{border-left:none; border-top:1px solid var(--line)} }
+.meter-row{display:flex; justify-content:space-between; align-items:baseline; gap:12px; margin-bottom:9px}
+.meter-num{font-family:"IBM Plex Mono",monospace; font-variant-numeric:tabular-nums; font-weight:600; font-size:15px}
+.meter-cap{font-size:11.5px; color:var(--muted); letter-spacing:.06em}
+.track{position:relative; height:26px; background:var(--surface-2); border-radius:4px; overflow:visible}
+.fill{position:absolute; inset:0 auto 0 0; border-radius:4px 0 0 4px; background:var(--go); transition:width .22s ease}
+.fill.low{background:var(--no)}
+.mark{position:absolute; top:-5px; bottom:-5px; width:2px; background:var(--ink); transition:left .22s ease}
+.mark::after{
+  content:attr(data-label); position:absolute; left:50%; top:-19px; transform:translateX(-50%);
+  font-family:"IBM Plex Mono",monospace; font-size:10.5px; color:var(--ink);
+  background:var(--surface); padding:0 4px; white-space:nowrap; font-variant-numeric:tabular-nums;
+}
+.scale{display:flex; justify-content:space-between; margin-top:5px; font-family:"IBM Plex Mono",monospace; font-size:10px; color:var(--faint)}
+.verdict-note{
+  padding:9px 22px; border-top:1px solid var(--line); background:var(--surface-2);
+  font-size:12px; color:var(--muted);
+}
+
+/* ---------- 版面 ---------- */
+.layout{display:grid; grid-template-columns:1fr; gap:18px}
+@media (min-width:860px){ .layout{grid-template-columns:1.25fr 1fr} }
+.panel{background:var(--surface); border:1px solid var(--line); border-radius:var(--r); padding:16px 18px}
+.panel > h2{
+  font-size:11px; font-weight:700; letter-spacing:.14em; color:var(--muted);
+  margin-bottom:12px; text-transform:uppercase;
+}
+.stack{display:flex; flex-direction:column; gap:18px}
+
+/* ---------- 選んだ札 ---------- */
+.slots-group{display:flex; flex-wrap:wrap; gap:14px 20px; align-items:flex-start}
+.slots-block{display:flex; flex-direction:column; gap:6px}
+.slots-block span{font-size:11px; letter-spacing:.1em; color:var(--muted)}
+.slots{display:flex; gap:6px}
+.slot{
+  width:44px; height:60px; border-radius:7px; border:1.5px dashed var(--line-strong);
+  background:var(--surface-2); display:flex; flex-direction:column; align-items:center; justify-content:center;
+  font-family:"IBM Plex Mono",monospace; font-weight:600; cursor:default; padding:0; color:var(--faint);
+}
+.slot.filled{
+  border:1px solid var(--line-strong); background:var(--surface); color:var(--ink); cursor:pointer;
+  box-shadow:0 1px 2px rgba(0,0,0,.07);
+}
+.slot.filled.red{color:var(--red)}
+.slot .r{font-size:19px; line-height:1}
+.slot .s{font-size:15px; line-height:1.1}
+.slot.next{border-color:var(--brand); border-style:solid; background:var(--brand-soft)}
+
+/* ---------- 札選び ---------- */
+.picker{margin-top:16px; overflow-x:auto}
+.grid{display:grid; grid-template-columns:repeat(13,1fr); gap:3px; min-width:330px}
+.card-btn{
+  aspect-ratio:3/4; border:1px solid var(--line); border-radius:5px; background:var(--surface);
+  color:var(--ink); font-family:"IBM Plex Mono",monospace; font-weight:500; font-size:12px;
+  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:0;
+  cursor:pointer; padding:0; line-height:1.05; transition:background .1s, border-color .1s;
+}
+.card-btn .s{font-size:10px}
+.card-btn.red{color:var(--red)}
+.card-btn:hover:not(:disabled){background:var(--brand-soft); border-color:var(--brand)}
+.card-btn:disabled{opacity:.28; cursor:default}
+.card-btn.used{background:var(--brand-soft); border-color:var(--brand); opacity:1; cursor:default}
+.card-btn:focus-visible{outline:2px solid var(--brand); outline-offset:1px}
+
+/* ---------- 状況の選択 ---------- */
+.field{margin-bottom:16px}
+.field:last-child{margin-bottom:0}
+.field > label{display:block; font-size:12.5px; font-weight:500; margin-bottom:3px}
+.field .hint{font-size:11.5px; color:var(--faint); margin-bottom:7px}
+.opts{display:flex; flex-wrap:wrap; gap:5px}
+.opt{
+  min-width:38px; padding:6px 10px; border:1px solid var(--line); border-radius:6px;
+  background:var(--surface); color:var(--ink); cursor:pointer;
+  font-family:"IBM Plex Mono",monospace; font-weight:500; font-size:13px; font-variant-numeric:tabular-nums;
+}
+.opt:hover:not(.on){border-color:var(--brand)}
+.opt.on{background:var(--brand); border-color:var(--brand); color:var(--surface)}
+:root[data-theme="dark"] .opt.on, :root:not([data-theme="light"]) .opt.on{color:#0F1417}
+@media (prefers-color-scheme: light){ :root:not([data-theme="dark"]) .opt.on{color:#fff} }
+.opt:focus-visible{outline:2px solid var(--brand); outline-offset:1px}
+
+/* ---------- 明細 ---------- */
+.readout{display:flex; flex-direction:column; gap:0}
+.line{display:flex; justify-content:space-between; gap:12px; padding:7px 0; border-bottom:1px solid var(--line)}
+.line:last-child{border-bottom:none}
+.line dt{color:var(--muted); font-size:12.5px; margin:0}
+.line dd{margin:0; font-weight:500; font-size:13px; text-align:right}
+.line dd.mono{font-family:"IBM Plex Mono",monospace; font-variant-numeric:tabular-nums}
+
+table.odds{width:100%; border-collapse:collapse; font-size:12.5px}
+table.odds th{
+  text-align:right; font-weight:500; font-size:10.5px; letter-spacing:.08em; color:var(--muted);
+  padding:0 0 6px; border-bottom:1px solid var(--line);
+}
+table.odds th:first-child{text-align:left}
+table.odds td{
+  padding:5px 0; border-bottom:1px solid var(--line); text-align:right;
+  font-family:"IBM Plex Mono",monospace; font-variant-numeric:tabular-nums;
+}
+table.odds td:first-child{text-align:left; font-family:"Noto Sans JP",sans-serif}
+table.odds tr:last-child td{border-bottom:none}
+td .ok{color:var(--go); font-weight:600}
+td .ng{color:var(--no)}
+
+.btn-reset{
+  margin-top:14px; border:1px solid var(--line-strong); background:var(--surface); color:var(--muted);
+  border-radius:6px; padding:6px 14px; font-size:12.5px; cursor:pointer; font-family:inherit;
+}
+.btn-reset:hover{border-color:var(--ink); color:var(--ink)}
+
+.busy{color:var(--faint); font-size:11.5px; font-family:"IBM Plex Mono",monospace}
+footer{margin-top:26px; padding-top:16px; border-top:1px solid var(--line); color:var(--faint); font-size:11.5px}
+footer p{margin:0 0 5px}
+footer b{color:var(--muted); font-weight:500}
+@media (prefers-reduced-motion:reduce){ *{transition:none !important} }
+</style>
+
+<div class="wrap">
+  <div class="masthead">
+    <h1>Pot Fold 判断盤</h1>
+    <p>場札3枚を見て「続ける／降りる」を決める。20万配札の計算にもとづく基準。</p>
+  </div>
+
+  <div class="verdict">
+    <div class="verdict-head">
+      <div class="verdict-call na" id="call">
+        <div class="call-label">判定</div>
+        <div class="call-word" id="callWord">札を選ぶ</div>
+        <div class="call-margin" id="callMargin">手札2枚と場札3枚</div>
+      </div>
+      <div class="verdict-meter">
+        <div class="meter-row">
+          <span class="meter-cap">あなたの勝率（相手1人に対して）</span>
+          <span class="meter-num" id="eqNum">—</span>
+        </div>
+        <div class="track">
+          <div class="fill" id="fill" style="width:0%"></div>
+          <div class="mark" id="mark" data-label="必要 —" style="left:50%"></div>
+        </div>
+        <div class="scale"><span>0%</span><span>50%</span><span>100%</span></div>
+      </div>
+    </div>
+    <div class="verdict-note" id="note">手札と場札を選ぶと自動で計算します。</div>
+  </div>
+
+  <div class="layout">
+    <section class="panel">
+      <h2>札</h2>
+      <div class="slots-group">
+        <div class="slots-block">
+          <span>自分の手札</span>
+          <div class="slots" id="holeSlots"></div>
+        </div>
+        <div class="slots-block">
+          <span>場札（3枚）</span>
+          <div class="slots" id="boardSlots"></div>
+        </div>
+      </div>
+      <div class="picker"><div class="grid" id="grid"></div></div>
+      <button class="btn-reset" id="reset" type="button">札を消す</button>
+    </section>
+
+    <div class="stack">
+      <section class="panel">
+        <h2>状況</h2>
+        <div class="field">
+          <label for="behind0">自分の後ろに残っている人数</label>
+          <div class="hint">まだ行動していない人の数</div>
+          <div class="opts" id="behindOpts"></div>
+        </div>
+        <div class="field">
+          <label for="cont0">自分より前で続けた人数</label>
+          <div class="hint">すでに払って残っている人の数</div>
+          <div class="opts" id="contOpts"></div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <h2>明細</h2>
+        <dl class="readout">
+          <div class="line"><dt>いまの役</dt><dd id="madeOut">—</dd></div>
+          <div class="line"><dt>必要勝率</dt><dd class="mono" id="barOut">—</dd></div>
+          <div class="line"><dt>試行回数</dt><dd class="mono" id="trialOut">—</dd></div>
+        </dl>
+      </section>
+
+      <section class="panel">
+        <h2>相手の人数別</h2>
+        <table class="odds">
+          <thead><tr><th>続ける相手</th><th>必要</th><th>あなた</th></tr></thead>
+          <tbody id="oddsBody"></tbody>
+        </table>
+      </section>
+    </div>
+  </div>
+
+  <footer>
+    <p><b>基準の出どころ</b>　20万配札の計算による繰り返し最適応答。損益分岐の勝率は 1/(続けた人数+2) で、人数で等分した取り分より常に低い。</p>
+    <p><b>前提</b>　手札2枚（ホールデム形式）、手数料なし、相手も同じように打つ想定。</p>
+    <p><b>注意</b>　勉強用の確率計算であり、自動で打つ仕組みではない。日本国内から実際のお金を賭けてオンラインで遊ぶことは賭博罪に当たるおそれがある。</p>
+  </footer>
+</div>
+
+<script>
+"use strict";
+/* ===================== 役の判定 ===================== */
+const P=[28561,2197,169,13,1], CAT=371293, SIZE=8192;
+const TOP1=new Int32Array(SIZE), STR=new Int32Array(SIZE);
+const TOPK={};
+for(const k of [1,2,3,5]) TOPK[k]=[0,1,2,3,4].map(()=>new Int32Array(SIZE));
+(function build(){
+  const pats=[];
+  for(let hi=12;hi>=4;hi--){let m=0;for(let i=0;i<5;i++)m|=1<<(hi-i);pats.push([m,hi]);}
+  pats.push([(1<<12)|0b1111,3]);
+  for(let mask=0;mask<SIZE;mask++){
+    const rs=[]; for(let r=12;r>=0;r--) if(mask>>r&1) rs.push(r);
+    TOP1[mask]=rs.length?rs[0]:0;
+    for(const k of [1,2,3,5]){
+      const take=rs.slice(0,k);
+      for(let st=0;st<5;st++){
+        if(st+take.length>5) continue;
+        let s=0; for(let i=0;i<take.length;i++) s+=take[i]*P[st+i];
+        TOPK[k][st][mask]=s;
+      }
+    }
+    STR[mask]=-1;
+    for(const [m,hi] of pats) if((mask&m)===m){ STR[mask]=hi; break; }
+  }
+})();
+const _cnt=new Int8Array(13), _sc=new Int8Array(4), _sm=new Int32Array(4);
+function evaluate7(c){
+  _cnt.fill(0); _sc.fill(0); _sm.fill(0);
+  let rankMask=0;
+  for(let i=0;i<7;i++){ const v=c[i], r=v>>2, s=v&3; _cnt[r]++; _sc[s]++; _sm[s]|=1<<r; rankMask|=1<<r; }
+  let pm=0,tm=0,qm=0,nPair=0,nTrip=0;
+  for(let r=0;r<13;r++){
+    const n=_cnt[r];
+    if(n===2){pm|=1<<r;nPair++;} else if(n===3){tm|=1<<r;nTrip++;} else if(n===4){qm|=1<<r;}
+  }
+  let fs=-1; for(let s=0;s<4;s++) if(_sc[s]>=5){fs=s;break;}
+  const stHigh=STR[rankMask];
+  const sfHigh = fs>=0 ? STR[_sm[fs]] : -1;
+  if(sfHigh>=0) return 8*CAT + sfHigh*P[0];
+  if(qm){ const q=TOP1[qm]; return 7*CAT + q*P[0] + TOP1[rankMask & ~(1<<q)]*P[1]; }
+  if(nTrip>=2 || (nTrip>=1 && nPair>=1)){
+    const t=TOP1[tm]; const others=pm|(tm&~(1<<t));
+    return 6*CAT + t*P[0] + TOP1[others]*P[1];
+  }
+  if(fs>=0) return 5*CAT + TOPK[5][0][_sm[fs]];
+  if(stHigh>=0) return 4*CAT + stHigh*P[0];
+  if(nTrip>=1){ const t=TOP1[tm]; return 3*CAT + t*P[0] + TOPK[2][1][rankMask&~(1<<t)]; }
+  if(nPair>=2){
+    const p1=TOP1[pm], p2=TOP1[pm&~(1<<p1)];
+    // 3組ある時も、残り札の最高位が正しく残り札として選ばれる
+    const rest=rankMask&~(1<<p1)&~(1<<p2);
+    return 2*CAT + p1*P[0] + p2*P[1] + TOPK[1][2][rest];
+  }
+  if(nPair===1){ const p=TOP1[pm]; return 1*CAT + p*P[0] + TOPK[3][1][rankMask&~(1<<p)]; }
+  return TOPK[5][0][rankMask];
+}
+
+/* ===================== 役の分類 ===================== */
+const MADE=["ストレート以上","スリーカード","ツーペア","オーバーペア","トップペア","ミドルペア","ボトムペア","ポケット（場札より下）","ノーペア"];
+const DRAW=["","＋ガットショット","＋オープンエンド","＋フラッシュドロー","＋複合ドロー"];
+function classify(hole,board){
+  const five=hole.concat(board);
+  const cnt=new Int8Array(13), sc=new Int8Array(4);
+  let rankMask=0;
+  for(const v of five){ cnt[v>>2]++; sc[v&3]++; rankMask|=1<<(v>>2); }
+  const maxSuit=Math.max(...sc);
+  const hr=[hole[0]>>2,hole[1]>>2];
+  const br=[board[0]>>2,board[1]>>2,board[2]>>2].sort((a,b)=>b-a);
+  let nPair=0,nTrip=0,hasQuad=false;
+  for(let r=0;r<13;r++){ if(cnt[r]===2)nPair++; else if(cnt[r]===3)nTrip++; else if(cnt[r]===4)hasQuad=true; }
+  const madeStraight=STR[rankMask]>=0, madeFlush=maxSuit>=5;
+  const pocket=hr[0]===hr[1];
+  let made=8;
+  if(pocket) made = hr[0]>br[0] ? 3 : 7;
+  const hits=hr.map(r=>br.indexOf(r)).filter(i=>i>=0);
+  if(!pocket && hits.length===1) made = hits[0]===0?4 : hits[0]===1?5 : 6;
+  if(!pocket && hits.length===2) made=2;
+  if(nPair>=2) made=2;
+  if(nTrip>=1) made=1;
+  if(nTrip>=2 || (nTrip>=1&&nPair>=1) || hasQuad || madeStraight || madeFlush) made=0;
+  let outs=0;
+  if(!madeStraight) for(let r=0;r<13;r++) if(STR[rankMask|(1<<r)]>=0) outs++;
+  const fd=maxSuit===4, sd=outs>=2?2:outs===1?1:0;
+  let draw = fd&&sd>0 ? 4 : fd ? 3 : sd;
+  if(madeStraight||madeFlush) draw=0;
+  return MADE[made]+DRAW[draw];
+}
+
+/* ===================== 勝率の推定 ===================== */
+const MAXOPP=5, TRIALS=22000;
+function equities(hole,board){
+  const dead=new Uint8Array(52);
+  for(const c of hole) dead[c]=1; for(const c of board) dead[c]=1;
+  const deck=[]; for(let i=0;i<52;i++) if(!dead[i]) deck.push(i);
+  const d=Int8Array.from(deck), n=d.length, need=2+2*MAXOPP;
+  const sum=new Float64Array(MAXOPP);
+  const hero=new Int32Array(7), opp=new Int32Array(7), os=new Int32Array(MAXOPP);
+  hero[2]=board[0]; hero[3]=board[1]; hero[4]=board[2];
+  opp[2]=board[0]; opp[3]=board[1]; opp[4]=board[2];
+  hero[0]=hole[0]; hero[1]=hole[1];
+  for(let t=0;t<TRIALS;t++){
+    for(let i=0;i<need;i++){
+      const j=i+((Math.random()*(n-i))|0);
+      const tmp=d[i]; d[i]=d[j]; d[j]=tmp;
+    }
+    hero[5]=d[0]; hero[6]=d[1];
+    opp[5]=d[0]; opp[6]=d[1];
+    const hs=evaluate7(hero);
+    for(let k=0;k<MAXOPP;k++){
+      opp[0]=d[2+2*k]; opp[1]=d[3+2*k];
+      os[k]=evaluate7(opp);
+    }
+    let best=-1, ties=0;
+    for(let k=0;k<MAXOPP;k++){
+      const v=os[k];
+      if(v>best){ best=v; ties=1; } else if(v===best){ ties++; }
+      sum[k] += hs>best ? 1 : (hs===best ? 1/(1+ties) : 0);
+    }
+  }
+  return Array.from(sum,(v)=>v/TRIALS);
+}
+
+/* ===================== 基準の表 ===================== */
+/* GRID[後ろに残っている人数][前で続けた人数] = 続ける最低勝率 */
+const GRID=[
+ [0.000,0.451,0.712,0.822,0.831,0.842,0.843,null],
+ [0.119,0.573,0.760,0.838,0.847,0.851,null,null],
+ [0.336,0.664,0.791,0.833,0.847,0.852,null,null],
+ [0.489,0.708,0.807,0.822,0.823,null,null,null],
+ [0.570,0.738,0.819,0.830,null,null,null,null],
+ [0.620,0.766,0.814,null,null,null,null,null],
+ [0.659,0.782,null,null,null,null,null,null],
+ [0.698,null,null,null,null,null,null,null]];
+const NCELL=[
+ [13363,820601,499863,62371,3630,167,5,0],
+ [339519,775453,258872,24701,1405,50,0,0],
+ [485355,573135,131833,9240,429,8,0,0],
+ [545597,390386,60984,2956,77,0,0,0],
+ [534006,242335,23030,629,0,0,0,0],
+ [469756,124814,5430,0,0,0,0,0],
+ [358934,41066,0,0,0,0,0,0],
+ [200000,0,0,0,0,0,0,0]];
+
+/* ===================== 画面 ===================== */
+const RANKS="23456789TJQKA", SUITS=["♣","♦","♥","♠"], REDS=[1,2];
+const state={hole:[],board:[],behind:2,cont:1};
+const $=(id)=>document.getElementById(id);
+
+function cardLabel(c){ return {r:RANKS[c>>2], s:SUITS[c&3], red:REDS.includes(c&3)}; }
+
+function buildGrid(){
+  const g=$("grid"); g.innerHTML="";
+  for(let s=3;s>=0;s--) for(let r=12;r>=0;r--){
+    const c=r*4+s, L=cardLabel(c);
+    const b=document.createElement("button");
+    b.type="button"; b.className="card-btn"+(L.red?" red":"");
+    b.innerHTML='<span class="r">'+L.r+'</span><span class="s">'+L.s+'</span>';
+    b.setAttribute("aria-label",L.r+L.s);
+    b.dataset.c=c;
+    b.addEventListener("click",()=>pick(c));
+    g.appendChild(b);
+  }
+}
+function pick(c){
+  if(state.hole.includes(c)||state.board.includes(c)) return;
+  if(state.hole.length<2) state.hole.push(c);
+  else if(state.board.length<3) state.board.push(c);
+  else return;
+  render(); compute();
+}
+function unpick(where,i){
+  state[where].splice(i,1); render(); compute();
+}
+function renderSlots(){
+  const need=state.hole.length<2 ? "hole" : (state.board.length<3 ? "board" : null);
+  for(const [id,key,count] of [["holeSlots","hole",2],["boardSlots","board",3]]){
+    const el=$(id); el.innerHTML="";
+    for(let i=0;i<count;i++){
+      const c=state[key][i];
+      const b=document.createElement("button");
+      b.type="button";
+      if(c===undefined){
+        b.className="slot"+(need===key && i===state[key].length ? " next":"");
+        b.textContent="·"; b.disabled=true;
+      }else{
+        const L=cardLabel(c);
+        b.className="slot filled"+(L.red?" red":"");
+        b.innerHTML='<span class="r">'+L.r+'</span><span class="s">'+L.s+'</span>';
+        b.title="外す"; b.setAttribute("aria-label",L.r+L.s+" を外す");
+        b.addEventListener("click",()=>unpick(key,i));
+      }
+      el.appendChild(b);
+    }
+  }
+}
+function renderPicker(){
+  const used=new Set([...state.hole,...state.board]);
+  const full=state.hole.length===2 && state.board.length===3;
+  for(const b of document.querySelectorAll(".card-btn")){
+    const c=+b.dataset.c;
+    b.classList.toggle("used",used.has(c));
+    b.disabled = used.has(c) || full;
+  }
+}
+function renderOpts(){
+  const bo=$("behindOpts"); bo.innerHTML="";
+  for(let b=0;b<=7;b++){
+    const el=document.createElement("button");
+    el.type="button"; el.id="behind"+b; el.className="opt"+(b===state.behind?" on":"");
+    el.textContent=b+"人"; el.setAttribute("aria-pressed",b===state.behind);
+    el.addEventListener("click",()=>{ state.behind=b; clampCont(); render(); compute(); });
+    bo.appendChild(el);
+  }
+  const co=$("contOpts"); co.innerHTML="";
+  const row=GRID[state.behind];
+  for(let c=0;c<8;c++){
+    if(row[c]===null||row[c]===undefined) continue;
+    const el=document.createElement("button");
+    el.type="button"; el.id="cont"+c; el.className="opt"+(c===state.cont?" on":"");
+    el.textContent=c+"人"; el.setAttribute("aria-pressed",c===state.cont);
+    el.addEventListener("click",()=>{ state.cont=c; render(); compute(); });
+    co.appendChild(el);
+  }
+}
+function clampCont(){
+  const row=GRID[state.behind];
+  let max=0; for(let c=0;c<8;c++) if(row[c]!==null&&row[c]!==undefined) max=c;
+  if(state.cont>max) state.cont=max;
+}
+function render(){ renderSlots(); renderPicker(); renderOpts(); }
+
+let timer=null;
+function compute(){
+  const ready = state.hole.length===2 && state.board.length===3;
+  const bar=GRID[state.behind][state.cont];
+  $("barOut").textContent = Math.round(bar*100)+"%";
+  if(!ready){
+    setCall("na","札を選ぶ", (2-state.hole.length)+"枚 + 場札"+(3-state.board.length)+"枚");
+    $("eqNum").textContent="—"; $("fill").style.width="0%";
+    $("madeOut").textContent="—"; $("trialOut").textContent="—";
+    $("oddsBody").innerHTML="";
+    setMark(bar);
+    $("note").textContent="手札と場札を選ぶと自動で計算します。";
+    return;
+  }
+  $("trialOut").textContent="計算中…";
+  clearTimeout(timer);
+  timer=setTimeout(()=>{
+    const eq=equities(state.hole,state.board);
+    const e=eq[0];
+    $("eqNum").textContent=(e*100).toFixed(1)+"%";
+    const f=$("fill"); f.style.width=Math.min(100,e*100)+"%";
+    f.classList.toggle("low", e<bar);
+    setMark(bar);
+    const diff=(e-bar)*100;
+    if(bar<=0){
+      setCall("go","続ける","全員降りている → 無条件で取れる");
+    }else{
+      setCall(e>=bar?"go":"no", e>=bar?"続ける":"降りる",
+        (diff>=0?"+":"")+diff.toFixed(1)+" ポイント（必要 "+Math.round(bar*100)+"%）");
+    }
+    $("madeOut").textContent=classify(state.hole,state.board);
+    $("trialOut").textContent=TRIALS.toLocaleString("ja-JP")+" 回";
+    const tb=$("oddsBody"); tb.innerHTML="";
+    for(let k=1;k<=MAXOPP;k++){
+      const need=1/(k+2), mine=eq[k-1];
+      const tr=document.createElement("tr");
+      tr.innerHTML="<td>"+k+"人</td><td>"+(need*100).toFixed(1)+"%</td>"+
+        '<td><span class="'+(mine>=need?"ok":"ng")+'">'+(mine*100).toFixed(1)+"%</span></td>";
+      tb.appendChild(tr);
+    }
+    const n=NCELL[state.behind][state.cont];
+    $("note").textContent = n<1000
+      ? "この場面（後ろ"+state.behind+"人・前で"+state.cont+"人）はめったに起きないため、基準の精度は低め。"
+      : "後ろ"+state.behind+"人・前で"+state.cont+"人続けた場面の基準。相手が続けるほど必要勝率は上がる。";
+  },30);
+}
+function setCall(kind,word,margin){
+  const el=$("call");
+  el.className="verdict-call "+kind;
+  $("callWord").textContent=word;
+  $("callMargin").textContent=margin;
+}
+function setMark(bar){
+  const m=$("mark");
+  m.style.left=Math.min(99,Math.max(1,bar*100))+"%";
+  m.dataset.label="必要 "+Math.round(bar*100)+"%";
+}
+
+buildGrid();
+/* 開いた時点の例：A♠K♦ / A♥7♣2♦、後ろ2人・前で1人 */
+state.hole=[12*4+3, 11*4+1];
+state.board=[12*4+2, 5*4+0, 0*4+1];
+render(); compute();
+$("reset").addEventListener("click",()=>{ state.hole=[]; state.board=[]; render(); compute(); });
+</script>
